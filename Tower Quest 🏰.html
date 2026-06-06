@@ -463,6 +463,21 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .ach-progress-fill{height:100%;background:linear-gradient(90deg,#ffe234,#ff9800);border-radius:6px;transition:width .5s;}
 .ach-count{font-size:10px;color:#ffe082;font-weight:700;text-align:center;margin-top:4px;}
 
+/* Rune system */
+.tp-rune-row{padding:6px 12px;border-bottom:1px solid rgba(255,255,255,.06);min-height:32px;}
+.tp-rune-label{font-size:9px;color:#8bc34a;letter-spacing:.5px;margin-bottom:4px;}
+.tp-rune-equipped{display:flex;align-items:center;gap:6px;font-size:11px;color:#fff;font-weight:700;}
+.tp-rune-equipped .ri{font-size:16px;}
+.tp-rune-remove{background:rgba(244,67,54,.2);color:#ef9a9a;border:1px solid rgba(244,67,54,.4);
+  border-radius:6px;padding:2px 7px;font-size:10px;cursor:pointer;margin-left:auto;}
+.tp-rune-remove:hover{background:rgba(244,67,54,.4);}
+.tp-rune-empty{font-size:10px;color:#555;font-style:italic;}
+.tp-rune-picker{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px;}
+.tp-rune-pick-btn{background:rgba(255,255,255,.08);border:1px solid #444;border-radius:8px;
+  padding:4px 6px;cursor:pointer;font-size:11px;display:flex;align-items:center;gap:3px;
+  color:#fff;transition:all .15s;}
+.tp-rune-pick-btn:hover{border-color:#ffe082;background:rgba(255,224,52,.15);}
+
 </style>
 </head>
 <body>
@@ -1149,6 +1164,16 @@ const ACHIEVEMENTS=[
 ];
 const ACH_CATS={story:'📜 เนื้อเรื่อง',combat:'⚔️ การต่อสู้',skill:'🎯 ทักษะ',endgame:'🔥 Endgame',collect:'📚 สะสม'};
 
+/* ══ RUNE SYSTEM ══ */
+const RUNES=[
+  {id:0,icon:'🔥',name:'อัคนีรูน',  desc:'25% ติดเพลิง — DoT 8dmg ทุก 0.5s × 5 ครั้ง',  col:'#ff5722'},
+  {id:1,icon:'❄️',name:'หิมะรูน',   desc:'Slow แรงขึ้น +25% และนานขึ้น +1 วินาที',       col:'#80d8ff'},
+  {id:2,icon:'⚡',name:'พายุรูน',   desc:'On hit: 35% chain ฟ้า 1 ตัวใกล้ที่สุด (40% dmg)',col:'#ffe57f'},
+  {id:3,icon:'🎯',name:'แม่นยำรูน', desc:'20% Crit → ×2.5 damage',                       col:'#69f0ae'},
+  {id:4,icon:'💰',name:'ทองรูน',    desc:'+60% Gold จากการ Kill',                         col:'#ffd54f'},
+  {id:5,icon:'💥',name:'พลังรูน',   desc:'Damage ทั้งหมด +25%',                          col:'#ff8a65'},
+];
+
 function loadAchievements(){
   try{return new Set(JSON.parse(localStorage.getItem('tq_ach')||'[]'));}catch(e){return new Set();}
 }
@@ -1349,7 +1374,7 @@ function mkState(){
     wave:0,score:0,selTwr:-1,waveActive:false,
     over:false,win:false,queue:[],spawnT:0,mx:-1,my:-1,
     selTowerInfo:null,gmTimers:{},shakeT:0,waveBanner:null,bossWarning:null,
-    kills:0,comboN:0,comboT:0,maxCombo:0};
+    kills:0,comboN:0,comboT:0,maxCombo:0,runeInv:[]};
 }
 function getTowerDmg(t,lv){return CFG.t_dmg[t]*(1+(lv-1)*.25);}
 function getTowerRange(t,lv){return CFG.t_rng[t]*(1+(lv-1)*.15);}
@@ -2031,6 +2056,7 @@ function killEnemy(e){
   if(!e.alive) return;
   e.alive=false;
   unlockMonster(e.ti);
+  if(MTYPE[e.ti]===1) _dropRune(e.x,e.y); // boss always drops rune
   _onKillForAch(e); // achievement tracking
   // combo system
   G.kills=(G.kills||0)+1;
@@ -2049,6 +2075,7 @@ function killEnemy(e){
       life:1.2,vy:-1.6,vx:0,decay:.9,scale:1.3});
   }
   G.gold+=e.reward;
+  if(e._avaRune) G.gold+=Math.floor(e.reward*.6); // Avarice rune bonus
   addParticle(e.x,e.y,'+'+e.reward+'💰','#ffe082');
   updateHUD();
   // V2: death burst — color-coded by enemy type
@@ -2151,6 +2178,19 @@ function update(dt){
     e.x=p0[0]*CS+CS/2+(p1[0]-p0[0])*CS*t;
     e.y=p0[1]*CS+CS/2+(p1[1]-p0[1])*CS*t;
   }
+  // burn DoT (Inferno rune)
+  G.enemies.forEach(e=>{
+    if(!e.alive||!e.burnT) return;
+    e.burnT-=dt;
+    e._burnTick=(e._burnTick||0)-dt;
+    if(e._burnTick<=0){
+      e._burnTick=0.5;
+      applyDmg(e,e.burnDmg,0);
+      G.particles.push({x:e.x+(Math.random()-.5)*8,y:e.y-ESIZES[e.ti]-4,
+        txt:'🔥',col:'#ff5722',life:.5,vy:-.8,vx:(Math.random()-.5)*.5,decay:2,scale:.7});
+    }
+    if(e.burnT<=0){e.burnT=0;e.burnDmg=0;}
+  });
   // healer monsters (ti===10) heal nearby allies every 2s
   G.enemies.forEach(healer=>{
     if(!healer.alive||healer.ti!==10) return;
@@ -2197,14 +2237,25 @@ function update(dt){
     if(best&&tw.cd<=0){
       tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.lv));
       const fx=tw.col*CS+CS/2, fy=tw.row*CS+CS/2;
-      G.projs.push({
+      let _rdmg=getTowerDmg(tw.type,tw.lv)*getBuffMult(tw.col,tw.row);
+      let _risCrit=false;
+      let _rSlow=TSLOW[tw.type];
+      if(tw.rune===5) _rdmg*=1.25; // Power rune
+      if(tw.rune===3&&Math.random()<0.2){_rdmg*=2.5;_risCrit=true;} // Precision rune
+      if(tw.rune===1) _rSlow=Math.min((_rSlow||0)+0.25,0.85); // Frost rune
+      const _rp=G.projs[G.projs.push({
         x:fx,y:fy,tx:best.x,ty:best.y,target:best,
         spd:280+(tw.type===3?120:0)+(tw.type===7?80:0),
         type:tw.type,
-        dmg:getTowerDmg(tw.type,tw.lv)*getBuffMult(tw.col,tw.row),
-        splash:TSPLASH[tw.type],slow:TSLOW[tw.type],alive:true,
-        chain:TCHAIN[tw.type]||0  // chain lightning remaining jumps
-      });
+        dmg:_rdmg,
+        splash:TSPLASH[tw.type],slow:_rSlow,alive:true,
+        chain:TCHAIN[tw.type]||0
+      })-1];
+      if(_risCrit) _rp._crit=true;
+      if(tw.rune===1) _rp._frostRune=true;
+      if(tw.rune===0) _rp._burnRune=true;
+      if(tw.rune===2) _rp._stormRune=true;
+      if(tw.rune===4) _rp._avaRune=true;
       // muzzle flash ring per tower type
       const mCol=TPROJ[tw.type];
       G.fxRings.push({x:fx,y:fy,r:2,maxR:tw.type===3?CS*.8:CS*.4,
@@ -2288,11 +2339,34 @@ function update(dt){
           if(!e.alive||Math.hypot(e.x-tx,e.y-ty)>p.splash*CS) return;
           if(e.isAir&&!TCANAIR[p.type]) return; // splash ไม่โดน air ถ้าป้อมยิง air ไม่ได้
           applyDmg(e,p.dmg,p.type);
+          if(p._burnRune&&Math.random()<0.25){e.burnT=2.5;e.burnDmg=8;}
+          if(p._avaRune) e._avaRune=true;
         });
       } else {
-        if(p.target&&p.target.alive) applyDmg(p.target,p.dmg,p.type);
+        if(p.target&&p.target.alive){
+          applyDmg(p.target,p.dmg,p.type);
+          if(p._burnRune&&Math.random()<0.25){p.target.burnT=2.5;p.target.burnDmg=8;}
+          if(p._avaRune) p.target._avaRune=true;
+        }
       }
-      if(p.slow>0&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type])){p.target.slow=p.slow;p.target.slowT=2;}
+      // Storm rune chain
+      if(p._stormRune&&Math.random()<0.35&&p.target){
+        let nearest=null,nDist=Infinity;
+        G.enemies.forEach(e=>{
+          if(!e.alive||e===p.target) return;
+          const cd=Math.hypot(e.x-p.target.x,e.y-p.target.y);
+          if(cd<CS*3&&cd<nDist){nDist=cd;nearest=e;}
+        });
+        if(nearest){
+          G.fxTrails.push({x:p.target.x,y:p.target.y,tx:nearest.x,ty:nearest.y,col:'#ffe57f',life:.5,type:99,lw:2});
+          applyDmg(nearest,p.dmg*0.4,p.type);
+        }
+      }
+      // Frost rune: extend slow duration
+      if(p._frostRune&&p.slow>0&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type])){
+        p.target.slow=p.slow; p.target.slowT=3; // +1s over base 2
+      }
+      if(p.slow>0&&!p._frostRune&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type])){p.target.slow=p.slow;p.target.slowT=2;}
       // impact ring per type
       if(p.type===0){// Cannon: explosion ring
         G.fxRings.push({x:tx,y:ty,r:4,maxR:p.splash>0?p.splash*CS*1.2:CS*.5,life:.7,lw:3,col:'#ff7043',delay:0});
@@ -2407,6 +2481,8 @@ function update(dt){
   if(G.waveActive&&G.queue.length===0&&G.enemies.length===0){
     // achievement: no-damage wave
     _onWaveEndForAch(G._waveHpAtStart||G.hp, G.hp);
+    // 50% chance to drop rune if no damage taken this wave
+    if(G.hp>=(G._waveHpAtStart||G.hp)&&Math.random()<0.5) _dropRune(COLS*CS*.5,ROWS*CS*.35);
     G.waveActive=false;
     _playSound('wave_clear');
     const bonus=25+G.wave*6; G.gold+=bonus; updateHUD();
@@ -3034,6 +3110,11 @@ function render(){
       ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(x+4,y+CS-7,CS-8,4);
       ctx.fillStyle='#ffd54f';ctx.fillRect(x+4,y+CS-7,(CS-8)*pct,4);
     }
+    // rune icon on tower corner
+    if(tw.rune>=0){
+      ctx.font='11px Arial';ctx.textAlign='right';ctx.textBaseline='top';
+      ctx.fillText(RUNES[tw.rune].icon,tw.col*CS+CS-2,tw.row*CS+2);
+    }
     // support aura ring
     if(TBUFF[tw.type]){
       ctx.globalAlpha=.08;ctx.strokeStyle='#64ffda';ctx.lineWidth=1;
@@ -3224,6 +3305,22 @@ function render(){
     ctx.fillText((isFinalBoss?'👁️ ':' 👹 ')+ENAMES[_boss.ti]+'  ❤️ '+Math.ceil(_boss.hp)+' / '+Math.ceil(_boss.mhp)+_bShieldTxt,cv.width/2,by-3);
     ctx.restore();
   }
+  // Rune inventory overlay
+  if(G.runeInv&&G.runeInv.length>0){
+    const rcounts={};
+    G.runeInv.forEach(r=>rcounts[r]=(rcounts[r]||0)+1);
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    let rx=COLS*CS-8;
+    Object.entries(rcounts).reverse().forEach(([rid,cnt])=>{
+      const r=RUNES[+rid];
+      ctx.fillStyle='rgba(0,0,0,.6)';
+      ctx.fillRect(rx-22,3,24,17);
+      ctx.font='12px Arial';ctx.fillStyle='#fff';ctx.fillText(r.icon,rx-14,12);
+      ctx.font='bold 9px Arial';ctx.fillStyle='#ffe082';ctx.fillText('\xd7'+cnt,rx-3,13);
+      rx-=28;
+    });
+    ctx.globalAlpha=1;
+  }
   // V5: wave incoming banner
   if(G.waveBanner&&G.waveBanner.t>0){
     const bmax=1.5,bt=G.waveBanner.t,prog=1-bt/bmax;
@@ -3287,7 +3384,7 @@ function onCanvasClick(e){
     if(G.towers.find(t=>t.col===col&&t.row===row)){showToast('❌ ช่องนี้มีป้อมอยู่แล้ว!');return;}
     if(G.gold<CFG.t_cost[G.selTwr]){showToast('💰 ต้องการ '+CFG.t_cost[G.selTwr]+' ทอง!');return;}
     G.gold-=CFG.t_cost[G.selTwr];
-    G.towers.push({col,row,type:G.selTwr,lv:1,cd:0,angle:0,spawnAnim:1.0});
+    G.towers.push({col,row,type:G.selTwr,lv:1,cd:0,angle:0,spawnAnim:1.0,rune:-1});
     // FX: ring pulse + burst particles
     const bx=col*CS+CS/2, by=row*CS+CS/2;
     G.fxRings.push({x:bx,y:by,r:0,maxR:CS*1.6,life:1,col:TACCENT[G.selTwr],lw:3});
@@ -3383,6 +3480,7 @@ function showTowerPopup(tw,px,py){
     <div class="tp-stat">⚡ Fire Rate<span>${rateVal}</span></div>
     ${tw.lv<5?`<div class="tp-stat">💰 ค่าอัพ<span>${cost} ทอง</span></div>`:''}
   </div>
+  <div class="tp-rune-row" id="tpRuneRow"></div>
   <div class="tp-btns">
     <button class="tp-upbtn" ${tw.lv>=5||!canUp?'disabled':''} onclick="upgradeTowerFromPopup()">
       ${tw.lv>=5?'🔝 MAX':'⬆ Upgrade<br><small>💰'+cost+'</small>'}
@@ -3393,6 +3491,7 @@ function showTowerPopup(tw,px,py){
   requestAnimationFrame(()=>{
     const ic=document.getElementById('_tpIco');
     if(ic){const ix=ic.getContext('2d');ix.translate(21,23);drawTowerIcon(ix,tw.type,40,0);}
+    updateTpRune(tw);
   });
   // position near tower but inside #gp
   const gp=document.getElementById('gp');
@@ -3412,6 +3511,59 @@ function hideTowerPopup(){
   if(!pop) return;
   pop.classList.remove('show');
   setTimeout(()=>{if(!pop.classList.contains('show'))pop.style.display='none';},160);
+}
+
+/* ══ RUNE FUNCTIONS ══ */
+function updateTpRune(tw){
+  const row=document.getElementById('tpRuneRow');
+  if(!row||!G) return;
+  if(tw.rune>=0){
+    const r=RUNES[tw.rune];
+    row.innerHTML=`<div class="tp-rune-label">🔮 RUNE</div>
+    <div class="tp-rune-equipped"><span class="ri">${r.icon}</span>${r.name}<button class="tp-rune-remove" onclick="removeTowerRune()">✕ Remove</button></div>`;
+  } else if(G.runeInv&&G.runeInv.length>0){
+    const counts={};
+    G.runeInv.forEach(id=>counts[id]=(counts[id]||0)+1);
+    let btns='';
+    Object.entries(counts).forEach(([rid,cnt])=>{
+      const r=RUNES[+rid];
+      btns+=`<button class="tp-rune-pick-btn" onclick="equipRuneToTower(${rid})" title="${r.desc}">${r.icon} ${r.name}${cnt>1?' ×'+cnt:''}</button>`;
+    });
+    row.innerHTML=`<div class="tp-rune-label">🔮 RUNE</div><div class="tp-rune-picker">${btns}</div>`;
+  } else {
+    row.innerHTML=`<div class="tp-rune-label">🔮 RUNE</div><div class="tp-rune-empty">ไม่มี Rune</div>`;
+  }
+}
+function equipRuneToTower(runeId){
+  if(!_popupTw||!G) return;
+  const idx=G.runeInv.indexOf(runeId);
+  if(idx<0) return;
+  if(_popupTw.rune>=0) G.runeInv.push(_popupTw.rune);
+  _popupTw.rune=runeId;
+  G.runeInv.splice(idx,1);
+  updateTpRune(_popupTw);
+  const tx=_popupTw.col*CS+CS/2, ty=_popupTw.row*CS+CS/2;
+  G.fxRings.push({x:tx,y:ty,r:4,maxR:CS*1.5,life:.7,lw:3,col:RUNES[runeId].col,delay:0});
+  G.particles.push({x:tx,y:ty-CS*.3,txt:RUNES[runeId].icon+' Equipped!',col:RUNES[runeId].col,life:1.2,vy:-1,vx:0,decay:1,scale:1});
+}
+function removeTowerRune(){
+  if(!_popupTw||_popupTw.rune<0||!G) return;
+  if(G.runeInv.length>=6){showToast('🎒 Inventory เต็มแล้ว (max 6)');return;}
+  G.runeInv.push(_popupTw.rune);
+  _popupTw.rune=-1;
+  updateTpRune(_popupTw);
+}
+function _dropRune(x,y){
+  if(!G||G.runeInv.length>=6) return;
+  const rid=Math.floor(Math.random()*RUNES.length);
+  G.runeInv.push(rid);
+  const r=RUNES[rid];
+  for(let k=0;k<8;k++){
+    const ang=k/8*Math.PI*2;
+    G.particles.push({x,y,txt:'✦',col:r.col,life:.9,vy:Math.sin(ang)*1.4,vx:Math.cos(ang)*1.4,decay:2,scale:.8});
+  }
+  G.particles.push({x,y:y-20,txt:r.icon+' Rune Drop!',col:r.col,life:1.6,vy:-1.2,vx:0,decay:.8,scale:1.1});
+  showToast(r.icon+' ได้รับ '+r.name+'!');
 }
 function upgradeTowerFromPopup(){
   if(!_popupTw||!G) return;
@@ -4191,6 +4343,19 @@ function updateEg(dt){
     e.x=p0[0]*CS+CS/2+(p1[0]-p0[0])*CS*t2;
     e.y=p0[1]*CS+CS/2+(p1[1]-p0[1])*CS*t2;
   }
+  // burn DoT (endgame)
+  G.enemies.forEach(e=>{
+    if(!e.alive||!e.burnT) return;
+    e.burnT-=dt;
+    e._burnTick=(e._burnTick||0)-dt;
+    if(e._burnTick<=0){
+      e._burnTick=0.5;
+      applyDmg(e,e.burnDmg,0);
+      G.particles.push({x:e.x+(Math.random()-.5)*8,y:e.y-ESIZES[e.ti]-4,
+        txt:'🔥',col:'#ff5722',life:.5,vy:-.8,vx:(Math.random()-.5)*.5,decay:2,scale:.7});
+    }
+    if(e.burnT<=0){e.burnT=0;e.burnDmg=0;}
+  });
   // healer monsters in endgame
   G.enemies.forEach(healer=>{
     if(!healer.alive||healer.ti!==10) return;
@@ -4225,13 +4390,24 @@ function updateEg(dt){
     if(best&&tw.cd<=0){
       tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.lv));
       const fx=tw.col*CS+CS/2,fy=tw.row*CS+CS/2;
-      G.projs.push({
+      let _rdmg2=getTowerDmg(tw.type,tw.lv)*getBuffMult(tw.col,tw.row);
+      let _risCrit2=false;
+      let _rSlow2=TSLOW[tw.type];
+      if(tw.rune===5) _rdmg2*=1.25;
+      if(tw.rune===3&&Math.random()<0.2){_rdmg2*=2.5;_risCrit2=true;}
+      if(tw.rune===1) _rSlow2=Math.min((_rSlow2||0)+0.25,0.85);
+      const _rp2=G.projs[G.projs.push({
         x:fx,y:fy,tx:best.x,ty:best.y,target:best,
         spd:280+(tw.type===3?120:0)+(tw.type===7?80:0),type:tw.type,
-        dmg:getTowerDmg(tw.type,tw.lv)*getBuffMult(tw.col,tw.row),
-        splash:TSPLASH[tw.type],slow:TSLOW[tw.type],alive:true,
+        dmg:_rdmg2,
+        splash:TSPLASH[tw.type],slow:_rSlow2,alive:true,
         chain:TCHAIN[tw.type]||0
-      });
+      })-1];
+      if(_risCrit2) _rp2._crit=true;
+      if(tw.rune===1) _rp2._frostRune=true;
+      if(tw.rune===0) _rp2._burnRune=true;
+      if(tw.rune===2) _rp2._stormRune=true;
+      if(tw.rune===4) _rp2._avaRune=true;
       G.fxRings.push({x:fx,y:fy,r:2,maxR:tw.type===3?CS*.8:CS*.4,life:.5,lw:1.5,col:TPROJ[tw.type],delay:0});
       if(tw.type===7){
         for(let k=0;k<6;k++){const ang=k/6*Math.PI*2;G.particles.push({x:fx,y:fy,txt:'·',col:'#ffe57f',life:.35,vy:Math.sin(ang)*1.4,vx:Math.cos(ang)*1.4,decay:4,scale:.9});}
@@ -4254,14 +4430,37 @@ function updateEg(dt){
       if(p.splash>0){
         G.enemies.forEach(e=>{
           if(!e.alive||Math.hypot(e.x-tx,e.y-ty)>p.splash*CS) return;
-          if(e.isAir&&!TCANAIR[p.type]) return; // splash ไม่โดน air ถ้าป้อมยิง air ไม่ได้
+          if(e.isAir&&!TCANAIR[p.type]) return;
           applyDmg(e,p.dmg,p.type);
+          if(p._burnRune&&Math.random()<0.25){e.burnT=2.5;e.burnDmg=8;}
+          if(p._avaRune) e._avaRune=true;
           G.fxRings.push({x:tx,y:ty,r:4,maxR:p.splash*CS*1.2,life:.7,lw:3,col:TPROJ[p.type],delay:0});
         });
       } else {
-        if(p.target&&p.target.alive) applyDmg(p.target,p.dmg,p.type);
+        if(p.target&&p.target.alive){
+          applyDmg(p.target,p.dmg,p.type);
+          if(p._burnRune&&Math.random()<0.25){p.target.burnT=2.5;p.target.burnDmg=8;}
+          if(p._avaRune) p.target._avaRune=true;
+        }
       }
-      if(p.slow>0&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type])){p.target.slow=p.slow;p.target.slowT=2;}
+      // Storm rune chain (endgame)
+      if(p._stormRune&&Math.random()<0.35&&p.target){
+        let nearest=null,nDist=Infinity;
+        G.enemies.forEach(e=>{
+          if(!e.alive||e===p.target) return;
+          const cd=Math.hypot(e.x-p.target.x,e.y-p.target.y);
+          if(cd<CS*3&&cd<nDist){nDist=cd;nearest=e;}
+        });
+        if(nearest){
+          G.fxTrails.push({x:p.target.x,y:p.target.y,tx:nearest.x,ty:nearest.y,col:'#ffe57f',life:.5,type:99,lw:2});
+          applyDmg(nearest,p.dmg*0.4,p.type);
+        }
+      }
+      // Frost rune: extend slow
+      if(p._frostRune&&p.slow>0&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type])){
+        p.target.slow=p.slow; p.target.slowT=3;
+      }
+      if(p.slow>0&&!p._frostRune&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type])){p.target.slow=p.slow;p.target.slowT=2;}
       if(p.type===7){
         G.fxRings.push({x:tx,y:ty,r:2,maxR:CS*.55,life:.45,lw:2.5,col:'#ffe57f',delay:0});
         if(p.chain>0&&p.target){
