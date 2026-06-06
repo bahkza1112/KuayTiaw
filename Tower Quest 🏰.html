@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Tower Quest 🏰</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -378,6 +378,61 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .save-input.eg{border-color:rgba(255,50,50,.3);}
 .save-input.eg:focus{border-color:#ff8a80;}
 .save-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+
+/* ── MOBILE TOUCH IMPROVEMENTS ── */
+#cv{touch-action:none;-webkit-tap-highlight-color:transparent;}
+/* ป้องกัน text highlight บน drag */
+#gr{-webkit-user-select:none;user-select:none;}
+
+@media (max-width:540px){
+  /* ปรับ HUD ให้อ่านได้ดีขึ้นบนมือถือ */
+  .hud{padding:5px 7px;gap:3px;}
+  .huditem{font-size:10px;}
+  .hpwrap{width:54px;}
+  .stage-badge{font-size:9px;padding:2px 5px;}
+
+  /* ปรับ tower panel ให้สัมผัสได้ง่ายขึ้น */
+  .tpanel{padding:6px 4px;gap:3px;flex-wrap:wrap;}
+  .tbtn{min-width:44px;min-height:52px;padding:5px 4px;border-radius:10px;}
+  .ticon{font-size:18px;}
+  .tcost{font-size:8px;}
+  .wavebtn{padding:8px 10px;font-size:11px;border-radius:16px;}
+  .autobtn{padding:7px 8px;font-size:11px;border-radius:16px;}
+  .speedbtn{padding:4px 7px;font-size:10px;}
+  .pausebtn{padding:4px 7px;font-size:10px;}
+  .bback{padding:5px 7px;font-size:10px;}
+
+  /* ปรับ tower popup ให้ไม่หลุดจอ */
+  #towerPopup{min-width:170px;max-width:220px;}
+  .tp-name{font-size:12px;}
+
+  /* ปรับ stage select ให้กดได้ง่าย */
+  .stage-card{padding:12px 12px;gap:10px;}
+  .stage-icon{font-size:30px;}
+  .stage-name{font-size:14px;}
+
+  /* ปรับ overlay box ให้ไม่เกินหน้าจอ */
+  .obox{width:86vw;max-width:300px;padding:16px 18px;}
+  .obox h2{font-size:20px;}
+
+  /* tower selection screen */
+  .ts-grid{grid-template-columns:repeat(3,1fr);gap:6px;}
+  .ts-card-ico{font-size:22px;}
+  .ts-card-name{font-size:10px;}
+
+  /* cutscene ปรับ font ให้อ่านง่าย */
+  .cs-text{font-size:13px;}
+  .cs-title{font-size:24px;}
+  .cs-next{padding:10px 30px;font-size:14px;}
+}
+
+@media (max-width:380px){
+  /* จอแคบมาก */
+  .tpanel{gap:2px;}
+  .tbtn{min-width:40px;padding:4px 3px;}
+  .ticon{font-size:16px;}
+  .hud{flex-wrap:wrap;}
+}
 
 </style>
 </head>
@@ -827,7 +882,7 @@ const STAGES=[
   {id:5,name:'Thunder Cave',icon:'⚡',
    desc:'สายฟ้าฟาดลงในถ้ำลึก ศัตรูเร็วขึ้นและหนาแน่นขึ้น ป้อมสายฟ้าจะช่วยได้มาก',
    waves:9,enemyTypes:[0,1,2,3,5,6],bossChance:.08,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:[{type:'tower',id:7}],
-   maxTowers:5,story:'ลึกลงไปในถ้ำใต้ดิน สายฟ้าฟาดอย่างไม่หยุดหย่อน กองทัพมืดใช้พลังฟ้าผ่าเพิ่มความเร็วให้ตนเอง ผู้พิทักษ์ต้องปรับกลยุทธ์ใหม่...',
+   maxTowers:6,story:'ลึกลงไปในถ้ำใต้ดิน สายฟ้าฟาดอย่างไม่หยุดหย่อน กองทัพมืดใช้พลังฟ้าผ่าเพิ่มความเร็วให้ตนเอง ผู้พิทักษ์ต้องปรับกลยุทธ์ใหม่...',
    path:[[0,4],[1,4],[2,4],[2,3],[2,2],[2,1],[3,1],[4,1],[5,1],[6,1],[7,1],[8,1],
          [8,2],[8,3],[8,4],[7,4],[6,4],[5,4],[4,4],[4,5],[4,6],[4,7],
          [5,7],[6,7],[7,7],[8,7],[9,7],[10,7],[11,7],[11,8],[11,9],
@@ -837,7 +892,7 @@ const STAGES=[
   {id:6,name:'Cursed Swamp',icon:'🌿',
    desc:'หนองน้ำมีพิษซ่อนอันตราย ศัตรูมาจากหลายทิศทาง ต้องวางกับดักให้ดี',
    waves:10,enemyTypes:[0,1,2,3,4,5,6],bossChance:.09,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
-   maxTowers:5,story:'หนองน้ำโบราณที่ซ่อนคำสาปไว้ภายใน ศัตรูแทรกซึมมาจากทุกทิศ กลิ่นพิษปกคลุมทุกอณู ผู้พิทักษ์ต้องระวังทุกซอกทุกมุม...',
+   maxTowers:6,story:'หนองน้ำโบราณที่ซ่อนคำสาปไว้ภายใน ศัตรูแทรกซึมมาจากทุกทิศ กลิ่นพิษปกคลุมทุกอณู ผู้พิทักษ์ต้องระวังทุกซอกทุกมุม...',
    path:[[0,0],[1,0],[2,0],[3,0],[3,1],[3,2],[3,3],[4,3],[5,3],[6,3],[6,2],[6,1],[6,0],
          [7,0],[8,0],[9,0],[10,0],[11,0],[11,1],[11,2],[11,3],[11,4],
          [10,4],[9,4],[8,4],[7,4],[6,4],[5,4],[4,4],[3,4],[2,4],
@@ -847,7 +902,7 @@ const STAGES=[
   {id:7,name:'Dark Fortress',icon:'🏰',
    desc:'วิเวิร์นโฉบฟ้า ชิลด์ไนท์ถือโล่เหล็ก — ต้องทะลุโล่ก่อน ใช้ Sniper/Thunder ให้เป็น',
    waves:11,enemyTypes:[0,1,2,3,4,5,6,7,8],bossChance:.10,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
-   maxTowers:5,story:'ป้อมปราการมืดตั้งตระหง่านขวางทาง Shield Knight สวมชุดเกราะเหล็กนำหน้ากองทัพ ต้องเจาะกำแพงป้องกันก่อนจะถึงหัวใจของศัตรู...',
+   maxTowers:6,story:'ป้อมปราการมืดตั้งตระหง่านขวางทาง Shield Knight สวมชุดเกราะเหล็กนำหน้ากองทัพ ต้องเจาะกำแพงป้องกันก่อนจะถึงหัวใจของศัตรู...',
    path:[[0,5],[1,5],[1,4],[1,3],[1,2],[1,1],[2,1],[3,1],[4,1],[5,1],[5,2],[5,3],
          [5,4],[5,5],[6,5],[7,5],[7,4],[7,3],[7,2],[7,1],[8,1],[9,1],[10,1],[11,1],
          [11,2],[11,3],[11,4],[11,5],[11,6],[10,6],[9,6],[8,6],[7,6],[6,6],
@@ -1200,6 +1255,9 @@ function _doStartStage(si){
   cv.addEventListener('pointerup',onCanvasHoldEnd);
   cv.removeEventListener('pointerleave',onCanvasHoldEnd);
   cv.addEventListener('pointerleave',onCanvasHoldEnd);
+  // Mobile: ป้องกัน scroll เมื่อ touch บน canvas
+  cv.removeEventListener('touchstart',_onCvTouchStart);
+  cv.addEventListener('touchstart',_onCvTouchStart,{passive:false});
   initGame();
 }
 
@@ -1209,6 +1267,8 @@ function initGame(){
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
   G=mkState();
   const s=currentStage;
+  // ใช้ startGold per-stage ถ้ามี (balance override)
+  if(s.startGold!=null) G.gold=s.startGold;
   document.getElementById('endOverlay').style.display='none';
   document.getElementById('pauseScreen').style.display='none';
   document.getElementById('waveBtn').disabled=false;
@@ -2990,6 +3050,10 @@ function hideWavePreview(){
 }
 
 /* ══ CANVAS EVENTS ══ */
+function _onCvTouchStart(e){
+  // ป้องกัน browser scroll / zoom เมื่อ touch บน canvas
+  if(e.cancelable) e.preventDefault();
+}
 function onCanvasClick(e){
   if(!G||G.over||G.win||paused) return;
   const rect=cv.getBoundingClientRect();
@@ -3112,9 +3176,11 @@ function showTowerPopup(tw,px,py){
   // position near tower but inside #gp
   const gp=document.getElementById('gp');
   const gr=gp.getBoundingClientRect();
-  let lf=px-gr.left-95, tp2=py-gr.top-170;
-  lf=Math.max(4,Math.min(gr.width-198,lf));
+  const popW=Math.min(200,gr.width-16);
+  let lf=px-gr.left-popW/2, tp2=py-gr.top-190;
+  lf=Math.max(4,Math.min(gr.width-popW-8,lf));
   tp2=Math.max(44,Math.min(gr.height-220,tp2));
+  pop.style.maxWidth=popW+'px';
   pop.style.left=lf+'px'; pop.style.top=tp2+'px';
   pop.style.display='block';
   requestAnimationFrame(()=>pop.classList.add('show'));
@@ -3776,6 +3842,7 @@ function startEndgame(){
   cv.removeEventListener('pointerdown',onCanvasHoldStart); cv.addEventListener('pointerdown',onCanvasHoldStart);
   cv.removeEventListener('pointerup',onCanvasHoldEnd); cv.addEventListener('pointerup',onCanvasHoldEnd);
   cv.removeEventListener('pointerleave',onCanvasHoldEnd); cv.addEventListener('pointerleave',onCanvasHoldEnd);
+  cv.removeEventListener('touchstart',_onCvTouchStart); cv.addEventListener('touchstart',_onCvTouchStart,{passive:false});
   document.getElementById('surrenderBtn').style.display='inline-block';
   document.getElementById('backBtn').style.display='none';
   initEgGame();
