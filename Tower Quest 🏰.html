@@ -247,6 +247,20 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .autobtn.on{background:rgba(76,175,80,.25);color:#69f0ae;border-color:#4caf50;box-shadow:0 0 8px rgba(76,175,80,.3);}
 /* range ring overlay */
 .range-info{position:absolute;background:rgba(0,0,0,.8);border:1px solid #555;border-radius:8px;padding:5px 10px;color:#fff;font-size:11px;pointer-events:none;z-index:15;display:none;white-space:nowrap;}
+/* ── TOWER POPUP (G1) ── */
+#towerPopup{position:absolute;background:rgba(8,18,8,.97);border:2px solid #4caf50;border-radius:14px;padding:0;z-index:22;min-width:190px;pointer-events:all;overflow:hidden;box-shadow:0 6px 28px rgba(0,0,0,.75);transform:scale(.88);opacity:0;transition:transform .14s cubic-bezier(.34,1.56,.64,1),opacity .12s;}
+#towerPopup.show{transform:scale(1);opacity:1;}
+.tp-head{background:rgba(0,0,0,.55);padding:10px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(76,175,80,.25);}
+.tp-name{font-size:13px;font-weight:900;color:#fff;}
+.tp-lv{font-size:10px;color:#ffe082;margin-top:2px;}
+.tp-stats{padding:8px 12px;display:flex;flex-direction:column;gap:4px;border-bottom:1px solid rgba(255,255,255,.06);}
+.tp-stat{display:flex;justify-content:space-between;font-size:10px;color:#aaa;}
+.tp-stat span{color:#ffe082;font-weight:700;}
+.tp-btns{padding:8px 10px;display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.tp-upbtn{background:linear-gradient(180deg,#ffe234,#ff9800);color:#6d2900;border:none;border-radius:8px;padding:7px 4px;font-size:11px;font-weight:900;cursor:pointer;text-align:center;line-height:1.4;}
+.tp-upbtn:disabled{opacity:.32;cursor:not-allowed;background:#333;color:#666;}
+.tp-sellbtn{background:rgba(244,67,54,.18);color:#ef9a9a;border:1px solid rgba(244,67,54,.4);border-radius:8px;padding:7px 4px;font-size:11px;font-weight:700;cursor:pointer;text-align:center;line-height:1.4;}
+.tp-sellbtn:hover{background:rgba(244,67,54,.34);}
 /* tower panel wrapper for relative positioning */
 .tpanel-wrap{position:relative;flex-shrink:0;}
 /* ── TOWER SELECTION SCREEN ── */
@@ -672,6 +686,7 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
     </div>
   </div>
   <div class="toast" id="toast"></div>
+  <div id="towerPopup"></div>
 </div>
 
 <!-- CODEX -->
@@ -1035,7 +1050,7 @@ function mkState(){
     gold:CFG.startGold,hp:CFG.baseHP,maxHp:CFG.baseHP,
     wave:0,score:0,selTwr:-1,waveActive:false,
     over:false,win:false,queue:[],spawnT:0,mx:-1,my:-1,
-    selTowerInfo:null,gmTimers:{}};
+    selTowerInfo:null,gmTimers:{},shakeT:0,waveBanner:null};
 }
 function getTowerDmg(t,lv){return CFG.t_dmg[t]*(1+(lv-1)*.25);}
 function getTowerRange(t,lv){return CFG.t_rng[t]*(1+(lv-1)*.15);}
@@ -1486,6 +1501,8 @@ function startWave(){
     if(avail.includes(4)&&G.wave>=4&&Math.random()<bChance) ei=4;
     G.queue.push(ei);
   }
+  // V5: wave incoming banner
+  G.waveBanner={text:'⚔️  WAVE  '+G.wave,t:1.5};
 }
 
 function spawnEnemy(ti){
@@ -1533,6 +1550,15 @@ function killEnemy(e){
   G.gold+=e.reward; G.score+=e.reward*10;
   addParticle(e.x,e.y,'+'+e.reward+'💰','#ffe082');
   updateHUD();
+  // V2: death burst — color-coded by enemy type
+  const _dc=['#4caf50','#eceff1','#7c4dff','#ff5722','#b71c1c','#9e9e9e','#37474f'];
+  const nc=e.ti===4?18:e.ti===5?12:8;
+  for(let k=0;k<nc;k++){
+    const a=k/nc*Math.PI*2,sp=1.6+Math.random()*2.4;
+    G.particles.push({x:e.x,y:e.y,txt:'●',col:_dc[e.ti]||'#fff',
+      life:.65+Math.random()*.45,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:2.3,scale:.5+Math.random()*.6});
+  }
+  G.fxRings.push({x:e.x,y:e.y,r:ESIZES[e.ti]*.4,maxR:ESIZES[e.ti]*3.8,life:.55,lw:2.5,col:_dc[e.ti]||'#fff',delay:0});
 }
 
 function endGame(win){
@@ -1581,7 +1607,7 @@ function update(dt){
       if(e.pi>=plen-1){
         unlockMonster(e.ti);
         e.alive=false; G.enemies.splice(i,1);
-        G.hp=Math.max(0,G.hp-1); updateHUD();
+        G.hp=Math.max(0,G.hp-1); updateHUD(); G.shakeT=Math.min(.55,G.shakeT+.2);
         if(G.hp<=0){endGame(false);return;}
         break;
       }
@@ -1664,6 +1690,12 @@ function update(dt){
       const goldAmt=CFG.t_goldamt[Math.min(tw.lv-1,3)];
       G.gold+=goldAmt; updateHUD();
       addParticle(tw.col*CS+CS/2,tw.row*CS+CS/2,'+'+goldAmt+'💰','#ffd54f');
+      // V6: flying coin particles
+      for(let _k=0;_k<3;_k++){
+        G.particles.push({x:tw.col*CS+CS/2+(Math.random()-.5)*CS*.45,y:tw.row*CS+CS*.42,
+          txt:'🪙',col:'#ffd54f',life:1.1+Math.random()*.4,
+          vy:-1.7-Math.random()*1.1,vx:(Math.random()-.5)*.9,decay:.85,scale:.85+Math.random()*.25});
+      }
     }
   });
   // projectiles
@@ -1747,6 +1779,10 @@ function update(dt){
     if(p.scale) p.scale=Math.max(.4,p.scale-dt*1.5);
     if(p.life<=0) G.particles.splice(i,1);
   }
+  // V1: screen shake decay
+  if(G.shakeT>0) G.shakeT=Math.max(0,G.shakeT-dt*3.8);
+  // V5: wave banner decay
+  if(G.waveBanner&&G.waveBanner.t>0) G.waveBanner.t-=dt;
   // wave clear
   if(G.waveActive&&G.queue.length===0&&G.enemies.length===0){
     G.waveActive=false;
@@ -2030,6 +2066,9 @@ function render(){
   if(!ctx||!G||!currentStage) return;
   const s=currentStage;
   ctx.clearRect(0,0,cv.width,cv.height);
+  // V1: screen shake
+  let _shook=false;
+  if(G.shakeT>0){_shook=true;ctx.save();ctx.translate((Math.random()-.5)*G.shakeT*7,(Math.random()-.5)*G.shakeT*5);}
   // grid — terrain depth
   for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
     const isPath=currentPset.has(c+','+r);
@@ -2118,12 +2157,17 @@ function render(){
     ctx.globalAlpha=1;
   });
 
-  // FX trails (draw behind projectiles)
+  // FX trails — V3: styled per projectile type
   G.fxTrails.forEach(t=>{
-    ctx.globalAlpha=t.life*.5;
+    const tsz=t.type===3?t.life*5:t.type===2?t.life*4.5:t.type===1?t.life*4:t.life*3.5;
+    ctx.globalAlpha=t.life*(t.type===3?.65:t.type===2?.55:.42);
     ctx.fillStyle=t.col;
-    const sz=t.life*3.5;
-    ctx.beginPath(); ctx.arc(t.x,t.y,Math.max(.5,sz),0,Math.PI*2); ctx.fill();
+    ctx.beginPath();ctx.arc(t.x,t.y,Math.max(.5,tsz),0,Math.PI*2);ctx.fill();
+    if(t.type===1&&t.life>.5){// ice: tiny cross sparkle
+      ctx.strokeStyle='#e0f7fa';ctx.lineWidth=.9;
+      ctx.beginPath();ctx.moveTo(t.x-2.5,t.y);ctx.lineTo(t.x+2.5,t.y);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(t.x,t.y-2.5);ctx.lineTo(t.x,t.y+2.5);ctx.stroke();
+    }
     ctx.globalAlpha=1;
   });
   // Sniper laser trail — bright line from tower to last hit
@@ -2265,10 +2309,48 @@ function render(){
     ctx.shadowBlur=0;
   });
   ctx.globalAlpha=1;
+  // V1: end screen shake
+  if(_shook) ctx.restore();
   // vignette overlay
   const vg=ctx.createRadialGradient(cv.width/2,cv.height/2,cv.height*.25,cv.width/2,cv.height/2,cv.height*.75);
   vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,0.30)');
   ctx.fillStyle=vg;ctx.fillRect(0,0,cv.width,cv.height);
+  // G4: boss health bar
+  const _boss=G.enemies.find(e=>e.alive&&e.ti===4);
+  if(_boss){
+    const bw=Math.min(cv.width*.68,400),bh=13,bx=cv.width/2-bw/2,by=cv.height-26;
+    ctx.save();
+    ctx.fillStyle='rgba(0,0,0,.82)';
+    if(ctx.roundRect)ctx.roundRect(bx-6,by-20,bw+12,bh+28,8);else ctx.rect(bx-6,by-20,bw+12,bh+28);ctx.fill();
+    ctx.fillStyle='#1a0000';
+    if(ctx.roundRect)ctx.roundRect(bx,by,bw,bh,5);else ctx.rect(bx,by,bw,bh);ctx.fill();
+    const _bpct=Math.max(0,_boss.hp/_boss.mhp);
+    ctx.fillStyle=_bpct>.5?'#f44336':_bpct>.25?'#ff9800':'#ff1744';
+    if(ctx.roundRect)ctx.roundRect(bx,by,bw*_bpct,bh,5);else ctx.rect(bx,by,bw*_bpct,bh);ctx.fill();
+    ctx.strokeStyle='rgba(183,28,28,.7)';ctx.lineWidth=1.5;
+    if(ctx.roundRect)ctx.roundRect(bx,by,bw,bh,5);else ctx.rect(bx,by,bw,bh);ctx.stroke();
+    ctx.fillStyle='#ff8a80';ctx.font='bold 10px Arial';
+    ctx.textAlign='center';ctx.textBaseline='bottom';
+    ctx.fillText('👹 '+ENAMES[4]+'  ❤️ '+Math.ceil(_boss.hp)+' / '+Math.ceil(_boss.mhp),cv.width/2,by-3);
+    ctx.restore();
+  }
+  // V5: wave incoming banner
+  if(G.waveBanner&&G.waveBanner.t>0){
+    const bmax=1.5,bt=G.waveBanner.t,prog=1-bt/bmax;
+    const alpha=prog<.1?prog/.1:prog>.8?(1-prog)/.2:1;
+    const slideX=prog<.1?(prog/.1-1)*cv.width*.28:prog>.8?((prog-.8)/.2)*cv.width*.22:0;
+    ctx.save();ctx.globalAlpha=Math.max(0,Math.min(.94,alpha));
+    const bw2=Math.min(310,cv.width*.75),bh2=50,bx2=cv.width/2-bw2/2+slideX,by2=cv.height*.34;
+    ctx.fillStyle='rgba(0,0,0,.8)';
+    if(ctx.roundRect)ctx.roundRect(bx2,by2,bw2,bh2,13);else ctx.rect(bx2,by2,bw2,bh2);ctx.fill();
+    ctx.strokeStyle='#ffe082';ctx.lineWidth=2;
+    if(ctx.roundRect)ctx.roundRect(bx2,by2,bw2,bh2,13);else ctx.rect(bx2,by2,bw2,bh2);ctx.stroke();
+    ctx.fillStyle='#fff';ctx.font='bold 21px Arial';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.shadowColor='rgba(255,224,130,.85)';ctx.shadowBlur=10;
+    ctx.fillText(G.waveBanner.text,cv.width/2+slideX,by2+bh2/2);
+    ctx.shadowBlur=0;ctx.restore();
+  }
 }
 
 /* ══ CANVAS EVENTS ══ */
@@ -2288,7 +2370,7 @@ function showWavePreview(){
   }
   let html='';
   Object.entries(tally).sort((a,b)=>a[0]-b[0]).forEach(([ti,cnt])=>{
-    html+=`<div class="wave-preview-enemy"><span class="ei">${EICONS[ti]}</span>${ENAMES[ti]}<br><span style="color:#ffe082;">×${cnt}</span></div>`;
+    html+=`<div class="wave-preview-enemy"><img src="${getEnemyIconURL(parseInt(ti),30)}" width="30" height="30" style="display:block;margin:0 auto 2px;">${ENAMES[parseInt(ti)]}<br><span style="color:#ffe082;">×${cnt}</span></div>`;
   });
   document.getElementById('wavePreviewEnemies').innerHTML=html;
   document.getElementById('wavePreview').style.display='block';
@@ -2304,7 +2386,7 @@ function onCanvasClick(e){
   const col=Math.floor((e.clientX-rect.left)*cv.width/rect.width/CS);
   const row=Math.floor((e.clientY-rect.top)*cv.height/rect.height/CS);
   if(col<0||col>=COLS||row<0||row>=ROWS) return;
-  G.selTowerInfo=null;  // deselect range on any click
+  G.selTowerInfo=null; hideTowerPopup(); // deselect range on any click
   if(G.selTwr>=0){
     if(currentPset.has(col+','+row)){showToast('❌ สร้างบนเส้นทางไม่ได้!');return;}
     if(G.towers.find(t=>t.col===col&&t.row===row)){showToast('❌ ช่องนี้มีป้อมอยู่แล้ว!');return;}
@@ -2325,25 +2407,12 @@ function onCanvasClick(e){
   } else {
     const tw=G.towers.find(t=>t.col===col&&t.row===row);
     if(tw){
-      // toggle range display
-      if(G.selTowerInfo===tw){
-        G.selTowerInfo=null;
-      } else {
-        G.selTowerInfo=tw;
-      }
-      if(tw.lv>=5){showToast('🔝 ระดับสูงสุด 5 แล้ว!');return;}
-      const cost=CFG.t_cost[tw.type]*tw.lv;
-      if(G.gold<cost){showToast('💰 ต้องการ '+cost+' ทอง!');return;}
-      G.gold-=cost; tw.lv++; tw.spawnAnim=0.6;
-      const ux=col*CS+CS/2, uy=row*CS+CS/2;
-      G.fxRings.push({x:ux,y:uy,r:0,maxR:CS*1.4,life:1,col:'#ffe234',lw:2.5});
-      for(let k=0;k<6;k++){
-        const ang=k/6*Math.PI*2;
-        G.particles.push({x:ux,y:uy,txt:'★',col:'#ffe234',
-          life:.9,vy:Math.sin(ang)*1.8,vx:Math.cos(ang)*1.8,decay:2});
-      }
-      addParticle(ux,uy,'⬆ ระดับ '+tw.lv,'#ffe234');
-      updateHUD();
+      // G1: show tower popup instead of immediate upgrade
+      G.selTowerInfo=tw;
+      const rect2=cv.getBoundingClientRect();
+      const px=(col+.5)*CS*rect2.width/cv.width+rect2.left;
+      const py=row*CS*rect2.height/cv.height+rect2.top;
+      showTowerPopup(tw,px,py);
     }
   }
 }
@@ -2395,6 +2464,115 @@ function onCanvasHoldEnd(e){
   if(holdTimer){clearTimeout(holdTimer);holdTimer=null;}
   holdTower=null;
   document.getElementById('sellTooltip').style.display='none';
+}
+
+/* ══ TOWER POPUP (G1) ══ */
+let _popupTw=null;
+function showTowerPopup(tw,px,py){
+  _popupTw=tw;
+  const pop=document.getElementById('towerPopup');
+  if(!pop||!G) return;
+  const cost=tw.lv>=5?0:CFG.t_cost[tw.type]*tw.lv;
+  const refund=Math.floor(CFG.t_cost[tw.type]*tw.lv*.6);
+  const canUp=tw.lv<5&&G.gold>=cost;
+  const dmgVal=CFG.t_dmg[tw.type]===0?'—':Math.round(getTowerDmg(tw.type,tw.lv));
+  const rngVal=getTowerRange(tw.type,tw.lv).toFixed(1);
+  const rateVal=CFG.t_rate[tw.type]===0?'—':getTowerRate(tw.type,tw.lv).toFixed(1);
+  pop.innerHTML=`<div class="tp-head">
+    <canvas id="_tpIco" width="42" height="42" style="flex-shrink:0;border-radius:6px;"></canvas>
+    <div><div class="tp-name">${TNAMES[tw.type]}</div><div class="tp-lv">Level ${tw.lv}${tw.lv>=5?' 🔝 MAX':''}</div></div>
+  </div>
+  <div class="tp-stats">
+    <div class="tp-stat">⚔️ ดาเมจ<span>${dmgVal}</span></div>
+    <div class="tp-stat">📡 ระยะ<span>${rngVal} ช่อง</span></div>
+    <div class="tp-stat">⚡ Fire Rate<span>${rateVal}</span></div>
+    ${tw.lv<5?`<div class="tp-stat">💰 ค่าอัพ<span>${cost} ทอง</span></div>`:''}
+  </div>
+  <div class="tp-btns">
+    <button class="tp-upbtn" ${tw.lv>=5||!canUp?'disabled':''} onclick="upgradeTowerFromPopup()">
+      ${tw.lv>=5?'🔝 MAX':'⬆ Upgrade<br><small>💰'+cost+'</small>'}
+    </button>
+    <button class="tp-sellbtn" onclick="sellTowerFromPopup()">🗑 Sell<br><small style="color:#aaa">+💰${refund}</small></button>
+  </div>`;
+  // draw sprite on canvas
+  requestAnimationFrame(()=>{
+    const ic=document.getElementById('_tpIco');
+    if(ic){const ix=ic.getContext('2d');ix.translate(21,23);drawTowerIcon(ix,tw.type,40,0);}
+  });
+  // position near tower but inside #gp
+  const gp=document.getElementById('gp');
+  const gr=gp.getBoundingClientRect();
+  let lf=px-gr.left-95, tp2=py-gr.top-170;
+  lf=Math.max(4,Math.min(gr.width-198,lf));
+  tp2=Math.max(44,Math.min(gr.height-220,tp2));
+  pop.style.left=lf+'px'; pop.style.top=tp2+'px';
+  pop.style.display='block';
+  requestAnimationFrame(()=>pop.classList.add('show'));
+}
+function hideTowerPopup(){
+  _popupTw=null;
+  const pop=document.getElementById('towerPopup');
+  if(!pop) return;
+  pop.classList.remove('show');
+  setTimeout(()=>{if(!pop.classList.contains('show'))pop.style.display='none';},160);
+}
+function upgradeTowerFromPopup(){
+  if(!_popupTw||!G) return;
+  const tw=_popupTw;
+  if(tw.lv>=5){showToast('🔝 ระดับสูงสุด 5 แล้ว!');return;}
+  const cost=CFG.t_cost[tw.type]*tw.lv;
+  if(G.gold<cost){showToast('💰 ต้องการ '+cost+' ทอง!');hideTowerPopup();return;}
+  G.gold-=cost; tw.lv++; tw.spawnAnim=0.6;
+  const ux=tw.col*CS+CS/2,uy=tw.row*CS+CS/2;
+  G.fxRings.push({x:ux,y:uy,r:0,maxR:CS*1.4,life:1,col:'#ffe234',lw:2.5});
+  for(let k=0;k<6;k++){const a=k/6*Math.PI*2;G.particles.push({x:ux,y:uy,txt:'★',col:'#ffe234',life:.9,vy:Math.sin(a)*1.8,vx:Math.cos(a)*1.8,decay:2});}
+  addParticle(ux,uy,'⬆ ระดับ '+tw.lv,'#ffe234');
+  updateHUD();
+  // reopen popup with updated stats
+  hideTowerPopup();
+  setTimeout(()=>{
+    if(G&&!G.over&&!G.win&&G.selTowerInfo===tw){
+      const r=cv.getBoundingClientRect();
+      showTowerPopup(tw,(tw.col+.5)*CS*r.width/cv.width+r.left,tw.row*CS*r.height/cv.height+r.top);
+    }
+  },60);
+}
+function sellTowerFromPopup(){
+  if(!_popupTw||!G) return;
+  const tw=_popupTw;
+  const refund=Math.floor(CFG.t_cost[tw.type]*tw.lv*.6);
+  const key=tw.col+'_'+tw.row;
+  if(G.gmTimers) delete G.gmTimers[key];
+  G.towers=G.towers.filter(t=>t!==tw);
+  G.gold+=refund; updateHUD();
+  const sx=tw.col*CS+CS/2,sy=tw.row*CS+CS/2;
+  G.fxRings.push({x:sx,y:sy,r:4,maxR:CS*1.2,life:.8,lw:3,col:'#f44336',delay:0});
+  for(let k=0;k<6;k++){const a=k/6*Math.PI*2;G.particles.push({x:sx,y:sy,txt:'💰',col:'#ffe082',life:.9,vy:Math.sin(a)*1.5,vx:Math.cos(a)*1.5,decay:2});}
+  addParticle(sx,sy-16,'+'+refund+' ทอง','#4caf50');
+  showToast('🗑 ขายป้อมได้ +'+refund+' ทอง');
+  G.selTowerInfo=null; hideTowerPopup();
+}
+
+/* ══ SPRITE ICON HELPERS (B2, B3) ══ */
+let _iconCache={};
+function getEnemyIconURL(ti,sz){
+  sz=sz||32; const k='e'+ti+'_'+sz;
+  if(!_iconCache[k]){
+    const oc=document.createElement('canvas');oc.width=sz;oc.height=sz;
+    drawEnemySprite(oc.getContext('2d'),ti,sz/2,sz/2,sz*.72);
+    _iconCache[k]=oc.toDataURL();
+  }
+  return _iconCache[k];
+}
+function getTowerIconURL(type,sz){
+  sz=sz||32; const k='t'+type+'_'+sz;
+  if(!_iconCache[k]){
+    const oc=document.createElement('canvas');oc.width=sz;oc.height=sz;
+    const ox=oc.getContext('2d');ox.translate(sz/2,sz/2+sz*.05);
+    drawTowerIcon(ox,type,sz-4,0);
+    _iconCache[k]=oc.toDataURL();
+  }
+  return _iconCache[k];
 }
 
 /* ══ CODEX ══ */
@@ -2486,7 +2664,7 @@ function renderCodex(){
     TNAMES.forEach((_,i)=>{
       const u=unlockedT.has(i);
       html+=`<div class="cdx-card${u?'':' locked'}${cdxSel===i&&u?' active':''}" onclick="${u?'selectCodex('+i+')':''}">
-        <div class="ico">${u?TICONS[i]:'🔒'}</div>
+        <div class="ico">${u?`<img src="${getTowerIconURL(i,36)}" width="36" height="36" style="image-rendering:pixelated;">`:'🔒'}</div>
         <div class="cname">${u?TNAMES[i]:'???'}</div>
       </div>`;
     });
@@ -2510,7 +2688,7 @@ function renderCodex(){
       }
       html+=`<div class="cdx-detail">
         <div class="cdx-detail-head">
-          <div class="cdx-detail-ico">${TICONS[cdxSel]}</div>
+          <div class="cdx-detail-ico"><img src="${getTowerIconURL(cdxSel,48)}" width="48" height="48" style="image-rendering:pixelated;border-radius:8px;"></div>
           <div>
             <div class="cdx-detail-name">${TNAMES[cdxSel]}</div>
             <div class="cdx-detail-sub">ป้อมปราการ</div>
@@ -2659,6 +2837,8 @@ function dsc(key,val,isArr){
     CFG[parts.join('_')][idx]=num;
   } else { CFG[key]=num; }
   if(devTab===0) drawCurveGraph();
+  // B1: rebuild sprite caches when tower params change
+  if(key.startsWith('t_')){_SC=null;_iconCache={};}
 }
 function drawCurveGraph(){
   const canvas=document.getElementById('curveCanvas');
@@ -3031,6 +3211,7 @@ function startEgWave(){
     let ei=Math.floor(Math.random()*(maxEi+1));
     G.queue.push(Math.min(ei,4));
   }
+  G.waveBanner={text:'🔥  WAVE  '+G.wave,t:1.5};
 }
 
 function updateEg(dt){
@@ -3050,7 +3231,7 @@ function updateEg(dt){
       e.prog-=CS; e.pi++;
       if(e.pi>=plen-1){
         unlockMonster(e.ti); e.alive=false; G.enemies.splice(i,1);
-        G.hp=Math.max(0,G.hp-1); updateHUD();
+        G.hp=Math.max(0,G.hp-1); updateHUD(); G.shakeT=Math.min(.55,G.shakeT+.2);
         if(G.hp<=0){endEgGame();return;}
         break;
       }
@@ -3119,6 +3300,8 @@ function updateEg(dt){
   }
   G.enemies.forEach(e=>{if(e.hitFlash>0) e.hitFlash=Math.max(0,e.hitFlash-dt*4);});
   G.towers.forEach(tw=>{if(tw.spawnAnim>0) tw.spawnAnim=Math.max(0,tw.spawnAnim-dt*3);});
+  if(G.shakeT>0) G.shakeT=Math.max(0,G.shakeT-dt*3.8);
+  if(G.waveBanner&&G.waveBanner.t>0) G.waveBanner.t-=dt;
   for(let i=G.fxRings.length-1;i>=0;i--){
     const r=G.fxRings[i];
     if(r.delay>0){r.delay-=dt;continue;}
