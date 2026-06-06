@@ -578,11 +578,11 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
       <div class="stage-icon">🏰</div>
       <div class="stage-info">
         <div class="stage-name">Stage 8: Dark Fortress</div>
-        <div class="stage-desc">กำแพงมืดที่แทบทะลุผ่านไม่ได้ Shield Knight ปกป้องพวกพ้องด้วยโล่เหล็ก</div>
+        <div class="stage-desc">วิเวิร์นบินโฉบโจมตีจากฟ้า ป้อมสายฟ้าจำเป็นมาก ระวังฝูงบินจากทุกทิศ</div>
         <div class="stage-meta">
           <span class="stage-pill pill-wave">🌊 11 Waves</span>
           <span class="stage-pill pill-enemy"><span style="filter:brightness(0);opacity:.55">👾</span><span style="filter:brightness(0);opacity:.55">👾</span><span style="filter:brightness(0);opacity:.55">👾</span><span style="filter:brightness(0);opacity:.55">👾</span><span style="filter:brightness(0);opacity:.55">👾</span><span style="filter:brightness(0);opacity:.55">👾</span><span style="filter:brightness(0);opacity:.55">👾</span> ???</span>
-          <span class="stage-pill pill-unlock">🏰 7 Towers</span>
+          <span class="stage-pill pill-unlock">🏰 8 Towers</span>
         </div>
       </div>
       
@@ -822,7 +822,7 @@ const STAGES=[
   /* ด่าน 5-9 (id 5-9) */
   {id:5,name:'Thunder Cave',icon:'⚡',
    desc:'สายฟ้าฟาดลงในถ้ำลึก ศัตรูเร็วขึ้นและหนาแน่นขึ้น ป้อมสายฟ้าจะช่วยได้มาก',
-   waves:9,enemyTypes:[0,1,2,3,5,6],bossChance:.08,unlockedTowers:[0,1,2,3,4,5,6],unlocks:null,
+   waves:9,enemyTypes:[0,1,2,3,5,6],bossChance:.08,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:[{type:'tower',id:7}],
    maxTowers:5,story:'ลึกลงไปในถ้ำใต้ดิน สายฟ้าฟาดอย่างไม่หยุดหย่อน กองทัพมืดใช้พลังฟ้าผ่าเพิ่มความเร็วให้ตนเอง ผู้พิทักษ์ต้องปรับกลยุทธ์ใหม่...',
    path:[[0,4],[1,4],[2,4],[2,3],[2,2],[2,1],[3,1],[4,1],[5,1],[6,1],[7,1],[8,1],
          [8,2],[8,3],[8,4],[7,4],[6,4],[5,4],[4,4],[4,5],[4,6],[4,7],
@@ -841,8 +841,8 @@ const STAGES=[
    bgColor:'#0a1a0a',pathColor:'#3a5a2a',
    grassColors:['#0d1f0d','#112211','#0a180a','#132513','#0c1c0c']},
   {id:7,name:'Dark Fortress',icon:'🏰',
-   desc:'กำแพงมืดที่แทบทะลุผ่านไม่ได้ Shield Knight ปกป้องพวกพ้องด้วยโล่เหล็ก',
-   waves:11,enemyTypes:[0,1,2,3,4,5,6],bossChance:.10,unlockedTowers:[0,1,2,3,4,5,6],unlocks:null,
+   desc:'กำแพงมืดที่แทบทะลุผ่านไม่ได้ วิเวิร์นบินโฉบโจมตีจากฟ้า ป้อมสายฟ้าจำเป็นมาก',
+   waves:11,enemyTypes:[0,1,2,3,4,5,6,7],bossChance:.10,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
    maxTowers:5,story:'ป้อมปราการมืดตั้งตระหง่านขวางทาง Shield Knight สวมชุดเกราะเหล็กนำหน้ากองทัพ ต้องเจาะกำแพงป้องกันก่อนจะถึงหัวใจของศัตรู...',
    path:[[0,5],[1,5],[1,4],[1,3],[1,2],[1,1],[2,1],[3,1],[4,1],[5,1],[5,2],[5,3],
          [5,4],[5,5],[6,5],[7,5],[7,4],[7,3],[7,2],[7,1],[8,1],[9,1],[10,1],[11,1],
@@ -878,14 +878,14 @@ const DEFAULT_CFG={
   enemyPerWaveInc:2,   // เดิม 3 — ด่าน 9 wave 13 จะได้ 4+13×2=30 แทน 44
   bossChance:.08,   // เดิม .12 — boss ออกน้อยลงหน่อย
   // Monster base HP — ปรับ Golem และ Boss ให้สมดุล
-  m_hp:[55,75,105,130,380,220,35],  // เดิม [60,80,120,150,450,280,40]
-  m_spd:[1.4,1.0,1.15,.85,.5,.55,1.8],
-  m_rew:[8,10,15,18,60,28,5],
+  m_hp:[55,75,105,130,380,220,35,160],  // wyvern: 160 HP บินเร็ว
+  m_spd:[1.4,1.0,1.15,.85,.5,.55,1.8,1.55],
+  m_rew:[8,10,15,18,60,28,5,20],
   // Tower — เพิ่ม DPS นิดหน่อยให้ผู้เล่นรู้สึกว่าป้อมมีพลัง
-  t_dmg:[28,12,38,65,0,20,0],   // เดิม [25,10,35,60,0,18,0]
-  t_rng:[2.2,2.0,2.5,4.5,2.8,2.8,0],
-  t_rate:[1.2,1.5,.8,.4,0,2.0,0],
-  t_cost:[50,55,75,65,35,60,75], // ลดราคาป้อมบางตัว Ice/Magic/Sniper/Support
+  t_dmg:[28,12,38,65,0,20,0,20],   // [cannon,ice,magic,sniper,support,archer,goldmine,thunder]
+  t_rng:[2.2,2.0,2.5,4.5,2.8,2.8,0,2.4],
+  t_rate:[1.2,1.5,.8,.4,0,2.0,0,1.8],
+  t_cost:[50,55,75,65,35,60,75,85], // thunder: 85 gold
   t_goldrate:5,t_goldamt:[2,4,6,8],
   // Game settings
   startGold:200,    // เดิม 150 — ให้ซื้อป้อมได้ 4-5 ตัวก่อน wave 1
@@ -896,30 +896,32 @@ let CFG=JSON.parse(JSON.stringify(DEFAULT_CFG));
 try{const s=localStorage.getItem('tq_cfg');if(s)CFG=Object.assign(JSON.parse(JSON.stringify(DEFAULT_CFG)),JSON.parse(s));}catch(e){}
 
 /* ══ STATIC DATA ══ */
-const ENAMES=['โกบลิน','โครงกระดูก','เงามืด','วิญญาณไฟ','บอส','โกเลม','ค้างคาว'];
+const ENAMES=['โกบลิน','โครงกระดูก','เงามืด','วิญญาณไฟ','บอส','โกเลม','ค้างคาว','วิเวิร์น'];
 const EICONS=['👺','💀','👻','🔥','👹','🪨','🦇'];
-const ESIZES=[16,18,18,20,34,22,13];
-const TNAMES=['ปืนใหญ่','น้ำแข็ง','เวทมนตร์','สไนเปอร์','ซัพพอร์ต','ธนู','เหมืองทอง'];
-const TICONS=['💣','❄️','✨','🎯','💚','🏹','💰'];
+const ESIZES=[16,18,18,20,34,22,13,19];
+const TNAMES=['ปืนใหญ่','น้ำแข็ง','เวทมนตร์','สไนเปอร์','ซัพพอร์ต','ธนู','เหมืองทอง','สายฟ้า'];
+const TICONS=['💣','❄️','✨','🎯','💚','🏹','💰','⚡'];
 const TCOLORS=['#c62828','#0d47a1','#4a148c','#1b5e20','#00695c','#4e342e','#f57f17'];
-const TPROJ=['#ff7043','#80d8ff','#e040fb','#ffee58','#69f0ae','#a5d6a7','#ffd54f'];
-const TACCENT=['#ff5252','#40c4ff','#ea80fc','#69f0ae','#64ffda','#8d6e63','#ffca28'];
-const TSPLASH=[.8,0,1.2,0,0,0,0];
-const TSLOW=[0,.45,0,0,0,0,0];
-const TBUFF=[false,false,false,false,true,false,false];
-const TCANAIR=[false,false,false,true,false,true,false]; /* ยิง air ได้ */
-const TGOLDMINE=[false,false,false,false,false,false,true]; /* สร้างทอง */
+const TPROJ=['#ff7043','#80d8ff','#e040fb','#ffee58','#69f0ae','#a5d6a7','#ffd54f','#ffe57f'];
+const TACCENT=['#ff5252','#40c4ff','#ea80fc','#69f0ae','#64ffda','#8d6e63','#ffca28','#ffe57f'];
+const TSPLASH=[.8,0,1.2,0,0,0,0,0];
+const TSLOW=[0,.45,0,0,0,0,0,0];
+const TBUFF=[false,false,false,false,true,false,false,false];
+const TCANAIR=[false,false,false,true,false,true,false,true]; /* ยิง air ได้ */
+const TGOLDMINE=[false,false,false,false,false,false,true,false]; /* สร้างทอง */
+const TCHAIN=[0,0,0,0,0,0,0,2]; /* chain lightning targets (Thunder=2) */
 const MFLAVOR=['สิ่งมีชีวิตแสนเจ้าเล่ห์ที่พึ่งพาความเร็ว เดินทางเป็นฝูงและท่วมท้นด้วยจำนวน',
   'ฟื้นคืนชีพจากสนามรบโบราณ แข็งแกร่งแต่ช้า — กระดูกของมันยากจะทำลาย',
   'สิ่งมีชีวิตแห่งความมืด มีความต้านทานบางส่วนต่อการชะลอของน้ำแข็ง',
   'กำเนิดจากการระเบิดของภูเขาไฟ HP สูงและมั่นคง — ภัยคุกคามที่น่ากลัวอย่างยิ่ง',
   'จอมปีศาจขนาดใหญ่ที่บัญชาการมอนสเตอร์ทั้งหมด ต้องการความร่วมมืออย่างสูงเพื่อเอาชนะ',
   'หินยักษ์ที่ถูกสาปให้มีชีวิต HP สูงสุดในบรรดามอนธรรมดา ภูมิต้านทานน้ำแข็งโดยสมบูรณ์',
-  'ค้างคาวมืดที่บินอยู่บนอากาศ มีแค่ Sniper และ Archer เท่านั้นที่ยิงโดน'];
-const MTAGS=[[],[],[],[],[],[],[]]; /* ไม่ใช้แล้ว — แทนที่ด้วยระบบจุดแข็งและจุดอ่อน */
-const MSPECIAL=[null,null,'ต้านทานการชะลอของน้ำแข็งบางส่วน','เผาไหม้พื้นที่โดยรอบ','⚠️ ปรากฏตัวตั้งแต่คลื่นที่ 4 เป็นต้นไป','🛡️ Immune ต่อ Ice slow ทั้งหมด','✈️ บินได้ — Sniper และ Archer เท่านั้นที่ยิงโดน'];
+  'ค้างคาวมืดที่บินอยู่บนอากาศ มีแค่ Sniper และ Archer เท่านั้นที่ยิงโดน',
+  'มังกรน้อยพันธุ์วิเวิร์นที่บินร่อนอยู่บนฟ้า HP สูงกว่าค้างคาวมาก ป้อมสายฟ้าจัดการได้ดีที่สุด'];
+const MTAGS=[[],[],[],[],[],[],[],[]]; /* ไม่ใช้แล้ว — แทนที่ด้วยระบบจุดแข็งและจุดอ่อน */
+const MSPECIAL=[null,null,'ต้านทานการชะลอของน้ำแข็งบางส่วน','เผาไหม้พื้นที่โดยรอบ','⚠️ ปรากฏตัวตั้งแต่คลื่นที่ 4 เป็นต้นไป','🛡️ Immune ต่อ Ice slow ทั้งหมด','✈️ บินได้ — Sniper และ Archer เท่านั้นที่ยิงโดน','✈️ บินได้ — Thunder, Sniper, Archer ยิงโดน — HP สูง'];
 /* เผ่า, จุดแข็ง, จุดอ่อน */
-const MTRIBE=['อสูร','ปีศาจ','วิญญาณ','วิญญาณ','ปีศาจ','หิน','ปีศาจ'];
+const MTRIBE=['อสูร','ปีศาจ','วิญญาณ','วิญญาณ','ปีศาจ','หิน','ปีศาจ','มังกร'];
 const MSTRENGTH=[
   ['จำนวนมาก','เคลื่อนที่เร็ว'],
   ['HP สูง','ทนทานมาก'],
@@ -928,6 +930,7 @@ const MSTRENGTH=[
   ['HP มหาศาล','โจมตีหลายด้าน'],
   ['HP สูงมาก','Immune น้ำแข็ง'],
   ['บินได้','เร็วมาก'],
+  ['บินได้','HP สูง','ป้อมส่วนใหญ่ยิงไม่โดน'],
 ];
 const MWEAKNESS=[
   ['ป้อมกระจาย','ป้อมน้ำแข็ง'],
@@ -937,25 +940,28 @@ const MWEAKNESS=[
   ['ป้อมทุกแบบร่วมกัน','ซัพพอร์ตเสริมกำลัง'],
   ['ป้อมสไนเปอร์','ป้อมเวทมนตร์'],
   ['ป้อมสไนเปอร์','ป้อมธนู'],
+  ['ป้อมสายฟ้า','ป้อมสไนเปอร์'],
 ];
 /* 0=มอนธรรมดา 1=บอส */
-const MTYPE=[0,0,0,0,1,0,0];
-const MISAIR=[false,false,false,false,false,false,true]; /* บินได้ */
+const MTYPE=[0,0,0,0,1,0,0,0];
+const MISAIR=[false,false,false,false,false,false,true,true]; /* บินได้ */
 const TFLAVOR=['ปืนใหญ่หนักที่ยิงกระสุนระเบิด ความเสียหายแบบกระจายทำลายล้างศัตรูที่อยู่รวมกัน',
   'ยิงน้ำแข็งที่ทำให้ศัตรูเยือกแข็ง วางไว้ก่อนทางยาวจะได้ผลดีที่สุด',
   'รวมพลังเวทมนตร์เป็นการโจมตีที่รุนแรง กระจายในวงกว้าง แต่ยิงช้า',
   'มือปืนระยะไกลที่แม่นยำ มีความเสียหายต่อเป้าหมายเดียวสูงสุดในเกม',
   'ปล่อยออร่าเสริมกำลังที่เพิ่มความเสียหายให้ป้อมใกล้เคียง ไม่โจมตีโดยตรง',
   'นักธนูผู้คล่องแคล่ว ยิงได้ทั้งศัตรูภาคพื้นดินและศัตรูที่บินอยู่บนอากาศ',
-  'เหมืองทองที่สร้างรายได้ต่อเนื่อง ไม่โจมตี แต่ผลิตทองทุก 5 วินาที'];
+  'เหมืองทองที่สร้างรายได้ต่อเนื่อง ไม่โจมตี แต่ผลิตทองทุก 5 วินาที',
+  'หอคอยพลังสายฟ้าที่ยิงฟ้าผ่าลงใส่ศัตรู และลัดไปยังศัตรูข้างเคียงอีก 2 ตัว ยิงโดนได้ทั้งพื้นและอากาศ'];
 const TTAGS=[[{t:'กระจาย',c:'tag-orange'},{t:'ความเสียหายพื้นที่',c:'tag-red'}],
   [{t:'ช้า',c:'tag-blue'},{t:'ซัพพอร์ต',c:'tag-green'}],
   [{t:'กระจายกว้าง',c:'tag-purple'},{t:'ความเสียหายสูง',c:'tag-red'}],
   [{t:'ระยะไกลมาก',c:'tag-blue'},{t:'ความเสียหายสูงสุด',c:'tag-red'}],
   [{t:'ออร่าเสริมกำลัง',c:'tag-green'},{t:'ไม่โจมตี',c:'tag-purple'}],
   [{t:'ยิง Air',c:'tag-blue'},{t:'Fire Rate เร็ว',c:'tag-orange'}],
-  [{t:'ผลิตทอง',c:'tag-green'},{t:'ไม่โจมตี',c:'tag-purple'}]];
-const TSPECIAL=['กระจาย: 0.8 ช่อง','ชะลอเหลือ 45% นาน 2 วินาที','กระจาย: 1.2 ช่อง','ระยะยิง 4.5 ช่อง','+10% ความเสียหาย/ระดับ ให้ป้อมใกล้เคียง','ยิง Air ได้ — เป็นป้อมเดียวที่ยิงค้างคาวได้ (นอกจาก Sniper)','ผลิต 2/4/6/8 ทอง ทุก 5 วินาที ตาม Level'];
+  [{t:'ผลิตทอง',c:'tag-green'},{t:'ไม่โจมตี',c:'tag-purple'}],
+  [{t:'Chain Lightning',c:'tag-orange'},{t:'ยิง Air',c:'tag-blue'}]];
+const TSPECIAL=['กระจาย: 0.8 ช่อง','ชะลอเหลือ 45% นาน 2 วินาที','กระจาย: 1.2 ช่อง','ระยะยิง 4.5 ช่อง','+10% ความเสียหาย/ระดับ ให้ป้อมใกล้เคียง','ยิง Air ได้ — เป็นป้อมเดียวที่ยิงค้างคาวได้ (นอกจาก Sniper)','ผลิต 2/4/6/8 ทอง ทุก 5 วินาที ตาม Level','Chain Lightning ถึง 2 ตัว — ดาเมจลด 40% ต่อ chain — ยิง Air ได้'];
 const TSTRENGTH=[
   ['ทำลายหมู่ศัตรูได้ดี','ระยะใกล้-กลาง'],
   ['ชะลอความเร็วศัตรู','เพิ่มเวลาให้ป้อมอื่น'],
@@ -964,6 +970,7 @@ const TSTRENGTH=[
   ['เพิ่มพลังป้อมรอบข้าง','ไม่ต้องการเป้าหมาย'],
   ['ยิงได้ทั้ง ground และ air','Fire Rate สูง'],
   ['รายได้ต่อเนื่อง','ไม่ต้องการเป้าหมาย'],
+  ['Chain ศัตรู 2 ตัวในหนึ่งยิง','ยิง Air ได้'],
 ];
 const TWEAKNESS=[
   ['ยิงช้าถ้าศัตรูกระจาย','ระยะสั้นกว่าสไนเปอร์'],
@@ -973,6 +980,7 @@ const TWEAKNESS=[
   ['ไม่โจมตีโดยตรง','ต้องวางใกล้ป้อมอื่น'],
   ['ดาเมจต่ำกว่า Sniper','ระยะสั้นกว่า'],
   ['ไม่โจมตีเลย','ถ้าถูกทำลายเสียทอง'],
+  ['ดาเมจต่อตัวต่ำกว่าป้อมอื่น','Chain ต้องการหลายศัตรู'],
 ];
 
 /* ══ PROGRESS ══ */
@@ -1550,8 +1558,8 @@ function killEnemy(e){
   addParticle(e.x,e.y,'+'+e.reward+'💰','#ffe082');
   updateHUD();
   // V2: death burst — color-coded by enemy type
-  const _dc=['#4caf50','#eceff1','#7c4dff','#ff5722','#b71c1c','#9e9e9e','#37474f'];
-  const nc=e.ti===4?18:e.ti===5?12:8;
+  const _dc=['#4caf50','#eceff1','#7c4dff','#ff5722','#b71c1c','#9e9e9e','#37474f','#ce93d8'];
+  const nc=e.ti===4?18:e.ti===5?12:e.ti===7?10:8;
   for(let k=0;k<nc;k++){
     const a=k/nc*Math.PI*2,sp=1.6+Math.random()*2.4;
     G.particles.push({x:e.x,y:e.y,txt:'●',col:_dc[e.ti]||'#fff',
@@ -1579,7 +1587,13 @@ function endGame(win){
   const banner=document.getElementById('unlockBanner');
   if(win&&currentStage.unlocks){
     banner.style.display='block';
-    banner.innerHTML=`<strong>🔓 Unlocked!</strong>${currentStage.unlocks} is now available in Stage ${si+2}!`;
+    let _unlockTxt='';
+    if(Array.isArray(currentStage.unlocks)){
+      currentStage.unlocks.forEach(u=>{
+        if(u.type==='tower') _unlockTxt+=`⚡ ${TNAMES[u.id]} Tower`;
+      });
+    } else { _unlockTxt=currentStage.unlocks; }
+    banner.innerHTML=`<strong>🔓 Unlocked!</strong> ${_unlockTxt} is now available in Stage ${si+2}!`;
   } else { banner.style.display='none'; }
   const hasNext=win&&(si+1<STAGES.length)&&isStageUnlocked(si+1);
   document.getElementById('nextStageBtn').style.display=hasNext?'inline-block':'none';
@@ -1638,10 +1652,11 @@ function update(dt){
       const fx=tw.col*CS+CS/2, fy=tw.row*CS+CS/2;
       G.projs.push({
         x:fx,y:fy,tx:best.x,ty:best.y,target:best,
-        spd:280+(tw.type===3?120:0),  // sniper faster
+        spd:280+(tw.type===3?120:0)+(tw.type===7?80:0),
         type:tw.type,
         dmg:getTowerDmg(tw.type,tw.lv)*getBuffMult(tw.col,tw.row),
-        splash:TSPLASH[tw.type],slow:TSLOW[tw.type],alive:true
+        splash:TSPLASH[tw.type],slow:TSLOW[tw.type],alive:true,
+        chain:TCHAIN[tw.type]||0  // chain lightning remaining jumps
       });
       // muzzle flash ring per tower type
       const mCol=TPROJ[tw.type];
@@ -1666,6 +1681,15 @@ function update(dt){
           G.particles.push({x:fx,y:fy,txt:'❄',col:'#80d8ff',
             life:.4,vy:Math.sin(ang)*.6,vx:Math.cos(ang)*.6,decay:3.5,scale:.7});
         }
+      }
+      // thunder: electric spark burst at muzzle
+      if(tw.type===7){
+        for(let k=0;k<6;k++){
+          const ang=k/6*Math.PI*2;
+          G.particles.push({x:fx,y:fy,txt:'·',col:'#ffe57f',
+            life:.35,vy:Math.sin(ang)*1.4,vx:Math.cos(ang)*1.4,decay:4,scale:.9});
+        }
+        G.fxRings.push({x:fx,y:fy,r:2,maxR:CS*.5,life:.3,lw:1.5,col:'#ffe57f',delay:0});
       }
     }
   });
@@ -1726,6 +1750,35 @@ function update(dt){
         G.fxRings.push({x:tx,y:ty,r:5,maxR:p.splash*CS*.7,life:.4,lw:5,col:'#ce93d8',delay:.04});
       } else if(p.type===3){// Sniper: thin sharp ring
         G.fxRings.push({x:tx,y:ty,r:1,maxR:CS*.6,life:.4,lw:2,col:'#fff9c4',delay:0});
+      } else if(p.type===7){// Thunder: electric burst + chain
+        G.fxRings.push({x:tx,y:ty,r:2,maxR:CS*.55,life:.45,lw:2.5,col:'#ffe57f',delay:0});
+        G.fxRings.push({x:tx,y:ty,r:1,maxR:CS*.3,life:.25,lw:4,col:'#fff9c4',delay:.02});
+        // chain lightning
+        if(p.chain>0&&p.target){
+          const chainDmg=p.dmg*.6;
+          const chainR=CS*2.2;
+          const used=[p.target];
+          let prev=p.target;
+          for(let _c=0;_c<p.chain;_c++){
+            let nearest=null,nDist=Infinity;
+            G.enemies.forEach(e=>{
+              if(!e.alive||used.includes(e)) return;
+              const cd=Math.hypot(e.x-prev.x,e.y-prev.y);
+              if(cd<chainR&&cd<nDist){nDist=cd;nearest=e;}
+            });
+            if(!nearest) break;
+            used.push(nearest);
+            // lightning bolt visual
+            G.fxTrails.push({x:prev.x,y:prev.y,tx:nearest.x,ty:nearest.y,col:'#ffe57f',life:.5,type:99,lw:2.5});
+            G.fxRings.push({x:nearest.x,y:nearest.y,r:1,maxR:CS*.35,life:.35,lw:2,col:'#ffe57f',delay:_c*.04});
+            nearest.hp-=chainDmg;
+            nearest.hitFlash=.7;
+            G.particles.push({x:nearest.x,y:nearest.y-6,txt:'-'+Math.round(chainDmg),col:'#ffe57f',
+              life:.8,vy:-1.2,vx:(Math.random()-.5)*.6,scale:.9,decay:1.8});
+            if(nearest.hp<=0) killEnemy(nearest);
+            prev=nearest;
+          }
+        }
       }
       // damage number
       const isCrit=Math.random()<.18;
@@ -1835,7 +1888,7 @@ function _twStatic(ctx,type,r){
   const BC=[['#152882','#2255cc','#1a44aa'],['#004d70','#0099cc','#006699'],
             ['#3a0070','#7c2fc8','#5a1aaa'],['#1a2a1a','#2e4a2e','#243a24'],
             ['#003322','#00664d','#004d3a'],['#3a2200','#7a4800','#5a3600'],
-            ['#442200','#8a5600','#663800']];
+            ['#442200','#8a5600','#663800'],['#0d1a33','#1a3a66','#112244']];
   const [bd,bm]=BC[type]||BC[0];
   // shadow under base
   ctx.globalAlpha=.28;ctx.fillStyle='#000';
@@ -1905,6 +1958,10 @@ function _twDecal(ctx,type,r){
     ctx.fillStyle='#ffe082';ctx.beginPath();ctx.moveTo(0,-r*.18);ctx.lineTo(-r*.08,r*.1);ctx.lineTo(0,r*.04);ctx.lineTo(r*.08,r*.1);ctx.closePath();ctx.fill();
   } else if(type===6){// $
     ctx.fillStyle='#ffd54f';ctx.font=`bold ${Math.round(r*.28)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('$',0,-r*.03);
+  } else if(type===7){// lightning bolt
+    ctx.fillStyle='#ffe57f';
+    ctx.beginPath();ctx.moveTo(r*.07,-r*.22);ctx.lineTo(-r*.08,-r*.02);ctx.lineTo(r*.03,-r*.02);ctx.lineTo(-r*.07,r*.18);ctx.lineTo(r*.14,r*.01);ctx.lineTo(r*.02,r*.01);ctx.closePath();ctx.fill();
+    ctx.strokeStyle='#fff9c4';ctx.lineWidth=r*.025;ctx.stroke();
   }
 }
 function _twWeapon(ctx,type,r){
@@ -1959,6 +2016,22 @@ function _twWeapon(ctx,type,r){
     ctx.fillStyle='#8d6e63';ctx.beginPath();ctx.arc(-r*.06,-r*.06,r*.2,0,Math.PI*2);ctx.fill();
     ctx.strokeStyle='#9e9e9e';ctx.lineWidth=r*.1;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(-r*.32,-r*.32);ctx.lineTo(r*.32,r*.32);ctx.stroke();
     ctx.strokeStyle='#e0e0e0';ctx.lineWidth=r*.18;ctx.beginPath();ctx.moveTo(r*.32,-r*.12);ctx.lineTo(-r*.12,r*.32);ctx.stroke();
+  } else if(type===7){// Thunder — tesla coil / lightning rod
+    // dark base disk
+    ctx.fillStyle='#102244';ctx.beginPath();ctx.arc(0,0,r*.32,0,Math.PI*2);ctx.fill();
+    // electric glow pulse
+    const _tp=.5+.5*Math.sin(Date.now()*.008);
+    ctx.globalAlpha=_tp*.5;ctx.strokeStyle='#ffe57f';ctx.lineWidth=r*.18;ctx.beginPath();ctx.arc(0,0,r*.44,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;
+    // rod body
+    const _rg=ctx.createLinearGradient(-r*.12,0,r*.12,0);_rg.addColorStop(0,'#1a3a66');_rg.addColorStop(.5,'#4a7acc');_rg.addColorStop(1,'#1a3a66');
+    ctx.fillStyle=_rg;ctx.fillRect(-r*.12,-r*1.1,r*.24,r*.95);
+    // tip glow
+    ctx.fillStyle='#ffe57f';ctx.beginPath();ctx.arc(0,-r*1.12,r*.13,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#fff9c4';ctx.beginPath();ctx.arc(-r*.04,-r*1.15,r*.06,0,Math.PI*2);ctx.fill();
+    // side prongs
+    ctx.strokeStyle='#4a7acc';ctx.lineWidth=r*.07;
+    ctx.beginPath();ctx.moveTo(-r*.12,-r*.75);ctx.lineTo(-r*.38,-r*.55);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(r*.12,-r*.75);ctx.lineTo(r*.38,-r*.55);ctx.stroke();
   }
 }
 
@@ -2054,6 +2127,34 @@ function drawEnemySprite(ctx,ti,x,y,sz){
       ctx.beginPath();ctx.moveTo(r*.2,-r*.55);ctx.lineTo(r*.35,-r*.95);ctx.lineTo(0,-r*.6);ctx.closePath();ctx.fill();
       ctx.fillStyle='#f44336';ctx.beginPath();ctx.arc(-r*.18,-r*.38,r*.1,0,Math.PI*2);ctx.fill();
       ctx.fillStyle='#f44336';ctx.beginPath();ctx.arc(r*.18,-r*.38,r*.1,0,Math.PI*2);ctx.fill();
+      break;}
+    case 7:{// Wyvern — purple dragon, bigger wings
+      const _wf=Math.sin(Date.now()*.01+x)*.3;
+      // wings — dark purple membrane
+      ctx.fillStyle='#4a148c';
+      ctx.beginPath();ctx.moveTo(-r*.25,r*.1);ctx.bezierCurveTo(-r*1.1,-r*.5-_wf*r,-r*1.35,r*.2-_wf*r,-r*1.05,r*.65);ctx.bezierCurveTo(-r*.65,r*.45,-r*.28,r*.35,-r*.25,r*.1);ctx.closePath();ctx.fill();
+      ctx.beginPath();ctx.moveTo(r*.25,r*.1);ctx.bezierCurveTo(r*1.1,-r*.5-_wf*r,r*1.35,r*.2-_wf*r,r*1.05,r*.65);ctx.bezierCurveTo(r*.65,r*.45,r*.28,r*.35,r*.25,r*.1);ctx.closePath();ctx.fill();
+      // wing highlight
+      ctx.strokeStyle='#7b1fa2';ctx.lineWidth=r*.07;
+      ctx.beginPath();ctx.moveTo(-r*.25,r*.1);ctx.bezierCurveTo(-r*.9,-r*.3-_wf*r,-r*1.1,r*.1,r*0,0);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(r*.25,r*.1);ctx.bezierCurveTo(r*.9,-r*.3-_wf*r,r*1.1,r*.1,r*0,0);ctx.stroke();
+      // body
+      ctx.fillStyle='#6a1b9a';ctx.beginPath();ctx.ellipse(0,r*.1,r*.4,r*.55,0,0,Math.PI*2);ctx.fill();
+      // neck + head
+      ctx.fillStyle='#7b1fa2';ctx.beginPath();ctx.ellipse(0,-r*.25,r*.28,r*.38,0,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#8e24aa';ctx.beginPath();ctx.arc(0,-r*.6,r*.36,0,Math.PI*2);ctx.fill();
+      // horns
+      ctx.fillStyle='#ce93d8';
+      ctx.beginPath();ctx.moveTo(-r*.18,-r*.82);ctx.lineTo(-r*.32,-r*1.22);ctx.lineTo(-r*.08,-r*.88);ctx.closePath();ctx.fill();
+      ctx.beginPath();ctx.moveTo(r*.18,-r*.82);ctx.lineTo(r*.32,-r*1.22);ctx.lineTo(r*.08,-r*.88);ctx.closePath();ctx.fill();
+      // eyes glow (electric)
+      ctx.fillStyle='#ffe57f';ctx.beginPath();ctx.arc(-r*.16,-r*.62,r*.1,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#ffe57f';ctx.beginPath();ctx.arc(r*.16,-r*.62,r*.1,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#000';ctx.beginPath();ctx.arc(-r*.14,-r*.62,r*.055,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#000';ctx.beginPath();ctx.arc(r*.14,-r*.62,r*.055,0,Math.PI*2);ctx.fill();
+      // tail
+      ctx.strokeStyle='#6a1b9a';ctx.lineWidth=r*.18;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(0,r*.5);ctx.bezierCurveTo(r*.5,r*.9,r*.8,r*.6,r*.6,r*.3);ctx.stroke();
       break;}
   }
   ctx.restore();
@@ -2158,6 +2259,27 @@ function render(){
 
   // FX trails — V3: styled per projectile type
   G.fxTrails.forEach(t=>{
+    if(t.type===99){// chain lightning bolt — draw jagged line
+      ctx.save();
+      ctx.globalAlpha=t.life*0.85;
+      ctx.strokeStyle=t.col;ctx.lineWidth=t.lw||2;ctx.lineCap='round';
+      ctx.shadowColor='#ffe57f';ctx.shadowBlur=6;
+      ctx.beginPath();
+      const _sx=t.x,_sy=t.y,_ex=t.tx,_ey=t.ty;
+      ctx.moveTo(_sx,_sy);
+      // jagged lightning segments
+      const _segs=4;
+      for(let _k=1;_k<_segs;_k++){
+        const _f=_k/_segs;
+        const _jx=_sx+(_ex-_sx)*_f+(Math.random()-.5)*14;
+        const _jy=_sy+(_ey-_sy)*_f+(Math.random()-.5)*14;
+        ctx.lineTo(_jx,_jy);
+      }
+      ctx.lineTo(_ex,_ey);ctx.stroke();
+      ctx.shadowBlur=0;
+      ctx.restore();
+      return;
+    }
     const tsz=t.type===3?t.life*5:t.type===2?t.life*4.5:t.type===1?t.life*4:t.life*3.5;
     ctx.globalAlpha=t.life*(t.type===3?.65:t.type===2?.55:.42);
     ctx.fillStyle=t.col;
