@@ -864,8 +864,17 @@ const STAGES=[
    bgColor:'#1a0020',pathColor:'#3a0050',
    grassColors:['#1a0020','#200028','#150018','#1e0024','#17001e']},
   {id:9,name:'Dark Tower Summit',icon:'💀',
-   comingSoon:true,
-   desc:'Final Boss รอคอยอยู่ที่ยอดหอคอย... เร็วๆ นี้'},
+   desc:'ยอดหอคอยมืด — จอมมารผู้ยิ่งใหญ่รอคอยอยู่ ใช้ทุกพลังที่มีเพื่อยุติความมืด',
+   waves:12,enemyTypes:[0,1,2,3,4,5,6,7,8,9],bossChance:.12,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
+   isFinalStage:true,
+   maxTowers:6,story:'ยอดหอคอยมืดที่สูงที่สุด จอมมารผู้ยิ่งใหญ่สถิตอยู่ที่นี่มาหลายยุคหลายสมัย กองทัพทั้งหมดรวมพลครั้งสุดท้าย — ผู้พิทักษ์ต้องใช้ทุกสิ่งที่มีเพื่อยุติความมืดตลอดกาล...',
+   path:[[0,0],[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0],[10,0],[11,0],
+         [11,1],[11,2],[10,2],[9,2],[8,2],[7,2],[6,2],[5,2],[4,2],[3,2],[2,2],[1,2],
+         [1,3],[1,4],[1,5],[2,5],[3,5],[4,5],[5,5],[6,5],[7,5],[8,5],[9,5],[10,5],[11,5],
+         [11,6],[11,7],[10,7],[9,7],[8,7],[7,7],[6,7],[5,7],[4,7],[3,7],[2,7],[1,7],[0,7],
+         [0,8],[0,9],[1,9],[2,9],[3,9],[4,9],[5,9],[6,9],[7,9],[8,9],[9,9],[10,9],[11,9]],
+   bgColor:'#050010',pathColor:'#1a0040',
+   grassColors:['#080018','#0a001e','#060012','#0c0020','#07001a']},
 ];
 
 /* ══ BALANCE CONFIG ══ */
@@ -879,9 +888,9 @@ const DEFAULT_CFG={
   enemyPerWaveInc:2,   // เดิม 3 — ด่าน 9 wave 13 จะได้ 4+13×2=30 แทน 44
   bossChance:.08,   // เดิม .12 — boss ออกน้อยลงหน่อย
   // Monster base HP — ปรับ Golem และ Boss ให้สมดุล
-  m_hp:[55,75,105,130,380,220,35,160,120],  // shield knight: 120 HP + 80 shield
-  m_spd:[1.4,1.0,1.15,.85,.5,.55,1.8,1.55,.65],
-  m_rew:[8,10,15,18,60,28,5,20,28],
+  m_hp:[55,75,105,130,380,220,35,160,120,900],  // จอมมาร: 900 HP + 250 shield
+  m_spd:[1.4,1.0,1.15,.85,.5,.55,1.8,1.55,.65,.42],
+  m_rew:[8,10,15,18,60,28,5,20,28,100],
   // Tower — เพิ่ม DPS นิดหน่อยให้ผู้เล่นรู้สึกว่าป้อมมีพลัง
   t_dmg:[28,12,38,65,0,20,0,20],   // [cannon,ice,magic,sniper,support,archer,goldmine,thunder]
   t_rng:[2.2,2.0,2.5,4.5,2.8,2.8,0,2.4],
@@ -897,9 +906,9 @@ let CFG=JSON.parse(JSON.stringify(DEFAULT_CFG));
 try{const s=localStorage.getItem('tq_cfg');if(s)CFG=Object.assign(JSON.parse(JSON.stringify(DEFAULT_CFG)),JSON.parse(s));}catch(e){}
 
 /* ══ STATIC DATA ══ */
-const ENAMES=['โกบลิน','โครงกระดูก','เงามืด','วิญญาณไฟ','บอส','โกเลม','ค้างคาว','วิเวิร์น','ชิลด์ไนท์'];
-const EICONS=['👺','💀','👻','🔥','👹','🪨','🦇','🐉','🛡️'];
-const ESIZES=[16,18,18,20,34,22,13,19,20];
+const ENAMES=['โกบลิน','โครงกระดูก','เงามืด','วิญญาณไฟ','บอส','โกเลม','ค้างคาว','วิเวิร์น','ชิลด์ไนท์','จอมมาร'];
+const EICONS=['👺','💀','👻','🔥','👹','🪨','🦇','🐉','🛡️','👁️'];
+const ESIZES=[16,18,18,20,34,22,13,19,20,42];
 const TNAMES=['ปืนใหญ่','น้ำแข็ง','เวทมนตร์','สไนเปอร์','ซัพพอร์ต','ธนู','เหมืองทอง','สายฟ้า'];
 const TICONS=['💣','❄️','✨','🎯','💚','🏹','💰','⚡'];
 const TCOLORS=['#c62828','#0d47a1','#4a148c','#1b5e20','#00695c','#4e342e','#f57f17'];
@@ -920,11 +929,12 @@ const MFLAVOR=['สิ่งมีชีวิตแสนเจ้าเล่�
   'หินยักษ์ที่ถูกสาปให้มีชีวิต HP สูงสุดในบรรดามอนธรรมดา ภูมิต้านทานน้ำแข็งโดยสมบูรณ์',
   'ค้างคาวมืดที่บินอยู่บนอากาศ Sniper, Archer และ Thunder เท่านั้นที่ยิงโดน',
   'มังกรน้อยพันธุ์วิเวิร์นที่บินร่อนอยู่บนฟ้า HP สูงกว่าค้างคาวมาก ป้อมสายฟ้าจัดการได้ดีที่สุด',
-  'นักรบหุ้มเกราะถือโล่เหล็กหนา โล่ดูดซับความเสียหายก่อนถึง HP จริง — Sniper และ Thunder เท่านั้นที่ทะลุโล่ได้'];
-const MTAGS=[[],[],[],[],[],[],[],[],[]]; /* ไม่ใช้แล้ว — แทนที่ด้วยระบบจุดแข็งและจุดอ่อน */
-const MSPECIAL=[null,null,'ต้านทานการชะลอของน้ำแข็งบางส่วน','เผาไหม้พื้นที่โดยรอบ','⚠️ ปรากฏตัวตั้งแต่คลื่นที่ 4 เป็นต้นไป','🛡️ Immune ต่อ Ice slow ทั้งหมด','✈️ บินได้ — Sniper, Archer และ Thunder เท่านั้นที่ยิงโดน','✈️ บินได้ — Thunder, Sniper, Archer ยิงโดน — HP สูง','🛡️ โล่ HP 80 — ต้องทำลายก่อน — Sniper/Thunder ทะลุโล่ได้'];
+  'นักรบหุ้มเกราะถือโล่เหล็กหนา โล่ดูดซับความเสียหายก่อนถึง HP จริง — Sniper และ Thunder เท่านั้นที่ทะลุโล่ได้',
+  'จอมมารผู้ยิ่งใหญ่ที่สถิตอยู่ ณ ยอดหอคอยมืด โล่พลังงานมืดปกป้องร่างกาย HP มหาศาลและเคลื่อนที่ช้า — ต้องใช้พลังรวมกันทั้งหมดจึงจะเอาชนะได้'];
+const MTAGS=[[],[],[],[],[],[],[],[],[],[]]; /* ไม่ใช้แล้ว — แทนที่ด้วยระบบจุดแข็งและจุดอ่อน */
+const MSPECIAL=[null,null,'ต้านทานการชะลอของน้ำแข็งบางส่วน','เผาไหม้พื้นที่โดยรอบ','⚠️ ปรากฏตัวตั้งแต่คลื่นที่ 4 เป็นต้นไป','🛡️ Immune ต่อ Ice slow ทั้งหมด','✈️ บินได้ — Sniper, Archer และ Thunder เท่านั้นที่ยิงโดน','✈️ บินได้ — Thunder, Sniper, Archer ยิงโดน — HP สูง','🛡️ โล่ HP 80 — ต้องทำลายก่อน — Sniper/Thunder ทะลุโล่ได้','🌑 Final Boss — โล่พลังงานมืด 250 HP + HP มหาศาล ต้องใช้พลังทุกป้อมเอาชนะ'];
 /* เผ่า, จุดแข็ง, จุดอ่อน */
-const MTRIBE=['อสูร','ปีศาจ','วิญญาณ','วิญญาณ','ปีศาจ','หิน','ปีศาจ','มังกร','มนุษย์'];
+const MTRIBE=['อสูร','ปีศาจ','วิญญาณ','วิญญาณ','ปีศาจ','หิน','ปีศาจ','มังกร','มนุษย์','ปีศาจ'];
 const MSTRENGTH=[
   ['จำนวนมาก','เคลื่อนที่เร็ว'],
   ['HP สูง','ทนทานมาก'],
@@ -935,6 +945,7 @@ const MSTRENGTH=[
   ['บินได้','เร็วมาก'],
   ['บินได้','HP สูง','ป้อมส่วนใหญ่ยิงไม่โดน'],
   ['โล่ดูดซับความเสียหาย','ป้อมส่วนใหญ่โดนแค่โล่'],
+  ['HP มหาศาล','โล่พลังงานมืดหนามาก','เคลื่อนที่ช้าแต่ไม่หยุด'],
 ];
 const MWEAKNESS=[
   ['ป้อมกระจาย','ป้อมน้ำแข็ง'],
@@ -946,11 +957,12 @@ const MWEAKNESS=[
   ['ป้อมสไนเปอร์','ป้อมธนู','ป้อมสายฟ้า'],
   ['ป้อมสายฟ้า','ป้อมสไนเปอร์','ป้อมธนู'],
   ['ป้อมสไนเปอร์','ป้อมสายฟ้า'],
+  ['ป้อมสไนเปอร์','ป้อมสายฟ้า','Sniper/Thunder ทะลุโล่ได้'],
 ];
 /* 0=มอนธรรมดา 1=บอส */
-const MTYPE=[0,0,0,0,1,0,0,0,0];
-const MISAIR=[false,false,false,false,false,false,true,true,false]; /* บินได้ */
-const MSHIELD=[0,0,0,0,0,0,0,0,80]; /* shield HP เริ่มต้น (0=ไม่มีโล่) */
+const MTYPE=[0,0,0,0,1,0,0,0,0,1];
+const MISAIR=[false,false,false,false,false,false,true,true,false,false]; /* บินได้ */
+const MSHIELD=[0,0,0,0,0,0,0,0,80,250]; /* shield HP เริ่มต้น (0=ไม่มีโล่) */
 const TFLAVOR=['ปืนใหญ่หนักที่ยิงกระสุนระเบิด ความเสียหายแบบกระจายทำลายล้างศัตรูที่อยู่รวมกัน',
   'ยิงน้ำแข็งที่ทำให้ศัตรูเยือกแข็ง วางไว้ก่อนทางยาวจะได้ผลดีที่สุด',
   'รวมพลังเวทมนตร์เป็นการโจมตีที่รุนแรง กระจายในวงกว้าง แต่ยิงช้า',
@@ -1514,6 +1526,8 @@ function startWave(){
     let ei=avail[Math.floor(Math.random()*(maxIdx+1))];
     const bChance=currentStage.bossChance!==undefined?currentStage.bossChance:CFG.bossChance;
     if(avail.includes(4)&&G.wave>=4&&Math.random()<bChance) ei=4;
+    /* Final Boss จอมมาร: ปรากฏตั้งแต่คลื่น 9 เป็นต้นไป */
+    if(avail.includes(9)&&G.wave>=9&&Math.random()<bChance*.8) ei=9;
     G.queue.push(ei);
   }
   // V5: wave incoming banner
@@ -1591,8 +1605,8 @@ function killEnemy(e){
   addParticle(e.x,e.y,'+'+e.reward+'💰','#ffe082');
   updateHUD();
   // V2: death burst — color-coded by enemy type
-  const _dc=['#4caf50','#eceff1','#7c4dff','#ff5722','#b71c1c','#9e9e9e','#37474f','#ce93d8','#90a4ae'];
-  const nc=e.ti===4?18:e.ti===5?12:e.ti===7||e.ti===8?10:8;
+  const _dc=['#4caf50','#eceff1','#7c4dff','#ff5722','#b71c1c','#9e9e9e','#37474f','#ce93d8','#90a4ae','#9c27b0'];
+  const nc=e.ti===9?30:e.ti===4?18:e.ti===5?12:e.ti===7||e.ti===8?10:8;
   for(let k=0;k<nc;k++){
     const a=k/nc*Math.PI*2,sp=1.6+Math.random()*2.4;
     G.particles.push({x:e.x,y:e.y,txt:'●',col:_dc[e.ti]||'#fff',
@@ -1628,9 +1642,32 @@ function endGame(win){
     } else { _unlockTxt=currentStage.unlocks; }
     banner.innerHTML=`<strong>🔓 Unlocked!</strong> ${_unlockTxt} is now available in Stage ${si+2}!`;
   } else { banner.style.display='none'; }
-  const hasNext=win&&(si+1<STAGES.length)&&isStageUnlocked(si+1);
+  const hasNext=win&&(si+1<STAGES.length)&&!STAGES[si+1].comingSoon&&isStageUnlocked(si+1);
   document.getElementById('nextStageBtn').style.display=hasNext?'inline-block':'none';
+  /* ══ FINAL STAGE VICTORY ══ */
+  if(win&&currentStage.isFinalStage){
+    document.getElementById('endTitle').textContent='👑 ยุติความมืดแล้ว!';
+    document.getElementById('endScore').textContent='🏆 คุณเอาชนะจอมมารและยุติความมืดตลอดกาล! Score: '+G.score;
+    banner.style.display='block';
+    banner.innerHTML=`<strong>🎉 YOU WIN!</strong> ยินดีด้วย — คุณผ่านทุกด่านแล้ว! จอมมารพ่ายแพ้ไปตลอดกาล 👁️💥`;
+    banner.style.background='linear-gradient(135deg,rgba(100,0,180,.4),rgba(200,0,100,.3))';
+    banner.style.borderColor='#ce93d8';
+    _launchFinalVictoryFX();
+  }
   document.getElementById('endOverlay').style.display='flex';
+}
+function _launchFinalVictoryFX(){
+  if(!G) return;
+  const cx=cv.width/2, cy=cv.height/2;
+  const cols=['#ffe082','#ce93d8','#80cbc4','#f48fb1','#fff176','#a5d6a7','#90caf9'];
+  for(let i=0;i<60;i++){
+    const a=Math.random()*Math.PI*2, sp=2+Math.random()*4;
+    const col=cols[i%cols.length];
+    G.particles.push({x:cx+Math.random()*120-60,y:cy+Math.random()*80-40,
+      txt:i%5===0?'⭐':i%7===0?'👑':'★',col,life:2+Math.random()*2,
+      vy:Math.sin(a)*sp-1,vx:Math.cos(a)*sp,decay:.6,scale:.8+Math.random()*.8});
+  }
+  G.shakeT=Math.min(.6,G.shakeT+.3);
 }
 
 /* ══ UPDATE ══ */
@@ -2216,6 +2253,57 @@ function drawEnemySprite(ctx,ti,x,y,sz){
       ctx.strokeStyle='#6a1b9a';ctx.lineWidth=r*.18;ctx.lineCap='round';
       ctx.beginPath();ctx.moveTo(0,r*.5);ctx.bezierCurveTo(r*.5,r*.9,r*.8,r*.6,r*.6,r*.3);ctx.stroke();
       break;}
+    case 9:{// จอมมาร — Dark Overlord Final Boss
+      const _t9=Date.now()*.002;
+      // dark cloak / shadow body
+      const _bg9=ctx.createRadialGradient(0,r*.1,r*.2,0,0,r*1.2);
+      _bg9.addColorStop(0,'#4a0080');_bg9.addColorStop(.55,'#1a0030');_bg9.addColorStop(1,'rgba(10,0,20,0)');
+      ctx.fillStyle=_bg9;ctx.beginPath();ctx.ellipse(0,r*.2,r*1.0,r*1.25,0,0,Math.PI*2);ctx.fill();
+      // cloak swirl tentacles
+      ctx.strokeStyle='rgba(100,0,180,.55)';ctx.lineWidth=r*.14;ctx.lineCap='round';
+      for(let _k9=0;_k9<6;_k9++){
+        const _a9=(_k9/6)*Math.PI*2+_t9*.5+Math.sin(_t9+_k9)*0.3;
+        const _rx=Math.cos(_a9)*r*(.65+Math.sin(_t9*1.3+_k9)*.15);
+        const _ry=r*.6+Math.sin(_a9)*r*(.55+Math.cos(_t9+_k9)*.1);
+        ctx.beginPath();ctx.moveTo(0,r*.4);ctx.quadraticCurveTo(_rx*.6,_ry*.7,_rx,_ry);ctx.stroke();
+      }
+      // body core
+      const _bc9=ctx.createRadialGradient(0,0,r*.1,0,0,r*.55);
+      _bc9.addColorStop(0,'#7b1fa2');_bc9.addColorStop(1,'#4a148c');
+      ctx.fillStyle=_bc9;ctx.beginPath();ctx.ellipse(0,0,r*.52,r*.7,0,0,Math.PI*2);ctx.fill();
+      // robe
+      ctx.fillStyle='#1a0030';ctx.beginPath();
+      ctx.moveTo(-r*.52,r*.1);ctx.lineTo(-r*.75,r*1.0);ctx.lineTo(r*.75,r*1.0);ctx.lineTo(r*.52,r*.1);
+      ctx.closePath();ctx.fill();
+      ctx.strokeStyle='#6a0dad';ctx.lineWidth=r*.04;ctx.stroke();
+      // glowing robe trim
+      ctx.strokeStyle=`rgba(180,0,255,${.4+.3*Math.sin(_t9*2)})`;ctx.lineWidth=r*.06;
+      ctx.beginPath();ctx.moveTo(-r*.75,r*1.0);ctx.lineTo(r*.75,r*1.0);ctx.stroke();
+      // shoulders / horns base
+      ctx.fillStyle='#4a0064';ctx.beginPath();ctx.ellipse(-r*.52,-r*.2,r*.3,r*.22,-.35,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#4a0064';ctx.beginPath();ctx.ellipse(r*.52,-r*.2,r*.3,r*.22,.35,0,Math.PI*2);ctx.fill();
+      // curved horns
+      ctx.strokeStyle='#9c27b0';ctx.lineWidth=r*.13;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(-r*.38,-r*.6);ctx.bezierCurveTo(-r*.6,-r*1.1,-r*.2,-r*1.35,r*.05,-r*1.1);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(r*.38,-r*.6);ctx.bezierCurveTo(r*.6,-r*1.1,r*.2,-r*1.35,-r*.05,-r*1.1);ctx.stroke();
+      // horn tips glow
+      ctx.fillStyle=`rgba(255,100,255,${.7+.3*Math.sin(_t9*3)})`;
+      ctx.beginPath();ctx.arc(r*.07,-r*1.1,r*.09,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(-r*.07,-r*1.1,r*.09,0,Math.PI*2);ctx.fill();
+      // SINGLE EYE — giant glowing eye
+      const _ep9=.6+.4*Math.sin(_t9*2.5);
+      ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(0,-r*.08,r*.28,r*.22,0,0,Math.PI*2);ctx.fill();
+      const _eg9=ctx.createRadialGradient(0,-r*.08,0,0,-r*.08,r*.22);
+      _eg9.addColorStop(0,`rgba(255,255,255,${_ep9})`);_eg9.addColorStop(.3,`rgba(220,0,255,${_ep9*.9})`);_eg9.addColorStop(1,'rgba(80,0,120,0)');
+      ctx.fillStyle=_eg9;ctx.beginPath();ctx.ellipse(0,-r*.08,r*.26,r*.2,0,0,Math.PI*2);ctx.fill();
+      // pupil slit
+      ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(0,-r*.08,r*.06,r*.18,0,0,Math.PI*2);ctx.fill();
+      // dark energy orb in hand
+      const _ox=r*.62,_oy=r*.22;
+      ctx.fillStyle=`rgba(120,0,200,${.5+.3*Math.sin(_t9*4)})`;ctx.beginPath();ctx.arc(_ox,_oy,r*.22,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle=`rgba(200,100,255,${.8+.2*Math.sin(_t9*5)})`;ctx.lineWidth=r*.05;ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,.9)';ctx.beginPath();ctx.arc(_ox-r*.06,_oy-r*.06,r*.05,0,Math.PI*2);ctx.fill();
+      break;}
   }
   ctx.restore();
 }
@@ -2518,23 +2606,35 @@ function render(){
   const vg=ctx.createRadialGradient(cv.width/2,cv.height/2,cv.height*.25,cv.width/2,cv.height/2,cv.height*.75);
   vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,0.30)');
   ctx.fillStyle=vg;ctx.fillRect(0,0,cv.width,cv.height);
-  // G4: boss health bar
-  const _boss=G.enemies.find(e=>e.alive&&e.ti===4);
+  // G4: boss health bar (type 4 and type 9 Final Boss)
+  const _boss=G.enemies.find(e=>e.alive&&(e.ti===4||e.ti===9));
   if(_boss){
-    const bw=Math.min(cv.width*.68,400),bh=13,bx=cv.width/2-bw/2,by=cv.height-26;
+    const isFinalBoss=_boss.ti===9;
+    const bw=Math.min(cv.width*.68,400),bh=isFinalBoss?16:13,bx=cv.width/2-bw/2,by=cv.height-26;
     ctx.save();
-    ctx.fillStyle='rgba(0,0,0,.82)';
-    if(ctx.roundRect)ctx.roundRect(bx-6,by-20,bw+12,bh+28,8);else ctx.rect(bx-6,by-20,bw+12,bh+28);ctx.fill();
-    ctx.fillStyle='#1a0000';
+    ctx.fillStyle=isFinalBoss?'rgba(20,0,40,.92)':'rgba(0,0,0,.82)';
+    if(ctx.roundRect)ctx.roundRect(bx-6,by-22,bw+12,bh+32,8);else ctx.rect(bx-6,by-22,bw+12,bh+32);ctx.fill();
+    if(isFinalBoss){
+      ctx.strokeStyle='rgba(150,0,200,.6)';ctx.lineWidth=1.5;
+      if(ctx.roundRect)ctx.roundRect(bx-6,by-22,bw+12,bh+32,8);else ctx.rect(bx-6,by-22,bw+12,bh+32);ctx.stroke();
+    }
+    ctx.fillStyle=isFinalBoss?'#0d0020':'#1a0000';
     if(ctx.roundRect)ctx.roundRect(bx,by,bw,bh,5);else ctx.rect(bx,by,bw,bh);ctx.fill();
     const _bpct=Math.max(0,_boss.hp/_boss.mhp);
-    ctx.fillStyle=_bpct>.5?'#f44336':_bpct>.25?'#ff9800':'#ff1744';
+    ctx.fillStyle=isFinalBoss?(_bpct>.5?'#9c27b0':_bpct>.25?'#e040fb':'#ff1744'):(_bpct>.5?'#f44336':_bpct>.25?'#ff9800':'#ff1744');
     if(ctx.roundRect)ctx.roundRect(bx,by,bw*_bpct,bh,5);else ctx.rect(bx,by,bw*_bpct,bh);ctx.fill();
-    ctx.strokeStyle='rgba(183,28,28,.7)';ctx.lineWidth=1.5;
+    /* shield bar overlay for Final Boss */
+    if(isFinalBoss&&_boss.maxShieldHp>0&&_boss.shieldHp>0){
+      const _sp=_boss.shieldHp/_boss.maxShieldHp;
+      ctx.fillStyle=`rgba(144,202,249,${.3+.2*Math.sin(Date.now()*.004)})`;
+      if(ctx.roundRect)ctx.roundRect(bx,by,bw*_sp,bh,5);else ctx.rect(bx,by,bw*_sp,bh);ctx.fill();
+    }
+    ctx.strokeStyle=isFinalBoss?'rgba(150,0,200,.7)':'rgba(183,28,28,.7)';ctx.lineWidth=1.5;
     if(ctx.roundRect)ctx.roundRect(bx,by,bw,bh,5);else ctx.rect(bx,by,bw,bh);ctx.stroke();
-    ctx.fillStyle='#ff8a80';ctx.font='bold 10px Arial';
+    ctx.fillStyle=isFinalBoss?'#e040fb':'#ff8a80';ctx.font=`bold ${isFinalBoss?11:10}px Arial`;
     ctx.textAlign='center';ctx.textBaseline='bottom';
-    ctx.fillText('👹 '+ENAMES[4]+'  ❤️ '+Math.ceil(_boss.hp)+' / '+Math.ceil(_boss.mhp),cv.width/2,by-3);
+    const _bShieldTxt=isFinalBoss&&_boss.shieldHp>0?`  🛡️ ${Math.ceil(_boss.shieldHp)}`:'';
+    ctx.fillText((isFinalBoss?'👁️ ':' 👹 ')+ENAMES[_boss.ti]+'  ❤️ '+Math.ceil(_boss.hp)+' / '+Math.ceil(_boss.mhp)+_bShieldTxt,cv.width/2,by-3);
     ctx.restore();
   }
   // V5: wave incoming banner
@@ -2569,6 +2669,7 @@ function showWavePreview(){
     const maxIdx=Math.min(avail.length-1,Math.ceil(nextWave/2)-1);
     let ei=avail[Math.floor(Math.random()*(maxIdx+1))];
     if(avail.includes(4)&&nextWave>=4&&Math.random()<CFG.bossChance) ei=4;
+    if(avail.includes(9)&&nextWave>=9&&Math.random()<CFG.bossChance*.8) ei=9;
     tally[ei]=(tally[ei]||0)+1;
   }
   let html='';
@@ -3298,13 +3399,15 @@ const CUTSCENES = [
        text:'Healer Monster รักษา HP ตัวเองและพวกพ้องข้างๆ ตลอดเวลา จัดการมันก่อนเป็นอันดับแรก!\nด่านนี้มี Tower Slot จำกัด — เลือกให้ดี'},
     ]
   },
-  // Stage 9: Final Boss (coming soon)
-  { bg:'linear-gradient(160deg,#1a0000,#000)',
+  // Stage 9: Dark Tower Summit — Final
+  { bg:'linear-gradient(160deg,#050010,#1a0035,#000)',
     slides:[
-      {speaker:'???',icon:'💀',title:'Dark Tower Summit — Stage 10',
-       text:'...\n\nยอดหอคอยมืดรอคอยอยู่\n\nกองทัพที่ยิ่งใหญ่ที่สุดกำลังรวมพล...',},
-      {speaker:'???',icon:'👁️',title:'Coming Soon',
-       text:'Final Boss กำลังมา...\n\nเตรียมพร้อมให้ดี'},
+      {speaker:'ผู้พิทักษ์',icon:'⚔️',title:'Dark Tower Summit — Stage 10',
+       text:'นี่คือด่านสุดท้าย... ยอดหอคอยมืดที่เราต่อสู้มาตลอด\n\nกองทัพมืดทั้งหมดรวมพลที่นี่ ทั้งโกบลิน โกเลม วิเวิร์น และชิลด์ไนท์'},
+      {speaker:'นักมายากล',icon:'🔮',title:'จอมมาร — Dark Overlord',
+       text:'⚠️ จอมมาร ศัตรูสูงสุด!\n\nโล่พลังงานมืด 250 HP ปกป้องร่างกาย\nHP มหาศาล — ต้องใช้ Sniper และ Thunder ทะลุโล่\nจัดการกองทัพรอบข้างให้หมดก่อน แล้วรุมยิงจอมมาร!'},
+      {speaker:'ผู้พิทักษ์',icon:'🏆',title:'ศึกชิงชะตา!',
+       text:'นี่คือช่วงเวลาที่เราฝึกฝนมาตลอด\n\nวางป้อมให้ครบ ใช้ Thunder + Sniper + Magic ร่วมกัน\nอย่าให้จอมมารผ่านแนวป้องกัน — ชัยชนะอยู่ตรงหน้า!'},
     ]
   },
 ];
