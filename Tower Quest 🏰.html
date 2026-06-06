@@ -434,6 +434,35 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
   .hud{flex-wrap:wrap;}
 }
 
+/* ── ACHIEVEMENT SYSTEM ── */
+/* notification banner */
+#achNotif{position:fixed;top:-90px;left:50%;transform:translateX(-50%);
+  width:min(340px,92vw);background:linear-gradient(135deg,#1a2a0a,#2a3a1a);
+  border:2px solid #ffe082;border-radius:16px;padding:12px 16px;
+  display:flex;align-items:center;gap:12px;z-index:200;
+  box-shadow:0 6px 24px rgba(0,0,0,.7);transition:top .45s cubic-bezier(.34,1.56,.64,1);}
+#achNotif.show{top:16px;}
+.ach-notif-ico{font-size:32px;flex-shrink:0;}
+.ach-notif-text{}
+.ach-notif-label{font-size:9px;color:#ffe082;font-weight:700;letter-spacing:2px;margin-bottom:2px;}
+.ach-notif-name{font-size:15px;font-weight:900;color:#fff;}
+.ach-notif-desc{font-size:10px;color:#8bc34a;margin-top:1px;}
+/* achievement grid */
+.ach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:12px;}
+.ach-card{background:rgba(255,255,255,.05);border:2px solid #2a3a2a;border-radius:12px;
+  padding:10px 8px;text-align:center;transition:all .2s;position:relative;}
+.ach-card.unlocked{border-color:#ffe082;background:linear-gradient(135deg,rgba(255,224,52,.08),rgba(255,152,0,.05));}
+.ach-card.locked{opacity:.4;filter:grayscale(.8);}
+.ach-ico{font-size:26px;line-height:1.3;}
+.ach-name{font-size:10px;color:#fff;font-weight:700;margin-top:4px;line-height:1.3;}
+.ach-desc{font-size:9px;color:#8bc34a;margin-top:2px;line-height:1.3;}
+.ach-done{position:absolute;top:4px;right:6px;font-size:10px;color:#ffe082;}
+.ach-cat-label{font-size:10px;color:#8bc34a;font-weight:700;letter-spacing:1px;
+  margin:10px 0 6px;text-transform:uppercase;opacity:.8;}
+.ach-progress-bar{background:rgba(255,255,255,.08);border-radius:6px;height:6px;overflow:hidden;margin-top:4px;}
+.ach-progress-fill{height:100%;background:linear-gradient(90deg,#ffe234,#ff9800);border-radius:6px;transition:width .5s;}
+.ach-count{font-size:10px;color:#ffe082;font-weight:700;text-align:center;margin-top:4px;}
+
 </style>
 </head>
 <body>
@@ -483,7 +512,7 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
   <div class="bottom-nav">
     <div class="bnav" id="egNavBtn"><span>🔥</span>Endgame</div>
     <div class="bnav active" id="battleNavBtn"><span>⚔️</span>Story</div>
-    <div class="bnav" id="codexNavBtn"><span>📖</span>Codex</div>
+    <div class="bnav" id="codexNavBtn"><span>📖</span>Codex<span id="achBadge" style="display:none;background:#ffe082;color:#6d2900;font-size:8px;font-weight:900;border-radius:8px;padding:1px 5px;margin-left:2px;vertical-align:middle;"></span></div>
     <div class="bnav" id="lbNavBtn"><span>🏆</span>Rankings</div>
     <div class="bnav" id="devNavBtn"><span>🔧</span>Dev</div>
   </div>
@@ -757,6 +786,7 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
     <div class="cdx-tab active" id="tabMonster" onclick="switchCdxTab(&#39;monster&#39;)">👹 Monsters</div>
     <div class="cdx-tab" id="tabBoss" onclick="switchCdxTab(&#39;boss&#39;)">💀 Boss</div>
     <div class="cdx-tab" id="tabTower" onclick="switchCdxTab(&#39;tower&#39;)">🏰 Towers</div>
+    <div class="cdx-tab" id="tabAchiev" onclick="switchCdxTab(&#39;achiev&#39;)">🎖️ Achiev</div>
   </div>
   <div class="cdx-body" id="cdxBody"></div>
 </div>
@@ -802,6 +832,16 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
     <div class="lb-tab" id="lbt2" onclick="switchLbTab(2)">🔥 Endgame</div>
   </div>
   <div class="lb-body" id="lbBody"></div>
+</div>
+
+<!-- ACHIEVEMENT NOTIFICATION -->
+<div id="achNotif">
+  <div class="ach-notif-ico" id="achNotifIco">🎖️</div>
+  <div class="ach-notif-text">
+    <div class="ach-notif-label">🎖️ ACHIEVEMENT UNLOCKED!</div>
+    <div class="ach-notif-name" id="achNotifName">—</div>
+    <div class="ach-notif-desc" id="achNotifDesc">—</div>
+  </div>
 </div>
 
 <!-- DEV PANEL -->
@@ -1069,6 +1109,7 @@ function saveProgress(si,stars){
   if(p[si]===undefined||(stars>0&&stars>(p[si]||0))){
     p[si]=stars; localStorage.setItem('tq_progress',JSON.stringify(p));
   }
+  checkAchievements(); // ตรวจ achievement ทุกครั้งที่ clear ด่าน
 }
 function isStageUnlocked(si){
   if(si===0) return true;
@@ -1077,6 +1118,177 @@ function isStageUnlocked(si){
 }
 
 let seenMonsters=new Set(JSON.parse(localStorage.getItem('tq_seen')||'[]'));
+
+/* ══ ACHIEVEMENT SYSTEM ══ */
+const ACHIEVEMENTS=[
+  // Story
+  {id:'s0',  icon:'🌿',cat:'story',  name:'ก้าวแรก',        desc:'ผ่านด่าน Grassland'},
+  {id:'s4',  icon:'💰',cat:'story',  name:'รักสมบัติ',       desc:'ผ่านด่าน Treasure Valley'},
+  {id:'s7',  icon:'🏰',cat:'story',  name:'ป้อมมืด',         desc:'ผ่านด่าน Dark Fortress'},
+  {id:'s9',  icon:'💀',cat:'story',  name:'ผู้พิชิตความมืด', desc:'ผ่านด่านสุดท้าย Dark Tower Summit'},
+  {id:'sall',icon:'👑',cat:'story',  name:'ราชันผู้พิทักษ์', desc:'ผ่านครบทั้ง 10 ด่าน'},
+  // Combat
+  {id:'k100', icon:'⚔️',cat:'combat', name:'นักรบ',          desc:'สังหารรวม 100 ศัตรู'},
+  {id:'k1000',icon:'🗡️',cat:'combat', name:'จอมนักรบ',       desc:'สังหารรวม 1,000 ศัตรู'},
+  {id:'k5000',icon:'💥',cat:'combat', name:'เทพสงคราม',      desc:'สังหารรวม 5,000 ศัตรู'},
+  {id:'boss1',icon:'👹',cat:'combat', name:'นักล่าบอส',      desc:'สังหาร Boss ครั้งแรก'},
+  {id:'jmn',  icon:'👁️',cat:'combat', name:'ปราบจอมมาร',    desc:'สังหารจอมมารได้'},
+  {id:'heal50',icon:'🧙',cat:'combat',name:'ตัดรากถอนโคน',   desc:'สังหารหมอผีรวม 50 ตัว'},
+  // Skill
+  {id:'combo5', icon:'🔥',cat:'skill', name:'Hot Streak!',   desc:'ทำ Combo ×5 ขึ้นไปได้'},
+  {id:'combo10',icon:'💫',cat:'skill', name:'ULTRA COMBO',   desc:'ทำ Combo ×10 ขึ้นไปได้'},
+  {id:'nodmg',  icon:'🛡️',cat:'skill', name:'ไร้ที่ติ',       desc:'ผ่าน Wave โดยไม่เสีย HP'},
+  {id:'sc10k',  icon:'⭐',cat:'skill', name:'นักเก็บแต้ม',    desc:'ทำคะแนน 10,000 ในเกมเดียว'},
+  {id:'sc50k',  icon:'🌟',cat:'skill', name:'ราชาแต้ม',      desc:'ทำคะแนน 50,000 ในเกมเดียว'},
+  // Endgame
+  {id:'eg3',icon:'🔥',cat:'endgame',name:'ผู้รอดชีวิต',     desc:'ผ่าน Endgame Round 3+'},
+  {id:'eg7',icon:'☠️',cat:'endgame',name:'ไม่มีวันตาย',     desc:'ผ่าน Endgame Round 7+'},
+  // Collection
+  {id:'cdx_m',icon:'📖',cat:'collect',name:'นักวิชาการ',    desc:'พบ Monster ทุกตัวใน Codex'},
+  {id:'cdx_t',icon:'🏗️',cat:'collect',name:'สถาปนิก',       desc:'ปลดล็อก Tower ทุกแบบ'},
+];
+const ACH_CATS={story:'📜 เนื้อเรื่อง',combat:'⚔️ การต่อสู้',skill:'🎯 ทักษะ',endgame:'🔥 Endgame',collect:'📚 สะสม'};
+
+function loadAchievements(){
+  try{return new Set(JSON.parse(localStorage.getItem('tq_ach')||'[]'));}catch(e){return new Set();}
+}
+function _saveAch(id){
+  const s=loadAchievements(); s.add(id);
+  localStorage.setItem('tq_ach',JSON.stringify([...s]));
+}
+function loadAchStats(){
+  try{return Object.assign({totalKills:0,healerKills:0,bossKills:0,jommarnKills:0,wavesNoDmg:0,waveHpAtStart:0},
+    JSON.parse(localStorage.getItem('tq_achstats')||'{}'));}catch(e){return{totalKills:0,healerKills:0,bossKills:0,jommarnKills:0,wavesNoDmg:0,waveHpAtStart:0};}
+}
+function saveAchStats(s){localStorage.setItem('tq_achstats',JSON.stringify(s));}
+
+let _achQueue=[];
+let _achShowing=false;
+function _showNextAchNotif(){
+  if(_achShowing||_achQueue.length===0) return;
+  const ach=_achQueue.shift();
+  _achShowing=true;
+  const el=document.getElementById('achNotif');
+  document.getElementById('achNotifIco').textContent=ach.icon;
+  document.getElementById('achNotifName').textContent=ach.name;
+  document.getElementById('achNotifDesc').textContent=ach.desc;
+  el.classList.add('show');
+  setTimeout(()=>{
+    el.classList.remove('show');
+    setTimeout(()=>{_achShowing=false;_showNextAchNotif();},500);
+  },3200);
+}
+function unlockAchievement(id){
+  const already=loadAchievements();
+  if(already.has(id)) return;
+  const ach=ACHIEVEMENTS.find(a=>a.id===id);
+  if(!ach) return;
+  _saveAch(id);
+  _achQueue.push(ach);
+  _showNextAchNotif();
+  _updateAchBadge();
+}
+function _updateAchBadge(){
+  // แสดง badge จำนวน ach ที่ unlock ล่าสุด (ยังไม่ได้ดู)
+  const unlocked=loadAchievements();
+  const seen=new Set(JSON.parse(localStorage.getItem('tq_ach_seen')||'[]'));
+  const newCount=[...unlocked].filter(id=>!seen.has(id)).length;
+  const badge=document.getElementById('achBadge');
+  if(!badge) return;
+  if(newCount>0){badge.textContent=newCount;badge.style.display='';}
+  else badge.style.display='none';
+}
+
+function checkAchievements(){
+  const prog=loadProgress();
+  const cleared=Object.keys(prog).filter(k=>prog[k]>=1).map(Number);
+  const stats=loadAchStats();
+  const ach=loadAchievements();
+  // Story
+  if(cleared.includes(0)) unlockAchievement('s0');
+  if(cleared.includes(4)) unlockAchievement('s4');
+  if(cleared.includes(7)) unlockAchievement('s7');
+  if(cleared.includes(9)) unlockAchievement('s9');
+  if(cleared.length>=10)  unlockAchievement('sall');
+  // Combat (cumulative stats)
+  if(stats.totalKills>=100)  unlockAchievement('k100');
+  if(stats.totalKills>=1000) unlockAchievement('k1000');
+  if(stats.totalKills>=5000) unlockAchievement('k5000');
+  if(stats.bossKills>=1)     unlockAchievement('boss1');
+  if(stats.jommarnKills>=1)  unlockAchievement('jmn');
+  if(stats.healerKills>=50)  unlockAchievement('heal50');
+  // Skill (checked inline, but re-verify)
+  if(stats.wavesNoDmg>=1) unlockAchievement('nodmg');
+  // Collection
+  const allM=ENAMES.length;
+  if(seenMonsters.size>=allM) unlockAchievement('cdx_m');
+  const tProg=loadProgress();
+  const unlTowers=getUnlockedTowers();
+  if(unlTowers.length>=TNAMES.length) unlockAchievement('cdx_t');
+  // Endgame
+  try{
+    const runs=JSON.parse(localStorage.getItem('tq_runs')||'[]');
+    const best=Math.max(0,...runs.map(r=>r.round||0));
+    if(best>=3) unlockAchievement('eg3');
+    if(best>=7) unlockAchievement('eg7');
+  }catch(e){}
+}
+
+function _onKillForAch(e){
+  const s=loadAchStats();
+  s.totalKills=(s.totalKills||0)+1;
+  if(e.ti===10) s.healerKills=(s.healerKills||0)+1;
+  if(MTYPE[e.ti]===1) s.bossKills=(s.bossKills||0)+1;
+  if(e.ti===9) s.jommarnKills=(s.jommarnKills||0)+1;
+  saveAchStats(s);
+  // ตรวจทันทีสำหรับ milestone
+  if(s.totalKills===100)  unlockAchievement('k100');
+  if(s.totalKills===1000) unlockAchievement('k1000');
+  if(s.totalKills===5000) unlockAchievement('k5000');
+  if(s.bossKills===1)     unlockAchievement('boss1');
+  if(s.jommarnKills===1)  unlockAchievement('jmn');
+  if(s.healerKills===50)  unlockAchievement('heal50');
+}
+function _onComboForAch(n){
+  if(n>=5)  unlockAchievement('combo5');
+  if(n>=10) unlockAchievement('combo10');
+}
+function _onScoreForAch(score){
+  if(score>=10000) unlockAchievement('sc10k');
+  if(score>=50000) unlockAchievement('sc50k');
+}
+function _onWaveEndForAch(hpBefore,hpAfter){
+  if(hpAfter>=hpBefore&&hpBefore>0){
+    const s=loadAchStats(); s.wavesNoDmg=(s.wavesNoDmg||0)+1; saveAchStats(s);
+    unlockAchievement('nodmg');
+  }
+}
+
+function renderAchievTab(){
+  const unlocked=loadAchievements();
+  const total=ACHIEVEMENTS.length;
+  const done=[...unlocked].filter(id=>ACHIEVEMENTS.find(a=>a.id===id)).length;
+  let html=`<div class="ach-count">🎖️ ปลดล็อกแล้ว ${done} / ${total}</div>
+  <div class="ach-progress-bar" style="margin-bottom:14px;">
+    <div class="ach-progress-fill" style="width:${Math.round(done/total*100)}%"></div>
+  </div>`;
+  const cats=['story','combat','skill','endgame','collect'];
+  cats.forEach(cat=>{
+    const items=ACHIEVEMENTS.filter(a=>a.cat===cat);
+    html+=`<div class="ach-cat-label">${ACH_CATS[cat]}</div><div class="ach-grid">`;
+    items.forEach(a=>{
+      const isUnlocked=unlocked.has(a.id);
+      html+=`<div class="ach-card ${isUnlocked?'unlocked':'locked'}">
+        ${isUnlocked?'<div class="ach-done">✓</div>':''}
+        <div class="ach-ico">${a.icon}</div>
+        <div class="ach-name">${a.name}</div>
+        <div class="ach-desc">${a.desc}</div>
+      </div>`;
+    });
+    html+=`</div>`;
+  });
+  document.getElementById('cdxBody').innerHTML=html;
+}
 
 /* คำนวณป้อมที่ปลดล็อคแล้วจาก progress */
 function getUnlockedTowers(){
@@ -1171,6 +1383,7 @@ function updateMenuStats(){
   const maxStar=STAGES.filter(s=>!s.comingSoon).length*3;
   if(ts) ts.textContent='⭐ '+totalStars+' / '+maxStar;
   if(si2) si2.textContent=icons||'🔒🔒🔒';
+  _updateAchBadge(); // อัปเดต badge ทุกครั้งที่ menu render
 }
 
 /* ══ STAGE SELECT ══ */
@@ -1694,6 +1907,7 @@ function startWave(){
   document.getElementById('waveTxt').textContent=G.wave;
   document.getElementById('waveBtn').disabled=true;
   G.waveActive=true; G.queue=[]; G.spawnT=0;
+  G._waveHpAtStart=G.hp; // track HP at wave start for no-damage achievement
   const n=CFG.enemyPerWaveBase+G.wave*CFG.enemyPerWaveInc;
   const avail=currentStage.enemyTypes;
   for(let i=0;i<n;i++){
@@ -1817,14 +2031,17 @@ function killEnemy(e){
   if(!e.alive) return;
   e.alive=false;
   unlockMonster(e.ti);
+  _onKillForAch(e); // achievement tracking
   // combo system
   G.kills=(G.kills||0)+1;
   G.comboT=2.2; G.comboN=(G.comboN||0)+1;
   if(G.comboN>G.maxCombo) G.maxCombo=G.comboN;
+  _onComboForAch(G.comboN); // achievement: combo milestone
   const comboMult=G.comboN>=10?3:G.comboN>=5?2:G.comboN>=3?1.5:1;
   const baseScore=e.reward*10;
   const finalScore=Math.round(baseScore*comboMult);
   G.score+=finalScore;
+  _onScoreForAch(G.score); // achievement: score milestone
   if(G.comboN>=3&&G.comboN%3===0){
     const comboTxts=['','','','COMBO!','','','COMBO x2!','','','COMBO x3!'];
     const ct=comboTxts[Math.min(G.comboN,9)]||'COMBO!';
@@ -2188,6 +2405,8 @@ function update(dt){
   if(G.waveBanner&&G.waveBanner.t>0) G.waveBanner.t-=dt;
   // wave clear
   if(G.waveActive&&G.queue.length===0&&G.enemies.length===0){
+    // achievement: no-damage wave
+    _onWaveEndForAch(G._waveHpAtStart||G.hp, G.hp);
     G.waveActive=false;
     _playSound('wave_clear');
     const bonus=25+G.wave*6; G.gold+=bonus; updateHUD();
@@ -3257,11 +3476,18 @@ function getTowerIconURL(type,sz){
 let cdxTab='monster',cdxSel=-1;
 function switchCdxTab(tab){
   cdxTab=tab; cdxSel=-1;
-  ['monster','boss','tower'].forEach(t=>{
-    const el=document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1));
+  ['monster','boss','tower','achiev'].forEach(t=>{
+    const key=t==='achiev'?'Achiev':t.charAt(0).toUpperCase()+t.slice(1);
+    const el=document.getElementById('tab'+key);
     if(el) el.classList.toggle('active',t===tab);
   });
-  renderCodex();
+  if(tab==='achiev'){
+    // mark all current achievements as seen
+    const unlocked=loadAchievements();
+    localStorage.setItem('tq_ach_seen',JSON.stringify([...unlocked]));
+    _updateAchBadge();
+    renderAchievTab();
+  } else renderCodex();
 }
 function selectCodex(i){cdxSel=(cdxSel===i)?-1:i;renderCodex();}
 
@@ -3493,6 +3719,8 @@ function renderDevCheat(){
     <div class="dev-cheat-btn red" onclick="cheat('reset_stages')">↺ Reset Progress</div>
     <div class="dev-cheat-btn" onclick="cheat('unlock_codex')">📖 Unlock Codex</div>
     <div class="dev-cheat-btn red" onclick="cheat('lock_codex')">🔒 Lock Codex</div>
+    <div class="dev-cheat-btn green" onclick="cheat('unlock_ach')">🎖️ Unlock Ach</div>
+    <div class="dev-cheat-btn red" onclick="cheat('reset_ach')">↺ Reset Ach</div>
   </div></div>
   <div class="dev-section"><div class="dev-section-title">⚙️ Game Settings</div>
     ${dSlide('startGold','ทองเริ่มต้น','ทอง',CFG.startGold,50,1000,25)}
@@ -3575,6 +3803,11 @@ function cheat(cmd){
       localStorage.setItem('tq_seen',JSON.stringify([...seenMonsters]));showToast('📖 Codex unlocked!');break;
     case 'lock_codex':
       seenMonsters=new Set();localStorage.setItem('tq_seen','[]');showToast('🔒 Lock Codexแล้ว!');break;
+    case 'unlock_ach':
+      ACHIEVEMENTS.forEach(a=>_saveAch(a.id));_updateAchBadge();showToast('🎖️ ปลดล็อค Achievement ทั้งหมด!');break;
+    case 'reset_ach':
+      localStorage.removeItem('tq_ach');localStorage.removeItem('tq_achstats');localStorage.removeItem('tq_ach_seen');
+      _updateAchBadge();showToast('↺ Reset Achievement แล้ว!');break;
   }
 }
 function devReset(){CFG=JSON.parse(JSON.stringify(DEFAULT_CFG));localStorage.removeItem('tq_cfg');showToast('↺ รีเซ็ตค่าคอนฟิกแล้ว!');renderDevPanel();}
@@ -4180,6 +4413,7 @@ function confirmSave(){
   runs.unshift(run);
   if(runs.length>50) runs.length=50; // keep max 50
   localStorage.setItem('tq_runs',JSON.stringify(runs));
+  checkAchievements(); // check eg3/eg7 achievements after saving run
   showToast('💾 Save Scoreของ '+name+' แล้ว!');
   document.getElementById('saveOverlay').style.display='none';
   if(isEndgame) showEgResult();
