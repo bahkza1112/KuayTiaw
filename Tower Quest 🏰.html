@@ -641,6 +641,7 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
         <div class="tbtn" id="tb4" onclick="selTower(4)"><div class="ticon">💚</div><div>Support</div><div class="tcost" id="tc4">💰40</div></div>
         <div class="tbtn" id="tb5" onclick="selTower(5)"><div class="ticon">🏹</div><div>Archer</div><div class="tcost" id="tc5">💰65</div></div>
         <div class="tbtn" id="tb6" onclick="selTower(6)"><div class="ticon">💰</div><div>Gold Mine</div><div class="tcost" id="tc6">💰80</div></div>
+        <div class="tbtn" id="tb7" onclick="selTower(7)" style="display:none;"><div class="ticon">⚡</div><div>Thunder</div><div class="tcost" id="tc7">💰85</div></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0;margin-left:auto;">
         <div style="position:relative;">
@@ -1191,7 +1192,7 @@ function initGame(){
   document.getElementById('maxWaveTxt').textContent=s.waves;
   document.getElementById('stageBadge').textContent='S'+(s.id+1)+' '+s.icon;
   // BUG FIX: reset selTwr highlight on restart
-  for(let i=0;i<7;i++){const b=document.getElementById('tb'+i);if(b)b.classList.remove('sel','locked-tower');}
+  for(let i=0;i<8;i++){const b=document.getElementById('tb'+i);if(b)b.classList.remove('sel','locked-tower');}
   paused=false;speed=1;autoWave=false;
   document.getElementById('speedBtn').textContent='1×';
   document.getElementById('pauseBtn').textContent='⏸';
@@ -1253,14 +1254,15 @@ function pausedRestart(){
   restartGame();
 }
 function updateTowerPanel(){
-  const active=selectedTowersForStage.length>0?selectedTowersForStage:(currentStage.unlockedTowers||[0,1,2,3,4,5,6]);
-  for(let i=0;i<7;i++){
+  const active=selectedTowersForStage.length>0?selectedTowersForStage:(currentStage.unlockedTowers||[0,1,2,3,4,5,6,7]);
+  for(let i=0;i<8;i++){
     const btn=document.getElementById('tb'+i);
     if(!btn) continue;
     const locked=!active.includes(i);
     btn.style.display=locked?'none':'flex';
     btn.classList.remove('locked-tower','sel');
-    document.getElementById('tc'+i).textContent='💰'+CFG.t_cost[i];
+    const tc=document.getElementById('tc'+i);
+    if(tc) tc.textContent='💰'+CFG.t_cost[i];
   }
 }
 
@@ -1445,6 +1447,7 @@ function renderTowerSelection(available){
     const badges=[];
     if(TCANAIR[ti]) badges.push('<span class="ts-card-badge badge-air">✈ Air</span>');
     if(TGOLDMINE[ti]) badges.push('<span class="ts-card-badge badge-gold">💰 Gold</span>');
+    if(TCHAIN[ti]) badges.push('<span class="ts-card-badge badge-air">⚡ Chain</span>');
     grid+=`<div class="ts-card${isSel?' selected':''}" onclick="toggleTowerSelection(${ti})">
       ${badges.join('')}
       <div class="ts-card-ico">${TICONS[ti]}</div>
@@ -1488,7 +1491,7 @@ function selTower(i){
   if(!G||G.over||G.win||paused) return;
   if(!currentStage.unlockedTowers.includes(i)){showToast('🔒 ยังไม่ได้ปลดล็อค!');return;}
   G.selTwr=(G.selTwr===i)?-1:i;
-  for(let j=0;j<7;j++){const b=document.getElementById('tb'+j);if(b)b.classList.toggle('sel',j===G.selTwr);}
+  for(let j=0;j<8;j++){const b=document.getElementById('tb'+j);if(b)b.classList.toggle('sel',j===G.selTwr);}
 }
 
 /* ══ WAVE ══ */
@@ -1866,7 +1869,7 @@ function _bldSC(){
   _SC={};
   const sz=CS-2,r=sz/2;
   const cw=Math.ceil(r*2.2),ch=Math.ceil(r*1.55),tx=cw/2,ty=Math.ceil(ch*.38);
-  for(let t=0;t<7;t++){
+  for(let t=0;t<8;t++){
     const oc=document.createElement('canvas');
     oc.width=cw;oc.height=ch;
     const ox=oc.getContext('2d');
@@ -3283,7 +3286,7 @@ function initEgGame(){
   document.getElementById('maxWaveTxt').textContent='∞';
   document.getElementById('stageBadge').textContent='🔥 Round '+(egRound+1);
   document.getElementById('stageBadge').className='eg-round-badge';
-  for(let i=0;i<7;i++){const b=document.getElementById('tb'+i);if(b){b.classList.remove('sel','locked-tower');const c=document.getElementById('tc'+i);if(c)c.textContent='💰'+CFG.t_cost[i];}}
+  for(let i=0;i<8;i++){const b=document.getElementById('tb'+i);if(b){b.classList.remove('sel','locked-tower');const c=document.getElementById('tc'+i);if(c)c.textContent='💰'+CFG.t_cost[i];}}
   paused=false; speed=1; autoWave=false;
   document.getElementById('speedBtn').textContent='1×';
   document.getElementById('pauseBtn').textContent='⏸';
@@ -3378,14 +3381,19 @@ function updateEg(dt){
     if(best) tw.angle=Math.atan2(best.y/CS-cy,best.x/CS-cx);
     if(best&&tw.cd<=0){
       tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.lv));
-      G.projs.push({
-        x:tw.col*CS+CS/2,y:tw.row*CS+CS/2,tx:best.x,ty:best.y,target:best,
-        spd:280+(tw.type===3?120:0),type:tw.type,
-        dmg:getTowerDmg(tw.type,tw.lv)*getBuffMult(tw.col,tw.row),
-        splash:TSPLASH[tw.type],slow:TSLOW[tw.type],alive:true
-      });
       const fx=tw.col*CS+CS/2,fy=tw.row*CS+CS/2;
+      G.projs.push({
+        x:fx,y:fy,tx:best.x,ty:best.y,target:best,
+        spd:280+(tw.type===3?120:0)+(tw.type===7?80:0),type:tw.type,
+        dmg:getTowerDmg(tw.type,tw.lv)*getBuffMult(tw.col,tw.row),
+        splash:TSPLASH[tw.type],slow:TSLOW[tw.type],alive:true,
+        chain:TCHAIN[tw.type]||0
+      });
       G.fxRings.push({x:fx,y:fy,r:2,maxR:tw.type===3?CS*.8:CS*.4,life:.5,lw:1.5,col:TPROJ[tw.type],delay:0});
+      if(tw.type===7){
+        for(let k=0;k<6;k++){const ang=k/6*Math.PI*2;G.particles.push({x:fx,y:fy,txt:'·',col:'#ffe57f',life:.35,vy:Math.sin(ang)*1.4,vx:Math.cos(ang)*1.4,decay:4,scale:.9});}
+        G.fxRings.push({x:fx,y:fy,r:2,maxR:CS*.5,life:.3,lw:1.5,col:'#ffe57f',delay:0});
+      }
     }
   });
   for(let i=G.projs.length-1;i>=0;i--){
@@ -3406,6 +3414,25 @@ function updateEg(dt){
         if(p.target&&p.target.alive){p.target.hp-=p.dmg;if(p.target.hp<=0)killEnemy(p.target);}
       }
       if(p.slow>0&&p.target&&p.target.alive){p.target.slow=p.slow;p.target.slowT=2;}
+      if(p.type===7){
+        G.fxRings.push({x:tx,y:ty,r:2,maxR:CS*.55,life:.45,lw:2.5,col:'#ffe57f',delay:0});
+        if(p.chain>0&&p.target){
+          const chainDmg=p.dmg*.6,chainR=CS*2.2;
+          const used=[p.target]; let prev=p.target;
+          for(let _c=0;_c<p.chain;_c++){
+            let nearest=null,nDist=Infinity;
+            G.enemies.forEach(e=>{if(!e.alive||used.includes(e)) return;const cd=Math.hypot(e.x-prev.x,e.y-prev.y);if(cd<chainR&&cd<nDist){nDist=cd;nearest=e;}});
+            if(!nearest) break;
+            used.push(nearest);
+            G.fxTrails.push({x:prev.x,y:prev.y,tx:nearest.x,ty:nearest.y,col:'#ffe57f',life:.5,type:99,lw:2.5});
+            G.fxRings.push({x:nearest.x,y:nearest.y,r:1,maxR:CS*.35,life:.35,lw:2,col:'#ffe57f',delay:_c*.04});
+            nearest.hp-=chainDmg; nearest.hitFlash=.7;
+            G.particles.push({x:nearest.x,y:nearest.y-6,txt:'-'+Math.round(chainDmg),col:'#ffe57f',life:.8,vy:-1.2,vx:(Math.random()-.5)*.6,scale:.9,decay:1.8});
+            if(nearest.hp<=0) killEnemy(nearest);
+            prev=nearest;
+          }
+        }
+      }
       const isCrit=Math.random()<.18;
       G.particles.push({x:tx+(Math.random()-.5)*14,y:ty-8,
         txt:isCrit?'💥'+Math.round(p.dmg)+'!':'-'+Math.round(p.dmg),
