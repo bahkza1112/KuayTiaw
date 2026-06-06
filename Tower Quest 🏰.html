@@ -2068,6 +2068,7 @@ function update(dt){
       if(p.splash>0){
         G.enemies.forEach(e=>{
           if(!e.alive||Math.hypot(e.x-tx,e.y-ty)>p.splash*CS) return;
+          if(e.isAir&&!TCANAIR[p.type]) return; // splash ไม่โดน air ถ้าป้อมยิง air ไม่ได้
           applyDmg(e,p.dmg,p.type);
         });
       } else {
@@ -2132,7 +2133,7 @@ function update(dt){
           G.particles.push({x:tx,y:ty,txt:'●',col:TPROJ[p.type],
             life:.6,vy:Math.sin(ang)*1.8,vx:Math.cos(ang)*1.8,decay:2.5});
         }
-        G.enemies.forEach(e=>{if(e.alive&&Math.hypot(e.x-tx,e.y-ty)<=p.splash*CS) e.hitFlash=.8;});
+        G.enemies.forEach(e=>{if(e.alive&&(!e.isAir||TCANAIR[p.type])&&Math.hypot(e.x-tx,e.y-ty)<=p.splash*CS) e.hitFlash=.8;});
       }
       G.projs.splice(i,1);
     } else {
@@ -4016,6 +4017,7 @@ function updateEg(dt){
       if(p.splash>0){
         G.enemies.forEach(e=>{
           if(!e.alive||Math.hypot(e.x-tx,e.y-ty)>p.splash*CS) return;
+          if(e.isAir&&!TCANAIR[p.type]) return; // splash ไม่โดน air ถ้าป้อมยิง air ไม่ได้
           applyDmg(e,p.dmg,p.type);
           G.fxRings.push({x:tx,y:ty,r:4,maxR:p.splash*CS*1.2,life:.7,lw:3,col:TPROJ[p.type],delay:0});
         });
