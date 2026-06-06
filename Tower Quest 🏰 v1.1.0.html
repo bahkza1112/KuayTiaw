@@ -836,7 +836,7 @@ const STAGES=[
    grassColors:['#0d0d2a','#111133','#0a0a22','#131340','#0c0c28']},
   {id:6,name:'Cursed Swamp',icon:'🌿',
    desc:'หนองน้ำมีพิษซ่อนอันตราย ศัตรูมาจากหลายทิศทาง ต้องวางกับดักให้ดี',
-   waves:10,enemyTypes:[0,1,2,3,4,5,6],bossChance:.09,unlockedTowers:[0,1,2,3,4,5,6],unlocks:null,
+   waves:10,enemyTypes:[0,1,2,3,4,5,6],bossChance:.09,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
    maxTowers:5,story:'หนองน้ำโบราณที่ซ่อนคำสาปไว้ภายใน ศัตรูแทรกซึมมาจากทุกทิศ กลิ่นพิษปกคลุมทุกอณู ผู้พิทักษ์ต้องระวังทุกซอกทุกมุม...',
    path:[[0,0],[1,0],[2,0],[3,0],[3,1],[3,2],[3,3],[4,3],[5,3],[6,3],[6,2],[6,1],[6,0],
          [7,0],[8,0],[9,0],[10,0],[11,0],[11,1],[11,2],[11,3],[11,4],
@@ -1080,7 +1080,8 @@ function mkState(){
     gold:CFG.startGold,hp:CFG.baseHP,maxHp:CFG.baseHP,
     wave:0,score:0,selTwr:-1,waveActive:false,
     over:false,win:false,queue:[],spawnT:0,mx:-1,my:-1,
-    selTowerInfo:null,gmTimers:{},shakeT:0,waveBanner:null,bossWarning:null};
+    selTowerInfo:null,gmTimers:{},shakeT:0,waveBanner:null,bossWarning:null,
+    kills:0,comboN:0,comboT:0,maxCombo:0};
 }
 function getTowerDmg(t,lv){return CFG.t_dmg[t]*(1+(lv-1)*.25);}
 function getTowerRange(t,lv){return CFG.t_rng[t]*(1+(lv-1)*.15);}
@@ -1755,7 +1756,21 @@ function killEnemy(e){
   if(!e.alive) return;
   e.alive=false;
   unlockMonster(e.ti);
-  G.gold+=e.reward; G.score+=e.reward*10;
+  // combo system
+  G.kills=(G.kills||0)+1;
+  G.comboT=2.2; G.comboN=(G.comboN||0)+1;
+  if(G.comboN>G.maxCombo) G.maxCombo=G.comboN;
+  const comboMult=G.comboN>=10?3:G.comboN>=5?2:G.comboN>=3?1.5:1;
+  const baseScore=e.reward*10;
+  const finalScore=Math.round(baseScore*comboMult);
+  G.score+=finalScore;
+  if(G.comboN>=3&&G.comboN%3===0){
+    const comboTxts=['','','','COMBO!','','','COMBO x2!','','','COMBO x3!'];
+    const ct=comboTxts[Math.min(G.comboN,9)]||'COMBO!';
+    G.particles.push({x:e.x,y:e.y-ESIZES[e.ti]-20,txt:'⚡'+ct,col:'#ffe234',
+      life:1.2,vy:-1.6,vx:0,decay:.9,scale:1.3});
+  }
+  G.gold+=e.reward; updateHUD();
   addParticle(e.x,e.y,'+'+e.reward+'💰','#ffe082');
   updateHUD();
   // V2: death burst — color-coded by enemy type
@@ -2090,6 +2105,8 @@ function update(dt){
     if(p.scale) p.scale=Math.max(.4,p.scale-dt*1.5);
     if(p.life<=0) G.particles.splice(i,1);
   }
+  // combo timer decay
+  if(G.comboT>0){G.comboT-=dt;if(G.comboT<=0){G.comboN=0;G.comboT=0;}}
   // muzzle flashes decay
   for(let i=G.fxFlash.length-1;i>=0;i--){
     G.fxFlash[i].life-=dt; if(G.fxFlash[i].life<=0) G.fxFlash.splice(i,1);
@@ -3732,11 +3749,21 @@ function getEgStats(){
   }catch(e){return{};}
 }
 
+function _getEgEnemyPool(){
+  /* ศัตรูเพิ่มขึ้นตาม egRound — ให้ผู้เล่นค่อยๆ เจอ */
+  if(egRound===0) return [0,1,2,3,4];          // Round 1: basic
+  if(egRound===1) return [0,1,2,3,4,5];        // Round 2: +Golem
+  if(egRound===2) return [0,1,2,3,4,5,6];      // Round 3: +Bat
+  if(egRound===3) return [0,1,2,3,4,5,6,7];    // Round 4: +Wyvern
+  if(egRound===4) return [0,1,2,3,4,5,6,7,8];  // Round 5: +Shield Knight
+  if(egRound===5) return [0,1,2,3,4,5,6,7,8,10]; // Round 6: +Shaman
+  return [0,1,2,3,4,5,6,7,8,9,10];             // Round 7+: ทุกตัวรวม Final Boss
+}
 function startEndgame(){
   isEndgame=true; egRound=0;
-  // Setup stage-like object for endgame
   currentStage={id:99,name:'Endgame',icon:'🔥',waves:999,
-    enemyTypes:[0,1,2,3,4],unlockedTowers:[0,1,2,3,4],unlocks:null,
+    enemyTypes:_getEgEnemyPool(),unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
+    bossChance:.10,
     path:EG_PATH,bgColor:'#0a0a1a',pathColor:'#3a2a1a',
     grassColors:['#1a0a0a','#1e0e0e','#120808','#1a0c0c','#160a0a']};
   currentPath=EG_PATH;
@@ -3755,8 +3782,14 @@ function startEndgame(){
 }
 
 function initEgGame(){
+  const prevKills=(G&&G.kills)||0;
+  const prevScore=(G&&G.score)||0;
+  const prevMaxCombo=(G&&G.maxCombo)||0;
   G=mkState();
-  G.gold=CFG.startGold+egRound*30; // bonus gold per round
+  // สะสม kills/score/combo ข้าม round
+  G.kills=prevKills; G.score=prevScore; G.maxCombo=prevMaxCombo;
+  currentStage.enemyTypes=_getEgEnemyPool(); // อัปเดต pool ตาม round ปัจจุบัน
+  G.gold=CFG.startGold+egRound*35; // bonus gold per round
   G.hp=CFG.baseHP; G.maxHp=CFG.baseHP;
   document.getElementById('endOverlay').style.display='none';
   document.getElementById('pauseScreen').style.display='none';
@@ -3812,10 +3845,15 @@ function startEgWave(){
   document.getElementById('waveBtn').disabled=true;
   G.waveActive=true; G.queue=[]; G.spawnT=0;
   const n=Math.floor(CFG.enemyPerWaveBase+G.wave*CFG.enemyPerWaveInc*(1+egRound*.2));
+  const avail=_getEgEnemyPool();
+  const bChance=0.08+egRound*.015;
   for(let i=0;i<n;i++){
-    const maxEi=Math.min(4,Math.floor((G.wave+egRound)/3));
-    let ei=Math.floor(Math.random()*(maxEi+1));
-    G.queue.push(Math.min(ei,4));
+    const maxIdx=Math.min(avail.length-1,Math.ceil((G.wave+egRound*2)/3));
+    let ei=avail[Math.floor(Math.random()*(maxIdx+1))];
+    if(avail.includes(4)&&G.wave>=3&&Math.random()<bChance) ei=4;
+    if(avail.includes(9)&&G.wave>=5&&Math.random()<bChance*.7) ei=9;
+    if(avail.includes(10)&&G.wave>=2&&Math.random()<.15) ei=10;
+    G.queue.push(ei);
   }
   G.waveBanner={text:'🔥  WAVE  '+G.wave,t:1.5};
 }
@@ -3848,6 +3886,23 @@ function updateEg(dt){
     e.x=p0[0]*CS+CS/2+(p1[0]-p0[0])*CS*t2;
     e.y=p0[1]*CS+CS/2+(p1[1]-p0[1])*CS*t2;
   }
+  // healer monsters in endgame
+  G.enemies.forEach(healer=>{
+    if(!healer.alive||healer.ti!==10) return;
+    healer.healCd=(healer.healCd||0)-dt;
+    if(healer.healCd>0) return;
+    healer.healCd=2.0;
+    const healAmt=Math.round(CFG.m_hp[10]*0.18*(1+egRound*.1));
+    const healRange=2.5*CS;
+    let healed=false;
+    G.enemies.forEach(target=>{
+      if(!target.alive||target===healer||Math.hypot(target.x-healer.x,target.y-healer.y)>healRange||target.hp>=target.mhp) return;
+      target.hp=Math.min(target.mhp,target.hp+healAmt); healed=true;
+      G.particles.push({x:target.x,y:target.y-ESIZES[target.ti]-8,txt:'💚',col:'#69f0ae',life:1.0,vy:-1.2,vx:(Math.random()-.5)*.8,decay:1.2,scale:.85});
+    });
+    G.fxRings.push({x:healer.x,y:healer.y,r:5,maxR:healRange,life:.55,lw:2,col:'#69f0ae',delay:0});
+    if(healed){G.particles.push({x:healer.x,y:healer.y-ESIZES[10]-10,txt:'✨ Heal!',col:'#b2ff59',life:1.1,vy:-1.0,vx:0,decay:1.1,scale:.9});_playSound('heal');}
+  });
   G.towers.forEach(tw=>{
     if(CFG.t_dmg[tw.type]===0) return;
     tw.cd=Math.max(0,tw.cd-dt);
@@ -3856,6 +3911,7 @@ function updateEg(dt){
     let best=null,bestP=-1;
     G.enemies.forEach(e=>{
       if(!e.alive) return;
+      if(e.isAir&&!TCANAIR[tw.type]) return; /* ✅ fix: air check */
       if(Math.hypot(cx-e.x/CS,cy-e.y/CS)<=range){
         const p=e.pi+e.prog/CS; if(p>bestP){bestP=p;best=e;}
       }
@@ -3876,6 +3932,10 @@ function updateEg(dt){
         for(let k=0;k<6;k++){const ang=k/6*Math.PI*2;G.particles.push({x:fx,y:fy,txt:'·',col:'#ffe57f',life:.35,vy:Math.sin(ang)*1.4,vx:Math.cos(ang)*1.4,decay:4,scale:.9});}
         G.fxRings.push({x:fx,y:fy,r:2,maxR:CS*.5,life:.3,lw:1.5,col:'#ffe57f',delay:0});
       }
+      // muzzle flash + sound
+      const _mfa=tw.angle||0;
+      G.fxFlash.push({x:fx+Math.cos(_mfa)*CS*.32,y:fy+Math.sin(_mfa)*CS*.32,r:tw.type===3?14:tw.type===0?16:10,life:.18,col:TPROJ[tw.type]||'#fff'});
+      const _snd=_TSND[tw.type]; if(_snd) _playSound(_snd);
     }
   });
   for(let i=G.projs.length-1;i>=0;i--){
@@ -3932,6 +3992,10 @@ function updateEg(dt){
   G.towers.forEach(tw=>{if(tw.spawnAnim>0) tw.spawnAnim=Math.max(0,tw.spawnAnim-dt*3);});
   if(G.shakeT>0) G.shakeT=Math.max(0,G.shakeT-dt*3.8);
   if(G.waveBanner&&G.waveBanner.t>0) G.waveBanner.t-=dt;
+  if(G.bossWarning&&G.bossWarning.t>0) G.bossWarning.t-=dt;
+  if(G.comboT>0){G.comboT-=dt;if(G.comboT<=0){G.comboN=0;G.comboT=0;}}
+  for(let i=G.fxFlash.length-1;i>=0;i--){G.fxFlash[i].life-=dt;if(G.fxFlash[i].life<=0)G.fxFlash.splice(i,1);}
+  for(let i=G.dmgNums.length-1;i>=0;i--){const n=G.dmgNums[i];n.x+=n.vx||0;n.y+=n.vy;n.vy*=.92;n.life-=dt*(n.decay||1.0);if(n.life<=0)G.dmgNums.splice(i,1);}
   for(let i=G.fxRings.length-1;i>=0;i--){
     const r=G.fxRings[i];
     if(r.delay>0){r.delay-=dt;continue;}
@@ -4004,9 +4068,11 @@ function showSavePrompt(isStoryWin){
     :G.score>Math.min(...runs.filter(r=>r.mode==='story').map(r=>r.score||0)));
   document.getElementById('saveTopMsg').textContent=isTop&&runs.length>=3?'🏆 Top 10!':'';
   document.getElementById('saveResultGrid').innerHTML=isEndgame
-    ?`<div class="save-res-item"><div class="save-res-lbl">🌊 Best Wave</div><div class="save-res-val">${G.wave}</div></div>
-      <div class="save-res-item"><div class="save-res-lbl">⭐ Score</div><div class="save-res-val">${G.score}</div></div>
-      <div class="save-res-item"><div class="save-res-lbl">🔥 Mode</div><div class="save-res-val">Endgame</div></div>
+    ?`<div class="save-res-item"><div class="save-res-lbl">🌊 Wave สูงสุด</div><div class="save-res-val">${G.wave}</div></div>
+      <div class="save-res-item"><div class="save-res-lbl">⭐ Score</div><div class="save-res-val">${G.score.toLocaleString()}</div></div>
+      <div class="save-res-item"><div class="save-res-lbl">💀 Total Kills</div><div class="save-res-val">${G.kills||0}</div></div>
+      <div class="save-res-item"><div class="save-res-lbl">⚡ Max Combo</div><div class="save-res-val">×${G.maxCombo||1}</div></div>
+      <div class="save-res-item"><div class="save-res-lbl">🔥 Round</div><div class="save-res-val">${egRound+1}</div></div>
       <div class="save-res-item"><div class="save-res-lbl">⚙️ Difficulty</div><div class="save-res-val">${EG_DIFF_NAMES[egDiff]}</div></div>`
     :`<div class="save-res-item"><div class="save-res-lbl">⭐ Score</div><div class="save-res-val">${G.score}</div></div>
       <div class="save-res-item"><div class="save-res-lbl">🗺️ Stage</div><div class="save-res-val">${currentStage.name}</div></div>`;
@@ -4032,6 +4098,8 @@ function confirmSave(){
     diff:isEndgame?EG_DIFF_NAMES[egDiff]:null,
     stage:isEndgame?null:currentStage.name,
     round:isEndgame?egRound+1:null,
+    kills:isEndgame?(G.kills||0):null,
+    maxCombo:isEndgame?(G.maxCombo||1):null,
     date:new Date().toLocaleDateString('th-TH'),
     ts:Date.now()
   };
@@ -4046,10 +4114,15 @@ function confirmSave(){
 }
 
 function showEgResult(){
-  document.getElementById('endTitle').textContent='💀 Game Over!';
+  document.getElementById('endTitle').textContent='💀 Game Over — Endgame!';
   document.getElementById('starRow').textContent='🔥'.repeat(Math.min(5,Math.ceil(G.wave/5)));
-  document.getElementById('endScore').textContent='Wave: '+G.wave+' · Score: '+G.score+' · Round: '+(egRound+1);
-  document.getElementById('unlockBanner').style.display='none';
+  document.getElementById('endScore').textContent=
+    'Wave '+G.wave+' · Score '+G.score.toLocaleString()+' · Kills '+( G.kills||0)+' · Max Combo ×'+(G.maxCombo||1);
+  const banner=document.getElementById('unlockBanner');
+  banner.style.display='block';
+  banner.style.background='linear-gradient(135deg,rgba(180,0,0,.3),rgba(80,0,0,.2))';
+  banner.style.borderColor='#ef5350';
+  banner.innerHTML=`<strong>🔥 Round ${egRound+1}</strong> · Difficulty: ${EG_DIFF_NAMES[egDiff]} · <a href="#" onclick="openLeaderboard();return false;" style="color:#ffe082;">ดู Leaderboard →</a>`;
   document.getElementById('nextStageBtn').style.display='none';
   document.getElementById('endOverlay').style.display='flex';
 }
@@ -4078,11 +4151,18 @@ function renderLb(){
     const totalStars=Object.values(p).reduce((a,b)=>a+b,0);
     const bestWave=egRuns.length?Math.max(...egRuns.map(r=>r.wave)):0;
     const bestScore=egRuns.length?Math.max(...egRuns.map(r=>r.score)):0;
+    const bestKills=egRuns.length?Math.max(...egRuns.map(r=>r.kills||0)):0;
+    const bestCombo=egRuns.length?Math.max(...egRuns.map(r=>r.maxCombo||1)):1;
+    const totalEgKills=egRuns.reduce((a,r)=>a+(r.kills||0),0);
     let html=`<div class="my-stat-grid">
-      <div class="my-stat-card eg"><div class="my-stat-val">${bestWave||'—'}</div><div class="my-stat-lbl">🌊 Best Wave EG</div></div>
-      <div class="my-stat-card eg"><div class="my-stat-val">${bestScore||'—'}</div><div class="my-stat-lbl">⭐ Best Score EG</div></div>
-      <div class="my-stat-card"><div class="my-stat-val">${Object.keys(p).filter(k=>(p[k]||0)>=1).length}/${STAGES.length}</div><div class="my-stat-lbl">🗺️ Stages Cleared</div></div>
+      <div class="my-stat-card eg"><div class="my-stat-val">${bestWave||'—'}</div><div class="my-stat-lbl">🌊 Best Wave</div></div>
+      <div class="my-stat-card eg"><div class="my-stat-val">${bestScore?bestScore.toLocaleString():'—'}</div><div class="my-stat-lbl">⭐ Best Score</div></div>
+      <div class="my-stat-card eg"><div class="my-stat-val">${bestKills||'—'}</div><div class="my-stat-lbl">💀 Best Kills/Run</div></div>
+      <div class="my-stat-card eg"><div class="my-stat-val">×${bestCombo}</div><div class="my-stat-lbl">⚡ Best Combo</div></div>
+      <div class="my-stat-card"><div class="my-stat-val">${Object.keys(p).filter(k=>(p[k]||0)>=1).length}/${STAGES.filter(s=>!s.comingSoon).length}</div><div class="my-stat-lbl">🗺️ Stages Cleared</div></div>
       <div class="my-stat-card"><div class="my-stat-val">${totalStars}★</div><div class="my-stat-lbl">⭐ Total Stars</div></div>
+      <div class="my-stat-card"><div class="my-stat-val">${totalEgKills.toLocaleString()}</div><div class="my-stat-lbl">💀 Total Kills (EG)</div></div>
+      <div class="my-stat-card"><div class="my-stat-val">${egRuns.length}</div><div class="my-stat-lbl">🔥 EG Runs</div></div>
     </div>`;
     if(myRuns.length){
       html+='<div class="run-hdr">⏱ Recent Runs</div>';
@@ -4133,8 +4213,8 @@ function renderLb(){
         <div class="lb-avatar">${['💀','👹','🔥','⚔️','🌋'][i%5]}</div>
         <div class="lb-info"><div class="lb-name">${r.name}${isMe?' (ฉัน)':''}</div>
         <div class="lb-detail">Endgame · ${r.diff} · ${r.date}</div></div>
-        <div class="lb-score-wrap"><div class="lb-score-val">${r.score}</div>
-        <div class="lb-score-sub">🌊 Wave ${r.wave}</div></div>
+        <div class="lb-score-wrap"><div class="lb-score-val">${r.score.toLocaleString()}</div>
+        <div class="lb-score-sub">🌊 Wave ${r.wave} · 💀 ${r.kills||0} kills</div></div>
       </div>`;
     });
     body.innerHTML=html;
