@@ -2,7 +2,7 @@
 <html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Tower Quest 🏰 v1.1.1</title>
+<title>Tower Quest 🏰 v1.3.0</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:#0d1117;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Segoe UI',Arial,sans-serif;}
@@ -515,7 +515,7 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
   <div class="island">🏰</div>
   <div class="gtitle">TOWER QUEST</div>
   <div class="gsub">⚔️ Defend Your Kingdom!</div>
-  <div style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;">v1.1.1</div>
+  <div style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;">v1.3.0</div>
 
   <!-- battle buttons -->
   <button class="bbattle" id="startBtn">⚔️ Story Mode</button>
@@ -3329,10 +3329,10 @@ function render(){
     ctx.globalAlpha=.32; ctx.fillStyle='#000';
     ctx.beginPath(); ctx.ellipse(cx2,cy2+CS*.35,CS*.46,CS*.13,0,0,Math.PI*2); ctx.fill();
     ctx.globalAlpha=1;
-    // Kingdom Rush: draw tower 1.8x bigger, shifted up so base stays grounded
-    const _tws=1.8;
+    // Kingdom Rush: draw tower bigger than tile, shifted up so base stays grounded
+    const _tws=1.4;
     ctx.save();
-    ctx.translate(cx2, cy2-CS*.28); // shift up = tower looks taller
+    ctx.translate(cx2, cy2-CS*.18); // shift up = tower looks taller
     ctx.scale(_tws,_tws);
     // outline pass (dark shadow behind)
     ctx.shadowColor='rgba(0,0,0,.95)';ctx.shadowBlur=7;ctx.shadowOffsetX=0;ctx.shadowOffsetY=3;
