@@ -486,6 +486,13 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
   border-radius:6px;padding:2px 7px;font-size:10px;cursor:pointer;margin-left:auto;}
 .tp-rune-remove:hover{background:rgba(244,67,54,.4);}
 .tp-rune-empty{font-size:10px;color:#555;font-style:italic;}
+.tp-syn-row{padding:6px 12px;border-bottom:1px solid rgba(255,255,255,.06);}
+.tp-syn-label{font-size:9px;color:#4fc3f7;letter-spacing:.5px;margin-bottom:4px;}
+.tp-syn-item{display:flex;flex-direction:column;gap:1px;background:rgba(79,195,247,.10);border:1px solid rgba(79,195,247,.3);
+  border-radius:6px;padding:4px 7px;margin-bottom:4px;}
+.tp-syn-item:last-child{margin-bottom:0;}
+.tp-syn-name{font-size:10px;font-weight:800;color:#81d4fa;}
+.tp-syn-desc{font-size:9px;color:#b0bec5;}
 .tp-rune-picker{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px;}
 .tp-rune-pick-btn{background:rgba(255,255,255,.08);border:1px solid #444;border-radius:8px;
   padding:4px 6px;cursor:pointer;font-size:11px;display:flex;align-items:center;gap:3px;
@@ -2286,6 +2293,29 @@ function getBuffMult(col,row){
   });
   return m;
 }
+// === Tower Synergy: คู่ป้อมที่เสริมกัน — ป้อม "to" ได้รับโบนัส dmg เมื่อมีป้อม "from" อยู่ในระยะ ===
+const SYNERGY=[
+  {from:1,to:2,mult:.20,name:'❄️🔮 ความเย็นยะเยือก',desc:'น้ำแข็งทำให้ศัตรูแข็งตัว เวทมนตร์สลายได้แรงขึ้น +20% dmg'},
+  {from:2,to:7,mult:.20,name:'🔮⚡ ตัวนำเวทมนตร์',desc:'เวทมนตร์เสริมพลังให้สายฟ้านำกระแสได้แรงขึ้น +20% dmg'},
+  {from:0,to:3,mult:.15,name:'💣🎯 ชี้เป้าระดมยิง',desc:'ปืนใหญ่ระดมยิงเปิดจุดอ่อนให้สไนเปอร์ +15% dmg'},
+  {from:5,to:0,mult:.15,name:'🏹💣 สอดแนมตำแหน่ง',desc:'ธนูสอดแนมบอกตำแหน่งศัตรูให้ปืนใหญ่ +15% dmg'},
+];
+function getActiveSynergies(type,col,row){
+  if(!G) return [];
+  const out=[];
+  SYNERGY.forEach(s=>{
+    if(s.to===type){
+      const has=G.towers.some(t=>t!==undefined&&t.type===s.from&&Math.hypot(t.col-col,t.row-row)<=getTowerRange(t.type,t.lv));
+      if(has) out.push(s);
+    }
+  });
+  return out;
+}
+function getSynergyMult(type,col,row){
+  let m=1;
+  getActiveSynergies(type,col,row).forEach(s=>{ m+=s.mult; });
+  return m;
+}
 function killEnemy(e){
   if(!e.alive) return;
   e.alive=false;
@@ -2479,7 +2509,7 @@ function update(dt){
       const _rateMultW=(tw.type===1&&G.weather&&G.weather.iceRateMult)?G.weather.iceRateMult:1;
       tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.lv)*_rateMultW);
       const fx=tw.col*CS+CS/2, fy=tw.row*CS+CS/2;
-      let _rdmg=getTowerDmg(tw.type,tw.lv)*getBuffMult(tw.col,tw.row);
+      let _rdmg=getTowerDmg(tw.type,tw.lv)*getBuffMult(tw.col,tw.row)*getSynergyMult(tw.type,tw.col,tw.row);
       if(tw.awakened) _rdmg*=1.15; // Awaken bonus +15%
       let _risCrit=false;
       let _rSlow=TSLOW[tw.type];
@@ -4340,11 +4370,17 @@ function showTowerPopup(tw,px,py){
   const cost=tw.lv>=5?0:CFG.t_cost[tw.type]*tw.lv;
   const refund=Math.floor(CFG.t_cost[tw.type]*tw.lv*.6);
   const canUp=tw.lv<5&&G.gold>=cost;
-  const dmgVal=CFG.t_dmg[tw.type]===0?'—':Math.round(getTowerDmg(tw.type,tw.lv)*(tw.awakened?1.15:1));
+  const dmgVal=CFG.t_dmg[tw.type]===0?'—':Math.round(getTowerDmg(tw.type,tw.lv)*(tw.awakened?1.15:1)*getSynergyMult(tw.type,tw.col,tw.row));
   const rngVal=getTowerRange(tw.type,tw.lv).toFixed(1);
   const rateVal=CFG.t_rate[tw.type]===0?'—':getTowerRate(tw.type,tw.lv).toFixed(1);
   const canAwaken=tw.lv>=5&&!tw.awakened&&G.gold>=300;
   const showAwakenBtn=tw.lv>=5&&!tw.awakened;
+  const activeSyn=getActiveSynergies(tw.type,tw.col,tw.row);
+  const synHtml=activeSyn.length?
+    `<div class="tp-syn-row"><div class="tp-syn-label">🔗 SYNERGY (${activeSyn.length})</div>`+
+    activeSyn.map(s=>`<div class="tp-syn-item"><div class="tp-syn-name">${s.name} <span style="color:#80deea;">+${Math.round(s.mult*100)}% dmg</span></div><div class="tp-syn-desc">${s.desc}</div></div>`).join('')+
+    `</div>`
+    : `<div class="tp-syn-row"><div class="tp-syn-label">🔗 SYNERGY</div><div class="tp-rune-empty" style="color:#555;">วางป้อมชนิดอื่นใกล้ๆ เพื่อปลดล็อกซินเนอร์จี้</div></div>`;
   pop.innerHTML=`<div class="tp-head">
     <canvas id="_tpIco" width="42" height="42" style="flex-shrink:0;border-radius:6px;"></canvas>
     <div>
@@ -4358,6 +4394,7 @@ function showTowerPopup(tw,px,py){
     <div class="tp-stat">⚡ Fire Rate<span>${rateVal}</span></div>
     ${tw.lv<5?`<div class="tp-stat">💰 ค่าอัพ<span>${cost} ทอง</span></div>`:''}
   </div>
+  ${synHtml}
   <div class="tp-rune-row" id="tpRuneRow"></div>
   <div class="tp-btns">
     ${showAwakenBtn?
@@ -5328,7 +5365,7 @@ function updateEg(dt){
       const _rateMultW2=(tw.type===1&&G.weather&&G.weather.iceRateMult)?G.weather.iceRateMult:1;
       tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.lv)*_rateMultW2);
       const fx=tw.col*CS+CS/2,fy=tw.row*CS+CS/2;
-      let _rdmg2=getTowerDmg(tw.type,tw.lv)*getBuffMult(tw.col,tw.row);
+      let _rdmg2=getTowerDmg(tw.type,tw.lv)*getBuffMult(tw.col,tw.row)*getSynergyMult(tw.type,tw.col,tw.row);
       let _risCrit2=false;
       let _rSlow2=TSLOW[tw.type];
       if(tw.rune===5) _rdmg2*=1.25;
