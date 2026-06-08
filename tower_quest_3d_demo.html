@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tower Quest 🏰 — 3D Tower Render Demo (Three.js + Canvas2D hybrid)</title>
+<title>Tower Quest 🏰 — 3D Render Demo v2 (Three.js + Canvas2D hybrid)</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0;}
   body{background:#0d1117;display:flex;align-items:center;justify-content:center;min-height:100vh;
@@ -15,29 +15,36 @@
   /* ── stacked-canvas trick ──
      #stage is the positioning context. The 2D background canvas (#bg)
      and the WebGL overlay canvas (#gl) occupy the exact same box —
-     #gl sits on top, has a transparent clear color, and ignores
-     pointer events so clicks pass through to the 2D layer/UI below. */
+     #gl sits on top with a transparent clear color. NOTE: in v2 the
+     camera is orbit-controllable, so #gl now OWNS pointer events
+     (drag = rotate, wheel = zoom) — see "INPUT HAND-OFF" comment
+     below for how this would be reconciled with the 2D UI in the
+     real game. */
   #stage{position:relative;width:100%;aspect-ratio:12/10;border-radius:14px;overflow:hidden;
          border:2px solid #4caf50;box-shadow:0 8px 28px rgba(0,0,0,.5);}
   #stage canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;}
-  #gl{pointer-events:none;}
+  #gl{cursor:grab;}
+  #gl:active{cursor:grabbing;}
   .hud{position:absolute;top:0;left:0;right:0;z-index:5;background:rgba(0,0,0,.55);
        padding:6px 10px;display:flex;gap:14px;font-size:11px;font-weight:700;
        border-bottom:2px solid #4caf50;pointer-events:none;}
   .hud span{color:#ffe082;}
   .legend{position:absolute;bottom:8px;left:8px;z-index:5;background:rgba(0,0,0,.6);
           border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:8px 10px;
-          font-size:10px;line-height:1.6;color:#ccc;pointer-events:none;}
+          font-size:10px;line-height:1.6;color:#ccc;pointer-events:none;max-width:230px;}
   .legend b{color:#ffe082;}
   .dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px;}
+  .hint{position:absolute;top:34px;right:8px;z-index:5;background:rgba(0,0,0,.55);
+        border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:6px 9px;
+        font-size:10px;line-height:1.6;color:#90caf9;pointer-events:none;text-align:right;}
 </style>
 </head>
 <body>
 <div id="wrap">
-  <h1>🏰 Tower Quest — 3D Tower Render Demo</h1>
+  <h1>🏰 Tower Quest — 3D Render Demo v2</h1>
   <div class="note">
-    แนวคิด: <b>พื้นหลัง + UI ยังเป็น Canvas 2D เดิม</b> ส่วน <b>ป้อม (Tower) เปลี่ยนไปวาดด้วย Three.js (WebGL 3D)</b><br>
-    โดยวาง canvas 3D แบบโปร่งใสซ้อนทับ canvas 2D ในตำแหน่งเดียวกัน แล้ว sync ตำแหน่ง/มุมหมุนป้อมทุกเฟรม
+    <b>พื้นหลัง/เส้นทาง/HUD ยังเป็น Canvas 2D เดิม</b> ส่วน <b>ป้อม + ศัตรู + Effect เปลี่ยนไปใช้ Three.js (WebGL 3D)</b>
+    ทั้งหมด พร้อมกล้องที่ลาก-หมุน-ซูมได้ (OrbitControls)
   </div>
   <div id="stage">
     <canvas id="bg"></canvas>
@@ -48,41 +55,44 @@
       <div>❤️ <span id="hpTxt">20</span></div>
       <div style="margin-left:auto;color:#90caf9;">🧊 Three.js r128 · WebGL overlay</div>
     </div>
+    <div class="hint">🖱️ ลาก = หมุนกล้อง<br>🔍 เลื่อนล้อ = ซูม</div>
     <div class="legend">
-      <div><span class="dot" style="background:#42a5f5"></span>💣 Cannon (กระบอกยิงหมุนตามศัตรู)</div>
+      <div><b>ป้อม 3D</b> (โมเดล low-poly + ป้อมปืนหมุนตามศัตรู + ยิงแล้วเกิด particle FX):</div>
+      <div><span class="dot" style="background:#42a5f5"></span>💣 Cannon</div>
       <div><span class="dot" style="background:#26c6da"></span>❄️ Ice Tower</div>
       <div><span class="dot" style="background:#ab47bc"></span>✨ Magic Tower</div>
       <div><span class="dot" style="background:#ffa726"></span>🎯 Sniper Tower</div>
-      <div style="margin-top:4px;color:#888;">⚪ จุดขาวเคลื่อนที่ = ศัตรูจำลอง (วาดด้วย 2D เหมือนเดิม)</div>
+      <div style="margin-top:4px;"><b>ศัตรู 3D</b> — หุ่นชิบิทรงแคปซูล เดินตามเส้นทาง พร้อม bobbing animation</div>
     </div>
   </div>
 </div>
 
-<!-- Three.js (classic UMD build — no bundler / module setup needed) -->
+<!-- Three.js classic UMD build + OrbitControls (same r128, no bundler) -->
 <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
 /* ════════════════════════════════════════════════════════════════
-   TOWER QUEST — 3D TOWER RENDER DEMO
+   TOWER QUEST — 3D RENDER DEMO v2
    ----------------------------------------------------------------
-   Goal: keep the existing Canvas-2D pipeline (terrain, path, enemies,
-   particles, HUD/UI) completely untouched, and ONLY swap the tower
-   rendering step for a real 3D (Three.js/WebGL) layer.
+   v1 only swapped the TOWER sprites for 3D meshes. v2 extends the
+   same "transparent overlay canvas" technique to cover:
 
-   TECHNIQUE — "transparent overlay canvas":
-     1. Two <canvas> elements are stacked in the same absolutely-
-        positioned box, same pixel size (COLS*CS × ROWS*CS).
-     2. #bg  (2D context)  → terrain, grid, path, enemies, FX, UI
-     3. #gl  (WebGL/Three) → towers ONLY, rendered with alpha:true
-        and a fully transparent clearColor, so the 2D layer shows
-        through everywhere there is no tower geometry.
-     4. Every animation frame we:
-          a) run the normal 2D render pass (ctx.clearRect + draw)
-          b) walk the `towers[]` array, convert each tower's
-             grid (col,row) → 3D world (x,y,z), update its
-             THREE.Group position + turret rotation (tw.angle)
-          c) call renderer.render(scene, camera)
-     5. #gl has `pointer-events:none` so mouse/touch still goes to
-        the 2D canvas exactly like in the original game.
+     • 3D enemies      — capsule-bodied chibi mobs that walk the
+                         path in 3D world space (mirrors the 2D
+                         path-interpolation math 1:1)
+     • Orbit camera    — drag-to-rotate / scroll-to-zoom via
+                         THREE.OrbitControls, while the 2D layer
+                         (terrain/path/HUD) stays a flat top-down
+                         "minimap-accurate" reference grid
+     • Particle FX     — muzzle flash + impact burst implemented
+                         with THREE.Points (additive blending),
+                         spawned on the same "tower fires" event
+                         that the 2D game already raises
+
+   Everything that ISN'T a tower/enemy/FX (terrain, path, shadows,
+   HUD, legend) is still rendered with plain Canvas 2D, completely
+   unaware that a 3D layer exists above it — exactly the separation
+   of concerns we'd want when porting this into the main game.
    ════════════════════════════════════════════════════════════════ */
 
 const COLS=12, ROWS=10, CS=80;
@@ -95,52 +105,54 @@ glCv.width=W; glCv.height=H;
 const ctx=bgCv.getContext('2d');
 
 /* ─────────────────────────────────────────────
-   1) DEMO PATH + TOWER LAYOUT  (same shape/feel
-      as the real game's grid data structures)
+   1) DEMO PATH + TOWER LAYOUT
    ───────────────────────────────────────────── */
 const path=[[0,4],[1,4],[2,4],[3,4],[3,3],[3,2],[4,2],[5,2],[5,3],[5,4],[5,5],[5,6],
             [6,6],[7,6],[8,6],[8,5],[8,4],[8,3],[9,3],[10,3],[11,3]];
 const pset=new Set(path.map(([c,r])=>c+','+r));
 
-// type → {name, color (hex int for THREE, css for 2D), barrelLen}
 const TYPES=[
-  {name:'Cannon', col3:0x42a5f5, col2:'#42a5f5', dark:0x1565c0},
-  {name:'Ice',    col3:0x26c6da, col2:'#26c6da', dark:0x00838f},
-  {name:'Magic',  col3:0xab47bc, col2:'#ab47bc', dark:0x6a1b9a},
-  {name:'Sniper', col3:0xffa726, col2:'#ffa726', dark:0xe65100},
+  {name:'Cannon', col3:0x42a5f5, col2:'#42a5f5', dark:0x1565c0, fxCol:0x90caf9},
+  {name:'Ice',    col3:0x26c6da, col2:'#26c6da', dark:0x00838f, fxCol:0xb3f5ff},
+  {name:'Magic',  col3:0xab47bc, col2:'#ab47bc', dark:0x6a1b9a, fxCol:0xe1bee7},
+  {name:'Sniper', col3:0xffa726, col2:'#ffa726', dark:0xe65100, fxCol:0xffe0b2},
 ];
 
 const towers=[
-  {col:1, row:6, type:0, angle:0},
-  {col:4, row:1, type:1, angle:0},
-  {col:7, row:8, type:2, angle:0},
-  {col:9, row:1, type:3, angle:0},
-  {col:6, row:4, type:0, angle:0},
+  {col:1, row:6, type:0, angle:0, cd:0},
+  {col:4, row:1, type:1, angle:0, cd:0},
+  {col:7, row:8, type:2, angle:0, cd:0},
+  {col:9, row:1, type:3, angle:0, cd:0},
+  {col:6, row:4, type:0, angle:0, cd:0},
 ];
+const FIRE_RATE=0.9;     // seconds between shots
+const RANGE=CS*3.4;      // px, in 2D path-space (same units as enemyPos)
 
 /* ─────────────────────────────────────────────
-   2) SIMPLE MOVING DUMMY ENEMIES (2D, unchanged
-      drawing technique from the main game —
-      towers will aim 3D turrets at these)
+   2) ENEMIES — same path-interpolation formula
+      as the main game, now driving a 3D mesh
+      instead of a 2D circle.
    ───────────────────────────────────────────── */
 let enemies=[
-  {t:0.00, spd:0.07},
-  {t:0.33, spd:0.06},
-  {t:0.66, spd:0.08},
+  {t:0.00, spd:0.065, hp:1, alive:true},
+  {t:0.30, spd:0.055, hp:1, alive:true},
+  {t:0.60, spd:0.07,  hp:1, alive:true},
+  {t:0.85, spd:0.05,  hp:1, alive:true},
 ];
-function enemyPos(e){
+function enemyPos(e){ // returns 2D path-space pixel coords (same as original)
   const segF=e.t*(path.length-1);
   const i=Math.min(path.length-2, Math.floor(segF));
   const f=segF-i;
   const [c0,r0]=path[i], [c1,r1]=path[i+1];
   return {x:(c0+(c1-c0)*f+0.5)*CS, y:(r0+(r1-r0)*f+0.5)*CS};
 }
+// 2D path-space (x,y in px) → 3D world space (x,z), shared by towers & enemies
+function worldFromPathSpace(px,py){ return { x:px-W/2, z:py-H/2 }; }
 
 /* ─────────────────────────────────────────────
-   3) 2D BACKGROUND RENDER  (terrain + path +
-      enemies) — straight reuse of the simple
-      flat-grid style; identical every frame
-      regardless of the 3D layer above it.
+   3) 2D BACKGROUND — terrain + path only.
+      (Enemy + tower drawing fully removed —
+      they now live entirely in the 3D layer.)
    ───────────────────────────────────────────── */
 function drawBackground(){
   ctx.clearRect(0,0,W,H);
@@ -152,7 +164,6 @@ function drawBackground(){
     ctx.strokeRect(c*CS, r*CS, CS, CS);
     if(onPath){ ctx.fillStyle='rgba(0,0,0,.08)'; ctx.fillRect(c*CS, r*CS+CS-6, CS, 6); }
   }
-  // path direction arrows (cosmetic, like the real game)
   ctx.fillStyle='rgba(255,255,255,.35)';
   for(let i=0;i<path.length-1;i+=2){
     const [c0,r0]=path[i], [c1,r1]=path[i+1];
@@ -162,120 +173,89 @@ function drawBackground(){
     ctx.beginPath(); ctx.moveTo(10,0); ctx.lineTo(-6,-6); ctx.lineTo(-6,6); ctx.closePath(); ctx.fill();
     ctx.restore();
   }
-  // ground shadow under each tower tile (drawn in 2D so the 3D
-  // tower appears to "sit" on the ground, like the original game)
+  // ground shadows for towers (kept in 2D so 3D objects look grounded)
   towers.forEach(tw=>{
     const cx=(tw.col+.5)*CS, cy=(tw.row+.5)*CS;
     ctx.globalAlpha=.32; ctx.fillStyle='#000';
     ctx.beginPath(); ctx.ellipse(cx, cy+CS*.30, CS*.40, CS*.13, 0,0,Math.PI*2); ctx.fill();
     ctx.globalAlpha=1;
   });
-  // dummy enemies
+  // ground shadows for enemies (their 3D meshes float/bob slightly)
   enemies.forEach(e=>{
+    if(!e.alive) return;
     const p=enemyPos(e);
-    ctx.fillStyle='rgba(0,0,0,.35)';
-    ctx.beginPath(); ctx.ellipse(p.x,p.y+10,12,4,0,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle='#eceff1'; ctx.strokeStyle='#1a1a1a'; ctx.lineWidth=2;
-    ctx.beginPath(); ctx.arc(p.x,p.y,11,0,Math.PI*2); ctx.fill(); ctx.stroke();
-    ctx.fillStyle='#e53935';
-    ctx.beginPath(); ctx.arc(p.x-3,p.y-2,2.4,0,Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(p.x+3,p.y-2,2.4,0,Math.PI*2); ctx.fill();
+    ctx.globalAlpha=.30; ctx.fillStyle='#000';
+    ctx.beginPath(); ctx.ellipse(p.x, p.y+8, 13, 4.5, 0,0,Math.PI*2); ctx.fill();
+    ctx.globalAlpha=1;
   });
 }
 
 /* ─────────────────────────────────────────────
-   4) THREE.JS 3D LAYER — towers only
+   4) THREE.JS SCENE SETUP
    ───────────────────────────────────────────── */
 const renderer=new THREE.WebGLRenderer({canvas:glCv, antialias:true, alpha:true});
-renderer.setClearColor(0x000000, 0);          // fully transparent → 2D bg shows through
+renderer.setClearColor(0x000000, 0);
 renderer.setPixelRatio(window.devicePixelRatio||1);
 renderer.setSize(W, H, false);
 
 const scene=new THREE.Scene();
 
-/* Orthographic camera tilted to match the game's "2.5D pseudo-
-   isometric" look: looking down at ~55° so each tower's footprint
-   lands roughly on its 2D grid tile while its body/turret rises
-   up & toward the camera — exactly the visual the 2D renderer
-   already fakes by shifting sprites upward. Using ORTHOGRAPHIC
-   (not perspective) keeps every tile the same size on screen,
-   which is what makes lining up with the flat 2D grid possible. */
-const VIEW_H = H;                       // world units visible vertically
-const VIEW_W = VIEW_H * (W/H);
+const VIEW_H=H, VIEW_W=VIEW_H*(W/H);
 const camera=new THREE.OrthographicCamera(-VIEW_W/2, VIEW_W/2, VIEW_H/2, -VIEW_H/2, 1, 4000);
-const ELEV = THREE.MathUtils.degToRad(55);
+const ELEV=THREE.MathUtils.degToRad(55);
 const CAM_DIST=1200;
 camera.position.set(0, Math.sin(ELEV)*CAM_DIST, Math.cos(ELEV)*CAM_DIST);
-camera.lookAt(0,0,0);
-// compensate the vertical foreshortening from the tilt so 1 world
-// unit in X (columns) ≈ 1 world unit in projected Z (rows):
-camera.zoom = 1/Math.sin(ELEV);
+camera.zoom=1/Math.sin(ELEV);
 camera.updateProjectionMatrix();
+
+/* OrbitControls — lets the player freely rotate/zoom around the
+   battlefield, something impossible with a flat 2D canvas. We
+   constrain the polar angle so the camera can't dip below ground
+   or flip to a bird's-eye view that would break the 2.5D feel. */
+const controls=new THREE.OrbitControls(camera, glCv);
+controls.target.set(0,0,0);
+controls.enableDamping=true; controls.dampingFactor=0.08;
+controls.minPolarAngle=THREE.MathUtils.degToRad(28);
+controls.maxPolarAngle=THREE.MathUtils.degToRad(80);
+controls.minZoom=0.7; controls.maxZoom=2.4;
+controls.enablePan=false;
 
 scene.add(new THREE.AmbientLight(0xffffff, .65));
 const sun=new THREE.DirectionalLight(0xfff4d6, .9);
 sun.position.set(-300, 500, 200);
 scene.add(sun);
 
-// grid (col,row) → 3D world position. Origin is centered so it
-// matches the camera looking at (0,0,0); Y is "up" (tower height).
 function gridToWorld(col,row){
   return { x:(col+0.5-COLS/2)*CS, z:(row+0.5-ROWS/2)*CS };
 }
 
-/* Build a simple low-poly "Kingdom-Rush-ish" tower: round base +
-   tapered body + rotating turret/barrel group. Cheap geometry
-   (a few primitives) keeps the demo light and easy to re-skin
-   later with real models (glTF) per tower type. */
+/* ── Tower meshes (same construction as v1) ───────────────── */
 function buildTowerMesh(type){
   const t=TYPES[type];
   const g=new THREE.Group();
-
-  const base=new THREE.Mesh(
-    new THREE.CylinderGeometry(CS*.34, CS*.40, CS*.18, 16),
-    new THREE.MeshStandardMaterial({color:t.dark, roughness:.85})
-  );
-  base.position.y=CS*.09;
-  g.add(base);
-
-  const body=new THREE.Mesh(
-    new THREE.CylinderGeometry(CS*.20, CS*.30, CS*.46, 12),
-    new THREE.MeshStandardMaterial({color:t.col3, roughness:.6, metalness:.1})
-  );
-  body.position.y=CS*.18+CS*.23;
-  g.add(body);
-
+  const base=new THREE.Mesh(new THREE.CylinderGeometry(CS*.34, CS*.40, CS*.18, 16),
+    new THREE.MeshStandardMaterial({color:t.dark, roughness:.85}));
+  base.position.y=CS*.09; g.add(base);
+  const body=new THREE.Mesh(new THREE.CylinderGeometry(CS*.20, CS*.30, CS*.46, 12),
+    new THREE.MeshStandardMaterial({color:t.col3, roughness:.6, metalness:.1}));
+  body.position.y=CS*.18+CS*.23; g.add(body);
   const roofCol=new THREE.Color(t.col3).lerp(new THREE.Color(0xffffff),.35);
-  const roof=new THREE.Mesh(
-    new THREE.ConeGeometry(CS*.24, CS*.26, 12),
-    new THREE.MeshStandardMaterial({color:roofCol, roughness:.5})
-  );
-  roof.position.y=CS*.18+CS*.46+CS*.13;
-  g.add(roof);
-
-  // turret = separate group so we can rotate it toward enemies
-  // independently of the tower body (mirrors `tw.angle` usage
-  // in the original 2D drawTowerIcon()).
+  const roof=new THREE.Mesh(new THREE.ConeGeometry(CS*.24, CS*.26, 12),
+    new THREE.MeshStandardMaterial({color:roofCol, roughness:.5}));
+  roof.position.y=CS*.18+CS*.46+CS*.13; g.add(roof);
   const turret=new THREE.Group();
   turret.position.y=CS*.18+CS*.46*0.62;
-  const turretBase=new THREE.Mesh(
-    new THREE.SphereGeometry(CS*.13, 12, 10),
-    new THREE.MeshStandardMaterial({color:t.dark, roughness:.7})
-  );
-  turret.add(turretBase);
-  const barrel=new THREE.Mesh(
-    new THREE.CylinderGeometry(CS*.045, CS*.06, CS*.42, 10),
-    new THREE.MeshStandardMaterial({color:0x2b2b2b, roughness:.4, metalness:.3})
-  );
-  barrel.rotation.x=Math.PI/2;             // lay it flat, pointing +Z
-  barrel.position.z=CS*.24;
+  turret.add(new THREE.Mesh(new THREE.SphereGeometry(CS*.13, 12, 10),
+    new THREE.MeshStandardMaterial({color:t.dark, roughness:.7})));
+  const barrel=new THREE.Mesh(new THREE.CylinderGeometry(CS*.045, CS*.06, CS*.42, 10),
+    new THREE.MeshStandardMaterial({color:0x2b2b2b, roughness:.4, metalness:.3}));
+  barrel.rotation.x=Math.PI/2; barrel.position.z=CS*.24;
   turret.add(barrel);
   g.add(turret);
-
   g.userData.turret=turret;
+  g.userData.muzzle=new THREE.Vector3(0, turret.position.y, CS*.45); // local-space muzzle tip
   return g;
 }
-
 towers.forEach(tw=>{
   const mesh=buildTowerMesh(tw.type);
   const p=gridToWorld(tw.col, tw.row);
@@ -284,53 +264,208 @@ towers.forEach(tw=>{
   tw.mesh=mesh;
 });
 
+/* ── Enemy meshes — chibi capsule mobs ─────────────────────
+   Body = capsule, two small "eye" spheres, subtle bob/squash
+   animation driven by a per-enemy phase offset. */
+function buildEnemyMesh(seed){
+  // r128 has no CapsuleGeometry — fake a capsule with a cylinder
+  // "torso" capped by two hemispheres (sphere halves via scale)
+  const g=new THREE.Group();
+  const bodyMat=new THREE.MeshStandardMaterial({color:0xef5350, roughness:.55});
+  const torso=new THREE.Mesh(new THREE.CylinderGeometry(CS*.13, CS*.13, CS*.14, 12), bodyMat);
+  torso.position.y=CS*.22;
+  g.add(torso);
+  const capTop=new THREE.Mesh(new THREE.SphereGeometry(CS*.13, 12, 8), bodyMat);
+  capTop.position.y=CS*.22+CS*.07;
+  g.add(capTop);
+  const capBot=new THREE.Mesh(new THREE.SphereGeometry(CS*.13, 12, 8), bodyMat);
+  capBot.position.y=CS*.22-CS*.07;
+  capBot.scale.y=0.6;
+  g.add(capBot);
+  const eyeMat=new THREE.MeshStandardMaterial({color:0xffffff, roughness:.3});
+  const pupilMat=new THREE.MeshStandardMaterial({color:0x222222, roughness:.2});
+  [-1,1].forEach(side=>{
+    const eye=new THREE.Mesh(new THREE.SphereGeometry(CS*.045,8,8), eyeMat);
+    eye.position.set(side*CS*.06, CS*.30, CS*.10);
+    g.add(eye);
+    const pupil=new THREE.Mesh(new THREE.SphereGeometry(CS*.022,8,8), pupilMat);
+    pupil.position.set(side*CS*.06, CS*.30, CS*.13);
+    g.add(pupil);
+  });
+  g.userData.bobPhase=seed*6.28;
+  g.userData.baseY=0;
+  return g;
+}
+enemies.forEach((e,i)=>{
+  const mesh=buildEnemyMesh(i*0.41+0.1);
+  scene.add(mesh);
+  e.mesh=mesh;
+});
+
+/* ── Particle FX system (THREE.Points, additive) ───────────
+   A small pool of short-lived bursts. Each burst is its own
+   THREE.Points cloud with random outward velocities and a
+   fading opacity driven by per-vertex "life". Cheap & GC-light
+   enough for many simultaneous tower shots. */
+const fxBursts=[];
+function spawnBurst(pos, color, count, speed, life){
+  const positions=new Float32Array(count*3);
+  const velocities=[];
+  for(let i=0;i<count;i++){
+    positions[i*3]=pos.x; positions[i*3+1]=pos.y; positions[i*3+2]=pos.z;
+    const dir=new THREE.Vector3(Math.random()*2-1, Math.random()*1.4, Math.random()*2-1).normalize();
+    velocities.push(dir.multiplyScalar(speed*(0.4+Math.random()*0.8)));
+  }
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions,3));
+  const mat=new THREE.PointsMaterial({color, size:CS*.07, transparent:true, opacity:1,
+    blending:THREE.AdditiveBlending, depthWrite:false});
+  const pts=new THREE.Points(geo, mat);
+  scene.add(pts);
+  fxBursts.push({pts, geo, mat, velocities, age:0, life});
+}
+function updateBursts(dt){
+  for(let i=fxBursts.length-1;i>=0;i--){
+    const b=fxBursts[i];
+    b.age+=dt;
+    const arr=b.geo.attributes.position.array;
+    for(let j=0;j<b.velocities.length;j++){
+      arr[j*3]  +=b.velocities[j].x*dt*60;
+      arr[j*3+1]+=(b.velocities[j].y - 2.2*b.age)*dt*60; // gravity pulls sparks down
+      arr[j*3+2]+=b.velocities[j].z*dt*60;
+    }
+    b.geo.attributes.position.needsUpdate=true;
+    b.mat.opacity=Math.max(0, 1-b.age/b.life);
+    if(b.age>=b.life){
+      scene.remove(b.pts); b.geo.dispose(); b.mat.dispose();
+      fxBursts.splice(i,1);
+    }
+  }
+}
+
+/* ── Muzzle-flash flicker: a tiny additive sprite-like plane
+   parented to each turret's barrel tip, flashed briefly on fire */
+function buildMuzzleFlash(color){
+  const mat=new THREE.SpriteMaterial({color, transparent:true, opacity:0,
+    blending:THREE.AdditiveBlending, depthWrite:false});
+  const spr=new THREE.Sprite(mat);
+  spr.scale.set(CS*.34, CS*.34, 1);
+  return spr;
+}
+towers.forEach(tw=>{
+  const flash=buildMuzzleFlash(TYPES[tw.type].fxCol);
+  flash.position.copy(tw.mesh.userData.muzzle);
+  tw.mesh.userData.turret.add(flash);
+  tw.mesh.userData.flash=flash;
+  tw.mesh.userData.flashT=0;
+});
+
 /* ─────────────────────────────────────────────
-   5) PER-FRAME SYNC — the actual "hand-off"
-      between the 2D world and the 3D layer.
-      For every tower: find nearest dummy enemy,
-      compute aim angle exactly like the existing
-      2D code (Math.atan2), store it on tw.angle,
-      then rotate the THREE turret group to match.
+   5) PER-FRAME GAME LOGIC
    ───────────────────────────────────────────── */
+function nearestEnemy(tcx,tcy){
+  let best=null,bestD=1e9;
+  enemies.forEach(e=>{
+    if(!e.alive) return;
+    const p=enemyPos(e);
+    const d=(p.x-tcx)**2+(p.y-tcy)**2;
+    if(d<bestD){bestD=d;best={e,p,d:Math.sqrt(d)};}
+  });
+  return best;
+}
+
+function fireAt(tw, target){
+  const muzzleWorld=tw.mesh.userData.muzzle.clone()
+    .applyMatrix4(tw.mesh.userData.turret.matrixWorld);
+  const t=TYPES[tw.type];
+  // muzzle flash
+  tw.mesh.userData.flashT=0.09;
+  tw.mesh.userData.flash.material.opacity=1;
+  // travel spark from muzzle toward target + impact burst at target
+  const tgtWorld=worldFromPathSpace(target.p.x, target.p.y);
+  spawnBurst(muzzleWorld, t.fxCol, 6, 1.6, 0.35);
+  setTimeout(()=>{
+    if(target.e.alive) spawnBurst(new THREE.Vector3(tgtWorld.x, CS*.28, tgtWorld.z), t.fxCol, 14, 2.2, 0.5);
+  }, 90);
+}
+
 function updateTowers(dt){
   towers.forEach(tw=>{
     const tcx=(tw.col+.5)*CS, tcy=(tw.row+.5)*CS;
-    let best=null, bestD=1e9;
-    enemies.forEach(e=>{
-      const p=enemyPos(e);
-      const d=(p.x-tcx)**2+(p.y-tcy)**2;
-      if(d<bestD){bestD=d;best=p;}
-    });
-    if(best){
-      const targetAngle=Math.atan2(best.y-tcy, best.x-tcx); // same formula as 2D game
-      // shortest-path angle lerp (avoid 360° spin-back)
+    const target=nearestEnemy(tcx,tcy);
+    if(target && target.d<=RANGE){
+      const targetAngle=Math.atan2(target.p.y-tcy, target.p.x-tcx);
       let diff=targetAngle-tw.angle;
       diff=Math.atan2(Math.sin(diff),Math.cos(diff));
       tw.angle+=diff*Math.min(1, dt*6);
+      tw.cd-=dt;
+      if(tw.cd<=0 && Math.abs(diff)<0.35){
+        tw.cd=FIRE_RATE;
+        fireAt(tw, target);
+      }
+    } else {
+      tw.cd=Math.min(tw.cd, FIRE_RATE*0.4);
     }
-    // 2D screen angle (atan2 with +x right, +y down) → 3D yaw
-    // around Y (right-handed, -Z forward). Negating maps the
-    // rotation direction correctly between the two coord systems.
     tw.mesh.userData.turret.rotation.y=-tw.angle;
+    // muzzle flash decay
+    const ud=tw.mesh.userData;
+    if(ud.flashT>0){ ud.flashT-=dt; ud.flash.material.opacity=Math.max(0, ud.flashT/0.09); }
+  });
+}
+
+function updateEnemies(dt, now){
+  enemies.forEach(e=>{
+    if(!e.alive) return;
+    e.t+=e.spd*dt;
+    if(e.t>1) e.t-=1; // loop forever for the demo (no real HP/death flow)
+    const p=enemyPos(e);
+    const w=worldFromPathSpace(p.x,p.y);
+    const bob=Math.sin(now*5 + e.mesh.userData.bobPhase)*CS*.025;
+    e.mesh.position.set(w.x, CS*.02 + Math.abs(bob), w.z);
+    // face movement direction
+    const ahead=enemyPos({...e, t:(e.t+0.01)%1});
+    const aw=worldFromPathSpace(ahead.x, ahead.y);
+    const yaw=Math.atan2(aw.x-w.x, aw.z-w.z);
+    e.mesh.rotation.y=yaw;
+    // tiny squash on the bob's low point = "footstep" feel
+    const squash=1-Math.max(0,-Math.sin(now*5+e.mesh.userData.bobPhase))*0.18;
+    e.mesh.scale.set(1/Math.sqrt(squash), squash, 1/Math.sqrt(squash));
   });
 }
 
 /* ─────────────────────────────────────────────
-   6) MAIN LOOP — draw 2D, then render 3D on top
+   6) MAIN LOOP
    ───────────────────────────────────────────── */
 let last=performance.now();
+let clock=0;
 function loop(now){
   const dt=Math.min(.05,(now-last)/1000); last=now;
+  clock+=dt;
 
-  enemies.forEach(e=>{ e.t+=e.spd*dt; if(e.t>1) e.t-=1; });
-
-  drawBackground();      // ① normal 2D pass — terrain/path/enemies/UI
-  updateTowers(dt);      // ② sync 3D tower transforms from game state
-  renderer.render(scene, camera); // ③ composite WebGL layer on top (transparent bg)
+  drawBackground();           // ① 2D pass: terrain/path/shadows
+  updateEnemies(dt, clock);   // ② move + animate 3D enemy meshes
+  updateTowers(dt);           // ③ aim, fire, animate turrets/flashes
+  updateBursts(dt);           // ④ advance particle FX
+  controls.update();          // ⑤ orbit camera damping
+  renderer.render(scene, camera); // ⑥ composite WebGL layer on top
 
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
+
+/* ════════════════════════════════════════════════════════════════
+   INPUT HAND-OFF NOTE (for the future merge into the main game):
+   Giving #gl pointer events (for OrbitControls) means clicks no
+   longer reach #bg directly. In the real game you'd either:
+     a) raycast from the 3D layer to detect tower/tile clicks and
+        forward "logical" events to the existing 2D game-state
+        handlers (onCanvasClick, showTowerPopup, etc.), or
+     b) keep the camera fixed (no OrbitControls) during normal
+        play and only enable free-orbit in a dedicated "inspect"
+        / replay mode where gameplay input is irrelevant.
+   Both are compatible with keeping all game logic in the existing
+   2D code paths — only the *rendering* responsibility moves.
+   ════════════════════════════════════════════════════════════════ */
 </script>
 </body>
 </html>
