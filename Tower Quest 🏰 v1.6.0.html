@@ -493,6 +493,15 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .tp-syn-item:last-child{margin-bottom:0;}
 .tp-syn-name{font-size:10px;font-weight:800;color:#81d4fa;}
 .tp-syn-desc{font-size:9px;color:#b0bec5;}
+.tp-upgrade-pick{padding:2px 0 4px;}
+.tp-upgrade-label{font-size:9px;color:#ffe234;letter-spacing:.3px;margin-bottom:5px;text-align:center;}
+.tp-pick-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;}
+.tp-pickbtn{background:linear-gradient(180deg,#3a3a4a,#2a2a38);color:#fff;border:1px solid rgba(255,255,255,.12);
+  border-radius:8px;padding:6px 2px;font-size:9px;font-weight:700;cursor:pointer;text-align:center;line-height:1.5;}
+.tp-pickbtn .pi{font-size:15px;display:block;}
+.tp-pickbtn small{display:block;color:#bbb;font-weight:600;}
+.tp-pickbtn:hover:not(:disabled){background:linear-gradient(180deg,#4a4a5e,#34344a);border-color:rgba(255,226,52,.5);}
+.tp-pickbtn:disabled{opacity:.32;cursor:not-allowed;}
 .tp-rune-picker{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px;}
 .tp-rune-pick-btn{background:rgba(255,255,255,.08);border:1px solid #444;border-radius:8px;
   padding:4px 6px;cursor:pointer;font-size:11px;display:flex;align-items:center;gap:3px;
@@ -2291,7 +2300,7 @@ function getBuffMult(col,row){
   if(self&&self._drainT>0) return 1; // ถูกเงามืดดูดพลัง — บัฟใช้งานไม่ได้ชั่วคราว
   let m=1;
   G.towers.forEach(t=>{
-    if(TBUFF[t.type]&&Math.hypot(t.col-col,t.row-row)<=getTowerRange(t.type,t.lv)) m*=1+(t.lv*.1);
+    if(TBUFF[t.type]&&Math.hypot(t.col-col,t.row-row)<=getTowerRange(t.type,t.rngLv||t.lv)) m*=1+(t.lv*.1);
   });
   return m;
 }
@@ -2312,7 +2321,7 @@ function getActiveSynergies(type,col,row){
   const out=[];
   SYNERGY.forEach(s=>{
     if(s.to===type){
-      const has=G.towers.some(t=>t!==undefined&&t.type===s.from&&Math.hypot(t.col-col,t.row-row)<=getTowerRange(t.type,t.lv));
+      const has=G.towers.some(t=>t!==undefined&&t.type===s.from&&Math.hypot(t.col-col,t.row-row)<=getTowerRange(t.type,t.rngLv||t.lv));
       if(has) out.push(s);
     }
   });
@@ -2571,7 +2580,7 @@ function update(dt){
     if(CFG.t_dmg[tw.type]===0) return;
     if(G.weather&&G.weather.struckTowers&&G.weather.struckTowers.length&&G.weather.struckTowers.includes(tw)) return; // ⚡ struck by lightning
     tw.cd=Math.max(0,tw.cd-dt);
-    const range=getTowerRange(tw.type,tw.lv)*((G&&G.weather&&G.weather.rangeMult)?G.weather.rangeMult:1);
+    const range=getTowerRange(tw.type,tw.rngLv||tw.lv)*((G&&G.weather&&G.weather.rangeMult)?G.weather.rangeMult:1);
     const cx=tw.col+.5,cy=tw.row+.5;
     let best=null,bestP=-1;
     G.enemies.forEach(e=>{
@@ -2585,9 +2594,9 @@ function update(dt){
     if(best) tw.angle=Math.atan2(best.y/CS-cy,best.x/CS-cx);
     if(best&&tw.cd<=0){
       const _rateMultW=(tw.type===1&&G.weather&&G.weather.iceRateMult)?G.weather.iceRateMult:1;
-      tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.lv)*_rateMultW);
+      tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.rateLv||tw.lv)*_rateMultW);
       const fx=tw.col*CS+CS/2, fy=tw.row*CS+CS/2;
-      let _rdmg=getTowerDmg(tw.type,tw.lv)*getBuffMult(tw.col,tw.row)*getSynergyMult(tw.type,tw.col,tw.row);
+      let _rdmg=getTowerDmg(tw.type,tw.dmgLv||tw.lv)*getBuffMult(tw.col,tw.row)*getSynergyMult(tw.type,tw.col,tw.row);
       if(tw.awakened&&!(tw._drainT>0)) _rdmg*=1.15; // Awaken bonus +15% (ใช้ไม่ได้ถ้าโดนดูดพลัง)
       let _risCrit=false;
       let _rSlow=(TSLOW[tw.type]||0)+getSynergySlowBonus(tw.type,tw.col,tw.row);
@@ -3817,7 +3826,7 @@ function render(){
   if(G.selTowerInfo){
     const st=G.selTowerInfo;
     const sx=st.col*CS+CS/2, sy=st.row*CS+CS/2;
-    const rang=getTowerRange(st.type,st.lv)*CS;
+    const rang=getTowerRange(st.type,st.rngLv||st.lv)*CS;
     ctx.globalAlpha=.12;ctx.fillStyle=TACCENT[st.type];
     ctx.beginPath();ctx.arc(sx,sy,rang,0,Math.PI*2);ctx.fill();
     ctx.globalAlpha=.6;ctx.strokeStyle=TACCENT[st.type];ctx.lineWidth=1.5;
@@ -4004,7 +4013,7 @@ function render(){
     // support aura ring
     if(TBUFF[tw.type]){
       ctx.globalAlpha=.08;ctx.strokeStyle='#64ffda';ctx.lineWidth=1;
-      ctx.beginPath();ctx.arc(cx2,cy2,getTowerRange(tw.type,tw.lv)*CS,0,Math.PI*2);
+      ctx.beginPath();ctx.arc(cx2,cy2,getTowerRange(tw.type,tw.rngLv||tw.lv)*CS,0,Math.PI*2);
       ctx.stroke();ctx.globalAlpha=1;
     }
     if(bounce!==1) ctx.restore();
@@ -4385,7 +4394,7 @@ function onCanvasClick(e){
     if(G.towers.find(t=>t.col===col&&t.row===row)){showToast('❌ ช่องนี้มีป้อมอยู่แล้ว!');return;}
     if(G.gold<CFG.t_cost[G.selTwr]){showToast('💰 ต้องการ '+CFG.t_cost[G.selTwr]+' ทอง!');return;}
     G.gold-=CFG.t_cost[G.selTwr];
-    G.towers.push({col,row,type:G.selTwr,lv:1,cd:0,angle:0,spawnAnim:1.0,rune:-1,awakened:false});
+    G.towers.push({col,row,type:G.selTwr,lv:1,dmgLv:1,rngLv:1,rateLv:1,cd:0,angle:0,spawnAnim:1.0,rune:-1,awakened:false});
     // FX: ring pulse + burst particles
     const bx=col*CS+CS/2, by=row*CS+CS/2;
     G.fxRings.push({x:bx,y:by,r:0,maxR:CS*1.6,life:1,col:TACCENT[G.selTwr],lw:3});
@@ -4465,12 +4474,14 @@ function showTowerPopup(tw,px,py){
   _popupTw=tw;
   const pop=document.getElementById('towerPopup');
   if(!pop||!G) return;
+  // ป้อมเก่า (ก่อนระบบอัพแยกสาย) อาจไม่มี dmgLv/rngLv/rateLv — ตั้งค่าเริ่มต้นให้
+  if(tw.dmgLv===undefined){tw.dmgLv=tw.lv||1;tw.rngLv=tw.lv||1;tw.rateLv=tw.lv||1;}
   const cost=tw.lv>=5?0:CFG.t_cost[tw.type]*tw.lv;
   const refund=Math.floor(CFG.t_cost[tw.type]*tw.lv*.6);
   const canUp=tw.lv<5&&G.gold>=cost;
-  const dmgVal=CFG.t_dmg[tw.type]===0?'—':Math.round(getTowerDmg(tw.type,tw.lv)*(tw.awakened?1.15:1)*getSynergyMult(tw.type,tw.col,tw.row));
-  const rngVal=getTowerRange(tw.type,tw.lv).toFixed(1);
-  const rateVal=CFG.t_rate[tw.type]===0?'—':getTowerRate(tw.type,tw.lv).toFixed(1);
+  const dmgVal=CFG.t_dmg[tw.type]===0?'—':Math.round(getTowerDmg(tw.type,tw.dmgLv)*(tw.awakened?1.15:1)*getSynergyMult(tw.type,tw.col,tw.row));
+  const rngVal=getTowerRange(tw.type,tw.rngLv).toFixed(1);
+  const rateVal=CFG.t_rate[tw.type]===0?'—':getTowerRate(tw.type,tw.rateLv).toFixed(1);
   const canAwaken=tw.lv>=5&&!tw.awakened&&G.gold>=300;
   const showAwakenBtn=tw.lv>=5&&!tw.awakened;
   const activeSyn=getActiveSynergies(tw.type,tw.col,tw.row);
@@ -4486,14 +4497,14 @@ function showTowerPopup(tw,px,py){
     <canvas id="_tpIco" width="42" height="42" style="flex-shrink:0;border-radius:6px;"></canvas>
     <div>
       <div class="tp-name">${TNAMES[tw.type]}${tw.awakened?' <span style="color:#ffe082;font-size:10px;">⚡ AWAKENED</span>':''}</div>
-      <div class="tp-lv">Level ${tw.lv}${tw.lv>=5?' 🔝 MAX':''}</div>
+      <div class="tp-lv">Level ${tw.lv}${tw.lv>=5?' 🔝 MAX':''} <span style="opacity:.55;font-size:9px;">(⚔️${tw.dmgLv} 📡${tw.rngLv} ⚡${tw.rateLv})</span></div>
     </div>
   </div>
   <div class="tp-stats">
-    <div class="tp-stat">⚔️ ดาเมจ<span>${dmgVal}${tw.awakened?' <span style="color:#ffe082;font-size:9px;">(+15%)</span>':''}</span></div>
-    <div class="tp-stat">📡 ระยะ<span>${rngVal} ช่อง</span></div>
-    <div class="tp-stat">⚡ Fire Rate<span>${rateVal}</span></div>
-    ${tw.lv<5?`<div class="tp-stat">💰 ค่าอัพ<span>${cost} ทอง</span></div>`:''}
+    <div class="tp-stat">⚔️ ดาเมจ <small style="opacity:.5">Lv.${tw.dmgLv}</small><span>${dmgVal}${tw.awakened?' <span style="color:#ffe082;font-size:9px;">(+15%)</span>':''}</span></div>
+    <div class="tp-stat">📡 ระยะ <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${rngVal} ช่อง</span></div>
+    <div class="tp-stat">⚡ Fire Rate <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${rateVal}</span></div>
+    ${tw.lv<5?`<div class="tp-stat">💰 ค่าอัพต่อไป<span>${cost} ทอง</span></div>`:''}
   </div>
   ${synHtml}
   <div class="tp-rune-row" id="tpRuneRow"></div>
@@ -4502,10 +4513,23 @@ function showTowerPopup(tw,px,py){
       `<button class="tp-upbtn" ${canAwaken?'':'disabled'} onclick="awakenTowerFromPopup()" style="background:${canAwaken?'linear-gradient(180deg,#ffe234,#ff9800)':''};color:${canAwaken?'#6d2900':''};">
         ⚡ Awaken<br><small>💰300</small>
       </button>`
+      : tw.lv>=5 ?
+      `<button class="tp-upbtn" disabled>🔝 MAX</button>`
       :
-      `<button class="tp-upbtn" ${tw.lv>=5||!canUp?'disabled':''} onclick="upgradeTowerFromPopup()">
-        ${tw.lv>=5?'🔝 MAX':'⬆ Upgrade<br><small>💰'+cost+'</small>'}
-      </button>`
+      `<div class="tp-upgrade-pick">
+        <div class="tp-upgrade-label">⬆ เลือกอัพสาย — 💰${cost}</div>
+        <div class="tp-pick-row">
+          <button class="tp-pickbtn" ${canUp?'':'disabled'} onclick="upgradeTowerFromPopup('dmg')" title="${CFG.t_dmg[tw.type]===0?'ป้อมนี้ไม่มีดาเมจ':'ดาเมจ Lv.'+tw.dmgLv+' → Lv.'+(tw.dmgLv+1)}">
+            <span class="pi">⚔️</span>ดาเมจ<br><small>Lv.${tw.dmgLv}→${tw.dmgLv+1}</small>
+          </button>
+          <button class="tp-pickbtn" ${canUp?'':'disabled'} onclick="upgradeTowerFromPopup('rng')" title="ระยะ Lv.${tw.rngLv} → Lv.${tw.rngLv+1}">
+            <span class="pi">📡</span>ระยะ<br><small>Lv.${tw.rngLv}→${tw.rngLv+1}</small>
+          </button>
+          <button class="tp-pickbtn" ${canUp?'':'disabled'} onclick="upgradeTowerFromPopup('rate')" title="${CFG.t_rate[tw.type]===0?'ป้อมนี้ไม่มี Fire Rate':'ความเร็ว Lv.'+tw.rateLv+' → Lv.'+(tw.rateLv+1)}">
+            <span class="pi">⚡</span>ความเร็ว<br><small>Lv.${tw.rateLv}→${tw.rateLv+1}</small>
+          </button>
+        </div>
+      </div>`
     }
     <button class="tp-sellbtn" onclick="sellTowerFromPopup()">🗑 Sell<br><small style="color:#aaa">+💰${refund}</small></button>
   </div>`;
@@ -4625,17 +4649,23 @@ function _dropRune(x,y){
   G.particles.push({x,y:y-20,txt:r.icon+' Rune Drop!',col:r.col,life:1.6,vy:-1.2,vx:0,decay:.8,scale:1.1});
   showToast(r.icon+' ได้รับ '+r.name+'!');
 }
-function upgradeTowerFromPopup(){
+function upgradeTowerFromPopup(stat){
   if(!_popupTw||!G) return;
   const tw=_popupTw;
+  if(tw.dmgLv===undefined){tw.dmgLv=tw.lv||1;tw.rngLv=tw.lv||1;tw.rateLv=tw.lv||1;}
   if(tw.lv>=5){showToast('🔝 ระดับสูงสุด 5 แล้ว!');return;}
+  if(stat!=='dmg'&&stat!=='rng'&&stat!=='rate'){showToast('⚠️ กรุณาเลือกสายที่จะอัพ');return;}
   const cost=CFG.t_cost[tw.type]*tw.lv;
   if(G.gold<cost){showToast('💰 ต้องการ '+cost+' ทอง!');hideTowerPopup();return;}
-  G.gold-=cost; tw.lv++; tw.spawnAnim=0.6;
+  G.gold-=cost;
+  const _statInfo={dmg:{key:'dmgLv',icon:'⚔️',name:'ดาเมจ',col:'#ff7043'},rng:{key:'rngLv',icon:'📡',name:'ระยะ',col:'#4fc3f7'},rate:{key:'rateLv',icon:'⚡',name:'ความเร็ว',col:'#ffe234'}}[stat];
+  tw[_statInfo.key]=(tw[_statInfo.key]||1)+1;
+  tw.lv=(tw.dmgLv-1)+(tw.rngLv-1)+(tw.rateLv-1)+1; // lv รวม = 1 + แต้มที่ใช้ไปทั้งหมด (max 5)
+  tw.spawnAnim=0.6;
   const ux=tw.col*CS+CS/2,uy=tw.row*CS+CS/2;
-  G.fxRings.push({x:ux,y:uy,r:0,maxR:CS*1.4,life:1,col:'#ffe234',lw:2.5});
-  for(let k=0;k<6;k++){const a=k/6*Math.PI*2;G.particles.push({x:ux,y:uy,txt:'★',col:'#ffe234',life:.9,vy:Math.sin(a)*1.8,vx:Math.cos(a)*1.8,decay:2});}
-  addParticle(ux,uy,'⬆ ระดับ '+tw.lv,'#ffe234');
+  G.fxRings.push({x:ux,y:uy,r:0,maxR:CS*1.4,life:1,col:_statInfo.col,lw:2.5});
+  for(let k=0;k<6;k++){const a=k/6*Math.PI*2;G.particles.push({x:ux,y:uy,txt:_statInfo.icon,col:_statInfo.col,life:.9,vy:Math.sin(a)*1.8,vx:Math.cos(a)*1.8,decay:2});}
+  addParticle(ux,uy,'⬆ '+_statInfo.icon+' '+_statInfo.name+' Lv.'+tw[_statInfo.key],_statInfo.col);
   updateHUD();
   // reopen popup with updated stats
   hideTowerPopup();
@@ -5452,7 +5482,7 @@ function updateEg(dt){
     if(CFG.t_dmg[tw.type]===0) return;
     if(G.weather&&G.weather.struckTowers&&G.weather.struckTowers.length&&G.weather.struckTowers.includes(tw)) return;
     tw.cd=Math.max(0,tw.cd-dt);
-    const range=getTowerRange(tw.type,tw.lv)*((G&&G.weather&&G.weather.rangeMult)?G.weather.rangeMult:1);
+    const range=getTowerRange(tw.type,tw.rngLv||tw.lv)*((G&&G.weather&&G.weather.rangeMult)?G.weather.rangeMult:1);
     const cx=tw.col+.5,cy=tw.row+.5;
     let best=null,bestP=-1;
     G.enemies.forEach(e=>{
@@ -5465,9 +5495,9 @@ function updateEg(dt){
     if(best) tw.angle=Math.atan2(best.y/CS-cy,best.x/CS-cx);
     if(best&&tw.cd<=0){
       const _rateMultW2=(tw.type===1&&G.weather&&G.weather.iceRateMult)?G.weather.iceRateMult:1;
-      tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.lv)*_rateMultW2);
+      tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.rateLv||tw.lv)*_rateMultW2);
       const fx=tw.col*CS+CS/2,fy=tw.row*CS+CS/2;
-      let _rdmg2=getTowerDmg(tw.type,tw.lv)*getBuffMult(tw.col,tw.row)*getSynergyMult(tw.type,tw.col,tw.row);
+      let _rdmg2=getTowerDmg(tw.type,tw.dmgLv||tw.lv)*getBuffMult(tw.col,tw.row)*getSynergyMult(tw.type,tw.col,tw.row);
       let _risCrit2=false;
       let _rSlow2=(TSLOW[tw.type]||0)+getSynergySlowBonus(tw.type,tw.col,tw.row);
       if(tw.rune===5) _rdmg2*=1.25;
