@@ -3555,7 +3555,7 @@ function _sync3DTowerMesh(tw,cx2,cy2,bounce){
   const wp=_gridToWorld3D(tw.col,tw.row);
   mesh.position.set(wp.x,0,wp.z);
   mesh.scale.setScalar(bounce);
-  if(mesh.userData.turret) mesh.userData.turret.rotation.y=-(tw.angle||0)-Math.PI/2;
+  if(mesh.userData.turret) mesh.userData.turret.rotation.y=Math.PI/2-(tw.angle||0);
 
   // ⚡ Awakened — extra dramatic aura FX (golden rings, orbiting motes, energy beam)
   if(tw.awakened){
