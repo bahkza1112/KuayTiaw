@@ -393,6 +393,10 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 #gr{-webkit-user-select:none;user-select:none;}
 
 @media (max-width:540px){
+  /* จัดเนื้อเกมชิดบนแทนกึ่งกลางจอ ลดพื้นที่ว่างด้านบน-ล่างที่แยกกัน */
+  body{align-items:flex-start;}
+  #gr{margin-top:0;}
+
   /* ปรับ HUD ให้อ่านได้ดีขึ้นบนมือถือ */
   .hud{padding:5px 7px;gap:3px;}
   .huditem{font-size:10px;}

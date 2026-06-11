@@ -39,8 +39,12 @@ rewarding priority kills. File: `js/game.js` (`DEFAULT_CFG.m_rew`).
 more clearly in the tower popup so players can compare builds without
 checking the Codex.
 
-🟡 **Mobile responsiveness pass** — verify HUD, popups, and dev panel at
-narrow viewports (≤375px).
+✅ **Mobile responsiveness pass** (v1.6.3) — verified HUD, popups, dev panel,
+and codex at 375px. Fixed `body`/`#gr` vertical-centering so the gameplay
+screen is top-aligned, consolidating unused space below instead of
+splitting it above/below. Canvas remains width-constrained (1.2:1 aspect)
+— a full fix would require changing canvas internal resolution/grid
+(tracked under Future/Unscoped Ideas if revisited).
 
 ---
 

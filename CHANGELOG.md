@@ -2,6 +2,22 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.6.3 — Mobile Layout Fix
+
+### Changed
+- **Mobile layout (≤540px)**: gameplay screen (`#gp`) is now top-aligned
+  instead of vertically centered, consolidating unused vertical space into
+  a single block below the game UI instead of splitting it into bars above
+  and below. (`css/main.css`, `@media (max-width:540px)`)
+
+### Notes
+- Canvas itself remains width-constrained (375×312.5 at 375px viewport) due
+  to its 1.2:1 internal aspect ratio vs. portrait phone screens — full fix
+  would require changing canvas internal resolution/grid (out of scope, see
+  `docs/Roadmap.md`).
+- Verified in-browser at 375×812: HUD, canvas, tower panel, dev panel, and
+  codex all render correctly with no console errors.
+
 ## v1.6.2 — Tower/Monster Balance Tuning + Design Docs
 
 ### Changed
