@@ -2,6 +2,30 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.6.2 — Tower/Monster Balance Tuning + Design Docs
+
+### Changed
+- **Cannon (💣)**: base damage 28 → 24 (DPS/Cost 0.672 → 0.576). Splash
+  remains its differentiator without also leading raw single-target
+  efficiency. (`js/game.js`, `DEFAULT_CFG.t_dmg`)
+- **Magic (✨)**: base damage 38 → 44 (DPS/Cost 0.405 → 0.469). Now the
+  clear premium AoE pick given its larger splash radius. (`js/game.js`,
+  `DEFAULT_CFG.t_dmg`)
+- **หมอผี Shaman (🧙)**: gold reward 18 → 12 (reward/HP 0.257 → 0.171),
+  bringing it in line with other monsters (~0.13–0.15) while still
+  rewarding priority kills. (`js/game.js`, `DEFAULT_CFG.m_rew`)
+
+### Added
+- New `docs/` folder with design references: `GDD.md`, `TowerDesign.md`,
+  `EnemyDesign.md`, `BalanceSheet.md`, `Roadmap.md`. `BalanceSheet.md` is
+  the canonical numeric reference for tower/enemy stats and must be kept
+  in sync with `DEFAULT_CFG` changes.
+- `CLAUDE.md` and `PROJECT_MASTER.md` now link to `docs/`.
+
+### Notes
+- No save-format or architecture changes. Verified in-browser: updated
+  `CFG.t_dmg`/`CFG.m_rew` values load correctly with no console errors.
+
 ## v1.6.1 — CSS/JS Modularization
 
 Structural-only refactor: split the monolithic `Tower Quest 🏰 v1.6.0.html`

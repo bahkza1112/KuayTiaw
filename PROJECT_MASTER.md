@@ -6,6 +6,12 @@ This document is a system-by-system map of the game as implemented in
 file and may drift as the file changes — use them as a starting point for
 searches, not as permanent anchors.
 
+For game design rationale, see [docs/GDD.md](docs/GDD.md),
+[docs/TowerDesign.md](docs/TowerDesign.md), and
+[docs/EnemyDesign.md](docs/EnemyDesign.md). For tunable numbers, see
+[docs/BalanceSheet.md](docs/BalanceSheet.md). For pending work, see
+[docs/Roadmap.md](docs/Roadmap.md).
+
 ---
 
 ## 1. Game Overview

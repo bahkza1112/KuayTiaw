@@ -17,16 +17,20 @@ the file can be opened directly in a browser.
 
 For a full breakdown of game systems, see [PROJECT_MASTER.md](PROJECT_MASTER.md).
 For version history, see [CHANGELOG.md](CHANGELOG.md).
+For game design, balance numbers, and the work backlog, see
+[docs/GDD.md](docs/GDD.md), [docs/BalanceSheet.md](docs/BalanceSheet.md),
+and [docs/Roadmap.md](docs/Roadmap.md).
 
 ## Repository Layout
 
 ```
-Tower Quest 🏰 v1.6.0.html   # The game itself (HTML + CSS + JS, single file)
+Tower Quest 🏰 v1.6.0.html   # The game itself (HTML markup + script/link refs)
 CLAUDE.md                     # This file
 PROJECT_MASTER.md             # Detailed system-by-system reference
 CHANGELOG.md                  # Version history
-css/                           # Reserved for extracted/future stylesheets (currently empty)
-js/                            # Reserved for extracted/future scripts (currently empty)
+css/main.css                   # All game CSS
+js/                             # save.js, enemy.js, tower.js, game.js, ui.js (load order matters)
+docs/                           # Design docs: GDD, TowerDesign, EnemyDesign, BalanceSheet, Roadmap
 assets/
   images/                      # Reserved for sprite/image assets (currently empty)
   sounds/                      # Reserved for audio assets (currently empty)

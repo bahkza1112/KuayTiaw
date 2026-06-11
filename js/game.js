@@ -118,9 +118,9 @@ const DEFAULT_CFG={
   // Monster base HP — ปรับ Golem และ Boss ให้สมดุล
   m_hp:[55,75,105,130,380,220,35,160,120,900,70],  // หมอผี: 70 HP
   m_spd:[1.4,1.0,1.15,.85,.5,.55,1.8,1.55,.65,.42,.72],
-  m_rew:[8,10,15,18,60,28,5,20,28,100,18],
+  m_rew:[8,10,15,18,60,28,5,20,28,100,12], // หมอผี: 12 (เดิม 18 — reward/HP สูงเกินไป)
   // Tower — เพิ่ม DPS นิดหน่อยให้ผู้เล่นรู้สึกว่าป้อมมีพลัง
-  t_dmg:[28,12,38,65,0,20,0,20],   // [cannon,ice,magic,sniper,support,archer,goldmine,thunder]
+  t_dmg:[24,12,44,65,0,20,0,20],   // [cannon,ice,magic,sniper,support,archer,goldmine,thunder] — cannon 28→24, magic 38→44
   t_rng:[2.2,2.0,2.5,4.5,2.8,2.8,0,2.4],
   t_rate:[1.2,1.5,.8,.4,0,2.0,0,1.8],
   t_cost:[50,55,75,65,35,60,75,85], // thunder: 85 gold
