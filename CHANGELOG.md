@@ -2,6 +2,23 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.6.5 — Boss Skill Telegraphs
+
+### Added
+- **Boss skill telegraph**: ~1 second before a boss (👹/👁️) uses its
+  stage-based skill (Enrage / Summon / Self-heal), a pulsing aura ring +
+  icon now appears around the boss (💢 red for Enrage, 🌀 purple for
+  Summon, 💚 green for Self-heal), giving players advance warning.
+  (`js/game.js`, boss skill loop ~line 663 and enemy draw loop ~line 1389)
+
+### Notes
+- Purely additive visual change — does not alter skill effects, damage,
+  healing amounts, summon counts, or cooldown timings. No save/balance
+  impact.
+- Verified via simulated update loop: telegraph flag sets ~1s before skill
+  fires and clears immediately when the skill triggers, with no console
+  errors across repeated cycles.
+
 ## v1.6.4 — Tower Popup Clarity + Screen Transitions
 
 ### Changed

@@ -50,8 +50,9 @@ splitting it above/below. Canvas remains width-constrained (1.2:1 aspect)
 
 ## Visual / Animation Polish (MINOR-level)
 
-🟡 **Boss-specific VFX** — distinct telegraphed animations for each boss
-skill type (`skillType = stage.id % 3`).
+✅ **Boss-specific VFX** (v1.6.5) — bosses now show a ~1s telegraph aura
+(pulsing ring + icon, color-coded per `skillType = stage.id % 3`) before
+Enrage/Summon/Self-heal triggers, giving players advance warning.
 
 ✅ **Screen-transition polish** (v1.6.4) — `showScreen()` now applies a
 fade/slide-in animation (`.screen-enter`) to all screen switches, and

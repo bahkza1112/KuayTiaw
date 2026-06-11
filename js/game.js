@@ -663,8 +663,13 @@ function update(dt){
   G.enemies.forEach(boss=>{
     if(!boss.alive||MTYPE[boss.ti]!==1) return;
     boss._skillCd=(boss._skillCd||4+Math.random()*2)-dt;
-    if(boss._skillCd>0) return;
     const skillType=(currentStage.id||0)%3;
+    // Telegraph: เตือนล่วงหน้า ~1 วิ ก่อนปล่อยสกิล ด้วย aura เฉพาะประเภท
+    if(boss._skillCd<=1&&boss._skillCd>0&&boss._telegraph!==skillType){
+      boss._telegraph=skillType;
+    }
+    if(boss._skillCd>0) return;
+    boss._telegraph=null;
     if(skillType===0){ // Enrage: เร่งความเร็วชั่วคราว
       boss._skillCd=8;
       boss._enrageT=3; boss._enrageMult=1.6;
@@ -1380,6 +1385,16 @@ function render(){
     if(e.ti===4){
       ctx.font='10px Arial';ctx.textAlign='center';ctx.textBaseline='middle';
       ctx.fillText('👑',e.x,e.y-sz-18);
+    }
+    // boss skill telegraph aura (เตือนล่วงหน้าก่อนปล่อยสกิล)
+    if(MTYPE[e.ti]===1&&e._telegraph!=null){
+      const tcol=e._telegraph===0?'#ff5252':e._telegraph===1?'#ab47bc':'#69f0ae';
+      ctx.globalAlpha=.3+.25*Math.sin(Date.now()*.02);
+      ctx.strokeStyle=tcol;ctx.lineWidth=3;
+      ctx.beginPath();ctx.arc(e.x,e.y,sz+10,0,Math.PI*2);ctx.stroke();
+      ctx.globalAlpha=1;
+      ctx.font='12px Arial';ctx.fillStyle=tcol;ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(e._telegraph===0?'💢':e._telegraph===1?'🌀':'💚',e.x,e.y-sz-28);
     }
   });
   // projectiles (styled per tower type)
