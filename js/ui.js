@@ -1,0 +1,1205 @@
+function renderAchievTab(){
+  const unlocked=loadAchievements();
+  const total=ACHIEVEMENTS.length;
+  const done=[...unlocked].filter(id=>ACHIEVEMENTS.find(a=>a.id===id)).length;
+  let html=`<div class="ach-count">🎖️ ปลดล็อกแล้ว ${done} / ${total}</div>
+  <div class="ach-progress-bar" style="margin-bottom:14px;">
+    <div class="ach-progress-fill" style="width:${Math.round(done/total*100)}%"></div>
+  </div>`;
+  const cats=['story','combat','skill','endgame','collect'];
+  cats.forEach(cat=>{
+    const items=ACHIEVEMENTS.filter(a=>a.cat===cat);
+    html+=`<div class="ach-cat-label">${ACH_CATS[cat]}</div><div class="ach-grid">`;
+    items.forEach(a=>{
+      const isUnlocked=unlocked.has(a.id);
+      html+=`<div class="ach-card ${isUnlocked?'unlocked':'locked'}">
+        ${isUnlocked?'<div class="ach-done">✓</div>':''}
+        <div class="ach-ico">${a.icon}</div>
+        <div class="ach-name">${a.name}</div>
+        <div class="ach-desc">${a.desc}</div>
+      </div>`;
+    });
+    html+=`</div>`;
+  });
+  document.getElementById('cdxBody').innerHTML=html;
+}
+
+/* ══ SCREEN MANAGEMENT ══ */
+function hideAll(){['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','towersel','storyscr'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const cs=document.getElementById('cutscene');if(cs)cs.style.display='none';}
+function showScreen(id,flex){
+  hideAll();
+  const el=document.getElementById(id);
+  el.style.display=flex?'flex':'block';
+  if(flex)el.style.flexDirection='column';
+}
+
+/* ══ MENU STATS ══ */
+function updateMenuStats(){
+  const p=loadProgress();
+  let best='—',totalStars=0,icons='';
+  STAGES.forEach((s,i)=>{
+    const stars=p[i]||0;
+    totalStars+=stars;
+    if(stars>0){best='ด่าน '+(i+1)+' '+s.icon;icons+=s.icon;}
+    else icons+='🔒';
+  });
+  const bs=document.getElementById('menuBestStage');
+  const ts=document.getElementById('menuTotalStars');
+  const si2=document.getElementById('menuStageIcons');
+  if(bs) bs.textContent=best;
+  const maxStar=STAGES.filter(s=>!s.comingSoon).length*3;
+  if(ts) ts.textContent='⭐ '+totalStars+' / '+maxStar;
+  if(si2) si2.textContent=icons||'🔒🔒🔒';
+  _updateAchBadge(); // อัปเดต badge ทุกครั้งที่ menu render
+}
+
+/* ══ STAGE SELECT ══ */
+function openStageSelect(){
+  if(rafId){cancelAnimationFrame(rafId);rafId=null;}
+  G=null;paused=false;
+  showScreen('stagesel',true);
+  renderStageSelect();
+}
+function renderStageSelect(){
+  const p=loadProgress();
+  let html='';
+  STAGES.forEach((s,si)=>{
+    if(s.comingSoon){
+      html+=`<div style="background:rgba(255,255,255,.03);border:2px dashed #2a3a2a;border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;opacity:.4;">
+        <div style="font-size:36px;">${s.icon}</div>
+        <div><div style="font-size:15px;font-weight:900;color:#555;">Stage ${si+1}: ${s.name}</div>
+        <div style="font-size:11px;color:#444;margin-top:4px;">🔒 Coming Soon...</div></div>
+      </div>`;
+      return;
+    }
+    const unlocked=isStageUnlocked(si);
+    const stars=p[si]||0;
+    const played=p[si]!==undefined;
+    const cleared=stars>=1; /* ผ่านด่านแล้วอย่างน้อย 1 ดาว */
+    /* enemy icons: แสดงจริงถ้าผ่านแล้ว ไม่งั้นเป็น ? เงาดำ */
+    const enemyIcons=s.enemyTypes.map(e=>
+      cleared
+        ? `<span>${EICONS[e]}</span>`
+        : `<span style="filter:brightness(0);opacity:.55">👾</span>`
+    ).join('');
+    const starStr=stars>0?'★'.repeat(stars)+'☆'.repeat(3-stars):(played?'☆☆☆':'');
+    const starColor=stars>0?'#ffe234':'#555';
+    html+=`<div class="stage-card${unlocked?'':' locked'}${stars>0?' completed':''}" onclick="${unlocked?'startStage('+si+')':'void(0)'}">
+      <div class="stage-icon">${s.icon}</div>
+      <div class="stage-info">
+        <div class="stage-name">Stage ${si+1}: ${s.name}</div>
+        <div class="stage-desc">${s.desc}</div>
+        <div class="stage-meta">
+          <span class="stage-pill pill-wave">🌊 ${s.waves} Waves</span>
+          <span class="stage-pill pill-enemy">${enemyIcons} ${cleared?'ศัตรู':'???'}</span>
+          <span class="stage-pill pill-unlock">🏰 ${s.unlockedTowers.length} Towers</span>
+        </div>
+      </div>
+      ${unlocked&&starStr?`<div class="stage-stars" style="color:${starColor}">${starStr}</div>`:''}
+      ${!unlocked?'<div class="stage-lock-icon">🔒</div>':''}
+    </div>`;
+  });
+  for(let si=1;si<STAGES.length;si++){
+    if(!isStageUnlocked(si)){
+      html+=`<div class="ss-unlock-note">🔒 Clear Stage ${si} to unlock <strong>${STAGES[si].name}</strong></div>`;
+    }
+  }
+  document.getElementById('ssBody').innerHTML=html;
+}
+
+function startStage(si){
+  // show story screen first if stage has story text
+  const s=STAGES[si];
+  pendingStageIndex=si;
+  stageMaxTowers=s.maxTowers||99;
+  if(s.story){
+    showStoryScreen(si);
+  } else {
+    showTowerSelection(si);
+  }
+}
+function _doStartStage(si){
+  setStage(si);
+  showScreen('gp',true);
+  // BUG FIX: get fresh canvas reference each time
+  cv=document.getElementById('cv');
+  ctx=cv.getContext('2d');
+  cv.width=COLS*CS; cv.height=ROWS*CS;
+  _init3D(); _layoutGl3D();
+  // BUG FIX: remove before adding to prevent duplicate listeners
+  cv.removeEventListener('click',onCanvasClick);
+  cv.addEventListener('click',onCanvasClick);
+  cv.removeEventListener('mousemove',onCanvasMove);
+  cv.addEventListener('mousemove',onCanvasMove);
+  cv.removeEventListener('pointerdown',onCanvasHoldStart);
+  cv.addEventListener('pointerdown',onCanvasHoldStart);
+  cv.removeEventListener('pointerup',onCanvasHoldEnd);
+  cv.addEventListener('pointerup',onCanvasHoldEnd);
+  cv.removeEventListener('pointerleave',onCanvasHoldEnd);
+  cv.addEventListener('pointerleave',onCanvasHoldEnd);
+  // Mobile: ป้องกัน scroll เมื่อ touch บน canvas
+  cv.removeEventListener('touchstart',_onCvTouchStart);
+  cv.addEventListener('touchstart',_onCvTouchStart,{passive:false});
+  initGame();
+  initTutorial();
+}
+
+/* ══ TUTORIAL SYSTEM ══ */
+let _tutStep=-1,_tutIv=null,_tutResizeBound=false;
+/* BUG FIX: tutorial used fixed px offsets that broke on scaled/responsive canvases
+   (overlay would spill off its target area on narrow/tall viewports).
+   Now positions are computed live from the actual DOM elements' bounding boxes,
+   relative to #gp, so it always lines up regardless of screen size. */
+const _TUT_STEPS=[
+  {title:'ขั้นตอน 1 / 3',
+   msg:'เลือกป้อมจากแถบด้านล่าง\nแตะ 💣 Cannon เพื่อเริ่ม',
+   target:'#tb0', boxAnchor:'above', arrowIcon:'⬇️'},
+  {title:'ขั้นตอน 2 / 3',
+   msg:'แตะบนแผนที่\nเพื่อวางป้อม!',
+   target:'#cv', boxAnchor:'top-right', arrowIcon:'👆'},
+  {title:'ขั้นตอน 3 / 3',
+   msg:'กด ▶ Send Wave\nเพื่อเริ่มการต่อสู้!',
+   target:'#waveBtn', boxAnchor:'above', arrowIcon:'⬇️'},
+  {title:'🎉 เยี่ยมมาก!',
+   msg:'ปกป้องปราสาท\nอย่าให้ศัตรูผ่าน!',
+   target:null, boxAnchor:'center', arrowIcon:''},
+];
+function initTutorial(){
+  if(localStorage.getItem('tq_tut_done')) return;
+  _tutStep=0; _renderTut();
+  if(_tutIv) clearInterval(_tutIv);
+  _tutIv=setInterval(()=>{
+    if(!G||_tutStep<0) return;
+    if(_tutStep===0&&G.selTwr>=0){_tutStep=1;_renderTut();}
+    else if(_tutStep===1&&G.towers.length>0){_tutStep=2;_renderTut();}
+    else if(_tutStep===2&&G.wave>=1){_tutStep=3;_renderTut();setTimeout(skipTutorial,2200);}
+  },250);
+  if(!_tutResizeBound){
+    _tutResizeBound=true;
+    window.addEventListener('resize',()=>{ if(_tutStep>=0) _renderTut(); });
+  }
+}
+/* get an element's box relative to #gp (the positioned ancestor of #tutOverlay) */
+function _tutRectRel(sel){
+  const gp=document.getElementById('gp');
+  const el=typeof sel==='string'?document.querySelector(sel):sel;
+  if(!gp||!el) return null;
+  const g=gp.getBoundingClientRect(), r=el.getBoundingClientRect();
+  return {top:r.top-g.top, left:r.left-g.left, right:g.right-r.right, bottom:g.bottom-r.bottom, width:r.width, height:r.height};
+}
+function _renderTut(){
+  const el=document.getElementById('tutOverlay'); if(!el) return;
+  if(_tutStep<0){el.style.display='none';return;}
+  el.style.display='block';
+  const s=_TUT_STEPS[Math.min(_tutStep,3)];
+  let hl='display:none;', arrow='display:none;', box='top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;';
+  const rect=s.target?_tutRectRel(s.target):null;
+  if(rect){
+    const pad=6;
+    hl=`top:${rect.top-pad}px;left:${rect.left-pad}px;width:${rect.width+pad*2}px;height:${rect.height+pad*2}px;`;
+    if(s.boxAnchor==='above'){
+      arrow=`top:${rect.top-40}px;left:${rect.left+rect.width/2}px;transform:translateX(-50%);`;
+      box=`top:${Math.max(8,rect.top-118)}px;left:${Math.min(Math.max(8,rect.left+rect.width/2-95),document.getElementById('gp').clientWidth-198)}px;`;
+    } else if(s.boxAnchor==='top-right'){
+      arrow=`top:${rect.top+rect.height*0.4}px;left:${rect.left+rect.width*0.46}px;`;
+      box=`top:${rect.top+10}px;right:10px;`;
+    }
+  }
+  el.innerHTML=`
+    <div class="tut-highlight" style="${hl}"></div>
+    <div class="tut-arrow" style="${arrow}">${s.arrowIcon}</div>
+    <div class="tut-box" style="${box}">
+      <div class="tut-title">${s.title}</div>
+      ${s.msg.replace(/\n/g,'<br>')}
+    </div>
+    <div class="tut-skip" onclick="skipTutorial()">ข้าม ✕</div>`;
+}
+function skipTutorial(){
+  _tutStep=-1;
+  if(_tutIv){clearInterval(_tutIv);_tutIv=null;}
+  localStorage.setItem('tq_tut_done','1');
+  const el=document.getElementById('tutOverlay');
+  if(el) el.style.display='none';
+}
+
+/* ══ CUTSCENE ENGINE ══ */
+let csState={stageIdx:0,slideIdx:0,typing:false,typeTimer:null,onDone:null};
+
+function showCutscene(stageIdx, onDone){
+  const data=CUTSCENES[stageIdx];
+  if(!data){onDone&&onDone();return;}
+  csState={stageIdx,slideIdx:0,typing:false,typeTimer:null,onDone};
+  document.getElementById('cutscene').style.display='flex';
+  renderCsSlide();
+}
+
+function renderCsSlide(){
+  const data=CUTSCENES[csState.stageIdx];
+  const slide=data.slides[csState.slideIdx];
+  const total=data.slides.length;
+  const isLast=csState.slideIdx===total-1;
+
+  // bg
+  document.getElementById('csBg').style.background=data.bg;
+
+  // dots
+  let dots='';
+  for(let i=0;i<total;i++) dots+=`<div class="cs-dot${i===csState.slideIdx?' active':''}"></div>`;
+  document.getElementById('csDots').innerHTML=dots;
+
+  // stage label
+  const lbl=document.getElementById('csStageLabel');
+  lbl.textContent='Chapter 1  —  Stage '+(csState.stageIdx+1);
+  setTimeout(()=>lbl.classList.add('show'),50);
+
+  // icon
+  const ico=document.getElementById('csIcon');
+  ico.classList.remove('show');
+  ico.textContent=slide.icon||'';
+  setTimeout(()=>ico.classList.add('show'),100);
+
+  // title
+  const ttl=document.getElementById('csTitle');
+  ttl.classList.remove('show');
+  ttl.textContent=slide.title||'';
+  setTimeout(()=>ttl.classList.add('show'),200);
+
+  // dialogue
+  const dlg=document.getElementById('csDialogue');
+  dlg.classList.remove('show');
+  document.getElementById('csSpeaker').textContent=slide.speaker||'';
+  document.getElementById('csText').textContent='';
+  setTimeout(()=>{dlg.classList.add('show');typeText(slide.text||'');},300);
+
+  // unlock panel
+  const unlockEl=document.getElementById('csUnlock');
+  unlockEl.classList.remove('show');
+  unlockEl.style.display='none';
+  if(slide.unlock&&slide.unlock.towers&&slide.unlock.towers.length>0){
+    let items='';
+    slide.unlock.towers.forEach(ti=>{
+      items+=`<div class="cs-unlock-item">
+        <div class="ui-icon">${TICONS[ti]}</div>
+        <div class="ui-info"><div class="ui-name">${TNAMES[ti]}</div><div class="ui-type">Defense Tower</div></div>
+      </div>`;
+    });
+    document.getElementById('csUnlockItems').innerHTML=items;
+    unlockEl.style.display='block';
+    setTimeout(()=>unlockEl.classList.add('show'),1800);
+  }
+
+  // next button
+  const nxt=document.getElementById('csNext');
+  nxt.classList.remove('show');
+  nxt.textContent=isLast?'⚔️ Begin Stage':'▶ Next';
+  setTimeout(()=>nxt.classList.add('show'),400);
+}
+
+function typeText(text){
+  if(csState.typeTimer) clearInterval(csState.typeTimer);
+  const el=document.getElementById('csText');
+  el.innerHTML='';
+  csState.typing=true;
+  let i=0;
+  const chars=text.split('');
+  csState.typeTimer=setInterval(()=>{
+    if(i<chars.length){
+      el.innerHTML=text.slice(0,i+1).replace(/\n/g,'<br>')+'<span class="cs-cursor"></span>';
+      i++;
+    } else {
+      clearInterval(csState.typeTimer);
+      csState.typing=false;
+      el.innerHTML=text.replace(/\n/g,'<br>');
+    }
+  },22);
+}
+
+function csAdvance(){
+  const data=CUTSCENES[csState.stageIdx];
+  /* ถ้ากำลัง type อยู่ให้แสดงข้อความทั้งหมดก่อน */
+  if(csState.typing){
+    clearInterval(csState.typeTimer);
+    csState.typing=false;
+    const slide=data.slides[csState.slideIdx];
+    document.getElementById('csText').innerHTML=(slide.text||'').replace(/\n/g,'<br>');
+    return;
+  }
+  const isLast=csState.slideIdx===data.slides.length-1;
+  if(isLast){
+    /* จบ cutscene */
+    document.getElementById('cutscene').style.display='none';
+    // reset transitions
+    ['csStageLabel','csIcon','csTitle','csDialogue','csNext'].forEach(id=>{
+      document.getElementById(id).classList.remove('show');
+    });
+    csState.onDone&&csState.onDone();
+  } else {
+    csState.slideIdx++;
+    // reset show classes
+    ['csStageLabel','csIcon','csTitle','csDialogue','csNext'].forEach(id=>{
+      document.getElementById(id).classList.remove('show');
+    });
+    renderCsSlide();
+  }
+}
+
+document.getElementById('csNext').addEventListener('click',csAdvance);
+document.getElementById('csSkip').addEventListener('click',()=>{
+  if(csState.typeTimer) clearInterval(csState.typeTimer);
+  document.getElementById('cutscene').style.display='none';
+  ['csStageLabel','csIcon','csTitle','csDialogue','csNext'].forEach(id=>{
+    document.getElementById(id).classList.remove('show');
+  });
+  csState.onDone&&csState.onDone();
+});
+// tap anywhere on dialogue to advance
+document.getElementById('csDialogue').addEventListener('click',csAdvance);
+
+
+/* ══ STORY SCREEN ══ */
+function showStoryScreen(si){
+  hideAll();
+  showCutscene(si,()=>showTowerSelection(pendingStageIndex));
+}
+
+/* ══ TOWER SELECTION ══ */
+function showTowerSelection(si){
+  const s=STAGES[si];
+  const available=s.unlockedTowers||[0,1,2,3,4,5,6];
+  stageMaxTowers=s.maxTowers||99;
+  /* ถ้าไม่มี limit หรือป้อมมีน้อยกว่า limit → ข้ามหน้านี้ไปเลย */
+  if(stageMaxTowers>=99||available.length<=stageMaxTowers){
+    selectedTowersForStage=[...available];
+    _doStartStage(si);
+    return;
+  }
+  /* มีป้อมมากกว่า limit → ต้องให้ผู้เล่นเลือก */
+  showScreen('towersel',true);
+  const saved=JSON.parse(localStorage.getItem('tq_sel_'+si)||'[]');
+  selectedTowersForStage=saved.filter(t=>available.includes(t)).slice(0,stageMaxTowers);
+  const info=document.getElementById('tsInfo');
+  info.innerHTML=`เลือก <strong>ป้อมสูงสุด ${stageMaxTowers} แบบ</strong> สำหรับด่านนี้ — มีป้อมทั้งหมด ${available.length} แบบให้เลือก`;
+  renderTowerSelection(available);
+}
+function renderTowerSelection(available){
+  const max=stageMaxTowers;
+  document.getElementById('tsSlotCount').textContent=selectedTowersForStage.length+'/'+max;
+  // strip
+  let strip='';
+  for(let i=0;i<max;i++){
+    const ti=selectedTowersForStage[i];
+    if(ti!==undefined){
+      strip+=`<div class="ts-slot filled" onclick="removeTowerFromSelection(${i})" title="กดเพื่อเอาออก">${TICONS[ti]}</div>`;
+    } else {
+      strip+=`<div class="ts-slot"></div>`;
+    }
+  }
+  document.getElementById('tsStrip').innerHTML=strip;
+  // grid
+  let grid='';
+  available.forEach(ti=>{
+    const isSel=selectedTowersForStage.includes(ti);
+    const badges=[];
+    if(TCANAIR[ti]) badges.push('<span class="ts-card-badge badge-air">✈ Air</span>');
+    if(TGOLDMINE[ti]) badges.push('<span class="ts-card-badge badge-gold">💰 Gold</span>');
+    if(TCHAIN[ti]) badges.push('<span class="ts-card-badge badge-air">⚡ Chain</span>');
+    grid+=`<div class="ts-card${isSel?' selected':''}" onclick="toggleTowerSelection(${ti})">
+      ${badges.join('')}
+      <div class="ts-card-ico">${TICONS[ti]}</div>
+      <div class="ts-card-name">${TNAMES[ti]}</div>
+      <div class="ts-card-cost">💰${CFG.t_cost[ti]}</div>
+    </div>`;
+  });
+  document.getElementById('tsGrid').innerHTML=grid;
+  document.getElementById('tsStartBtn').disabled=selectedTowersForStage.length===0;
+}
+function toggleTowerSelection(ti){
+  const idx=selectedTowersForStage.indexOf(ti);
+  const s=STAGES[pendingStageIndex];
+  const available=s.unlockedTowers||[0,1,2,3,4];
+  if(idx>=0){
+    selectedTowersForStage.splice(idx,1);
+  } else {
+    if(selectedTowersForStage.length>=stageMaxTowers){
+      showToast('เลือกได้สูงสุด '+stageMaxTowers+' ป้อมเท่านั้น!');
+      return;
+    }
+    selectedTowersForStage.push(ti);
+  }
+  localStorage.setItem('tq_sel_'+pendingStageIndex,JSON.stringify(selectedTowersForStage));
+  renderTowerSelection(available);
+}
+function removeTowerFromSelection(slotIdx){
+  selectedTowersForStage.splice(slotIdx,1);
+  const s=STAGES[pendingStageIndex];
+  const available=s.unlockedTowers||[0,1,2,3,4];
+  localStorage.setItem('tq_sel_'+pendingStageIndex,JSON.stringify(selectedTowersForStage));
+  renderTowerSelection(available);
+}
+function confirmTowerSelection(){
+  if(selectedTowersForStage.length===0) return;
+  _doStartStage(pendingStageIndex);
+}
+
+/* ══ TOWER SELECT ══ */
+function selTower(i){
+  if(!G||G.over||G.win||paused) return;
+  if(!currentStage.unlockedTowers.includes(i)){showToast('🔒 ยังไม่ได้ปลดล็อค!');return;}
+  G.selTwr=(G.selTwr===i)?-1:i;
+  for(let j=0;j<8;j++){const b=document.getElementById('tb'+j);if(b)b.classList.toggle('sel',j===G.selTwr);}
+}
+
+/* ══ HUD / UTILS ══ */
+function updateHUD(){
+  if(!G) return;
+  document.getElementById('goldTxt').textContent=G.gold;
+  document.getElementById('hpTxt').textContent=G.hp;
+  document.getElementById('hpBar').style.width=Math.max(0,G.hp/G.maxHp*100)+'%';
+}
+function addParticle(x,y,txt,col){
+  if(!G) return;
+  G.particles.push({x,y,txt,col,life:1,vy:-1.5-Math.random()*.5});
+}
+function showToast(msg){
+  const el=document.getElementById('toast');
+  if(!el) return;
+  el.textContent=msg; el.classList.add('show');
+  if(toastTimer) clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),1800);
+}
+/* ══ SPRITE ICON HELPERS (B2, B3) ══ */
+let _iconCache={};
+function getEnemyIconURL(ti,sz){
+  sz=sz||32; const k='e'+ti+'_'+sz;
+  if(!_iconCache[k]){
+    const oc=document.createElement('canvas');oc.width=sz;oc.height=sz;
+    drawEnemySprite(oc.getContext('2d'),ti,sz/2,sz/2,sz*.72);
+    _iconCache[k]=oc.toDataURL();
+  }
+  return _iconCache[k];
+}
+function getTowerIconURL(type,sz){
+  sz=sz||32; const k='t'+type+'_'+sz;
+  if(!_iconCache[k]){
+    const oc=document.createElement('canvas');oc.width=sz;oc.height=sz;
+    const ox=oc.getContext('2d');ox.translate(sz/2,sz/2+sz*.05);
+    drawTowerIcon(ox,type,sz-4,0);
+    _iconCache[k]=oc.toDataURL();
+  }
+  return _iconCache[k];
+}
+
+/* ══ CODEX ══ */
+let cdxTab='monster',cdxSel=-1;
+function switchCdxTab(tab){
+  cdxTab=tab; cdxSel=-1;
+  ['monster','boss','tower','achiev'].forEach(t=>{
+    const key=t==='achiev'?'Achiev':t.charAt(0).toUpperCase()+t.slice(1);
+    const el=document.getElementById('tab'+key);
+    if(el) el.classList.toggle('active',t===tab);
+  });
+  if(tab==='achiev'){
+    // mark all current achievements as seen
+    const unlocked=loadAchievements();
+    localStorage.setItem('tq_ach_seen',JSON.stringify([...unlocked]));
+    _updateAchBadge();
+    renderAchievTab();
+  } else renderCodex();
+}
+function selectCodex(i){cdxSel=(cdxSel===i)?-1:i;renderCodex();}
+
+function renderMonsterDetail(i){
+  const bHP=CFG.m_hp[i],spd=CFG.m_spd[i],rew=CFG.m_rew[i];
+  const isBoss=MTYPE[i]===1;
+  const subLabel=isBoss?'⚠️ Boss — Special Unit':'Common Enemy';
+  const strengthHtml=MSTRENGTH[i].map(s=>`<span class="cdx-tag tag-red">💪 ${s}</span>`).join('');
+  const weakHtml=MWEAKNESS[i].map(w=>`<span class="cdx-tag tag-green">🎯 ${w}</span>`).join('');
+  return `<div class="cdx-detail">
+    <div class="cdx-detail-head">
+      <div class="cdx-detail-ico">${EICONS[i]}</div>
+      <div>
+        <div class="cdx-detail-name">${ENAMES[i]}</div>
+        <div class="cdx-detail-sub">${subLabel}</div>
+        <div style="margin-top:3px;font-size:10px;background:rgba(255,255,255,.08);border-radius:6px;padding:2px 8px;display:inline-block;color:#ce93d8;">⚔️ เผ่า: ${MTRIBE[i]}</div>
+      </div>
+    </div>
+    <div class="cdx-flavor">${MFLAVOR[i]}</div>
+    ${sRow('❤️ HP พื้นฐาน',bHP/450,bHP,'')}
+    ${sRow('💨 ความเร็ว',spd/2.2,spd.toFixed(1),'ช่อง/วิ')}
+    ${sRow('💰 รางวัล',rew/60,rew,'ทอง')}
+    <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="background:rgba(244,67,54,.07);border:1px solid rgba(244,67,54,.2);border-radius:8px;padding:8px;">
+        <div style="font-size:9px;color:#ef5350;font-weight:700;margin-bottom:5px;letter-spacing:.5px;">💪 จุดแข็ง</div>
+        <div style="display:flex;flex-direction:column;gap:4px;">${MSTRENGTH[i].map(s=>`<span style="font-size:10px;color:#ef9a9a;">• ${s}</span>`).join('')}</div>
+      </div>
+      <div style="background:rgba(76,175,80,.07);border:1px solid rgba(76,175,80,.2);border-radius:8px;padding:8px;">
+        <div style="font-size:9px;color:#4caf50;font-weight:700;margin-bottom:5px;letter-spacing:.5px;">🎯 จุดอ่อน</div>
+        <div style="display:flex;flex-direction:column;gap:4px;">${MWEAKNESS[i].map(w=>`<span style="font-size:10px;color:#a5d6a7;">• ${w}</span>`).join('')}</div>
+      </div>
+    </div>
+    ${MSPECIAL[i]?`<div style="margin-top:8px;font-size:11px;color:#ce93d8;background:rgba(156,39,176,.1);border-left:3px solid #ab47bc;padding:7px 10px;border-radius:0 8px 8px 0;">${MSPECIAL[i]}</div>`:''}
+    <div style="margin-top:8px;font-size:10px;color:#444;">HP ×${(1+CFG.stageMult).toFixed(2)}/ด่าน · ×${(1+CFG.waveMult).toFixed(2)}/คลื่น</div>
+  </div>`;
+}
+
+function renderCodex(){
+  const isBoss=cdxTab==='boss';
+  const isM=cdxTab==='monster'||isBoss;
+  // filter indices by tab
+  let indices=[];
+  if(cdxTab==='monster') indices=ENAMES.map((_,i)=>i).filter(i=>MTYPE[i]===0);
+  else if(cdxTab==='boss') indices=ENAMES.map((_,i)=>i).filter(i=>MTYPE[i]===1);
+  else indices=TNAMES.map((_,i)=>i);  /* tower ทั้งหมด */
+
+  const seen=isM?seenMonsters:new Set(['0','1','2','3','4']);
+  // dynamic counts now computed below
+
+  const totalMonster=ENAMES.filter((_,i)=>MTYPE[i]===0).length;
+  const totalBoss=ENAMES.filter((_,i)=>MTYPE[i]===1).length;
+  const normalSeen2=ENAMES.map((_,i)=>i).filter(i=>MTYPE[i]===0&&seenMonsters.has(String(i))).length;
+  const bossSeen2=ENAMES.map((_,i)=>i).filter(i=>MTYPE[i]===1&&seenMonsters.has(String(i))).length;
+  if(cdxTab==='monster')
+    document.getElementById('cdxProg').textContent=normalSeen2+'/'+totalMonster+' unlocked';
+  else if(cdxTab==='boss')
+    document.getElementById('cdxProg').textContent=bossSeen2+'/'+totalBoss+' unlocked';
+  else {
+    const unlockedTCount=getUnlockedTowers().size;
+    document.getElementById('cdxProg').textContent=unlockedTCount+'/'+TNAMES.length+' unlocked';
+  }
+
+  let html='<div class="cdx-grid">';
+  const comingSoon=`<div class="cdx-card locked" style="border-style:dashed;opacity:.22;cursor:default;">
+    <div class="ico">🔒</div><div class="cname" style="color:#555;">เร็วๆ นี้</div></div>`;
+  if(isM){
+    indices.forEach(i=>{
+      const u=seen.has(String(i));
+      html+=`<div class="cdx-card${u?'':' locked'}${cdxSel===i?' active':''}" onclick="${u?'selectCodex('+i+')':''}">
+        <div class="ico">${u?EICONS[i]:'❓'}</div>
+        <div class="cname">${u?ENAMES[i]:'???'}</div>
+      </div>`;
+    });
+    /* placeholder สำหรับตัวใหม่ในอนาคต */
+    html+=comingSoon;
+  } else {
+    const unlockedT=getUnlockedTowers();
+    TNAMES.forEach((_,i)=>{
+      const u=unlockedT.has(i);
+      html+=`<div class="cdx-card${u?'':' locked'}${cdxSel===i&&u?' active':''}" onclick="${u?'selectCodex('+i+')':''}">
+        <div class="ico">${u?`<img src="${getTowerIconURL(i,36)}" width="36" height="36" style="image-rendering:pixelated;">`:'🔒'}</div>
+        <div class="cname">${u?TNAMES[i]:'???'}</div>
+      </div>`;
+    });
+    /* placeholder สำหรับป้อมใหม่ในอนาคต */
+    html+=comingSoon;
+  }
+  html+='</div>';
+
+  const towerUnlocked=!isM?getUnlockedTowers().has(cdxSel):true;
+  if(cdxSel>=0&&(isM?seen.has(String(cdxSel)):towerUnlocked)){
+    if(isM){
+      html+=renderMonsterDetail(cdxSel);
+    } else {
+      let rows='';
+      for(let lv=1;lv<=5;lv++){
+        rows+=`<tr><td><span class="lv-badge">Lv${lv}</span></td>
+          <td>${CFG.t_dmg[cdxSel]===0?'—':Math.round(getTowerDmg(cdxSel,lv))}</td>
+          <td>${getTowerRange(cdxSel,lv).toFixed(1)}</td>
+          <td>${CFG.t_rate[cdxSel]===0?'—':getTowerRate(cdxSel,lv).toFixed(1)+'ครั้ง/วิ'}</td>
+          <td>${lv<5?CFG.t_cost[cdxSel]*lv+'g':'สูงสุด'}</td></tr>`;
+      }
+      html+=`<div class="cdx-detail">
+        <div class="cdx-detail-head">
+          <div class="cdx-detail-ico"><img src="${getTowerIconURL(cdxSel,48)}" width="48" height="48" style="image-rendering:pixelated;border-radius:8px;"></div>
+          <div>
+            <div class="cdx-detail-name">${TNAMES[cdxSel]}</div>
+            <div class="cdx-detail-sub">ป้อมปราการ</div>
+            <div style="margin-top:3px;font-size:10px;background:rgba(255,255,255,.08);border-radius:6px;padding:2px 8px;display:inline-block;color:#80cbc4;">💰 ราคา: ${CFG.t_cost[cdxSel]} ทอง</div>
+          </div>
+        </div>
+        <div class="cdx-flavor">${TFLAVOR[cdxSel]}</div>
+        ${sRow('⚔️ ความเสียหาย',CFG.t_dmg[cdxSel]/80,CFG.t_dmg[cdxSel]===0?'—':CFG.t_dmg[cdxSel],'')}
+        ${sRow('📡 ระยะยิง',CFG.t_rng[cdxSel]/5,CFG.t_rng[cdxSel].toFixed(1),'ช่อง')}
+        ${sRow('⚡ อัตราการยิง',CFG.t_rate[cdxSel]/2,CFG.t_rate[cdxSel]===0?'—':CFG.t_rate[cdxSel].toFixed(1),'ครั้ง/วิ')}
+        <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div style="background:rgba(244,67,54,.07);border:1px solid rgba(244,67,54,.2);border-radius:8px;padding:8px;">
+            <div style="font-size:9px;color:#ef5350;font-weight:700;margin-bottom:5px;letter-spacing:.5px;">💪 จุดแข็ง</div>
+            <div style="display:flex;flex-direction:column;gap:4px;">${TSTRENGTH[cdxSel].map(s=>`<span style="font-size:10px;color:#ef9a9a;">• ${s}</span>`).join('')}</div>
+          </div>
+          <div style="background:rgba(76,175,80,.07);border:1px solid rgba(76,175,80,.2);border-radius:8px;padding:8px;">
+            <div style="font-size:9px;color:#4caf50;font-weight:700;margin-bottom:5px;letter-spacing:.5px;">🎯 จุดอ่อน</div>
+            <div style="display:flex;flex-direction:column;gap:4px;">${TWEAKNESS[cdxSel].map(w=>`<span style="font-size:10px;color:#a5d6a7;">• ${w}</span>`).join('')}</div>
+          </div>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:#80cbc4;background:rgba(0,150,136,.1);border-left:3px solid #26a69a;padding:7px 10px;border-radius:0 8px 8px 0;">${TSPECIAL[cdxSel]}</div>
+        <table class="lv-table"><tr><th>ระดับ</th><th>ดาเมจ</th><th>ระยะ</th><th>อัตรายิง</th><th>อัพเกรด</th></tr>${rows}</table>
+      </div>`;
+    }
+  }
+  document.getElementById('cdxBody').innerHTML=html;
+}
+function sRow(label,pct,val,unit){
+  const cols=['#ef5350','#42a5f5','#ffd54f','#66bb6a','#ff7043'];
+  return `<div class="stat-row"><div class="stat-label">${label}</div>
+    <div class="stat-bar-wrap"><div class="stat-bar" style="width:${Math.min(100,Math.max(0,pct*100)).toFixed(0)}%;background:${cols[label.charCodeAt(0)%5]};"></div></div>
+    <div class="stat-val">${val}${unit}</div></div>`;
+}
+function openCodex(){
+  showScreen('codex',true);
+  cdxSel=-1; cdxTab='monster';
+  ['tabMonster','tabBoss','tabTower'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.classList.toggle('active',id==='tabMonster');
+  });
+  renderCodex();
+}
+
+/* ══ DEV PANEL ══ */
+let devTab=0;
+function openDev(fromMenu){
+  devFromMenu=fromMenu;
+  if(!fromMenu&&G&&!G.over&&!G.win) paused=true;
+  showScreen('devpanel',true);
+  switchDevTab(0);
+}
+function closeDev(){
+  document.getElementById('devpanel').style.display='none';
+  if(!devFromMenu&&G&&!G.over&&!G.win){
+    showScreen('gp',true);
+    paused=false;
+    document.getElementById('pauseBtn').textContent='⏸';
+  } else {
+    showScreen('mm',true);
+  }
+}
+function switchDevTab(i){
+  devTab=i;
+  for(let j=0;j<5;j++){const el=document.getElementById('dtab'+j);if(el)el.classList.toggle('active',j===i);}
+  renderDevPanel();
+}
+function renderDevPanel(){
+  const body=document.getElementById('devBody');
+  if(devTab===0)body.innerHTML=renderDevCurve();
+  else if(devTab===1)body.innerHTML=renderDevMonster();
+  else if(devTab===2)body.innerHTML=renderDevTower();
+  else if(devTab===3)body.innerHTML=renderDevCheat();
+  else body.innerHTML=renderDevDebug();
+  if(devTab===0) setTimeout(drawCurveGraph,60);
+}
+function renderDevCurve(){
+  return `<div class="dev-info-box">HP = พื้นฐาน × (1 + ด่าน × <strong>ตัวคูณด่าน</strong>) × (1 + Wave × <strong>ตัวคูณคลื่น</strong>)</div>
+  <div class="dev-section"><div class="dev-section-title">🗺️ การสเกลตามด่าน</div>
+    ${dSlide('stageMult','HP +% ต่อด่าน','',CFG.stageMult,0,1.5,.05)}
+    ${dSlide('spdStageMult','ความเร็ว +% ต่อด่าน','',CFG.spdStageMult,0,.3,.01)}
+    ${dSlide('spdCap','ความเร็วสูงสุด','',CFG.spdCap,.5,4.0,.05)}</div>
+  <div class="dev-section"><div class="dev-section-title">🌊 การสเกลตามคลื่น</div>
+    ${dSlide('waveMult','HP +% ต่อคลื่น','',CFG.waveMult,0,.5,.01)}
+    ${dSlide('enemyPerWaveBase','ศัตรูเริ่มต้น','',CFG.enemyPerWaveBase,1,15,1)}
+    ${dSlide('enemyPerWaveInc','ศัตรูเพิ่ม/คลื่น','',CFG.enemyPerWaveInc,0,10,1)}
+    ${dSlide('bossChance','โอกาสบอส','Wave 4+',CFG.bossChance,0,.5,.01)}</div>
+  <div class="dev-section"><div class="dev-section-title">📊 กราฟ HP ตัวอย่าง</div>
+    <div style="background:#0a0a0a;border:1px solid #333;border-radius:8px;padding:10px;">
+      <div style="font-size:10px;color:#555;margin-bottom:6px;">HP โกบลินต่อWave — ด่าน1/2/3</div>
+      <canvas id="curveCanvas" height="100" style="width:100%;display:block;"></canvas>
+    </div></div>`;
+}
+function renderDevMonster(){
+  return ENAMES.map((name,i)=>`<div class="dev-section"><div class="dev-section-title">${EICONS[i]} ${name}</div>
+    ${dSlide('m_hp_'+i,'HP พื้นฐาน','',CFG.m_hp[i],10,1000,5,true)}
+    ${dSlide('m_spd_'+i,'Speed','ช่อง/วิ',CFG.m_spd[i],.2,3.0,.05,true)}
+    ${dSlide('m_rew_'+i,'Reward','ทอง',CFG.m_rew[i],1,100,1,true)}</div>`).join('');
+}
+function renderDevTower(){
+  return TNAMES.map((name,i)=>`<div class="dev-section"><div class="dev-section-title">${TICONS[i]} ${name}</div>
+    ${i!==4?dSlide('t_dmg_'+i,'ความเสียหาย','',CFG.t_dmg[i],0,200,1,true):''}
+    ${dSlide('t_rng_'+i,'ระยะ','ช่อง',CFG.t_rng[i],.5,6,.1,true)}
+    ${i!==4?dSlide('t_rate_'+i,'อัตราการยิง','ครั้ง/วิ',CFG.t_rate[i],.1,4,.1,true):''}
+    ${dSlide('t_cost_'+i,'Cost','ทอง',CFG.t_cost[i],10,300,5,true)}</div>`).join('');
+}
+function renderDevCheat(){
+  return `<div class="dev-section"><div class="dev-section-title">💰 Resources</div>
+  <div class="dev-cheat-grid">
+    <div class="dev-cheat-btn green" onclick="cheat('gold500')">+500 ทอง</div>
+    <div class="dev-cheat-btn green" onclick="cheat('gold9999')">+9999 ทอง</div>
+    <div class="dev-cheat-btn green" onclick="cheat('hp_full')">❤️ HP เต็ม</div>
+    <div class="dev-cheat-btn" onclick="cheat('hp10')">ตั้ง HP=10</div>
+  </div></div>
+  <div class="dev-section"><div class="dev-section-title">🌊 Wave Control</div>
+  <div class="dev-cheat-grid">
+    <div class="dev-cheat-btn" onclick="cheat('skip_wave')">⏭ ข้ามคลื่น</div>
+    <div class="dev-cheat-btn" onclick="cheat('kill_all')">💀 ฆ่าทั้งหมด</div>
+    <div class="dev-cheat-btn red" onclick="cheat('wave_1')">↩ รีเซ็ตคลื่น</div>
+    <div class="dev-cheat-btn red" onclick="cheat('clear_towers')">🗑 ลบป้อมทั้งหมด</div>
+  </div></div>
+  <div class="dev-section"><div class="dev-section-title">🗺️ Stage Progress</div>
+  <div class="dev-cheat-grid">
+    <div class="dev-cheat-btn green" onclick="cheat('unlock_stages')">🔓 Unlock All</div>
+    <div class="dev-cheat-btn red" onclick="cheat('reset_stages')">↺ Reset Progress</div>
+    <div class="dev-cheat-btn" onclick="cheat('unlock_codex')">📖 Unlock Codex</div>
+    <div class="dev-cheat-btn red" onclick="cheat('lock_codex')">🔒 Lock Codex</div>
+    <div class="dev-cheat-btn green" onclick="cheat('unlock_ach')">🎖️ Unlock Ach</div>
+    <div class="dev-cheat-btn red" onclick="cheat('reset_ach')">↺ Reset Ach</div>
+  </div></div>
+  <div class="dev-section"><div class="dev-section-title">⚙️ Game Settings</div>
+    ${dSlide('startGold','ทองเริ่มต้น','ทอง',CFG.startGold,50,1000,25)}
+    ${dSlide('baseHP','HP ปราสาท','',CFG.baseHP,1,50,1)}
+    ${dSlide('spawnInterval','ช่วงเวลา Spawn','s',CFG.spawnInterval,.1,3,.05)}</div>`;
+}
+function dSlide(key,label,sub,val,min,max,step,isArr){
+  const disp=step>=1?parseInt(val):parseFloat(val).toFixed(step<.1?2:1);
+  return `<div class="dev-row">
+    <div class="dev-lbl">${label}<span>${sub}</span></div>
+    <input class="dev-slider" type="range" id="dsl_${key}" min="${min}" max="${max}" step="${step}" value="${val}" oninput="dsc('${key}',this.value,${!!isArr})">
+    <div class="dev-val" id="dv_${key}">${disp}</div></div>`;
+}
+function dsc(key,val,isArr){
+  const num=parseFloat(val);
+  const step=parseFloat(document.getElementById('dsl_'+key).step);
+  document.getElementById('dv_'+key).textContent=step>=1?parseInt(num):num.toFixed(step<.1?2:1);
+  if(isArr){
+    const parts=key.split('_');const idx=parseInt(parts.pop());
+    CFG[parts.join('_')][idx]=num;
+  } else { CFG[key]=num; }
+  if(devTab===0) drawCurveGraph();
+  // B1: rebuild sprite caches when tower params change
+  if(key.startsWith('t_')){_SC=null;_iconCache={};}
+}
+function drawCurveGraph(){
+  const canvas=document.getElementById('curveCanvas');
+  if(!canvas) return;
+  const W=canvas.offsetWidth||300,H=100;
+  canvas.width=W; canvas.height=H;
+  const c=canvas.getContext('2d');
+  c.clearRect(0,0,W,H);
+  const maxWaves=9,stageList=[0,1,2],cols=['#4caf50','#ff9800','#f44336'];
+  let mx=0;
+  stageList.forEach(s=>{for(let w=1;w<=maxWaves;w++) mx=Math.max(mx,getEnemyHP(0,s,w));});
+  c.strokeStyle='rgba(255,255,255,.05)';c.lineWidth=1;
+  for(let i=1;i<=4;i++){const y=H-(i/4)*H;c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke();}
+  stageList.forEach((s,si)=>{
+    c.beginPath();c.strokeStyle=cols[si];c.lineWidth=2;
+    for(let w=1;w<=maxWaves;w++){
+      const hp=getEnemyHP(0,s,w),x=(w-1)/(maxWaves-1)*W,y=H-(hp/mx)*(H-12)-6;
+      w===1?c.moveTo(x,y):c.lineTo(x,y);
+    }
+    c.stroke();
+    const lHP=getEnemyHP(0,s,maxWaves);
+    c.fillStyle=cols[si];c.font='9px Arial';c.textAlign='right';
+    c.fillText('S'+(s+1)+' '+Math.round(lHP),W-2,H-(lHP/mx)*(H-12)-8);
+  });
+  c.fillStyle='#444';c.font='9px Arial';c.textAlign='center';
+  for(let w=1;w<=maxWaves;w+=2) c.fillText('W'+w,(w-1)/(maxWaves-1)*W,H);
+}
+function cheat(cmd){
+  const needGame=['gold500','gold9999','hp_full','hp10','skip_wave','kill_all','wave_1','clear_towers'];
+  if(needGame.includes(cmd)&&!G){showToast('⚠️ เริ่มเกมก่อนนะครับ!');return;}
+  switch(cmd){
+    case 'gold500': G.gold+=500;updateHUD();showToast('💰 +500 ทอง!');break;
+    case 'gold9999': G.gold+=9999;updateHUD();showToast('💰 +9999 ทอง!');break;
+    case 'hp_full': G.hp=G.maxHp;updateHUD();showToast('❤️ HP เต็มแล้ว!');break;
+    case 'hp10': G.hp=Math.min(10,G.maxHp);updateHUD();showToast('❤️ ตั้ง HP=10 แล้ว');break;
+    case 'skip_wave':
+      G.enemies.length=0;G.queue.length=0;G.projs.length=0;
+      G.waveActive=false;document.getElementById('waveBtn').disabled=false;
+      showToast('⏭ ข้ามคลื่นแล้ว!');break;
+    case 'kill_all': [...G.enemies].forEach(e=>{if(e.alive)killEnemy(e);});showToast('💀 ฆ่าศัตรูทั้งหมดแล้ว!');break;
+    case 'wave_1':
+      G.wave=0;G.waveActive=false;
+      G.enemies.length=0;G.queue.length=0;G.projs.length=0;
+      document.getElementById('waveTxt').textContent='0';
+      document.getElementById('waveBtn').disabled=false;
+      showToast('↩ รีเซ็ตคลื่นแล้ว!');break;
+    case 'clear_towers': G.towers=[];showToast('🗑 ลบป้อมทั้งหมดแล้ว!');break;
+    case 'unlock_stages':{
+      const p={};STAGES.forEach((_,i)=>p[i]=3);
+      localStorage.setItem('tq_progress',JSON.stringify(p));
+      showToast('🔓 ปลดล็อคทุกด่านแล้ว!');break;}
+    case 'reset_stages':
+      localStorage.removeItem('tq_progress');showToast('↺ Reset Progressแล้ว!');break;
+    case 'unlock_codex':
+      for(let i=0;i<ENAMES.length;i++) seenMonsters.add(String(i));
+      localStorage.setItem('tq_seen',JSON.stringify([...seenMonsters]));showToast('📖 Codex unlocked!');break;
+    case 'lock_codex':
+      seenMonsters=new Set();localStorage.setItem('tq_seen','[]');showToast('🔒 Lock Codexแล้ว!');break;
+    case 'unlock_ach':
+      ACHIEVEMENTS.forEach(a=>_saveAch(a.id));_updateAchBadge();showToast('🎖️ ปลดล็อค Achievement ทั้งหมด!');break;
+    case 'reset_ach':
+      localStorage.removeItem('tq_ach');localStorage.removeItem('tq_achstats');localStorage.removeItem('tq_ach_seen');
+      _updateAchBadge();showToast('↺ Reset Achievement แล้ว!');break;
+  }
+}
+function devReset(){CFG=JSON.parse(JSON.stringify(DEFAULT_CFG));localStorage.removeItem('tq_cfg');showToast('↺ รีเซ็ตค่าคอนฟิกแล้ว!');renderDevPanel();}
+
+/* ══ DEBUG PANEL ══ */
+function renderDevDebug(){
+  const p=loadProgress();
+  const maxHp=CFG.baseHP;
+  // star thresholds
+  const t3=Math.ceil(maxHp*.75), t2=Math.ceil(maxHp*.4);
+
+  // current game state
+  let gameSection='';
+  if(G&&!G.over&&!G.win){
+    const hp=G.hp, pct=Math.round(hp/maxHp*100);
+    const predStars=hp>=t3?3:hp>=t2?2:hp>0?1:0;
+    const starStr='★'.repeat(predStars)+'☆'.repeat(3-predStars);
+    const col=predStars===3?'#4caf50':predStars===2?'#ff9800':predStars===1?'#ef5350':'#555';
+    gameSection=`
+    <div class="dev-section">
+      <div class="dev-section-title">🎮 สถานะเกมปัจจุบัน</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+        <div style="background:#0a0a0a;border:1px solid #333;border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:10px;color:#666;margin-bottom:4px;">HP ปัจจุบัน</div>
+          <div style="font-size:22px;font-weight:900;color:#ffe082;">${hp} <span style="font-size:12px;color:#666;">/ ${maxHp}</span></div>
+          <div style="font-size:11px;color:#aaa;">${pct}%</div>
+        </div>
+        <div style="background:#0a0a0a;border:1px solid #333;border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:10px;color:#666;margin-bottom:4px;">ดาวที่จะได้ถ้าจบตอนนี้</div>
+          <div style="font-size:22px;color:${col};">${starStr}</div>
+          <div style="font-size:10px;color:#666;">${predStars} ดาว</div>
+        </div>
+      </div>
+      <div style="background:#0a0a0a;border:1px solid #2a2a2a;border-radius:8px;padding:10px;font-size:11px;line-height:1.8;color:#aaa;">
+        <div>⭐⭐⭐ ต้องการ HP ≥ <strong style="color:#4caf50">${t3}</strong> (${Math.round(t3/maxHp*100)}%)</div>
+        <div>⭐⭐ ต้องการ HP ≥ <strong style="color:#ff9800">${t2}</strong> (${Math.round(t2/maxHp*100)}%)</div>
+        <div>⭐ ต้องการ HP ≥ <strong style="color:#ef5350">1</strong> (ผ่านก็ได้)</div>
+      </div>
+      <div style="margin-top:8px;font-size:10px;color:#555;">ด่าน: ${currentStage?currentStage.name:'—'} | Wave: ${G.wave}/${currentStage?currentStage.waves:'?'} | คะแนน: ${G.score}</div>
+    </div>`;
+  } else {
+    gameSection=`<div class="dev-section"><div style="font-size:12px;color:#555;text-align:center;padding:8px;">⚠️ ไม่มีเกมที่กำลังเล่นอยู่<br><span style="font-size:10px;">เปิด Dev Panel ระหว่างเล่นเพื่อดูข้อมูล real-time</span></div>
+      <div style="background:#0a0a0a;border:1px solid #2a2a2a;border-radius:8px;padding:10px;font-size:11px;line-height:1.8;color:#aaa;margin-top:8px;">
+        <div>HP พื้นฐาน: <strong style="color:#ffe082">${maxHp}</strong></div>
+        <div>⭐⭐⭐ ต้องการ HP ≥ <strong style="color:#4caf50">${t3}</strong> (75%)</div>
+        <div>⭐⭐ ต้องการ HP ≥ <strong style="color:#ff9800">${t2}</strong> (40%)</div>
+        <div>⭐ ต้องการ HP ≥ <strong style="color:#ef5350">1</strong></div>
+      </div>
+    </div>`;
+  }
+
+  // localStorage progress
+  let progressRows='';
+  STAGES.forEach((s,i)=>{
+    const stars=p[i];
+    const played=stars!==undefined;
+    const starStr=played?(stars>0?'★'.repeat(stars)+'☆'.repeat(3-stars):'☆☆☆ (แพ้)'):'ยังไม่เคยเล่น';
+    const col=!played?'#444':stars===3?'#4caf50':stars>=1?'#ff9800':'#ef5350';
+    progressRows+=`<tr>
+      <td style="padding:5px 6px;">${s.icon} ${s.name}</td>
+      <td style="padding:5px 6px;text-align:center;color:${col};font-weight:700;">${starStr}</td>
+      <td style="padding:5px 6px;text-align:center;color:#666;">${played?'✅':'—'}</td>
+    </tr>`;
+  });
+
+  // raw localStorage
+  const rawProgress=JSON.stringify(p,null,2);
+  const rawSeen=JSON.stringify([...seenMonsters]);
+
+  return gameSection+`
+  <div class="dev-section">
+    <div class="dev-section-title">💾 ข้อมูล localStorage จริง</div>
+    <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:10px;">
+      <tr style="border-bottom:1px solid #2a2a2a;">
+        <th style="padding:5px 6px;text-align:left;color:#ff9800;font-size:10px;">ด่าน</th>
+        <th style="padding:5px 6px;text-align:center;color:#ff9800;font-size:10px;">ดาวที่บันทึก</th>
+        <th style="padding:5px 6px;text-align:center;color:#ff9800;font-size:10px;">บันทึกแล้ว</th>
+      </tr>
+      ${progressRows}
+    </table>
+    <div style="font-size:10px;color:#555;margin-bottom:4px;">tq_progress (raw JSON):</div>
+    <div style="background:#0a0a0a;border:1px solid #222;border-radius:6px;padding:8px;font-family:monospace;font-size:10px;color:#8bc34a;white-space:pre;overflow-x:auto;">${rawProgress}</div>
+    <div style="font-size:10px;color:#555;margin:8px 0 4px;">tq_seen (monster codex):</div>
+    <div style="background:#0a0a0a;border:1px solid #222;border-radius:6px;padding:8px;font-family:monospace;font-size:10px;color:#8bc34a;">${rawSeen||'[]'}</div>
+    <button onclick="renderDevPanel()" style="margin-top:10px;background:rgba(255,152,0,.12);border:1px solid #ff9800;border-radius:8px;padding:7px 16px;color:#ff9800;font-size:11px;font-weight:700;cursor:pointer;width:100%;">🔄 รีเฟรชข้อมูล</button>
+  </div>`;
+}
+
+function devSave(){
+  localStorage.setItem('tq_cfg',JSON.stringify(CFG));
+  const json=JSON.stringify(CFG,null,2);
+  // show copy modal instead of file download (blocked in sandbox)
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.innerHTML=`<div style="background:#1a1a0a;border:2px solid #ff9800;border-radius:14px;padding:20px;width:100%;max-width:500px;max-height:80vh;display:flex;flex-direction:column;gap:12px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span style="color:#ff9800;font-weight:700;font-size:14px;">💾 คอนฟิก — คัดลอกและบันทึก</span>
+      <button onclick="this.closest('div[style]').remove()" style="background:rgba(255,255,255,.15);border:1px solid #555;border-radius:6px;color:#fff;padding:4px 10px;cursor:pointer;font-size:12px;">✕ ปิด</button>
+    </div>
+    <textarea readonly style="flex:1;min-height:260px;background:#0a0a0a;border:1px solid #333;border-radius:8px;color:#ffe082;font-family:monospace;font-size:11px;padding:10px;resize:none;line-height:1.5;">${json}</textarea>
+    <button onclick="navigator.clipboard.writeText(this.previousElementSibling.value).then(()=>{this.textContent='✅ คัดลอกแล้ว!';setTimeout(()=>this.textContent='📋 คัดลอก',1500)})" style="background:rgba(255,152,0,.2);border:1px solid #ff9800;border-radius:8px;color:#ff9800;padding:9px;font-weight:700;font-size:13px;cursor:pointer;">📋 คัดลอก</button>
+    <div style="font-size:10px;color:#555;text-align:center;">วาง JSON นี้ลงไฟล์ tq_config.json เพื่อเก็บ config ไว้ใช้ทีหลัง</div>
+  </div>`;
+  document.body.appendChild(overlay);
+  showToast('💾 Saveค่าแล้ว!');
+}
+
+
+/* ══ CUTSCENE DATA ══ */
+const CUTSCENES = [
+  // Stage 0: Grassland
+  { bg:'linear-gradient(160deg,#1a3a6e,#1a8a4a)',
+    slides:[
+      {speaker:'บันทึกประวัติศาสตร์',icon:'📜',title:'The Dark Awakening',
+       text:'นานมาแล้ว อาณาจักรสีเขียวอยู่ในความสงบสุข...\n\nจนกระทั่งวันหนึ่ง ประตูมืดได้เปิดขึ้นที่ชายแดนทางเหนือ กองทัพแห่งความมืดหลั่งไหลออกมาไม่หยุดหย่อน'},
+      {speaker:'ผู้พิทักษ์',icon:'🛡️',title:'ปกป้องทุ่งหญ้า!',
+       text:'ทุ่งหญ้าชายขอบเมืองถูกรุกรานเป็นด่านแรก โกบลินเคลื่อนที่เร็วและมาเป็นฝูง โครงกระดูกทนทานกว่า — ต้องวางป้อมกีดขวางเส้นทางให้ดี!'},
+      {speaker:'วิศวกร',icon:'⚙️',title:'ป้อมเริ่มต้น — พร้อมรบ!',
+       text:'ปืนใหญ่ระเบิดฝูงศัตรู\nป้อมน้ำแข็งชะลอให้ยิงได้นานขึ้น\nซัพพอร์ตเพิ่มพลังให้ป้อมรอบข้าง\n\nวางให้ครบทั้ง 3 แบบเพื่อผลลัพธ์ที่ดีที่สุด!',
+       unlock:{towers:[0,1,4],label:'Starting Towers'}},
+    ]
+  },
+  // Stage 1: Dark Forest
+  { bg:'linear-gradient(160deg,#0d1f0d,#1a3a1a)',
+    slides:[
+      {speaker:'ผู้พิทักษ์',icon:'🌲',title:'Dark Forest — เข้าป่าลึก',
+       text:'ผ่านทุ่งหญ้ามาแล้ว แต่ป่าทึบเบื้องหน้ายิ่งอันตรายกว่า...\n\nเงามืด (Shadow) ซ่อนตัวระหว่างต้นไม้ มันเดินช้ากว่าโกบลิน แต่ต้านทานความเย็นได้บางส่วน ต้องใช้กลยุทธ์ใหม่'},
+      {speaker:'นักมายากล',icon:'✨',title:'พบศิลามหัศจรรย์!',
+       text:'ลึกในป่านี้มีศิลาโบราณที่สะสมพลังเวทมนตร์มานับพันปี\n\nเราสามารถดึงพลังนั้นมาสร้าง Magic Tower ได้! ยิง Splash กว้าง ทำลายล้างศัตรูที่รวมกลุ่มกันได้ในทีเดียว'},
+      {speaker:'นักมายากล',icon:'✨',title:'Magic Tower — ปลดล็อคแล้ว!',
+       text:'Magic Tower เหมาะที่สุดกับเส้นทางวกวน ยิ่งศัตรูรวมกันมาก ยิ่งได้ผลดี\n\nวางตรงทางเลี้ยวหักศอกเพื่อให้กระสุน Splash โดนหลายตัวในครั้งเดียว!',
+       unlock:{towers:[2],label:'Magic Tower Unlocked'}},
+    ]
+  },
+  // Stage 2: Volcanic Pass
+  { bg:'linear-gradient(160deg,#3a0000,#1f0d00)',
+    slides:[
+      {speaker:'สายลับ',icon:'🔥',title:'Volcanic Pass — รายงาน!',
+       text:'รายงานด่วน! กองทัพมืดบุกผ่านช่องเขาภูเขาไฟ\n\nวิญญาณไฟกำเนิดจากลาวาร้อน HP สูงและไม่หยุดนิ่ง และครั้งนี้... บอสตัวแรกก็ปรากฏตัวแล้ว'},
+      {speaker:'ผู้พิทักษ์',icon:'👹',title:'⚠️ Boss Alert!',
+       text:'บอสตัวแรก — จอมปีศาจขนาดใหญ่ HP มหาศาล ปรากฏตั้งแต่คลื่นที่ 4 เป็นต้นไป\n\nต้องใช้ป้อมทุกแบบช่วยกันยิง อย่าให้มันผ่านไปได้เด็ดขาด!'},
+      {speaker:'นายทหาร',icon:'🎯',title:'Sniper Tower — ถึงแล้ว!',
+       text:'มือปืนระยะไกลของเราเดินทางมาถึงแล้ว!\n\nSniper Tower มีระยะยิงไกลที่สุดในเกม — ยิงจากปลายสุดของแผนที่ได้ เหมาะมากกับการสกัดบอสตั้งแต่ยังอยู่ไกล',
+       unlock:{towers:[3],label:'Sniper Tower Unlocked'}},
+    ]
+  },
+  // Stage 3: Desert Crossing
+  { bg:'linear-gradient(160deg,#3d2b00,#1a1400)',
+    slides:[
+      {speaker:'สายลับ',icon:'🏜️',title:'Desert Crossing — Stage 4',
+       text:'ข่าวสืบมาว่ากองทัพมืดบุกข้ามทะเลทรายแล้ว ฝูงค้างคาวบินนำหน้า โกเลมยักษ์ตามมาข้างหลัง'},
+      {speaker:'ผู้พิทักษ์',icon:'🦇',title:'Air Threat Detected!',
+       text:'ค้างคาวบินอยู่บนฟ้า ป้อมส่วนใหญ่ยิงไม่ถึง! ต้องใช้ Sniper หรือ Archer เท่านั้น',
+       unlock:{towers:[5],label:'Archer Tower Unlocked'}},
+    ]
+  },
+  // Stage 4: Treasure Valley
+  { bg:'linear-gradient(160deg,#2d2000,#1a1200)',
+    slides:[
+      {speaker:'พ่อค้า',icon:'💰',title:'Treasure Valley — Stage 5',
+       text:'คลังสมบัติของอาณาจักรตกอยู่ในอันตราย ฝูง Bat Swarm บินเข้ามาเป็นระลอกใหญ่'},
+      {speaker:'วิศวกร',icon:'⛏️',title:'Gold Mine Operational',
+       text:'เราขุดพบสายแร่ทองใต้ดิน! Gold Mine สร้างรายได้ต่อเนื่อง ยิ่ง Upgrade ยิ่งได้มาก',
+       unlock:{towers:[6],label:'Gold Mine Unlocked'}},
+    ]
+  },
+  // Stage 5: Thunder Cave
+  { bg:'linear-gradient(160deg,#0a0a1f,#0a0a2f)',
+    slides:[
+      {speaker:'นักวิทยาศาสตร์',icon:'⚡',title:'Thunder Cave — Stage 6',
+       text:'ถ้ำสายฟ้าใต้ดิน — กระแสไฟฟ้าไหลตลอดเวลา ศัตรูได้รับพลังงานฟ้าผ่าทำให้เคลื่อนที่เร็วขึ้น'},
+      {speaker:'นักวิทยาศาสตร์',icon:'⚡',title:'Lightning Strikes!',
+       text:'เราสามารถนำพลังฟ้าผ่ามาใช้ได้! Thunder Tower ยิง chain ไปหาศัตรูข้างๆ อีก 2 ตัว และยิงโดนศัตรูบินได้ด้วย!',
+       unlock:{towers:[7],label:'Thunder Tower Unlocked!'}},
+    ]
+  },
+  // Stage 6: Cursed Swamp
+  { bg:'linear-gradient(160deg,#0a1a0a,#0d250d)',
+    slides:[
+      {speaker:'นักเวทย์',icon:'🌿',title:'Cursed Swamp — Stage 7',
+       text:'หนองน้ำโบราณที่ซ่อนคำสาปไว้ภายใน ศัตรูแทรกซึมมาจากทุกทิศ ทางเดินแคบและวกวน'},
+      {speaker:'ผู้พิทักษ์',icon:'⚔️',title:'เตรียมพร้อมสำหรับด่านหน้า!',
+       text:'ผ่านหนองน้ำนี้ไปแล้ว ป้อมปราการมืดรอคอยอยู่ข้างหน้า\n\nShield Knight ถือโล่เหล็กหนา — ต้องใช้ Sniper หรือ Thunder เจาะโล่ก่อน ถึงจะโดน HP จริง!'},
+    ]
+  },
+  // Stage 7: Dark Fortress
+  { bg:'linear-gradient(160deg,#0f0f0f,#1a0a1a)',
+    slides:[
+      {speaker:'ผู้พิทักษ์',icon:'🏰',title:'Dark Fortress — Stage 8',
+       text:'ป้อมปราการมืดตั้งตระหง่านขวางทาง Shield Knight สวมเกราะเหล็กบุกนำหน้า'},
+      {speaker:'นายทหาร',icon:'🛡️',title:'Shield Warning!',
+       text:'Shield Knight มีโล่ 2 ชั้น ต้องทำลายโล่ก่อนถึงจะโดน HP จริง Sniper และ Lightning ทะลุโล่ได้!'},
+    ]
+  },
+  // Stage 8: Dark Throne
+  { bg:'linear-gradient(160deg,#1a0020,#0d0015)',
+    slides:[
+      {speaker:'สายลับ',icon:'👿',title:'Dark Throne — Stage 9',
+       text:'บัลลังก์แห่งความมืด — ศัตรูที่นี่แข็งแกร่งกว่าที่เคย\n\nแต่อันตรายที่สุดไม่ใช่โกเลมหรือบอส... มันคือหมอผีเล็กๆ ที่เดินอยู่หลังแถว'},
+      {speaker:'นักมายากล',icon:'🧙',title:'⚠️ หมอผี — Dark Shaman!',
+       text:'หมอผีปลุกเสก Heal ศัตรูในระยะ 2.5 ช่อง ทุก 2 วินาที\n\nถ้าปล่อยไว้ โกเลมหรือบอสข้างๆ จะฟื้น HP ไม่มีวันตาย — ต้องฆ่าหมอผีก่อนเสมอ!'},
+      {speaker:'ผู้พิทักษ์',icon:'⚔️',title:'กลยุทธ์: จัดลำดับเป้าหมาย',
+       text:'ลำดับความสำคัญ:\n1. 🧙 หมอผี — ฆ่าก่อนเลย\n2. 👹 บอส — อันตรายสูง\n3. 🪨 โกเลม — HP สูงแต่ช้า\n\nป้อมปืนใหญ่ Splash โดนหมอผีและเพื่อนข้างๆ พร้อมกัน!'},
+    ]
+  },
+  // Stage 9: Dark Tower Summit — Final
+  { bg:'linear-gradient(160deg,#050010,#1a0035,#000)',
+    slides:[
+      {speaker:'ผู้พิทักษ์',icon:'⚔️',title:'Dark Tower Summit — Stage 10',
+       text:'นี่คือด่านสุดท้าย... ยอดหอคอยมืดที่เราต่อสู้มาตลอด\n\nกองทัพมืดทั้งหมดรวมพลที่นี่ ทั้งโกบลิน โกเลม วิเวิร์น และชิลด์ไนท์'},
+      {speaker:'นักมายากล',icon:'🔮',title:'จอมมาร — Dark Overlord',
+       text:'⚠️ จอมมาร ศัตรูสูงสุด!\n\nโล่พลังงานมืด 250 HP ปกป้องร่างกาย\nHP มหาศาล — ต้องใช้ Sniper และ Thunder ทะลุโล่\nจัดการกองทัพรอบข้างให้หมดก่อน แล้วรุมยิงจอมมาร!'},
+      {speaker:'ผู้พิทักษ์',icon:'🏆',title:'ศึกชิงชะตา!',
+       text:'นี่คือช่วงเวลาที่เราฝึกฝนมาตลอด\n\nวางป้อมให้ครบ ใช้ Thunder + Sniper + Magic ร่วมกัน\nอย่าให้จอมมารผ่านแนวป้องกัน — ชัยชนะอยู่ตรงหน้า!'},
+    ]
+  },
+];
+
+/* ══ LEADERBOARD ══ */
+let lbTab=0;
+function openLeaderboard(){
+  showScreen('leaderboard',true);
+  switchLbTab(0);
+}
+function switchLbTab(i){
+  lbTab=i;
+  for(let j=0;j<3;j++) document.getElementById('lbt'+j).classList.toggle('active',j===i);
+  renderLb();
+}
+function renderLb(){
+  const body=document.getElementById('lbBody');
+  const runs=JSON.parse(localStorage.getItem('tq_runs')||'[]');
+  const lastName=localStorage.getItem('tq_last_name')||'';
+  if(lbTab===0){
+    // My Stats
+    const myRuns=lastName?runs.filter(r=>r.name===lastName):runs.slice(0,10);
+    const egRuns=myRuns.filter(r=>r.mode==='endgame');
+    const stRuns=myRuns.filter(r=>r.mode==='story');
+    const p=loadProgress();
+    const totalStars=Object.values(p).reduce((a,b)=>a+b,0);
+    const bestWave=egRuns.length?Math.max(...egRuns.map(r=>r.wave)):0;
+    const bestScore=egRuns.length?Math.max(...egRuns.map(r=>r.score)):0;
+    const bestKills=egRuns.length?Math.max(...egRuns.map(r=>r.kills||0)):0;
+    const bestCombo=egRuns.length?Math.max(...egRuns.map(r=>r.maxCombo||1)):1;
+    const totalEgKills=egRuns.reduce((a,r)=>a+(r.kills||0),0);
+    let html=`<div class="my-stat-grid">
+      <div class="my-stat-card eg"><div class="my-stat-val">${bestWave||'—'}</div><div class="my-stat-lbl">🌊 Best Wave</div></div>
+      <div class="my-stat-card eg"><div class="my-stat-val">${bestScore?bestScore.toLocaleString():'—'}</div><div class="my-stat-lbl">⭐ Best Score</div></div>
+      <div class="my-stat-card eg"><div class="my-stat-val">${bestKills||'—'}</div><div class="my-stat-lbl">💀 Best Kills/Run</div></div>
+      <div class="my-stat-card eg"><div class="my-stat-val">×${bestCombo}</div><div class="my-stat-lbl">⚡ Best Combo</div></div>
+      <div class="my-stat-card"><div class="my-stat-val">${Object.keys(p).filter(k=>(p[k]||0)>=1).length}/${STAGES.filter(s=>!s.comingSoon).length}</div><div class="my-stat-lbl">🗺️ Stages Cleared</div></div>
+      <div class="my-stat-card"><div class="my-stat-val">${totalStars}★</div><div class="my-stat-lbl">⭐ Total Stars</div></div>
+      <div class="my-stat-card"><div class="my-stat-val">${totalEgKills.toLocaleString()}</div><div class="my-stat-lbl">💀 Total Kills (EG)</div></div>
+      <div class="my-stat-card"><div class="my-stat-val">${egRuns.length}</div><div class="my-stat-lbl">🔥 EG Runs</div></div>
+    </div>`;
+    if(myRuns.length){
+      html+='<div class="run-hdr">⏱ Recent Runs</div>';
+      myRuns.slice(0,8).forEach(r=>{
+        html+=`<div class="run-row">
+          <div class="run-mode-icon">${r.mode==='endgame'?'🔥':'⚔️'}</div>
+          <div class="run-info"><div class="run-name">${r.name}</div>
+          <div class="run-meta">${r.mode==='endgame'?'Endgame · '+r.diff:'Story · '+r.stage} · ${r.date}</div></div>
+          <div class="run-val"><div class="run-score">${r.score}</div><div class="run-wave">${r.mode==='endgame'?'Wave '+r.wave:r.stage}</div></div>
+        </div>`;
+      });
+    } else {
+      html+='<div class="lb-empty">No records yet<br><span style="font-size:11px;color:#333;">Play a game and save your name</span></div>';
+    }
+    body.innerHTML=html;
+  } else if(lbTab===1){
+    // All runs leaderboard
+    const allRuns=[...runs].sort((a,b)=>b.score-a.score);
+    if(!allRuns.length){ body.innerHTML='<div class="lb-empty">No records yetใดๆ<br><span style="font-size:11px;color:#333;">Play and save your name first</span></div>'; return; }
+    let myRank=-1;
+    const myName=lastName;
+    let html='';
+    allRuns.slice(0,20).forEach((r,i)=>{
+      const isMe=r.name===myName;
+      if(isMe&&myRank<0) myRank=i+1;
+      const rankClass=i===0?'g':i===1?'s':i===2?'b':'n';
+      html+=`<div class="lb-item${isMe?' me':''}">
+        <div class="lb-rank ${rankClass}">${i+1}</div>
+        <div class="lb-avatar">${r.mode==='endgame'?'🔥':'⚔️'}</div>
+        <div class="lb-info"><div class="lb-name">${r.name}${isMe?' (ฉัน)':''}</div>
+        <div class="lb-detail">${r.mode==='endgame'?'Endgame · '+r.diff:'Story · '+r.stage} · ${r.date}</div></div>
+        <div class="lb-score-wrap"><div class="lb-score-val">${r.score}</div>
+        <div class="lb-score-sub">${r.mode==='endgame'?'Wave '+r.wave:r.stage}</div></div>
+      </div>`;
+    });
+    body.innerHTML=html;
+  } else {
+    // Endgame only
+    const egOnly=[...runs].filter(r=>r.mode==='endgame').sort((a,b)=>b.wave-a.wave||b.score-a.score);
+    if(!egOnly.length){ body.innerHTML='<div class="lb-empty">No records yet Endgame<br><span style="font-size:11px;color:#333;">Play Endgame and save your name</span></div>'; return; }
+    const myName=lastName;
+    let html='';
+    egOnly.slice(0,20).forEach((r,i)=>{
+      const isMe=r.name===myName;
+      const rankClass=i===0?'g':i===1?'s':i===2?'b':'n';
+      html+=`<div class="lb-item${isMe?' me':''}">
+        <div class="lb-rank ${rankClass}">${i+1}</div>
+        <div class="lb-avatar">${['💀','👹','🔥','⚔️','🌋'][i%5]}</div>
+        <div class="lb-info"><div class="lb-name">${r.name}${isMe?' (ฉัน)':''}</div>
+        <div class="lb-detail">Endgame · ${r.diff} · ${r.date}</div></div>
+        <div class="lb-score-wrap"><div class="lb-score-val">${r.score.toLocaleString()}</div>
+        <div class="lb-score-sub">🌊 Wave ${r.wave} · 💀 ${r.kills||0} kills</div></div>
+      </div>`;
+    });
+    body.innerHTML=html;
+  }
+}
+
+/* ══ OVERRIDE startWave for EG ══ */
+const _origStartWave=startWave;
+window.startWave=function(){
+  if(isEndgame){if(!G||G.waveActive||G.over||paused)return;startEgWave();return;}
+  _origStartWave();
+};
+
+/* ══ OVERRIDE endGame to show save prompt ══ */
+const _origEndGame=endGame;
+window.endGame=function(win){
+  _origEndGame(win);
+  if(!win&&!isEndgame){
+    // story mode lose → show save prompt before overlay
+    document.getElementById('endOverlay').style.display='none';
+    showSavePrompt(false);
+  }
+};
+
+/* ══ OVERRIDE goStageSelect / goMenu to reset EG flag ══ */
+const _origGoStageSelect=goStageSelect;
+window.goStageSelect=function(){
+  isEndgame=false;
+  document.getElementById('surrenderBtn').style.display='none';
+  document.getElementById('backBtn').style.display='';
+  _origGoStageSelect();
+};
+const _origGoMenu=goMenu;
+window.goMenu=function(){
+  isEndgame=false;
+  document.getElementById('surrenderBtn').style.display='none';
+  document.getElementById('backBtn').style.display='';
+  _origGoMenu();
+};
+
+/* ══ BUTTON WIRING ══ */
+document.getElementById('startBtn').addEventListener('click',openStageSelect);
+document.getElementById('battleNavBtn').addEventListener('click',openStageSelect);
+document.getElementById('ssBackBtn').addEventListener('click',()=>showScreen('mm',true));
+document.getElementById('tsBackBtn').addEventListener('click',()=>openStageSelect());
+document.getElementById('backBtn').addEventListener('click',goStageSelect);
+document.getElementById('pauseBtn').addEventListener('click',()=>{if(!G||G.over||G.win)return;togglePause();});
+document.getElementById('speedBtn').addEventListener('click',function(){
+  if(!G||G.over||G.win)return;
+  speed=speed===1?2:speed===2?3:1;
+  this.textContent=speed+'×';
+});
+document.getElementById('devIngameBtn').addEventListener('click',()=>{if(!G||G.over||G.win)return;openDev(false);});
+document.getElementById('devNavBtn').addEventListener('click',()=>openDev(true));
+document.getElementById('devCloseBtn').addEventListener('click',closeDev);
+document.getElementById('codexNavBtn').addEventListener('click',openCodex);
+document.getElementById('codexBackBtn').addEventListener('click',()=>showScreen('mm',true));
+document.getElementById('egNavBtn').addEventListener('click',openEgMenu);
+document.getElementById('egMenuBtn').addEventListener('click',openEgMenu);
+document.getElementById('egBackBtn').addEventListener('click',()=>showScreen('mm',true));
+document.getElementById('lbNavBtn').addEventListener('click',openLeaderboard);
+document.getElementById('lbBackBtn').addEventListener('click',()=>showScreen('mm',true));
+document.getElementById('ssBackBtn').addEventListener('click',()=>showScreen('mm',true));
+document.getElementById('tsBackBtn').addEventListener('click',()=>openStageSelect());
+// update hideAll to include new screens
+const _origHideAll=hideAll;
+window.hideAll=function(){
+  ['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','towersel'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.style.display='none';
+  });
+};
+updateMenuStats();

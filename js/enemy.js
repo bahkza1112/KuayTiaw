@@ -1,0 +1,524 @@
+
+/* ══ STATIC DATA ══ */
+const ENAMES=['โกบลิน','โครงกระดูก','เงามืด','วิญญาณไฟ','บอส','โกเลม','ค้างคาว','วิเวิร์น','ชิลด์ไนท์','จอมมาร','หมอผี'];
+const EICONS=['👺','💀','👻','🔥','👹','🪨','🦇','🐉','🛡️','👁️','🧙'];
+const ESIZES=[46,52,52,56,88,62,38,54,56,96,50];
+const MFLAVOR=['สิ่งมีชีวิตแสนเจ้าเล่ห์ที่พึ่งพาความเร็ว เดินทางเป็นฝูงและท่วมท้นด้วยจำนวน',
+  'ฟื้นคืนชีพจากสนามรบโบราณ แข็งแกร่งแต่ช้า — กระดูกของมันยากจะทำลาย',
+  'สิ่งมีชีวิตแห่งความมืด มีความต้านทานบางส่วนต่อการชะลอของน้ำแข็ง',
+  'กำเนิดจากการระเบิดของภูเขาไฟ HP สูงและมั่นคง — ภัยคุกคามที่น่ากลัวอย่างยิ่ง',
+  'จอมปีศาจขนาดใหญ่ที่บัญชาการมอนสเตอร์ทั้งหมด ต้องการความร่วมมืออย่างสูงเพื่อเอาชนะ',
+  'หินยักษ์ที่ถูกสาปให้มีชีวิต HP สูงสุดในบรรดามอนธรรมดา ภูมิต้านทานน้ำแข็งโดยสมบูรณ์',
+  'ค้างคาวมืดที่บินอยู่บนอากาศ Sniper, Archer และ Thunder เท่านั้นที่ยิงโดน',
+  'มังกรน้อยพันธุ์วิเวิร์นที่บินร่อนอยู่บนฟ้า HP สูงกว่าค้างคาวมาก ป้อมสายฟ้าจัดการได้ดีที่สุด',
+  'นักรบหุ้มเกราะถือโล่เหล็กหนา โล่ดูดซับความเสียหายก่อนถึง HP จริง — Sniper และ Thunder เท่านั้นที่ทะลุโล่ได้',
+  'จอมมารผู้ยิ่งใหญ่ที่สถิตอยู่ ณ ยอดหอคอยมืด โล่พลังงานมืดปกป้องร่างกาย HP มหาศาลและเคลื่อนที่ช้า — ต้องใช้พลังรวมกันทั้งหมดจึงจะเอาชนะได้',
+  'หมอผีแห่งความมืดผู้ปลุกเสกพลังชีวิตให้พวกพ้อง คอย Heal ศัตรูรอบข้างทุก 2 วินาที — กำจัดมันก่อนเป็นอันดับแรก!'];
+const MTAGS=[[],[],[],[],[],[],[],[],[],[],[]]; /* ไม่ใช้แล้ว — แทนที่ด้วยระบบจุดแข็งและจุดอ่อน */
+const MSPECIAL=[null,null,'ต้านทานการชะลอของน้ำแข็งบางส่วน','เผาไหม้พื้นที่โดยรอบ','⚠️ ปรากฏตัวตั้งแต่คลื่นที่ 4 เป็นต้นไป','🛡️ Immune ต่อ Ice slow ทั้งหมด','✈️ บินได้ — Sniper, Archer และ Thunder เท่านั้นที่ยิงโดน','✈️ บินได้ — Thunder, Sniper, Archer ยิงโดน — HP สูง','🛡️ โล่ HP 80 — ต้องทำลายก่อน — Sniper/Thunder ทะลุโล่ได้','🌑 Final Boss — โล่พลังงานมืด 250 HP + HP มหาศาล ต้องใช้พลังทุกป้อมเอาชนะ','💚 Heal ศัตรูใกล้เคียงทุก 2 วิ — ฆ่าก่อนไม่งั้น Heal ไม่หยุด'];
+/* เผ่า, จุดแข็ง, จุดอ่อน */
+const MTRIBE=['อสูร','ปีศาจ','วิญญาณ','วิญญาณ','ปีศาจ','หิน','ปีศาจ','มังกร','มนุษย์','ปีศาจ','วิญญาณ'];
+const MSTRENGTH=[
+  ['จำนวนมาก','เคลื่อนที่เร็ว'],
+  ['HP สูง','ทนทานมาก'],
+  ['ภูมิต้านทานน้ำแข็ง','หลบเลี่ยงได้ดี'],
+  ['HP สูงมาก','ไม่หยุดนิ่ง'],
+  ['HP มหาศาล','โจมตีหลายด้าน'],
+  ['HP สูงมาก','Immune น้ำแข็ง'],
+  ['บินได้','เร็วมาก'],
+  ['บินได้','HP สูง','ป้อมส่วนใหญ่ยิงไม่โดน'],
+  ['โล่ดูดซับความเสียหาย','ป้อมส่วนใหญ่โดนแค่โล่'],
+  ['HP มหาศาล','โล่พลังงานมืดหนามาก','เคลื่อนที่ช้าแต่ไม่หยุด'],
+  ['Heal พวกพ้อง','ทำให้ศัตรูข้างๆ ฆ่าไม่ตาย'],
+];
+const MWEAKNESS=[
+  ['ป้อมกระจาย','ป้อมน้ำแข็ง'],
+  ['ป้อมสไนเปอร์','ป้อมเวทมนตร์'],
+  ['ป้อมปืนใหญ่','ป้อมสไนเปอร์'],
+  ['ป้อมน้ำแข็ง','ป้อมเวทมนตร์'],
+  ['ป้อมทุกแบบร่วมกัน','ซัพพอร์ตเสริมกำลัง'],
+  ['ป้อมสไนเปอร์','ป้อมเวทมนตร์'],
+  ['ป้อมสไนเปอร์','ป้อมธนู','ป้อมสายฟ้า'],
+  ['ป้อมสายฟ้า','ป้อมสไนเปอร์','ป้อมธนู'],
+  ['ป้อมสไนเปอร์','ป้อมสายฟ้า'],
+  ['ป้อมสไนเปอร์','ป้อมสายฟ้า','Sniper/Thunder ทะลุโล่ได้'],
+  ['ต้องฆ่าก่อนมอนตัวอื่น','ป้อมปืนใหญ่ Splash โดนพร้อมกัน'],
+];
+/* 0=มอนธรรมดา 1=บอส */
+const MTYPE=[0,0,0,0,1,0,0,0,0,1,0];
+const MISAIR=[false,false,false,false,false,false,true,true,false,false,false]; /* บินได้ */
+const MSHIELD=[0,0,0,0,0,0,0,0,80,250,0]; /* shield HP เริ่มต้น (0=ไม่มีโล่) */
+function getEnemyHP(ti,si,wave){return CFG.m_hp[ti]*(1+si*CFG.stageMult)*(1+wave*CFG.waveMult);}
+function getEnemySpd(ti,si){return Math.min(CFG.m_spd[ti]*(1+si*CFG.spdStageMult),CFG.spdCap);}
+
+/* damage number colors per tower type */
+const _DMGCOL=['#ff7043','#80d8ff','#ea80fc','#ffee58','#69f0ae','#a5d6a7','#ffd54f','#ffe57f','#ffe57f','#ffe57f','#ffe57f'];
+const _DMGSUF=[' 💥','',' ✨',' 🎯','','','',' ⚡',' ⚡','',''];
+function _pushDmgNum(e,dmg,shield){
+  if(!G||!G.dmgNums) return;
+  const col=shield?'#90caf9':(_DMGCOL[e._lastTowerType]||'#fff');
+  const suf=shield?'🛡️':(_DMGSUF[e._lastTowerType]||'');
+  const big=dmg>=60||(MTYPE[e.ti]===1);
+  G.dmgNums.push({
+    x:e.x+(Math.random()*16-8), y:e.y-ESIZES[e.ti]-4,
+    txt:'-'+Math.ceil(dmg)+suf, col, life:1.1,
+    vy:-(1.6+Math.random()*.6), vx:(Math.random()-.5)*.7,
+    scale: big?1.45:0.95, decay:1.0
+  });
+}
+function applyDmg(e,dmg,towerType,forcePierce){
+  if(!e.alive) return;
+  e._lastTowerType=towerType;
+  const pierce=(TPIERCE[towerType]||false)||!!forcePierce;
+  if(e.shieldHp>0&&!pierce){
+    // damage hits shield
+    e.shieldHp-=dmg;
+    e.hitFlash=.55;
+    _pushDmgNum(e,dmg,true);
+    if(e.shieldHp<=0){
+      e.shieldHp=0;
+      // shield break FX
+      G.fxRings.push({x:e.x,y:e.y,r:3,maxR:ESIZES[e.ti]*3,life:.6,lw:3,col:'#90caf9',delay:0});
+      for(let k=0;k<8;k++){const a=k/8*Math.PI*2;G.particles.push({x:e.x,y:e.y,txt:'▪',col:'#90caf9',life:.7,vy:Math.sin(a)*1.8,vx:Math.cos(a)*1.8,decay:2.2,scale:.7});}
+      G.particles.push({x:e.x,y:e.y-ESIZES[e.ti]-14,txt:'🛡️ แตก!',col:'#90caf9',life:1.2,vy:-1.4,vx:0,scale:1,decay:1.2});
+      G.shakeT=Math.min(.4,G.shakeT+.12);
+      _playSound('shield_break');
+    }
+  } else {
+    // damage hits HP (pierce or no shield)
+    e.hp-=dmg;
+    e.hitFlash=1;
+    _pushDmgNum(e,dmg,false);
+    if(e.hp<=0) killEnemy(e);
+  }
+}
+function spawnEnemy(ti){
+  const si=currentStage.id;
+  const hp=getEnemyHP(ti,si,G.wave)*((G&&G.weather&&G.weather.hpMult)?G.weather.hpMult:1);
+  const shBase=MSHIELD[ti]||0;
+  const sh=shBase>0?Math.round(shBase*(1+si*CFG.stageMult*.5)):0;
+  const sx=currentPath[0][0]*CS+CS/2, sy=currentPath[0][1]*CS+CS/2;
+  G.enemies.push({
+    ti,pi:0,prog:0, x:sx,y:sy,
+    hp,mhp:hp,spd:getEnemySpd(ti,si),reward:CFG.m_rew[ti],
+    slow:1,slowT:0,alive:true,hitFlash:0,
+    isAir:MISAIR[ti]||false,
+    shieldHp:sh,maxShieldHp:sh,
+  });
+  /* ══ BOSS SPAWN ENTRANCE FX ══ */
+  if(MTYPE[ti]===1){
+    const isFinal=ti===9;
+    G.shakeT=Math.min(.8,G.shakeT+(isFinal?.55:.32));
+    // expanding rings burst from spawn
+    for(let k=0;k<(isFinal?4:2);k++){
+      G.fxRings.push({x:sx,y:sy,r:4,maxR:CS*(isFinal?3.5:2.2),
+        life:.7+k*.1,lw:isFinal?3:2,col:isFinal?'#9c27b0':'#b71c1c',delay:k*.08});
+    }
+    // particle burst at spawn
+    const _bc=isFinal?'#ce93d8':'#ef5350';
+    for(let k=0;k<(isFinal?20:12);k++){
+      const a=k/(isFinal?20:12)*Math.PI*2, sp=2+Math.random()*3;
+      G.particles.push({x:sx,y:sy,txt:'●',col:_bc,
+        life:.7+Math.random()*.4,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:2.2,scale:.6+Math.random()*.5});
+    }
+    // warning banner
+    const warningTxt=isFinal?'👁️ จอมมาร ปรากฏตัว!':'👹 '+ENAMES[ti]+' ปรากฏตัว!';
+    G.bossWarning={text:warningTxt,t:2.2,col:isFinal?'#ce93d8':'#ef5350'};
+    _playSound('boss_spawn');
+  }
+}
+
+function killEnemy(e){
+  if(!e.alive) return;
+  e.alive=false;
+  unlockMonster(e.ti);
+  if(MTYPE[e.ti]===1) _dropRune(e.x,e.y); // boss always drops rune
+  _onKillForAch(e); // achievement tracking
+  // combo system
+  G.kills=(G.kills||0)+1;
+  G.comboT=2.2; G.comboN=(G.comboN||0)+1;
+  if(G.comboN>G.maxCombo) G.maxCombo=G.comboN;
+  _onComboForAch(G.comboN); // achievement: combo milestone
+  const comboMult=G.comboN>=10?3:G.comboN>=5?2:G.comboN>=3?1.5:1;
+  const baseScore=e.reward*10;
+  const finalScore=Math.round(baseScore*comboMult);
+  G.score+=finalScore;
+  _onScoreForAch(G.score); // achievement: score milestone
+  if(G.comboN>=3&&G.comboN%3===0){
+    const comboTxts=['','','','COMBO!','','','COMBO x2!','','','COMBO x3!'];
+    const ct=comboTxts[Math.min(G.comboN,9)]||'COMBO!';
+    G.particles.push({x:e.x,y:e.y-ESIZES[e.ti]-20,txt:'⚡'+ct,col:'#ffe234',
+      life:1.2,vy:-1.6,vx:0,decay:.9,scale:1.3});
+  }
+  G.gold+=e.reward;
+  if(e._avaRune) G.gold+=Math.floor(e.reward*.6); // Avarice rune bonus
+  addParticle(e.x,e.y,'+'+e.reward+'💰','#ffe082');
+  updateHUD();
+  // V2: death burst — color-coded by enemy type
+  const _dc=['#4caf50','#eceff1','#7c4dff','#ff5722','#b71c1c','#9e9e9e','#37474f','#ce93d8','#90a4ae','#9c27b0','#69f0ae'];
+  const nc=e.ti===9?30:e.ti===4?18:e.ti===5?12:e.ti===7||e.ti===8?10:e.ti===10?12:8;
+  for(let k=0;k<nc;k++){
+    const a=k/nc*Math.PI*2,sp=1.6+Math.random()*2.4;
+    G.particles.push({x:e.x,y:e.y,txt:'●',col:_dc[e.ti]||'#fff',
+      life:.65+Math.random()*.45,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:2.3,scale:.5+Math.random()*.6});
+  }
+  G.fxRings.push({x:e.x,y:e.y,r:ESIZES[e.ti]*.4,maxR:ESIZES[e.ti]*3.8,life:.55,lw:2.5,col:_dc[e.ti]||'#fff',delay:0});
+  // death sound (throttled — max once per 80ms)
+  const _now=performance.now();
+  if(_now-_sfxLastDie>80){_sfxLastDie=_now;_playSound('die');}
+}
+
+function drawEnemySprite(ctx,ti,x,y,sz){
+  const r=sz*.42;
+  ctx.save();ctx.translate(x,y);
+  // chibi helper: Kingdom Rush style outline stroke
+  function _ol(fn){ctx.save();ctx.strokeStyle='#1a1a1a';ctx.lineWidth=r*.3;ctx.lineJoin='round';fn();ctx.stroke();ctx.restore();}
+  // chibi helper: cute round eye with shine
+  function _eye(ex,ey,er,col){
+    ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(ex,ey,er,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle=col||'#111';ctx.beginPath();ctx.arc(ex+er*.1,ey,er*.62,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(ex-er*.15,ey-er*.32,er*.28,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,.5)';ctx.beginPath();ctx.arc(ex+er*.18,ey+er*.18,er*.14,0,Math.PI*2);ctx.fill();
+  }
+  // chibi helper: blush
+  function _blush(bx,by,br){
+    ctx.globalAlpha=.45;ctx.fillStyle='#ff8a80';
+    ctx.beginPath();ctx.ellipse(bx,by,br,br*.5,0,0,Math.PI*2);ctx.fill();
+    ctx.globalAlpha=1;
+  }
+  switch(ti){
+    case 0:{// Goblin — chibi green gremlin
+      // outline first
+      _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.1,r*.78,0,Math.PI*2);});
+      _ol(()=>{ctx.beginPath();ctx.ellipse(0,r*.55,r*.38,r*.3,0,0,Math.PI*2);});
+      // tiny body
+      ctx.fillStyle='#388e3c';ctx.beginPath();ctx.ellipse(0,r*.55,r*.38,r*.3,0,0,Math.PI*2);ctx.fill();
+      // big round head
+      ctx.fillStyle='#4caf50';ctx.beginPath();ctx.arc(0,-r*.1,r*.78,0,Math.PI*2);ctx.fill();
+      // pointy ears
+      ctx.fillStyle='#4caf50';ctx.beginPath();ctx.moveTo(-r*.62,-r*.28);ctx.lineTo(-r*1.0,-r*.72);ctx.lineTo(-r*.32,-r*.48);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#4caf50';ctx.beginPath();ctx.moveTo(r*.62,-r*.28);ctx.lineTo(r*1.0,-r*.72);ctx.lineTo(r*.32,-r*.48);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#ff8a80';ctx.beginPath();ctx.moveTo(-r*.65,-r*.36);ctx.lineTo(-r*.88,-r*.62);ctx.lineTo(-r*.42,-r*.5);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#ff8a80';ctx.beginPath();ctx.moveTo(r*.65,-r*.36);ctx.lineTo(r*.88,-r*.62);ctx.lineTo(r*.42,-r*.5);ctx.closePath();ctx.fill();
+      // blush
+      _blush(-r*.42,r*.06,r*.2);_blush(r*.42,r*.06,r*.2);
+      // big eyes
+      _eye(-r*.3,-r*.15,r*.24,'#c62828');_eye(r*.3,-r*.15,r*.24,'#c62828');
+      // tiny tusks
+      ctx.fillStyle='#fffde7';ctx.beginPath();ctx.moveTo(-r*.14,r*.22);ctx.lineTo(-r*.06,r*.42);ctx.lineTo(r*.02,r*.22);ctx.closePath();ctx.fill();
+      ctx.beginPath();ctx.moveTo(r*.06,r*.22);ctx.lineTo(r*.14,r*.42);ctx.lineTo(r*.22,r*.22);ctx.closePath();ctx.fill();
+      break;}
+    case 1:{// Skeleton — chibi cute skull
+      _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.12,r*.75,0,Math.PI*2);});
+      _ol(()=>{ctx.beginPath();ctx.ellipse(0,r*.55,r*.3,r*.26,0,0,Math.PI*2);});
+      // tiny body
+      ctx.fillStyle='#cfd8dc';ctx.beginPath();ctx.ellipse(0,r*.55,r*.3,r*.26,0,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#90a4ae';ctx.lineWidth=r*.07;
+      for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(-r*.24,r*.44+i*r*.1);ctx.lineTo(r*.24,r*.44+i*r*.1);ctx.stroke();}
+      // big round skull head
+      ctx.fillStyle='#fafafa';ctx.beginPath();ctx.arc(0,-r*.12,r*.75,0,Math.PI*2);ctx.fill();
+      // shiny highlight on skull
+      ctx.fillStyle='rgba(255,255,255,.65)';ctx.beginPath();ctx.ellipse(-r*.2,-r*.35,r*.28,r*.18,-.4,0,Math.PI*2);ctx.fill();
+      // big dark eye sockets
+      ctx.fillStyle='#1a1a2e';ctx.beginPath();ctx.arc(-r*.28,-r*.12,r*.26,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#1a1a2e';ctx.beginPath();ctx.arc(r*.28,-r*.12,r*.26,0,Math.PI*2);ctx.fill();
+      // glowing purple pupils
+      ctx.fillStyle='#7c4dff';ctx.beginPath();ctx.arc(-r*.28,-r*.12,r*.14,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#7c4dff';ctx.beginPath();ctx.arc(r*.28,-r*.12,r*.14,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.75)';ctx.beginPath();ctx.arc(-r*.22,-r*.18,r*.06,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.75)';ctx.beginPath();ctx.arc(r*.22,-r*.18,r*.06,0,Math.PI*2);ctx.fill();
+      // cute teeth smile
+      ctx.fillStyle='#fafafa';ctx.beginPath();ctx.arc(0,r*.2,r*.24,0,Math.PI,false);ctx.fill();
+      ctx.fillStyle='#1a1a2e';for(let i=0;i<3;i++) ctx.fillRect(-r*.18+i*r*.14,r*.2,r*.1,r*.14);
+      break;}
+    case 2:{// Shadow — chibi ghost blob
+      _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.08,r*.76,0,Math.PI*2);});
+      // wispy ghost tail
+      ctx.globalAlpha=.55;ctx.fillStyle='#311b92';
+      ctx.beginPath();ctx.moveTo(-r*.52,r*.25);ctx.bezierCurveTo(-r*.65,r*.72,-r*.25,r*.88,0,r*.68);ctx.bezierCurveTo(r*.25,r*.88,r*.65,r*.72,r*.52,r*.25);ctx.closePath();ctx.fill();ctx.globalAlpha=1;
+      // wavy bottom bumps
+      for(let k=0;k<3;k++){ctx.globalAlpha=.45;ctx.fillStyle='#4527a0';ctx.beginPath();ctx.arc(-r*.38+k*r*.38,r*.55,r*.18,0,Math.PI*2);ctx.fill();}
+      ctx.globalAlpha=1;
+      // big round blob body
+      ctx.fillStyle='#5e35b1';ctx.beginPath();ctx.arc(0,-r*.08,r*.76,0,Math.PI*2);ctx.fill();
+      // inner glow
+      const _sgg=ctx.createRadialGradient(-r*.2,-r*.3,0,0,-r*.08,r*.76);
+      _sgg.addColorStop(0,'rgba(179,136,255,.55)');_sgg.addColorStop(1,'transparent');
+      ctx.fillStyle=_sgg;ctx.beginPath();ctx.arc(0,-r*.08,r*.76,0,Math.PI*2);ctx.fill();
+      // big cute eyes
+      _eye(-r*.28,-r*.12,r*.26,'#1a237e');_eye(r*.28,-r*.12,r*.26,'#1a237e');
+      // blush
+      _blush(-r*.52,r*.05,r*.18);_blush(r*.52,r*.05,r*.18);
+      // cute little smile
+      ctx.strokeStyle='#311b92';ctx.lineWidth=r*.08;ctx.lineCap='round';
+      ctx.beginPath();ctx.arc(0,r*.18,r*.2,0.2,Math.PI-.2);ctx.stroke();
+      break;}
+    case 3:{// Fire Spirit — chibi fireball
+      _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.08,r*.72,0,Math.PI*2);});
+      const fl=Math.sin(Date.now()*.012+x)*.14;
+      // flame aura behind
+      ctx.fillStyle='#bf360c';
+      ctx.beginPath();ctx.moveTo(0,-r*(1.05+fl));ctx.bezierCurveTo(r*.85,-r*.45,r*.78,r*.35,0,r*.68);ctx.bezierCurveTo(-r*.78,r*.35,-r*.85,-r*.45,0,-r*(1.05+fl));ctx.fill();
+      // side flames
+      ctx.fillStyle='#e64a19';ctx.beginPath();ctx.moveTo(-r*.4,-r*.65+fl*r*.6);ctx.bezierCurveTo(-r*.85,-r*.2,-r*.75,r*.2,-r*.35,r*.35);ctx.bezierCurveTo(-r*.2,r*.15,-r*.3,-r*.15,-r*.4,-r*.65+fl*r*.6);ctx.fill();
+      ctx.fillStyle='#e64a19';ctx.beginPath();ctx.moveTo(r*.4,-r*.65+fl*r*.6);ctx.bezierCurveTo(r*.85,-r*.2,r*.75,r*.2,r*.35,r*.35);ctx.bezierCurveTo(r*.2,r*.15,r*.3,-r*.15,r*.4,-r*.65+fl*r*.6);ctx.fill();
+      // main round body
+      ctx.fillStyle='#ff5722';ctx.beginPath();ctx.arc(0,-r*.08,r*.72,0,Math.PI*2);ctx.fill();
+      // bright center
+      ctx.fillStyle='#ffcc02';ctx.beginPath();ctx.arc(0,-r*.1,r*.42,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#fff9c4';ctx.beginPath();ctx.arc(0,-r*.12,r*.2,0,Math.PI*2);ctx.fill();
+      // cute chibi eyes
+      _eye(-r*.26,-r*.12,r*.23,'#bf360c');_eye(r*.26,-r*.12,r*.23,'#bf360c');
+      // smile
+      ctx.strokeStyle='#bf360c';ctx.lineWidth=r*.09;ctx.lineCap='round';
+      ctx.beginPath();ctx.arc(0,r*.14,r*.22,.15,Math.PI-.15);ctx.stroke();
+      break;}
+    case 4:{// Boss — chibi demon king (HUGE head)
+      _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.1,r*.92,0,Math.PI*2);});
+      _ol(()=>{ctx.beginPath();ctx.ellipse(0,r*.55,r*.4,r*.3,0,0,Math.PI*2);});
+      // tiny arms
+      ctx.fillStyle='#c62828';ctx.beginPath();ctx.ellipse(-r*.9,r*.18,r*.28,r*.2,-.35,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.ellipse(r*.9,r*.18,r*.28,r*.2,.35,0,Math.PI*2);ctx.fill();
+      // tiny body
+      ctx.fillStyle='#c62828';ctx.beginPath();ctx.ellipse(0,r*.55,r*.4,r*.3,0,0,Math.PI*2);ctx.fill();
+      // GIANT chibi head
+      ctx.fillStyle='#e53935';ctx.beginPath();ctx.arc(0,-r*.1,r*.92,0,Math.PI*2);ctx.fill();
+      // head highlight
+      const _bh=ctx.createRadialGradient(-r*.3,-r*.5,0,0,-r*.1,r*.92);
+      _bh.addColorStop(0,'rgba(255,180,180,.35)');_bh.addColorStop(1,'transparent');
+      ctx.fillStyle=_bh;ctx.beginPath();ctx.arc(0,-r*.1,r*.92,0,Math.PI*2);ctx.fill();
+      // horns (curved)
+      ctx.fillStyle='#4a0000';
+      ctx.beginPath();ctx.moveTo(-r*.52,-r*.72);ctx.quadraticCurveTo(-r*.85,-r*1.3,-r*.42,-r*1.48);ctx.quadraticCurveTo(-r*.22,-r*.95,-r*.28,-r*.82);ctx.closePath();ctx.fill();
+      ctx.beginPath();ctx.moveTo(r*.52,-r*.72);ctx.quadraticCurveTo(r*.85,-r*1.3,r*.42,-r*1.48);ctx.quadraticCurveTo(r*.22,-r*.95,r*.28,-r*.82);ctx.closePath();ctx.fill();
+      // golden crown
+      ctx.fillStyle='#ffd700';
+      ctx.beginPath();ctx.moveTo(-r*.58,-r*.68);ctx.lineTo(-r*.58,-r*.9);ctx.lineTo(-r*.32,-r*.72);ctx.lineTo(-r*.12,-r*.96);ctx.lineTo(r*.12,-r*.72);ctx.lineTo(r*.32,-r*.96);ctx.lineTo(r*.58,-r*.72);ctx.lineTo(r*.58,-r*.68);ctx.closePath();ctx.fill();
+      // crown jewels
+      ctx.fillStyle='#f44336';ctx.beginPath();ctx.arc(-r*.12,-r*.94,r*.07,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#4caf50';ctx.beginPath();ctx.arc(r*.12,-r*.94,r*.07,0,Math.PI*2);ctx.fill();
+      // big boss eyes
+      _eye(-r*.32,-r*.16,r*.3,'#1a237e');_eye(r*.32,-r*.16,r*.3,'#1a237e');
+      // blush (even boss is a bit cute)
+      _blush(-r*.62,r*.06,r*.22);_blush(r*.62,r*.06,r*.22);
+      // evil grin + fangs
+      ctx.fillStyle='#7f0000';ctx.beginPath();ctx.arc(0,r*.24,r*.38,.08,Math.PI-.08,false);ctx.fill();
+      ctx.fillStyle='#fffde7';ctx.fillRect(-r*.3,r*.24,r*.14,r*.22);ctx.fillRect(r*.14,r*.24,r*.14,r*.22);
+      break;}
+    case 5:{// Golem — chibi rock monster
+      _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.18,r*.82,0,Math.PI*2);});
+      _ol(()=>{ctx.beginPath();if(ctx.roundRect)ctx.roundRect(-r*.52,r*.05,r*1.04,r*.62,r*.2);else ctx.rect(-r*.52,r*.05,r*1.04,r*.62);});
+      // chunky arms
+      ctx.fillStyle='#757575';ctx.beginPath();ctx.ellipse(-r*.92,r*.12,r*.28,r*.36,.2,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.ellipse(r*.92,r*.12,r*.28,r*.36,-.2,0,Math.PI*2);ctx.fill();
+      // squat body
+      ctx.fillStyle='#616161';ctx.beginPath();if(ctx.roundRect)ctx.roundRect(-r*.52,r*.05,r*1.04,r*.62,r*.2);else ctx.rect(-r*.52,r*.05,r*1.04,r*.62);ctx.fill();
+      // body cracks
+      ctx.strokeStyle='#424242';ctx.lineWidth=r*.07;
+      ctx.beginPath();ctx.moveTo(-r*.2,r*.1);ctx.lineTo(r*.05,r*.5);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(r*.22,r*.12);ctx.lineTo(r*.08,r*.45);ctx.stroke();
+      // HUGE round rocky head
+      ctx.fillStyle='#757575';ctx.beginPath();ctx.arc(0,-r*.18,r*.82,0,Math.PI*2);ctx.fill();
+      // rock texture bumps
+      ctx.fillStyle='#8a8a8a';ctx.beginPath();ctx.arc(-r*.38,-r*.4,r*.22,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(r*.3,-r*.48,r*.16,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(r*.5,-r*.12,r*.14,0,Math.PI*2);ctx.fill();
+      // head crack
+      ctx.strokeStyle='#424242';ctx.lineWidth=r*.08;
+      ctx.beginPath();ctx.moveTo(-r*.08,-r*.78);ctx.lineTo(r*.06,-r*.2);ctx.stroke();
+      // glowing orange eyes
+      ctx.fillStyle='#ff8f00';ctx.beginPath();ctx.arc(-r*.28,-r*.2,r*.28,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#ff8f00';ctx.beginPath();ctx.arc(r*.28,-r*.2,r*.28,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#ffe082';ctx.beginPath();ctx.arc(-r*.28,-r*.22,r*.16,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#ffe082';ctx.beginPath();ctx.arc(r*.28,-r*.22,r*.16,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.75)';ctx.beginPath();ctx.arc(-r*.22,-r*.28,r*.07,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.75)';ctx.beginPath();ctx.arc(r*.22,-r*.28,r*.07,0,Math.PI*2);ctx.fill();
+      // grumpy line mouth
+      ctx.strokeStyle='#424242';ctx.lineWidth=r*.1;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(-r*.28,r*.1);ctx.lineTo(r*.28,r*.1);ctx.stroke();
+      break;}
+    case 6:{// Bat — chibi cute bat
+      _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.05,r*.65,0,Math.PI*2);});
+      const wf=Math.sin(Date.now()*.015+x)*.28;
+      // wings (big swoopy)
+      ctx.fillStyle='#37474f';
+      ctx.beginPath();ctx.moveTo(-r*.18,r*.08);ctx.bezierCurveTo(-r*.82,-r*.38-wf*r,-r*1.12,r*.32-wf*r,-r*.9,r*.65);ctx.bezierCurveTo(-r*.55,r*.5,-r*.2,r*.38,-r*.18,r*.08);ctx.closePath();ctx.fill();
+      ctx.beginPath();ctx.moveTo(r*.18,r*.08);ctx.bezierCurveTo(r*.82,-r*.38-wf*r,r*1.12,r*.32-wf*r,r*.9,r*.65);ctx.bezierCurveTo(r*.55,r*.5,r*.2,r*.38,r*.18,r*.08);ctx.closePath();ctx.fill();
+      // wing vein lines
+      ctx.strokeStyle='#263238';ctx.lineWidth=r*.05;
+      ctx.beginPath();ctx.moveTo(-r*.18,r*.1);ctx.bezierCurveTo(-r*.6,-r*.15-wf*r*.4,-r*.75,r*.2,-r*.18,r*.1);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(r*.18,r*.1);ctx.bezierCurveTo(r*.6,-r*.15-wf*r*.4,r*.75,r*.2,r*.18,r*.1);ctx.stroke();
+      // round body/head
+      ctx.fillStyle='#546e7a';ctx.beginPath();ctx.arc(0,-r*.05,r*.65,0,Math.PI*2);ctx.fill();
+      // pointy ears with pink inside
+      ctx.fillStyle='#546e7a';ctx.beginPath();ctx.moveTo(-r*.3,-r*.5);ctx.lineTo(-r*.52,-r*.98);ctx.lineTo(-r*.08,-r*.6);ctx.closePath();ctx.fill();
+      ctx.beginPath();ctx.moveTo(r*.3,-r*.5);ctx.lineTo(r*.52,-r*.98);ctx.lineTo(r*.08,-r*.6);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#ff8a80';ctx.beginPath();ctx.moveTo(-r*.32,-r*.55);ctx.lineTo(-r*.46,-r*.86);ctx.lineTo(-r*.14,-r*.64);ctx.closePath();ctx.fill();
+      ctx.beginPath();ctx.moveTo(r*.32,-r*.55);ctx.lineTo(r*.46,-r*.86);ctx.lineTo(r*.14,-r*.64);ctx.closePath();ctx.fill();
+      // big cute eyes
+      _eye(-r*.25,-r*.1,r*.24,'#b71c1c');_eye(r*.25,-r*.1,r*.24,'#b71c1c');
+      // fangs
+      ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(-r*.1,r*.18);ctx.lineTo(-r*.04,r*.34);ctx.lineTo(r*.02,r*.18);ctx.fill();
+      ctx.beginPath();ctx.moveTo(r*.06,r*.18);ctx.lineTo(r*.12,r*.34);ctx.lineTo(r*.18,r*.18);ctx.fill();
+      break;}
+    case 8:{// Shield Knight — chibi armored knight
+      _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.18,r*.8,0,Math.PI*2);});
+      _ol(()=>{ctx.beginPath();ctx.moveTo(-r*.56,r*.04);ctx.lineTo(r*.56,r*.04);ctx.lineTo(r*.64,r*.55);ctx.lineTo(0,r*.95);ctx.lineTo(-r*.64,r*.55);ctx.closePath();});
+      // big round helmet (chibi head!)
+      ctx.fillStyle='#546e7a';ctx.beginPath();ctx.arc(0,-r*.18,r*.8,0,Math.PI*2);ctx.fill();
+      // helmet shine
+      const _hg=ctx.createLinearGradient(-r*.5,-r*.7,r*.2,-r*.1);
+      _hg.addColorStop(0,'rgba(255,255,255,.3)');_hg.addColorStop(1,'transparent');
+      ctx.fillStyle=_hg;ctx.beginPath();ctx.arc(0,-r*.18,r*.8,0,Math.PI*2);ctx.fill();
+      // visor bar
+      ctx.fillStyle='#263238';ctx.beginPath();if(ctx.roundRect)ctx.roundRect(-r*.58,-r*.34,r*1.16,r*.26,r*.06);else ctx.rect(-r*.58,-r*.34,r*1.16,r*.26);ctx.fill();
+      ctx.fillStyle='rgba(255,60,60,.7)';ctx.beginPath();if(ctx.roundRect)ctx.roundRect(-r*.5,-r*.3,r*1.0,r*.17,r*.04);else ctx.rect(-r*.5,-r*.3,r*1.0,r*.17);ctx.fill();
+      // tiny armored body
+      ctx.fillStyle='#455a64';ctx.beginPath();ctx.ellipse(0,r*.44,r*.35,r*.3,0,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#546e7a';ctx.beginPath();ctx.ellipse(-r*.58,-r*.24,r*.2,r*.16,-.3,0,Math.PI*2);ctx.fill();// shoulder L
+      ctx.beginPath();ctx.ellipse(r*.58,-r*.24,r*.2,r*.16,.3,0,Math.PI*2);ctx.fill();// shoulder R
+      // GIANT shield (chibi = big items!)
+      ctx.fillStyle='#1565c0';ctx.beginPath();ctx.moveTo(-r*.56,r*.04);ctx.lineTo(r*.56,r*.04);ctx.lineTo(r*.64,r*.55);ctx.lineTo(0,r*.95);ctx.lineTo(-r*.64,r*.55);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#1976d2';ctx.beginPath();ctx.moveTo(-r*.46,r*.1);ctx.lineTo(r*.46,r*.1);ctx.lineTo(r*.54,r*.52);ctx.lineTo(0,r*.84);ctx.lineTo(-r*.54,r*.52);ctx.closePath();ctx.fill();
+      // shield cross
+      ctx.strokeStyle='#90caf9';ctx.lineWidth=r*.1;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(0,r*.14);ctx.lineTo(0,r*.8);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(-r*.46,r*.44);ctx.lineTo(r*.46,r*.44);ctx.stroke();
+      ctx.fillStyle='#e3f2fd';ctx.beginPath();ctx.arc(0,r*.44,r*.1,0,Math.PI*2);ctx.fill();
+      break;}
+    case 7:{// Wyvern — chibi cute dragon
+      _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.1,r*.8,0,Math.PI*2);});
+      _ol(()=>{ctx.beginPath();ctx.ellipse(0,r*.5,r*.32,r*.26,0,0,Math.PI*2);});
+      const _wf=Math.sin(Date.now()*.01+x)*.28;
+      // wings
+      ctx.fillStyle='#6a1b9a';
+      ctx.beginPath();ctx.moveTo(-r*.2,r*.12);ctx.bezierCurveTo(-r*1.02,-r*.42-_wf*r,-r*1.28,r*.24-_wf*r,-r*1.0,r*.68);ctx.bezierCurveTo(-r*.6,r*.52,-r*.22,r*.38,-r*.2,r*.12);ctx.closePath();ctx.fill();
+      ctx.beginPath();ctx.moveTo(r*.2,r*.12);ctx.bezierCurveTo(r*1.02,-r*.42-_wf*r,r*1.28,r*.24-_wf*r,r*1.0,r*.68);ctx.bezierCurveTo(r*.6,r*.52,r*.22,r*.38,r*.2,r*.12);ctx.closePath();ctx.fill();
+      // wing veins
+      ctx.strokeStyle='#7b1fa2';ctx.lineWidth=r*.06;
+      ctx.beginPath();ctx.moveTo(-r*.2,r*.14);ctx.bezierCurveTo(-r*.7,-r*.18-_wf*r*.4,-r*.85,r*.2,-r*.2,r*.14);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(r*.2,r*.14);ctx.bezierCurveTo(r*.7,-r*.18-_wf*r*.4,r*.85,r*.2,r*.2,r*.14);ctx.stroke();
+      // tiny body
+      ctx.fillStyle='#7b1fa2';ctx.beginPath();ctx.ellipse(0,r*.5,r*.32,r*.26,0,0,Math.PI*2);ctx.fill();
+      // tail
+      ctx.strokeStyle='#6a1b9a';ctx.lineWidth=r*.16;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(0,r*.6);ctx.bezierCurveTo(r*.5,r*.88,r*.78,r*.6,r*.6,r*.32);ctx.stroke();
+      // HUGE chibi round head
+      ctx.fillStyle='#9c27b0';ctx.beginPath();ctx.arc(0,-r*.1,r*.8,0,Math.PI*2);ctx.fill();
+      const _dh=ctx.createRadialGradient(-r*.28,-r*.42,0,0,-r*.1,r*.8);
+      _dh.addColorStop(0,'rgba(255,200,255,.3)');_dh.addColorStop(1,'transparent');
+      ctx.fillStyle=_dh;ctx.beginPath();ctx.arc(0,-r*.1,r*.8,0,Math.PI*2);ctx.fill();
+      // cute horns
+      ctx.fillStyle='#ce93d8';
+      ctx.beginPath();ctx.moveTo(-r*.35,-r*.62);ctx.quadraticCurveTo(-r*.58,-r*1.0,-r*.32,-r*1.12);ctx.quadraticCurveTo(-r*.18,-r*.82,-r*.18,-r*.72);ctx.closePath();ctx.fill();
+      ctx.beginPath();ctx.moveTo(r*.35,-r*.62);ctx.quadraticCurveTo(r*.58,-r*1.0,r*.32,-r*1.12);ctx.quadraticCurveTo(r*.18,-r*.82,r*.18,-r*.72);ctx.closePath();ctx.fill();
+      // big cute dragon eyes
+      _eye(-r*.28,-r*.14,r*.26,'#4a148c');_eye(r*.28,-r*.14,r*.26,'#4a148c');
+      // nostrils
+      ctx.fillStyle='#4a148c';ctx.beginPath();ctx.ellipse(-r*.1,r*.12,r*.06,r*.04,0,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.ellipse(r*.1,r*.12,r*.06,r*.04,0,0,Math.PI*2);ctx.fill();
+      // blush
+      _blush(-r*.55,r*.04,r*.2);_blush(r*.55,r*.04,r*.2);
+      break;}
+    case 9:{// Dark Lord — chibi evil overlord (giant eye body)
+      _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.05,r*.88,0,Math.PI*2);});
+      _ol(()=>{ctx.beginPath();ctx.ellipse(0,-r*.08,r*.55,r*.4,0,0,Math.PI*2);});
+      const _t9=Date.now()*.002;
+      // dark swirling aura
+      const _bg9=ctx.createRadialGradient(0,0,r*.2,0,0,r*1.15);
+      _bg9.addColorStop(0,'#3a006a');_bg9.addColorStop(.6,'rgba(20,0,40,.85)');_bg9.addColorStop(1,'transparent');
+      ctx.fillStyle=_bg9;ctx.beginPath();ctx.arc(0,r*.1,r*1.15,0,Math.PI*2);ctx.fill();
+      // dark cloak bottom
+      ctx.fillStyle='rgba(20,0,40,.8)';
+      ctx.beginPath();ctx.moveTo(-r*.65,r*.2);ctx.lineTo(-r*.9,r*1.05);ctx.lineTo(r*.9,r*1.05);ctx.lineTo(r*.65,r*.2);ctx.closePath();ctx.fill();
+      // cloak tentacles (animated)
+      for(let _k9=0;_k9<5;_k9++){
+        const _a9=(_k9/5)*Math.PI+_t9*.5+Math.sin(_t9+_k9)*.25;
+        ctx.fillStyle=`rgba(80,0,140,${.45+.2*Math.sin(_t9*2+_k9)})`;
+        ctx.beginPath();ctx.ellipse(Math.cos(_a9+Math.PI)*r*.5,r*.65+Math.sin(_a9+_k9)*.1*r,r*.12,r*(.5+Math.sin(_t9+_k9)*.15),_a9+Math.PI/2,0,Math.PI*2);ctx.fill();
+      }
+      // big round dark body (chibi!)
+      ctx.fillStyle='#1a0030';ctx.beginPath();ctx.arc(0,-r*.05,r*.88,0,Math.PI*2);ctx.fill();
+      // purple inner glow
+      const _ig9=ctx.createRadialGradient(0,-r*.22,0,0,-r*.05,r*.88);
+      _ig9.addColorStop(0,'rgba(156,39,176,.6)');_ig9.addColorStop(1,'transparent');
+      ctx.fillStyle=_ig9;ctx.beginPath();ctx.arc(0,-r*.05,r*.88,0,Math.PI*2);ctx.fill();
+      // curved evil horns
+      ctx.strokeStyle='#ce93d8';ctx.lineWidth=r*.14;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(-r*.48,-r*.6);ctx.bezierCurveTo(-r*.78,-r*1.08,-r*.32,-r*1.3,r*.02,-r*1.05);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(r*.48,-r*.6);ctx.bezierCurveTo(r*.78,-r*1.08,r*.32,-r*1.3,-r*.02,-r*1.05);ctx.stroke();
+      ctx.fillStyle=`rgba(255,100,255,${.7+.3*Math.sin(_t9*3)})`;
+      ctx.beginPath();ctx.arc(r*.02,-r*1.04,r*.1,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(-r*.02,-r*1.04,r*.1,0,Math.PI*2);ctx.fill();
+      // GIANT eye (the star of the show!)
+      const _ep9=.6+.4*Math.sin(_t9*2.5);
+      ctx.fillStyle='#f3e5f5';ctx.beginPath();ctx.ellipse(0,-r*.08,r*.55,r*.4,0,0,Math.PI*2);ctx.fill();
+      // iris
+      ctx.fillStyle='#7b1fa2';ctx.beginPath();ctx.arc(0,-r*.08,r*.32,0,Math.PI*2);ctx.fill();
+      // pupil slit (vertical)
+      ctx.fillStyle='#1a0030';ctx.beginPath();ctx.ellipse(0,-r*.08,r*.1,r*.28,0,0,Math.PI*2);ctx.fill();
+      // evil glow pupil
+      ctx.fillStyle=`rgba(234,128,252,${_ep9*.8})`;ctx.beginPath();ctx.arc(0,-r*.08,r*.1,0,Math.PI*2);ctx.fill();
+      // eye shine
+      ctx.fillStyle='rgba(255,255,255,.9)';ctx.beginPath();ctx.arc(-r*.12,-r*.18,r*.1,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.4)';ctx.beginPath();ctx.arc(r*.08,-r*.02,r*.06,0,Math.PI*2);ctx.fill();
+      // eyelashes (dramatic)
+      ctx.strokeStyle='#1a0030';ctx.lineWidth=r*.06;
+      for(let _k9=0;_k9<5;_k9++){const _ex=-r*.5+_k9*r*.25,_ey=-r*.42;ctx.beginPath();ctx.moveTo(_ex,_ey);ctx.lineTo(_ex-r*.04,_ey-r*.2);ctx.stroke();}
+      for(let _k9=0;_k9<5;_k9++){const _ex=-r*.5+_k9*r*.25,_ey=r*.25;ctx.beginPath();ctx.moveTo(_ex,_ey);ctx.lineTo(_ex+r*.04,_ey+r*.16);ctx.stroke();}
+      // energy orb (hand)
+      const _ox=r*.68,_oy=r*.28;
+      ctx.fillStyle=`rgba(156,39,176,${.55+.3*Math.sin(_t9*4)})`;ctx.beginPath();ctx.arc(_ox,_oy,r*.2,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle=`rgba(234,128,252,${.9+.1*Math.sin(_t9*5)})`;ctx.lineWidth=r*.05;ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,.85)';ctx.beginPath();ctx.arc(_ox-r*.06,_oy-r*.06,r*.06,0,Math.PI*2);ctx.fill();
+      break;}
+    case 10:{// Shaman — chibi mushroom healer
+      _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.15,r*.72,0,Math.PI*2);});
+      _ol(()=>{ctx.beginPath();ctx.ellipse(0,-r*.88,r*.78,r*.38,0,0,Math.PI*2);});
+      const _th=Date.now()*.0025;
+      // heal pulse aura
+      ctx.globalAlpha=.18+.12*Math.sin(_th*3);ctx.strokeStyle='#69f0ae';ctx.lineWidth=r*.2;
+      ctx.beginPath();ctx.arc(0,0,r*1.38,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;
+      // orbiting heal sparkles
+      for(let _ks=0;_ks<3;_ks++){
+        const _as=_ks/3*Math.PI*2+_th*2.5;
+        ctx.fillStyle=`rgba(178,255,89,${.6+.35*Math.sin(_th*3+_ks)})`;
+        ctx.beginPath();ctx.arc(Math.cos(_as)*r*1.12,Math.sin(_as)*r*1.12,r*.1,0,Math.PI*2);ctx.fill();
+      }
+      // robe (bell shape)
+      ctx.fillStyle='#2e7d32';
+      ctx.beginPath();ctx.moveTo(-r*.42,r*.05);ctx.lineTo(-r*.6,r*.82);ctx.lineTo(r*.6,r*.82);ctx.lineTo(r*.42,r*.05);ctx.closePath();ctx.fill();
+      // robe pattern
+      ctx.fillStyle='rgba(255,255,255,.14)';ctx.beginPath();ctx.moveTo(0,r*.08);ctx.lineTo(-r*.12,r*.72);ctx.lineTo(r*.12,r*.72);ctx.closePath();ctx.fill();
+      // staff
+      ctx.strokeStyle='#6d4c41';ctx.lineWidth=r*.1;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(r*.55,r*.72);ctx.lineTo(r*.72,-r*.48);ctx.stroke();
+      // staff orb pulsing
+      const _gp=.7+.3*Math.sin(_th*6);
+      ctx.fillStyle=`rgba(105,240,174,${_gp})`;ctx.beginPath();ctx.arc(r*.76,-r*.54,r*.2,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.7)';ctx.beginPath();ctx.arc(r*.7,-r*.6,r*.09,0,Math.PI*2);ctx.fill();
+      // big round chibi head (skin tone)
+      ctx.fillStyle='#ffe0b2';ctx.beginPath();ctx.arc(0,-r*.15,r*.72,0,Math.PI*2);ctx.fill();
+      // blush
+      _blush(-r*.4,r*.02,r*.2);_blush(r*.4,r*.02,r*.2);
+      // cute eyes
+      _eye(-r*.26,-r*.2,r*.22,'#2e7d32');_eye(r*.26,-r*.2,r*.22,'#2e7d32');
+      // mushroom hat (big cute hat!)
+      ctx.fillStyle='#6d4c41';
+      ctx.beginPath();if(ctx.roundRect)ctx.roundRect(-r*.32,-r*.64,r*.64,r*.28,r*.06);else ctx.rect(-r*.32,-r*.64,r*.64,r*.28);ctx.fill();
+      ctx.fillStyle='#a1887f';
+      ctx.beginPath();ctx.ellipse(0,-r*.88,r*.78,r*.38,0,0,Math.PI*2);ctx.fill();
+      // hat shade
+      const _hsh=ctx.createLinearGradient(-r*.78,-r*.88,r*.78,-r*.88);
+      _hsh.addColorStop(0,'rgba(0,0,0,.2)');_hsh.addColorStop(.4,'rgba(255,255,255,.15)');_hsh.addColorStop(1,'rgba(0,0,0,.2)');
+      ctx.fillStyle=_hsh;ctx.beginPath();ctx.ellipse(0,-r*.88,r*.78,r*.38,0,0,Math.PI*2);ctx.fill();
+      // mushroom spots
+      ctx.fillStyle='rgba(255,255,255,.8)';
+      ctx.beginPath();ctx.arc(-r*.3,-r*.9,r*.12,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(r*.26,-r*.82,r*.09,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(r*.05,-r*1.02,r*.08,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(-r*.55,-r*.78,r*.08,0,Math.PI*2);ctx.fill();
+      break;}
+  }
+  ctx.restore();
+}
+

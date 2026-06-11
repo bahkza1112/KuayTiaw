@@ -375,45 +375,54 @@ Notes:
 
 ## 8. Architecture Overview
 
+As of this refactor, the monolithic single-file layout has been split into a
+shared CSS file and five JS modules, loaded via `<link>`/`<script src>` from
+`Tower Quest 🏰 v1.6.0.html`. This is a **structural reorganization only** —
+no logic, behavior, or save format changed. All scripts still execute as
+classic (non-module) scripts sharing one global scope, so **load order
+matters** and must not be changed without re-checking dependencies.
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  Tower Quest 🏰 v1.6.0.html  (single file, ~5,900 lines)      │
+│  Tower Quest 🏰 v1.6.0.html  (~430 lines: head + body markup) │
 │                                                                │
-│  <style>  ── all CSS for menus, HUD, overlays, animations     │
+│  <link rel="stylesheet" href="css/main.css">                  │
+│                                                                │
+│  <body> ... DOM containers for every screen/overlay,          │
+│             referenced by ID from the scripts                 │
 │                                                                │
 │  <script src="three.min.js">  ── CDN dependency for 3D layer  │
-│                                                                │
-│  <script>                                                     │
-│   ├─ Static Data                                              │
-│   │   STAGES, ENAMES/TNAMES + per-type stat arrays,           │
-│   │   ACHIEVEMENTS, RUNES, WEATHERS, CUTSCENES, DEFAULT_CFG    │
-│   │                                                            │
-│   ├─ Persistence Layer                                        │
-│   │   loadProgress/saveProgress, achievements, achstats,      │
-│   │   seenMonsters, runs, config overrides (all localStorage) │
-│   │                                                            │
-│   ├─ Game State & Loop                                        │
-│   │   mkState/mkWeatherState, initGame/loop, update(dt),      │
-│   │   render() [2D canvas] + _render3D() [Three.js overlay]   │
-│   │                                                            │
-│   ├─ Gameplay Systems                                         │
-│   │   Tower placement/targeting/firing/upgrades/synergies,    │
-│   │   Enemy spawning/movement/special abilities/death,        │
-│   │   Weather, combos, scoring, endgame survival mode         │
-│   │                                                            │
-│   ├─ Rendering Helpers                                        │
-│   │   drawTowerIcon/_tw*, drawEnemySprite, FX (particles,      │
-│   │   rings, trails, damage numbers), 3D mesh builders         │
-│   │                                                            │
-│   └─ UI Layer                                                  │
-│       Screen management (showScreen/hideAll), menus,          │
-│       stage select, cutscenes/story, HUD, codex, dev panel,    │
-│       tower popup, leaderboard, achievement notifications      │
-│                                                                │
-│  <body>  ── DOM containers for every screen/overlay listed     │
-│             above, referenced by ID from the script           │
+│  <script src="js/save.js">    ── load order matters ↓         │
+│  <script src="js/enemy.js">                                    │
+│  <script src="js/tower.js">                                    │
+│  <script src="js/game.js">                                     │
+│  <script src="js/ui.js">       ── must load last               │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+**File responsibilities:**
+- **`css/main.css`** — all CSS for menus, HUD, overlays, animations
+  (verbatim former `<style>` block).
+- **`js/save.js`** — persistence layer: `loadProgress`/`saveProgress`,
+  achievements + achstats, `getUnlockedTowers`/`unlockMonster`,
+  endgame save-prompt flow. Defines `ACHIEVEMENTS`/`ACH_CATS`.
+- **`js/enemy.js`** — enemy static data (`ENAMES`, `EICONS`, `ESIZES`,
+  `MFLAVOR`/`MTAGS`/etc.), `getEnemyHP`/`getEnemySpd`, damage-number FX,
+  `applyDmg`, `spawnEnemy`, `killEnemy`, `drawEnemySprite` and helpers.
+- **`js/tower.js`** — tower static data (`TNAMES`, `TICONS`, per-type stat
+  arrays), `RUNES`, `getTowerDmg/Range/Rate`, synergy system, sprite drawing
+  (`drawTowerIcon`/`_tw*`), the 3D Three.js tower overlay, and the tower
+  popup/upgrade/awaken/sell/rune functions.
+- **`js/game.js`** — `STAGES`/`DEFAULT_CFG`/`CFG`, grid/state setup
+  (`mkState`, `setStage`), weather system, game lifecycle (`initGame`/`loop`,
+  `restartGame`, `goNextStage`, etc.), sound system, `startWave`, `endGame`,
+  the core `update(dt)` and `render()` loops, canvas input handlers, and the
+  endgame survival mode (`openEgMenu` ... `surrender`).
+- **`js/ui.js`** — screen management (`showScreen`/`hideAll`), stage select,
+  tutorial, cutscene engine + `CUTSCENES` data, story screen, tower
+  selection, achievements tab, codex, dev panel, debug panel, leaderboard,
+  and the final button-wiring/override block (`_origStartWave` etc., which
+  patches functions defined in `game.js` — this is why `ui.js` loads last).
 
 **Design characteristics:**
 - **No build tooling**: pure HTML/CSS/JS, runs by opening the file in a
