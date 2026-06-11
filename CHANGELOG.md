@@ -2,6 +2,29 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.6.8 — Tower Visual Diversity Pass
+
+### Changed
+- **Awaken aura now per-element**: the 3D Awaken aura (halo rings, orbiting
+  motes, energy beam) used a generic gold color for every tower type. It now
+  uses each tower's own `TACCENT` accent color (e.g. red for Cannon, blue for
+  Ice, purple for Magic, teal for Support, yellow for Gold Mine, etc.), so
+  awakened towers visually match their element. (`js/tower.js`,
+  `_buildAwakenAura3D`, `_sync3DTowerMesh`)
+- **Idle animations for previously-static tower sprites**: Cannon, Ice,
+  Sniper, Archer, and Gold Mine turrets were the only sprites with no idle
+  motion (Magic/Support/Thunder already pulsed). Added subtle `Date.now()`-based
+  idle effects to match: Cannon gets a pulsing muzzle heat-glow, Ice gets
+  twinkling crystal-facet sparkles, Sniper gets a pulsing scope-lens glow,
+  Archer's bowstring gently vibrates, and Gold Mine gets a pulsing golden ore
+  glow. (`js/tower.js`, `_twWeapon`)
+
+### Notes
+- Purely visual — no changes to damage, range, fire rate, synergies, upgrade
+  paths, or save format. Verified in-browser: Awaken aura color confirmed to
+  match `TACCENT[type]` for all 8 tower types, and all 8 `_twWeapon` sprites
+  render without console errors.
+
 ## v1.6.7 — Playtest Bugfixes
 
 ### Fixed

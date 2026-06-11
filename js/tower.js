@@ -225,11 +225,21 @@ function _twWeapon(ctx,type,r){
     const rg=ctx.createLinearGradient(-r*.26,0,r*.26,0);rg.addColorStop(0,'#6a4000');rg.addColorStop(.5,'#e8a820');rg.addColorStop(1,'#6a4000');
     ctx.fillStyle=rg;ctx.fillRect(-r*.26,-r*.5,r*.52,r*.14);
     ctx.fillStyle='rgba(255,255,255,.12)';ctx.fillRect(-r*.07,-r*1.15,r*.09,r*.92);
+    // ไอความร้อนเรืองแสงที่ปากกระบอก (idle pulse)
+    const _cp=.35+.35*Math.sin(Date.now()*.005);
+    ctx.globalAlpha=_cp*.5;ctx.fillStyle='#ff8a50';ctx.beginPath();ctx.arc(0,-r*1.22,r*.12,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
   } else if(type===1){// Ice crystal spike
     ctx.fillStyle='#003d5a';ctx.beginPath();ctx.arc(0,0,r*.28,0,Math.PI*2);ctx.fill();
     ctx.fillStyle='#80deea';ctx.beginPath();ctx.moveTo(0,-r*1.1);ctx.lineTo(r*.2,-r*.4);ctx.lineTo(r*.3,0);ctx.lineTo(-r*.3,0);ctx.lineTo(-r*.2,-r*.4);ctx.closePath();ctx.fill();
     ctx.fillStyle='#e0f7fa';ctx.beginPath();ctx.moveTo(0,-r*1.1);ctx.lineTo(r*.08,-r*.4);ctx.lineTo(0,-r*.2);ctx.lineTo(-r*.08,-r*.4);ctx.closePath();ctx.fill();
     ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(r*.08,-r*.75,r*.06,0,Math.PI*2);ctx.fill();
+    // ประกายแวววาวบนผลึก (idle shimmer)
+    const _it=Date.now()*.003;
+    [[r*.12,-r*.85,0],[-r*.15,-r*.55,2],[r*.05,-r*.25,4]].forEach(([sx,sy,ph])=>{
+      const a=Math.max(0,Math.sin(_it*2+ph));
+      if(a>0){ctx.globalAlpha=a*.8;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(sx,sy,r*.035,0,Math.PI*2);ctx.fill();}
+    });
+    ctx.globalAlpha=1;
   } else if(type===2){// Magic orbiting
     const p=.5+.4*Math.sin(Date.now()*.004);
     ctx.globalAlpha=p*.6;ctx.strokeStyle='#e040fb';ctx.lineWidth=r*.12;ctx.beginPath();ctx.arc(0,0,r*.42,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;
@@ -246,6 +256,9 @@ function _twWeapon(ctx,type,r){
     ctx.fillStyle='#42a5f5';ctx.beginPath();ctx.arc(0,-r*.84,r*.1,0,Math.PI*2);ctx.fill();
     ctx.fillStyle='rgba(200,230,255,.6)';ctx.beginPath();ctx.arc(-r*.02,-r*.86,r*.05,0,Math.PI*2);ctx.fill();
     ctx.fillStyle='rgba(255,255,255,.1)';ctx.fillRect(-r*.04,-r*1.3,r*.06,r*.95);
+    // แสงเรืองที่เลนส์กล้องเล็ง (idle pulse)
+    const _sp=.35+.35*Math.sin(Date.now()*.006);
+    ctx.globalAlpha=_sp*.7;ctx.strokeStyle='#42a5f5';ctx.lineWidth=r*.04;ctx.beginPath();ctx.arc(0,-r*.84,r*.15,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;
   } else if(type===4){// Support beacon
     const p=.4+.5*Math.sin(Date.now()*.004);
     ctx.globalAlpha=p*.5;ctx.strokeStyle='#69f0ae';ctx.lineWidth=r*.14;ctx.beginPath();ctx.arc(0,0,r*.5,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;
@@ -256,11 +269,16 @@ function _twWeapon(ctx,type,r){
     ctx.strokeStyle='#5d4037';ctx.lineWidth=r*.18;ctx.lineCap='round';
     ctx.beginPath();ctx.moveTo(-r*.48,r*.62);ctx.bezierCurveTo(-r*.95,r*.2,-r*.95,-r*.2,-r*.48,-r*.62);ctx.stroke();
     ctx.strokeStyle='#ffe082';ctx.lineWidth=r*.06;ctx.beginPath();ctx.moveTo(-r*.48,-r*.62);ctx.lineTo(-r*.22,0);ctx.lineTo(-r*.48,r*.62);ctx.stroke();
-    ctx.strokeStyle='#8d6e63';ctx.lineWidth=r*.1;ctx.beginPath();ctx.moveTo(-r*.22,0);ctx.lineTo(r*.62,0);ctx.stroke();
+    // สายธนูสั่นเบาๆ (idle vibration)
+    const _vib=Math.sin(Date.now()*.012)*r*.05;
+    ctx.strokeStyle='#8d6e63';ctx.lineWidth=r*.1;ctx.beginPath();ctx.moveTo(-r*.22,0);ctx.quadraticCurveTo(r*.2,_vib,r*.62,0);ctx.stroke();
     ctx.fillStyle='#bdbdbd';ctx.beginPath();ctx.moveTo(r*.65,0);ctx.lineTo(r*.38,-r*.16);ctx.lineTo(r*.38,r*.16);ctx.closePath();ctx.fill();
     ctx.fillStyle='#f44336';ctx.beginPath();ctx.moveTo(-r*.08,0);ctx.lineTo(-r*.32,-r*.22);ctx.lineTo(-r*.22,0);ctx.closePath();ctx.fill();
     ctx.beginPath();ctx.moveTo(-r*.08,0);ctx.lineTo(-r*.32,r*.22);ctx.lineTo(-r*.22,0);ctx.closePath();ctx.fill();
   } else if(type===6){// Gold mine pickaxe
+    // แสงทองเรืองจางๆ รอบกองแร่ (idle pulse)
+    const _gp=.25+.35*Math.sin(Date.now()*.004);
+    ctx.globalAlpha=_gp*.6;ctx.fillStyle='#ffd740';ctx.beginPath();ctx.arc(0,0,r*.45,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
     ctx.fillStyle='#5d4037';ctx.beginPath();ctx.arc(0,0,r*.28,0,Math.PI*2);ctx.fill();
     ctx.fillStyle='#8d6e63';ctx.beginPath();ctx.arc(-r*.06,-r*.06,r*.2,0,Math.PI*2);ctx.fill();
     ctx.strokeStyle='#9e9e9e';ctx.lineWidth=r*.1;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(-r*.32,-r*.32);ctx.lineTo(r*.32,r*.32);ctx.stroke();
@@ -504,20 +522,23 @@ function _buildTowerMesh3D(type){
   return grp;
 }
 
-function _buildAwakenAura3D(){
+function _buildAwakenAura3D(type){
   const grp=new THREE.Group();
-  const goldMat=new THREE.MeshBasicMaterial({color:'#ffe082',transparent:true,opacity:.75});
-  const goldMat2=new THREE.MeshBasicMaterial({color:'#fff3c4',transparent:true,opacity:.55});
-  // dual golden halo rings (counter-rotating)
-  const ringA=new THREE.Mesh(new THREE.TorusGeometry(CS*.46,CS*.025,8,28),goldMat);
+  // aura สีตามธาตุของป้อม (TACCENT) แทนสีทอง generic เดิม
+  const auraCol=TACCENT[type]||'#ffe082';
+  const auraColLight=shadeColor(auraCol,70);
+  const ringMat=new THREE.MeshBasicMaterial({color:auraCol,transparent:true,opacity:.75});
+  const ringMat2=new THREE.MeshBasicMaterial({color:auraColLight,transparent:true,opacity:.55});
+  // dual halo rings (counter-rotating)
+  const ringA=new THREE.Mesh(new THREE.TorusGeometry(CS*.46,CS*.025,8,28),ringMat);
   ringA.rotation.x=Math.PI/2;
-  const ringB=new THREE.Mesh(new THREE.TorusGeometry(CS*.36,CS*.018,8,24),goldMat2);
+  const ringB=new THREE.Mesh(new THREE.TorusGeometry(CS*.36,CS*.018,8,24),ringMat2);
   ringB.rotation.x=Math.PI/2;
   grp.add(ringA,ringB);
   grp.userData.ringA=ringA; grp.userData.ringB=ringB;
   // orbiting motes
   const motes=[];
-  const moteMat=new THREE.MeshBasicMaterial({color:'#fff9c4'});
+  const moteMat=new THREE.MeshBasicMaterial({color:auraColLight});
   for(let i=0;i<5;i++){
     const m=new THREE.Mesh(new THREE.SphereGeometry(CS*.035,8,8),moteMat);
     m.userData.ang=i/5*Math.PI*2;
@@ -530,7 +551,7 @@ function _buildAwakenAura3D(){
   // upward energy beam
   const beam=new THREE.Mesh(
     new THREE.CylinderGeometry(CS*.05,CS*.16,CS*1.05,14,1,true),
-    new THREE.MeshBasicMaterial({color:'#ffe082',transparent:true,opacity:.16,side:THREE.DoubleSide})
+    new THREE.MeshBasicMaterial({color:auraCol,transparent:true,opacity:.16,side:THREE.DoubleSide})
   );
   beam.position.y=CS*.55;
   grp.add(beam);
@@ -555,7 +576,7 @@ function _sync3DTowerMesh(tw,cx2,cy2,bounce){
   if(tw.awakened){
     let aura=mesh.userData.aura;
     if(!aura){
-      aura=_buildAwakenAura3D();
+      aura=_buildAwakenAura3D(tw.type);
       mesh.add(aura);
       mesh.userData.aura=aura;
     }

@@ -77,6 +77,12 @@ section with project-specific file pointers for each role.
 375px mobile. Fixed stale wave counter on Retry and a garbled leaderboard
 empty-state string. No other console errors or regressions found.
 
+✅ **Tower visual diversity pass** (v1.6.8) — Awaken aura now uses each
+tower's `TACCENT` element color instead of generic gold, and the 5 previously
+static weapon sprites (Cannon, Ice, Sniper, Archer, Gold Mine) now have subtle
+idle animations matching Magic/Support/Thunder. Purely visual, no balance or
+save changes.
+
 ---
 
 ## Future / Unscoped Ideas
