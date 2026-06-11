@@ -35,9 +35,9 @@ rewarding priority kills. File: `js/game.js` (`DEFAULT_CFG.m_rew`).
 
 ## UI/UX Improvements (PATCH/MINOR-level)
 
-🟡 **HUD tower-stat clarity** — surface effective DPS/range/synergy bonuses
-more clearly in the tower popup so players can compare builds without
-checking the Codex.
+✅ **HUD tower-stat clarity** (v1.6.4) — tower popup now shows an effective
+DPS stat (damage × fire rate) and an inline `(+X% synergy)` badge on the
+damage stat when a synergy bonus is active.
 
 ✅ **Mobile responsiveness pass** (v1.6.3) — verified HUD, popups, dev panel,
 and codex at 375px. Fixed `body`/`#gr` vertical-centering so the gameplay
@@ -53,8 +53,10 @@ splitting it above/below. Canvas remains width-constrained (1.2:1 aspect)
 🟡 **Boss-specific VFX** — distinct telegraphed animations for each boss
 skill type (`skillType = stage.id % 3`).
 
-🟡 **Additional screen-transition polish** — smoother cutscene → gameplay
-and stage-clear → results transitions.
+✅ **Screen-transition polish** (v1.6.4) — `showScreen()` now applies a
+fade/slide-in animation (`.screen-enter`) to all screen switches, and
+end-of-stage/pause overlays (`.obox`) pop in with a scale-fade instead of
+appearing instantly.
 
 ---
 

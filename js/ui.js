@@ -31,6 +31,9 @@ function showScreen(id,flex){
   const el=document.getElementById(id);
   el.style.display=flex?'flex':'block';
   if(flex)el.style.flexDirection='column';
+  el.classList.remove('screen-enter');
+  void el.offsetWidth; // reflow เพื่อรีสตาร์ทแอนิเมชัน
+  el.classList.add('screen-enter');
 }
 
 /* ══ MENU STATS ══ */

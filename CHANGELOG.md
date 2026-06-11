@@ -2,6 +2,25 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.6.4 — Tower Popup Clarity + Screen Transitions
+
+### Changed
+- **Tower popup (HUD clarity)**: now shows an effective **DPS** stat
+  (damage × fire rate) for towers with both, and the damage stat displays
+  an inline `(+X% synergy)` badge when an active synergy is boosting
+  damage. (`js/tower.js`, `showTowerPopup`)
+- **Screen transitions**: all `showScreen()` calls (stage select, gameplay,
+  codex, dev panel, leaderboard, etc.) now fade/slide in via a
+  `.screen-enter` CSS animation instead of an instant cut. End-of-stage/
+  pause overlays (`.obox`) now pop in with a quick scale-fade.
+  (`css/main.css`, `js/ui.js`)
+
+### Notes
+- No save-format or balance changes. Verified in-browser: tower popup shows
+  correct DPS/synergy values (e.g. Magic tower with Ice synergy: 53 dmg
+  "+20% synergy", DPS 42.4), codex screen fades in via `.screen-enter`, no
+  console errors.
+
 ## v1.6.3 — Mobile Layout Fix
 
 ### Changed

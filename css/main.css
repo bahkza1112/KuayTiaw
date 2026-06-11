@@ -3,6 +3,12 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 #gr{width:100%;max-width:960px;user-select:none;-webkit-user-select:none;}
 /* MENU */
 #mm{background:linear-gradient(160deg,#1a3a6e 0%,#2a5fa8 50%,#1a8a4a 100%);min-height:600px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;border-radius:16px;}
+/* SCREEN TRANSITIONS */
+.screen-enter{animation:screenFadeIn .25s ease;}
+@keyframes screenFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.obox{animation:oboxPopIn .25s ease;}
+@keyframes oboxPopIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+
 .star{position:absolute;background:#fff;border-radius:50%;animation:twinkle 2s infinite alternate;}
 @keyframes twinkle{from{opacity:.2}to{opacity:.9}}
 .island{background:radial-gradient(ellipse,#4caf50 60%,#2e7d32 100%);width:200px;height:80px;border-radius:50%;margin-bottom:20px;box-shadow:0 8px 20px rgba(0,0,0,.4);border:3px solid #1b5e20;display:flex;align-items:center;justify-content:center;font-size:36px;animation:float 3s ease-in-out infinite;}

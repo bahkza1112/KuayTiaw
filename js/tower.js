@@ -605,9 +605,11 @@ function showTowerPopup(tw,px,py){
   const cost=tw.lv>=5?0:CFG.t_cost[tw.type]*tw.lv;
   const refund=Math.floor(CFG.t_cost[tw.type]*tw.lv*.6);
   const canUp=tw.lv<5&&G.gold>=cost;
-  const dmgVal=CFG.t_dmg[tw.type]===0?'—':Math.round(getTowerDmg(tw.type,tw.dmgLv)*(tw.awakened?1.15:1)*getSynergyMult(tw.type,tw.col,tw.row));
+  const synMult=getSynergyMult(tw.type,tw.col,tw.row);
+  const dmgVal=CFG.t_dmg[tw.type]===0?'—':Math.round(getTowerDmg(tw.type,tw.dmgLv)*(tw.awakened?1.15:1)*synMult);
   const rngVal=getTowerRange(tw.type,tw.rngLv).toFixed(1);
   const rateVal=CFG.t_rate[tw.type]===0?'—':getTowerRate(tw.type,tw.rateLv).toFixed(1);
+  const dpsVal=(CFG.t_dmg[tw.type]!==0&&CFG.t_rate[tw.type]!==0)?(dmgVal*parseFloat(rateVal)).toFixed(1):null;
   const canAwaken=tw.lv>=5&&!tw.awakened&&G.gold>=300;
   const showAwakenBtn=tw.lv>=5&&!tw.awakened;
   const activeSyn=getActiveSynergies(tw.type,tw.col,tw.row);
@@ -627,9 +629,10 @@ function showTowerPopup(tw,px,py){
     </div>
   </div>
   <div class="tp-stats">
-    <div class="tp-stat">⚔️ ดาเมจ <small style="opacity:.5">Lv.${tw.dmgLv}</small><span>${dmgVal}${tw.awakened?' <span style="color:#ffe082;font-size:9px;">(+15%)</span>':''}</span></div>
+    <div class="tp-stat">⚔️ ดาเมจ <small style="opacity:.5">Lv.${tw.dmgLv}</small><span>${dmgVal}${tw.awakened?' <span style="color:#ffe082;font-size:9px;">(+15%)</span>':''}${synMult>1?` <span style="color:#80deea;font-size:9px;">(+${Math.round((synMult-1)*100)}% synergy)</span>`:''}</span></div>
     <div class="tp-stat">📡 ระยะ <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${rngVal} ช่อง${tw.rngLv>=4?' <span style="color:#90caf9;font-size:9px;" title="กระสุนเจาะโล่ศัตรู ดาเมจเข้า HP ตรงๆ">🛡️✨เจาะโล่</span>':''}</span></div>
     <div class="tp-stat">⚡ Fire Rate <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${rateVal}${tw.rateLv>=4?' <span style="color:#ffe234;font-size:9px;" title="มีโอกาสคูลดาวน์สั้นลงทันทีหลังยิง">⚡ยิงรัว</span>':''}</span></div>
+    ${dpsVal?`<div class="tp-stat">📊 DPS<span>${dpsVal}</span></div>`:''}
     ${tw.lv<5?`<div class="tp-stat">💰 ค่าอัพต่อไป<span>${cost} ทอง</span></div>`:''}
   </div>
   ${synHtml}
