@@ -292,6 +292,7 @@ function initGame(){
     const hud=document.getElementById('weatherHud');if(hud)hud.style.display='none';
     const wb=document.getElementById('weatherBanner');if(wb)wb.style.display='none';})();
   document.getElementById('waveBtn').disabled=false;
+  document.getElementById('waveTxt').textContent='0';
   document.getElementById('maxWaveTxt').textContent=s.waves;
   document.getElementById('stageBadge').textContent='S'+(s.id+1)+' '+s.icon;
   // BUG FIX: reset selTwr highlight on restart

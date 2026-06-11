@@ -1100,7 +1100,7 @@ function renderLb(){
   } else if(lbTab===1){
     // All runs leaderboard
     const allRuns=[...runs].sort((a,b)=>b.score-a.score);
-    if(!allRuns.length){ body.innerHTML='<div class="lb-empty">No records yetใดๆ<br><span style="font-size:11px;color:#333;">Play and save your name first</span></div>'; return; }
+    if(!allRuns.length){ body.innerHTML='<div class="lb-empty">No records yet<br><span style="font-size:11px;color:#333;">Play and save your name first</span></div>'; return; }
     let myRank=-1;
     const myName=lastName;
     let html='';

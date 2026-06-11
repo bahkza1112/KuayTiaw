@@ -2,6 +2,24 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.6.7 — Playtest Bugfixes
+
+### Fixed
+- **Stale wave counter on Retry**: after losing and pressing "Retry", the
+  HUD wave counter (`#waveTxt`) used to keep showing the previous run's wave
+  number (e.g. "4 / 5") even though the game state had correctly reset to
+  wave 0. `initGame()` now resets `#waveTxt` to `0` alongside the existing
+  `#maxWaveTxt` reset. (`js/game.js`, `initGame`)
+- **Garbled leaderboard empty-state text**: the "All runs" leaderboard tab
+  showed `"No records yetใดๆ"` (a stray Thai word concatenated onto the
+  English string with no separator). Now reads `"No records yet"`, matching
+  the "My Stats" tab. (`js/ui.js`, leaderboard render, `lbTab===1`)
+
+### Notes
+- Found via a full playtest pass (menu → story → combat → game over → retry
+  → codex → leaderboard → endgame, desktop and 375px mobile). No save-format
+  or balance changes. Verified in-browser with no console errors.
+
 ## v1.6.6 — AI Team Agent Guides
 
 ### Added
