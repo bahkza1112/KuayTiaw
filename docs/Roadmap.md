@@ -68,6 +68,10 @@ that `css/main.css` + `js/{save,enemy,tower,game,ui}.js` reconstruct the
 original monolith's behavior with no console errors across menu, story
 mode, combat, weather, codex, dev panel, and endgame screens.
 
+✅ **`agents/` folder** (v1.6.6) — added per-role guides
+([agents/README.md](../agents/README.md)) expanding `CLAUDE.md`'s AI Team
+section with project-specific file pointers for each role.
+
 ---
 
 ## Future / Unscoped Ideas
@@ -77,5 +81,3 @@ These are larger and need a dedicated design pass before scoping:
 - New tower type(s) / monster type(s) / stage(s) (MINOR)
 - Additional rune types
 - New achievements
-- `agents/` folder for per-role AI agent instructions (deferred — see
-  `CLAUDE.md` "AI Team" section for current role definitions)

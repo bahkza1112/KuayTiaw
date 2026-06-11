@@ -20,6 +20,9 @@ For version history, see [CHANGELOG.md](CHANGELOG.md).
 For game design, balance numbers, and the work backlog, see
 [docs/GDD.md](docs/GDD.md), [docs/BalanceSheet.md](docs/BalanceSheet.md),
 and [docs/Roadmap.md](docs/Roadmap.md).
+For per-role guidance (Game Designer, Lead Programmer, QA Tester, etc.),
+see [agents/](agents/README.md), which expands on the AI Team roles below
+with project-specific file pointers.
 
 ## Repository Layout
 
@@ -31,6 +34,7 @@ CHANGELOG.md                  # Version history
 css/main.css                   # All game CSS
 js/                             # save.js, enemy.js, tower.js, game.js, ui.js (load order matters)
 docs/                           # Design docs: GDD, TowerDesign, EnemyDesign, BalanceSheet, Roadmap
+agents/                          # Per-role guides expanding on the AI Team section below
 assets/
   images/                      # Reserved for sprite/image assets (currently empty)
   sounds/                      # Reserved for audio assets (currently empty)

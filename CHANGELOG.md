@@ -2,6 +2,21 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.6.6 — AI Team Agent Guides
+
+### Added
+- New `agents/` folder with per-role guides
+  ([agents/README.md](agents/README.md)) expanding the "AI Team" section of
+  `CLAUDE.md` with project-specific file pointers, key locations, and
+  working patterns for each role (Project Manager, Game Designer, System
+  Architect, Lead Programmer, QA Tester, UI/UX Designer, Art Director,
+  Animation Director, Prompt Engineer, Documentation Agent, Git Agent,
+  Session Manager).
+- `CLAUDE.md` now links to `agents/README.md`.
+
+### Notes
+- Documentation only — no game code, balance, or save changes.
+
 ## v1.6.5 — Boss Skill Telegraphs
 
 ### Added
