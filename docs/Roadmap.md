@@ -72,6 +72,11 @@ mode, combat, weather, codex, dev panel, and endgame screens.
 ([agents/README.md](../agents/README.md)) expanding `CLAUDE.md`'s AI Team
 section with project-specific file pointers for each role.
 
+✅ **Full playtest pass + bugfixes** (v1.6.7) — played through menu → story
+→ combat → game over → retry → codex → leaderboard → endgame on desktop and
+375px mobile. Fixed stale wave counter on Retry and a garbled leaderboard
+empty-state string. No other console errors or regressions found.
+
 ---
 
 ## Future / Unscoped Ideas
