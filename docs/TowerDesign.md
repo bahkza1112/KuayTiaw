@@ -60,8 +60,32 @@ Sniper, Gold Mine).
 Each placed tower levels independently along 3 tracks: `dmgLv` (+25%
 dmg/level), `rngLv` (+15% range/level), `rateLv` (+10% rate/level).
 Path-exclusive perks (pierce shield, rapid fire) unlock at certain
-range/rate levels. "Awaken" is an end-tier upgrade granting a flat power
-boost (+15% effective damage) plus a distinct 3D visual aura.
+range/rate levels. "Awaken" is an end-tier upgrade currently granting a
+flat power boost (+15% effective damage, +13% rune effect) plus a
+distinct 3D visual aura (per-type colored as of v1.6.8).
+
+## Built-in Skills & Awaken Effects (Design Target)
+
+Each tower's targeting style, passive built-in skill, and intended
+per-type Awaken effect:
+
+| Tower | Targeting | Built-in Skill | Awaken Effect (target design) |
+|---|---|---|---|
+| 💣 Cannon | Single (splash centered on target) | — | Splash becomes full-area AoE |
+| ❄️ Ice | Single | 45% slow, can hit flying enemies | Freezes (stuns) target for 3s |
+| ✨ Magic | AoE | 20% chance to fire 2 shots | 2→3 shots, chance 20%→40% |
+| 🎯 Sniper | Single | Can hit flying enemies | Shot pierces in a straight line |
+| 💚 Support | Cannot attack | Cleanses monster debuffs/weather effects from towers in range | Doubles the Awaken bonus of nearby awakened towers (e.g. Ice freeze 3s→6s); reduces Gold Mine cooldown when nearby |
+| 🏹 Archer | Single, anti-air | Fast fire rate | — |
+| 💰 Gold Mine | Cannot attack | Produces 5 gold per tick; upgrades reduce cooldown | Gold output 5→10 |
+| ⚡ Thunder | Single + chain | Chains to 1–2 nearby enemies | Chains to 2–4 nearby enemies |
+
+> **Implementation status**: as of v1.6.8, the Awaken upgrade is implemented
+> generically for all types (flat +15% effective damage, +13% rune bonus,
+> per-type-colored 3D aura — see [`_buildAwakenAura3D`](../js/tower.js)).
+> The per-type Awaken effects in the table above (freeze, AoE conversion,
+> extra chain target, etc.) are the **target design**, not yet implemented.
+> See [Roadmap.md](Roadmap.md) for status.
 
 ## Runes
 
