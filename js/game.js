@@ -1357,7 +1357,7 @@ function render(){
   const now=Date.now();
   G.enemies.forEach(e=>{
     if(!e.alive) return;
-    const sz=ESIZES[e.ti];
+    const sz=ESIZES[e.ti]*(e._sizeMult||1);
     // ice slow aura
     if(e.slow<1){
       ctx.globalAlpha=.28;ctx.fillStyle='#80d8ff';

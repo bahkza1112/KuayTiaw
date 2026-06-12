@@ -63,6 +63,23 @@ Source: `DEFAULT_CFG.m_hp/m_spd/m_rew`, `js/enemy.js` (`MSHIELD`, `MTYPE`,
 
 \* Reward/HP for shielded enemies computed against `HP + Shield`.
 
+### Skeleton Splitter (v1.7.0)
+
+Skeleton (ti=1) splits on death (unless already a split child) into 2
+children at 40% of its current max HP / reward each (`js/enemy.js`,
+`_spawnSkeletonSplit`). At the stage-0/wave-0 baseline (HP 75, reward 10):
+
+| | HP | Reward | Reward/HP |
+|---|---:|---:|---:|
+| Parent (1st kill) | 75 | 10 | 0.133 |
+| Each child ×2 | 30 | 4 | 0.133 |
+| **Total per spawn** | **135** | **18** | **0.133** |
+
+Reward/HP ratio is preserved (~0.133), but total effective HP/reward per
+Skeleton spawn rises to ~180% of baseline — an intentional difficulty/depth
+addition, not a reward-economy change. Children render at 0.65× size
+(`_sizeMult`) and never split further (`_isSplit`).
+
 **Scaling formulas** (`si` = stage index 0–9, `wave` = wave # within stage):
 - `HP(ti, si, wave) = m_hp[ti] * (1 + si * stageMult) * (1 + wave * waveMult)`
 - `Speed(ti, si) = min(m_spd[ti] * (1 + si * spdStageMult), spdCap)`

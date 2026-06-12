@@ -9,7 +9,7 @@ Design rationale for the 11 monster types. For raw numbers, see
 | # | Name (TH) | Icon | Archetype | Notes |
 |---|-----------|------|-----------|-------|
 | 0 | โกบลิน (Goblin) | 👺 | Fast swarm | Early-game filler, low HP |
-| 1 | โครงกระดูก (Skeleton) | 💀 | Balanced | Baseline reference unit |
+| 1 | โครงกระดูก (Skeleton) | 💀 | Splitter | On death, splits into 2 smaller skeletons (40% HP/reward each) |
 | 2 | เงามืด (Shadow) | 👻 | Drain | Drains nearby towers within 2.2 cells |
 | 3 | วิญญาณไฟ (Fire Spirit) | 🔥 | Flying | Requires anti-air towers |
 | 4 | บอส (Boss) | 👹 | Boss | High HP, stage-dependent skills |
@@ -37,6 +37,12 @@ Design rationale for the 11 monster types. For raw numbers, see
   farming it trivializes the gold economy (see Roadmap).
 - **Drain (Shadow)**: disables synergies on nearby towers for a duration —
   a soft "tower denial" mechanic, distinct from raw HP/speed pressure.
+- **Splitter (Skeleton)**: on death (if not already a split child), spawns 2
+  smaller skeletons at 40% of its current max HP and reward each (combined
+  80% — reward/HP ratio unchanged at ~0.133). Split children render at 0.65×
+  size and do not split again. Raises Skeleton's total effective HP/reward
+  per spawn to ~180%, rewarding AoE towers (Cannon/Magic/Thunder) that can
+  clean up the smaller children efficiently.
 - **Bosses (Boss, Demon Lord)**: execute `skillType = stage.id % 3`
   behaviors (spawn adds / heal / AoE attack). Demon Lord additionally has a
   large shield pool and the highest base HP in the game.

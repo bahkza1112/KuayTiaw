@@ -2,6 +2,27 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.7.0 — Skeleton Splitter
+
+### Added
+- **💀 Skeleton Splitter mechanic**: when a Skeleton dies (and is not itself
+  a split child), it spawns 2 smaller skeletons at 40% of its current max HP
+  and reward each (combined 80% — reward/HP ratio unchanged at ~0.133).
+  Children render at 0.65× size (`_sizeMult`) and carry an `_isSplit` flag so
+  they cannot split again. (`js/enemy.js`, `_spawnSkeletonSplit`/`killEnemy`;
+  `js/game.js` enemy draw loop applies `_sizeMult`)
+
+### Notes
+- Gives the previously "no special mechanic" Skeleton a distinct identity
+  (Splitter), and rewards AoE towers (Cannon/Magic/Thunder) for cleaning up
+  the spawned children. Total effective HP/reward per Skeleton spawn rises
+  to ~180% of baseline — an intentional difficulty addition, not a reward
+  economy change.
+- Verified in-browser: killing a Skeleton spawns 2 children with hp=30,
+  reward=4 (40% of 75/10), `_sizeMult=0.65`, `_isSplit=true`; killing a child
+  spawns no further children. No console errors. `docs/EnemyDesign.md` and
+  `docs/BalanceSheet.md` updated.
+
 ## v1.6.9 — Per-Type Awaken Effects
 
 ### Added

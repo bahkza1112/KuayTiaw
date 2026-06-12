@@ -128,11 +128,26 @@ function spawnEnemy(ti){
   }
 }
 
+// 💀 Skeleton Splitter: ตายแล้วแตกเป็นลูก 2 ตัว HP/reward 40% ของตัวแม่ (รวม 80%, reward/HP เท่าเดิม)
+function _spawnSkeletonSplit(e){
+  const childHp=Math.max(1,Math.round(e.mhp*.4));
+  const childReward=Math.max(1,Math.round(e.reward*.4));
+  for(let k=0;k<2;k++){
+    G.enemies.push({
+      ti:e.ti,pi:e.pi,prog:e.prog,x:e.x,y:e.y,
+      hp:childHp,mhp:childHp,spd:e.spd,reward:childReward,
+      slow:1,slowT:0,alive:true,hitFlash:0,
+      isAir:e.isAir,shieldHp:0,maxShieldHp:0,
+      _isSplit:true,_sizeMult:.65
+    });
+  }
+}
 function killEnemy(e){
   if(!e.alive) return;
   e.alive=false;
   unlockMonster(e.ti);
   if(MTYPE[e.ti]===1) _dropRune(e.x,e.y); // boss always drops rune
+  if(e.ti===1&&!e._isSplit) _spawnSkeletonSplit(e); // 💀 Skeleton split
   _onKillForAch(e); // achievement tracking
   // combo system
   G.kills=(G.kills||0)+1;

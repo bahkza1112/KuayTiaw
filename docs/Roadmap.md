@@ -99,6 +99,30 @@ chain targets 2→4. Archer unchanged per design. See
 Effects](TowerDesign.md#built-in-skills--awaken-effects-design-target) for
 details.
 
+## Monster Mechanics (MINOR-level)
+
+✅ **Skeleton Splitter** (v1.7.0) — Skeleton (💀) now splits on death into 2
+smaller skeletons at 40% HP/reward each (combined 80%, reward/HP ratio
+unchanged at ~0.133), rendered at 0.65× size and unable to split again. Gives
+the previously "baseline/no special" Skeleton a distinct identity and rewards
+AoE towers (Cannon/Magic/Thunder) for cleaning up the spawned children. See
+[EnemyDesign.md](EnemyDesign.md) and [BalanceSheet.md](BalanceSheet.md#skeleton-splitter-v170)
+for details.
+
+## Pending Discussion
+
+🟡 **Awaken cost re-tuning** — the flat 300-gold Awaken cost (all tower
+types) may be underpriced relative to the new per-type Awaken effects added
+in v1.6.9 (e.g. Thunder chain 2→4, Support's double-boost). Decision: wait
+for playtest feedback on v1.6.9/v1.7.0 before adjusting; if needed, move to
+a per-type Awaken cost rather than a flat increase.
+
+🟡 **Gold reward rounding** — rounding `m_rew` values to the nearest 5 for
+UI/display clarity would shift the gold economy ~+5-10% on average (most
+values round up). If pursued, re-derive `m_hp` alongside the rounded
+rewards to preserve current reward/HP ratios (~0.13-0.15) rather than
+applying a net economy buff.
+
 ## Future / Unscoped Ideas
 
 These are larger and need a dedicated design pass before scoping:
