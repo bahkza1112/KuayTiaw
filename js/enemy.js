@@ -68,12 +68,26 @@ function _pushDmgNum(e,dmg,shield){
 }
 function applyDmg(e,dmg,towerType,forcePierce){
   if(!e.alive) return;
+  // 🦇 ค้างคาว: หลบเลี่ยงความเสียหายแบบสุ่ม 25% (Erratic Dodge)
+  if(e.ti===6&&Math.random()<.25){
+    e._dodgeFlash=.3;
+    G.particles.push({x:e.x+(Math.random()*10-5),y:e.y-ESIZES[e.ti]-6,txt:'MISS!',col:'#fff',life:.6,vy:-1.4,vx:(Math.random()-.5)*.6,decay:2.2,scale:.8});
+    return;
+  }
   e._lastTowerType=towerType;
   const pierce=(TPIERCE[towerType]||false)||!!forcePierce;
+  // 🔥 วิญญาณไฟ: ช่วงพ่นไฟป้องกันตัวเอง ลดดาเมจที่ได้รับ 30% (Scorch Flare)
+  if(e.ti===3&&e._flareT>0) dmg*=.7;
+  // 🪨 โกเลม: เกราะหิน ลดดาเมจตามรอยร้าวที่เหลือ (Armor Crack)
+  if(e.ti===5){
+    if(e._armorPct===undefined) e._armorPct=.24;
+    dmg*=(1-e._armorPct);
+  }
   if(e.shieldHp>0&&!pierce){
     // damage hits shield
     e.shieldHp-=dmg;
     e.hitFlash=.55;
+    e._noDmgT=0; // 🛡️ ชิลด์ไนท์: โดนตี รีเซ็ตตัวจับเวลาฟื้นโล่ (Shield Regen)
     _pushDmgNum(e,dmg,true);
     if(e.shieldHp<=0){
       e.shieldHp=0;
@@ -88,7 +102,15 @@ function applyDmg(e,dmg,towerType,forcePierce){
     // damage hits HP (pierce or no shield)
     e.hp-=dmg;
     e.hitFlash=1;
+    e._noDmgT=0; // 🛡️ ชิลด์ไนท์: โดนตี รีเซ็ตตัวจับเวลาฟื้นโล่ (Shield Regen)
     _pushDmgNum(e,dmg,false);
+    // 🪨 โกเลม: ตรวจรอยร้าวเกราะตาม % HP ที่เหลือ — ร้าวขึ้นเรื่อยๆ ลดเกราะ 24%→16%→8%→0%
+    if(e.ti===5&&e.hp>0){
+      const pct=e.hp/e.mhp;
+      if(pct<=.25) e._armorPct=0;
+      else if(pct<=.5) e._armorPct=Math.min(e._armorPct,.08);
+      else if(pct<=.75) e._armorPct=Math.min(e._armorPct,.16);
+    }
     if(e.hp<=0) killEnemy(e);
   }
 }

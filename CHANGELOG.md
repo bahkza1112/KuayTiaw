@@ -2,6 +2,28 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.8.0 — Monster Mechanic Pass
+
+### Added
+- **👺 Goblin Pack Rush**: Goblins get +20% movement speed while another
+  Goblin is within 1.2 cells (green dust trail visual).
+- **🔥 Fire Spirit Scorch Flare**: every ~6s (randomized first trigger),
+  flares for 1.5s, taking 30% less damage (pulsing orange ring + popup).
+- **🪨 Golem Armor Crack**: starts with 24% damage reduction that cracks to
+  16%/8%/0% as HP drops below 75%/50%/25% (extra crack lines on sprite).
+- **🦇 Bat Erratic Dodge**: 25% chance to dodge any incoming hit entirely
+  ("MISS!" popup + white flicker ring, no damage applied).
+- **🛡️ Shield Knight Shield Regen**: regenerates 15% of max shield/sec after
+  4s without taking damage (pulsing blue ring while regenerating).
+
+### Notes
+- Completes the monster revamp — every monster type (0-10) now has a
+  distinct mechanical identity beyond raw HP/speed/reward. All 5 mechanics
+  implemented in `js/enemy.js` (`applyDmg`) and `js/game.js` (story +
+  endgame update/draw loops), verified in-browser via direct
+  `spawnEnemy`/`applyDmg`/`update` simulation with no console errors.
+  `docs/EnemyDesign.md` and `docs/Roadmap.md` updated.
+
 ## v1.7.4 — Wyvern Dive Bomb
 
 ### Added

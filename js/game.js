@@ -582,7 +582,15 @@ function update(dt){
     if(!e.alive){G.enemies.splice(i,1);continue;}
     if(e.slowT>0){e.slowT-=dt;if(e.slowT<=0)e.slow=1;}
     if(e._enrageT>0) e._enrageT-=dt;
-    e.prog+=e.spd*e.slow*((e._enrageT>0)?(e._enrageMult||1):1)*((e._diveT>0)?1.5:1)*((G&&G.weather&&G.weather.spdMult)?G.weather.spdMult:1)*CS*dt;
+    if(e._dodgeFlash>0) e._dodgeFlash-=dt;
+    // 👺 โกบลิน: Pack Rush — โกบลินที่อยู่ใกล้กัน (<1.2 ช่อง) ได้บัฟความเร็ว +20%
+    e._packBoost=false;
+    if(e.ti===0){
+      for(const o of G.enemies){
+        if(o!==e&&o.alive&&o.ti===0&&Math.hypot(o.x-e.x,o.y-e.y)<CS*1.2){e._packBoost=true;break;}
+      }
+    }
+    e.prog+=e.spd*e.slow*((e._enrageT>0)?(e._enrageMult||1):1)*((e._diveT>0)?1.5:1)*(e._packBoost?1.2:1)*((G&&G.weather&&G.weather.spdMult)?G.weather.spdMult:1)*CS*dt;
     while(e.prog>=CS){
       e.prog-=CS; e.pi++;
       if(e.pi>=plen-1){
@@ -676,6 +684,25 @@ function update(dt){
     }
     G.particles.push({x:wv.x,y:wv.y-ESIZES[7]-14,txt:'🐉 โฉบ!',col:'#ff8a65',
       life:1.0,vy:-1.4,vx:0,decay:1.2,scale:1});
+  });
+  // 🔥 วิญญาณไฟ (ti===3) พ่นไฟป้องกันตัวเองเป็นช่วงๆ ลดดาเมจที่ได้รับ 30%
+  G.enemies.forEach(fs=>{
+    if(!fs.alive||fs.ti!==3) return;
+    if(fs._flareT>0) fs._flareT-=dt;
+    fs.flareCd=(fs.flareCd||2+Math.random()*3)-dt;
+    if(fs.flareCd>0) return;
+    fs.flareCd=6.0; // พ่นไฟป้องกันทุก 6 วิ
+    fs._flareT=1.5;
+    G.particles.push({x:fs.x,y:fs.y-ESIZES[3]-12,txt:'🔥 ป้องกัน!',col:'#ff8a65',
+      life:1.0,vy:-1.2,vx:0,decay:1.2,scale:.9});
+  });
+  // 🛡️ ชิลด์ไนท์ (ti===8) ฟื้นโล่เองถ้าไม่โดนตี 4 วิ — ฟื้น 15% ของโล่สูงสุด/วิ
+  G.enemies.forEach(sk=>{
+    if(!sk.alive||sk.ti!==8||sk.maxShieldHp<=0) return;
+    sk._noDmgT=(sk._noDmgT||0)+dt;
+    if(sk._noDmgT>=4&&sk.shieldHp<sk.maxShieldHp){
+      sk.shieldHp=Math.min(sk.maxShieldHp,sk.shieldHp+sk.maxShieldHp*.15*dt);
+    }
   });
   // 👹 ทักษะพิเศษบอส (ขึ้นกับด่าน): ด่าน%3===0=คลั่งเร่งความเร็ว, ===1=เรียกร่างเสริม, ===2=ฟื้นพลังตัวเอง
   G.enemies.forEach(boss=>{
@@ -1419,6 +1446,45 @@ function render(){
       ctx.beginPath();ctx.moveTo(e.x-sz*1.4,e.y);ctx.lineTo(e.x-sz*.6,e.y);ctx.stroke();
       ctx.globalAlpha=1;
     }
+    // 👺 โกบลิน Pack Rush — เส้นฝุ่นเร่งความเร็วด้านหลังเมื่อรวมฝูง
+    if(e._packBoost){
+      ctx.globalAlpha=.45;ctx.strokeStyle='#aed581';ctx.lineWidth=2;
+      ctx.beginPath();ctx.moveTo(e.x-sz*1.1,e.y+sz*.3);ctx.lineTo(e.x-sz*.5,e.y+sz*.3);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(e.x-sz*1.0,e.y+sz*.55);ctx.lineTo(e.x-sz*.5,e.y+sz*.55);ctx.stroke();
+      ctx.globalAlpha=1;
+    }
+    // 🔥 วิญญาณไฟ Scorch Flare — วงแหวนป้องกันลุกโชนเมื่อกำลังลดดาเมจ
+    if(e._flareT>0){
+      ctx.globalAlpha=.4+.3*Math.sin(Date.now()*.02);
+      ctx.strokeStyle='#ffab40';ctx.lineWidth=3;
+      ctx.beginPath();ctx.arc(e.x,e.y,sz+5,0,Math.PI*2);ctx.stroke();
+      ctx.globalAlpha=1;
+    }
+    // 🪨 โกเลม Armor Crack — รอยร้าวเพิ่มตามเกราะที่เสียไป
+    if(e.ti===5&&e._armorPct<.24){
+      ctx.save();ctx.strokeStyle='#212121';ctx.lineWidth=sz*.06;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(e.x-sz*.3,e.y-sz*.5);ctx.lineTo(e.x-sz*.05,e.y+sz*.1);ctx.stroke();
+      if(e._armorPct<=.08){
+        ctx.beginPath();ctx.moveTo(e.x+sz*.15,e.y-sz*.55);ctx.lineTo(e.x+sz*.35,e.y-sz*.05);ctx.stroke();
+      }
+      if(e._armorPct<=0){
+        ctx.beginPath();ctx.moveTo(e.x-sz*.4,e.y+sz*.15);ctx.lineTo(e.x-sz*.1,e.y+sz*.5);ctx.stroke();
+      }
+      ctx.restore();
+    }
+    // 🦇 ค้างคาว Erratic Dodge — กระพริบขาวตอนหลบ
+    if(e._dodgeFlash>0){
+      ctx.globalAlpha=e._dodgeFlash*2;ctx.strokeStyle='#fff';ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(e.x,e.y,sz+8,0,Math.PI*2);ctx.stroke();
+      ctx.globalAlpha=1;
+    }
+    // 🛡️ ชิลด์ไนท์ Shield Regen — วงแหวนฟ้าเมื่อกำลังฟื้นโล่
+    if(e.ti===8&&e._noDmgT>=4&&e.shieldHp<e.maxShieldHp){
+      ctx.globalAlpha=.35+.25*Math.sin(Date.now()*.01);
+      ctx.strokeStyle='#64b5f6';ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(e.x,e.y,sz+6,0,Math.PI*2);ctx.stroke();
+      ctx.globalAlpha=1;
+    }
     // emoji
     // heal glow indicator
     if(currentStage&&currentStage.healTypes&&currentStage.healTypes.includes(e.ti)&&e.hp<e.mhp){
@@ -2010,7 +2076,15 @@ function updateEg(dt){
     if(!e.alive){G.enemies.splice(i,1);continue;}
     if(e.slowT>0){e.slowT-=dt;if(e.slowT<=0)e.slow=1;}
     if(e._enrageT>0) e._enrageT-=dt;
-    e.prog+=e.spd*e.slow*((e._enrageT>0)?(e._enrageMult||1):1)*((e._diveT>0)?1.5:1)*((G&&G.weather&&G.weather.spdMult)?G.weather.spdMult:1)*CS*dt;
+    if(e._dodgeFlash>0) e._dodgeFlash-=dt;
+    // 👺 โกบลิน: Pack Rush — โกบลินที่อยู่ใกล้กัน (<1.2 ช่อง) ได้บัฟความเร็ว +20%
+    e._packBoost=false;
+    if(e.ti===0){
+      for(const o of G.enemies){
+        if(o!==e&&o.alive&&o.ti===0&&Math.hypot(o.x-e.x,o.y-e.y)<CS*1.2){e._packBoost=true;break;}
+      }
+    }
+    e.prog+=e.spd*e.slow*((e._enrageT>0)?(e._enrageMult||1):1)*((e._diveT>0)?1.5:1)*(e._packBoost?1.2:1)*((G&&G.weather&&G.weather.spdMult)?G.weather.spdMult:1)*CS*dt;
     while(e.prog>=CS){
       e.prog-=CS; e.pi++;
       if(e.pi>=plen-1){
@@ -2070,6 +2144,24 @@ function updateEg(dt){
       G.particles.push({x:tw.col*CS+CS/2,y:tw.row*CS,txt:'💫 หยุดทำงาน!',col:'#ff8a65',life:1.1,vy:-1.0,vx:0,decay:1.2,scale:.9});
     }
     G.particles.push({x:wv.x,y:wv.y-ESIZES[7]-14,txt:'🐉 โฉบ!',col:'#ff8a65',life:1.0,vy:-1.4,vx:0,decay:1.2,scale:1});
+  });
+  // 🔥 วิญญาณไฟ (ti===3) พ่นไฟป้องกันตัวเองเป็นช่วงๆ ลดดาเมจที่ได้รับ 30%
+  G.enemies.forEach(fs=>{
+    if(!fs.alive||fs.ti!==3) return;
+    if(fs._flareT>0) fs._flareT-=dt;
+    fs.flareCd=(fs.flareCd||2+Math.random()*3)-dt;
+    if(fs.flareCd>0) return;
+    fs.flareCd=6.0;
+    fs._flareT=1.5;
+    G.particles.push({x:fs.x,y:fs.y-ESIZES[3]-12,txt:'🔥 ป้องกัน!',col:'#ff8a65',life:1.0,vy:-1.2,vx:0,decay:1.2,scale:.9});
+  });
+  // 🛡️ ชิลด์ไนท์ (ti===8) ฟื้นโล่เองถ้าไม่โดนตี 4 วิ — ฟื้น 15% ของโล่สูงสุด/วิ
+  G.enemies.forEach(sk=>{
+    if(!sk.alive||sk.ti!==8||sk.maxShieldHp<=0) return;
+    sk._noDmgT=(sk._noDmgT||0)+dt;
+    if(sk._noDmgT>=4&&sk.shieldHp<sk.maxShieldHp){
+      sk.shieldHp=Math.min(sk.maxShieldHp,sk.shieldHp+sk.maxShieldHp*.15*dt);
+    }
   });
   // Gold Mine production (endgame)
   G.towers.forEach(tw=>{

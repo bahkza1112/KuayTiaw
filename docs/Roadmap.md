@@ -126,6 +126,21 @@ spreading tower coverage so no single stunned tower opens a path gap.
 Implemented in both story and endgame combat loops. See
 [EnemyDesign.md](EnemyDesign.md#design-intent-per-archetype) for details.
 
+✅ **Monster Mechanic Pass — Goblin/Fire Spirit/Golem/Bat/Shield Knight**
+(v1.8.0) — completes the monster revamp by giving the remaining "plain"
+monsters distinct mechanics:
+- 👺 **Goblin Pack Rush**: +20% speed when another Goblin is within 1.2 cells.
+- 🔥 **Fire Spirit Scorch Flare**: periodically takes 30% less damage for 1.5s.
+- 🪨 **Golem Armor Crack**: 24% damage reduction that cracks to 16%→8%→0% as
+  HP drops below 75%/50%/25%.
+- 🦇 **Bat Erratic Dodge**: 25% chance to dodge any hit entirely.
+- 🛡️ **Shield Knight Shield Regen**: regenerates 15% of max shield/sec after
+  4s without taking damage.
+
+Every monster type now has a distinct mechanical identity beyond raw
+HP/speed/reward numbers. See
+[EnemyDesign.md](EnemyDesign.md#design-intent-per-archetype) for details.
+
 ## Economy (PATCH-level)
 
 ✅ **Awaken cost re-tuning** (v1.7.3) — flat Awaken cost 300 → 350 gold for
