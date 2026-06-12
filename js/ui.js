@@ -1,3 +1,50 @@
+/* ══ WHAT'S NEW (patch notes) ══ */
+const GAME_VERSION='1.7.1';
+const PATCH_NOTES=[
+  {ver:'1.7.1',date:'2026-06-12',title:'📰 ช่องข่าวสารอัปเดต!',notes:[
+    'เพิ่มหน้า "What\'s New" กดที่เลขเวอร์ชันมุมเมนูหลักเพื่อดูสิ่งที่เปลี่ยนแปลงล่าสุด',
+    'มีจุดแดงแจ้งเตือนเมื่อมีอัปเดตใหม่ที่ยังไม่ได้อ่าน'
+  ]},
+  {ver:'1.7.0',date:'2026-06-12',title:'💀 โครงกระดูกแยกตัว!',notes:[
+    'โครงกระดูกที่ตายแล้วจะแตกเป็นลูก 2 ตัว ขนาดเล็กลง',
+    'ป้อมที่มีพื้นที่โจมตี (ปืนใหญ่ / เวทมนตร์ / สายฟ้า) จะเก็บลูกพวกนี้ได้ง่ายขึ้น'
+  ]},
+  {ver:'1.6.9',date:'2026-06-12',title:'✨ พลังตื่น (Awaken) แบบใหม่ต่อป้อม!',notes:[
+    '💣 ปืนใหญ่: รัศมีระเบิดเพิ่มขึ้น 50%',
+    '❄️ น้ำแข็ง: แช่แข็งศัตรูสนิท 3 วินาที (สูงสุด 6 วินาทีถ้ามีซัพพอร์ตตื่นอยู่ใกล้)',
+    '✨ เวทมนตร์: โอกาสยิงเพิ่มสูงสุด 40% (สูงสุด 3 นัด)',
+    '🎯 สไนเปอร์: กระสุนทะลุเป็นเส้นตรง โดนศัตรูที่อยู่ด้านหลังด้วย',
+    '💚 ซัพพอร์ต: เพิ่มพลัง Awaken ของป้อมข้างเคียงเป็น 2 เท่า',
+    '💰 เหมืองทอง: ผลผลิตทองเพิ่มเป็น 2 เท่า',
+    '⚡ สายฟ้า: โจมตีต่อเนื่องสูงสุด 4 เป้าหมาย'
+  ]},
+  {ver:'1.6.8',date:'2026-06-11',title:'🎨 ป้อมมีชีวิตชีวาขึ้น!',notes:[
+    'ป้อมที่ตื่นแล้วมีออร่าสีตามธาตุของตัวเอง',
+    'ป้อมทุกตัวมีแอนิเมชันขยับเล็กๆ ระหว่างรอยิง'
+  ]}
+];
+function openWhatsNew(){
+  showScreen('whatsnew',true);
+  renderWhatsNew();
+  localStorage.setItem('tq_lastSeenVer',GAME_VERSION);
+  _updateNewsBadge();
+}
+function renderWhatsNew(){
+  const body=document.getElementById('whatsnewBody');
+  if(!body) return;
+  body.innerHTML=PATCH_NOTES.map(p=>`
+    <div class="news-item">
+      <div class="news-item-hd"><span class="news-ver">v${p.ver}</span><span class="news-date">${p.date}</span></div>
+      <div class="news-title">${p.title}</div>
+      <ul class="news-list">${p.notes.map(n=>`<li>${n}</li>`).join('')}</ul>
+    </div>`).join('');
+}
+function _updateNewsBadge(){
+  const badge=document.getElementById('newsBadge');
+  if(!badge) return;
+  badge.style.display=(localStorage.getItem('tq_lastSeenVer')!==GAME_VERSION)?'inline-block':'none';
+}
+
 function renderAchievTab(){
   const unlocked=loadAchievements();
   const total=ACHIEVEMENTS.length;
@@ -25,7 +72,7 @@ function renderAchievTab(){
 }
 
 /* ══ SCREEN MANAGEMENT ══ */
-function hideAll(){['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','towersel','storyscr'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const cs=document.getElementById('cutscene');if(cs)cs.style.display='none';}
+function hideAll(){['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','whatsnew','towersel','storyscr'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const cs=document.getElementById('cutscene');if(cs)cs.style.display='none';}
 function showScreen(id,flex){
   hideAll();
   const el=document.getElementById(id);
@@ -54,6 +101,7 @@ function updateMenuStats(){
   if(ts) ts.textContent='⭐ '+totalStars+' / '+maxStar;
   if(si2) si2.textContent=icons||'🔒🔒🔒';
   _updateAchBadge(); // อัปเดต badge ทุกครั้งที่ menu render
+  _updateNewsBadge(); // อัปเดต badge ข่าวสารทุกครั้งที่ menu render
 }
 
 /* ══ STAGE SELECT ══ */
@@ -1196,12 +1244,14 @@ document.getElementById('egMenuBtn').addEventListener('click',openEgMenu);
 document.getElementById('egBackBtn').addEventListener('click',()=>showScreen('mm',true));
 document.getElementById('lbNavBtn').addEventListener('click',openLeaderboard);
 document.getElementById('lbBackBtn').addEventListener('click',()=>showScreen('mm',true));
+document.getElementById('verBtn').addEventListener('click',openWhatsNew);
+document.getElementById('whatsnewBackBtn').addEventListener('click',()=>showScreen('mm',true));
 document.getElementById('ssBackBtn').addEventListener('click',()=>showScreen('mm',true));
 document.getElementById('tsBackBtn').addEventListener('click',()=>openStageSelect());
 // update hideAll to include new screens
 const _origHideAll=hideAll;
 window.hideAll=function(){
-  ['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','towersel'].forEach(id=>{
+  ['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','whatsnew','towersel'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.style.display='none';
   });
 };

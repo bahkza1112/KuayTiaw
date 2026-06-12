@@ -2,6 +2,27 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.7.1 — What's New Patch Notes Screen
+
+### Added
+- **📰 "What's New" screen**: clicking the version label on the main menu
+  (`#verBtn`) opens a new player-facing patch-notes screen (styled like the
+  leaderboard) listing recent updates in Thai, newest first. A small red
+  unread-badge appears on the version label when there are notes the player
+  hasn't seen yet (tracked via `localStorage.tq_lastSeenVer`), clearing once
+  opened. (`js/ui.js`: `GAME_VERSION`, `PATCH_NOTES`, `openWhatsNew`,
+  `renderWhatsNew`, `_updateNewsBadge`; `css/main.css`: `#whatsnew`,
+  `.news-*`; `Tower Quest 🏰.html`: `#whatsnew` screen markup)
+- Going forward, every future patch must add a corresponding entry to
+  `PATCH_NOTES` (player-facing Thai summary) in addition to this changelog.
+
+### Notes
+- Purely additive UI feature — no gameplay, balance, or save-format changes
+  (aside from the new `tq_lastSeenVer` localStorage key). Verified
+  in-browser: badge shows when `tq_lastSeenVer` is unset/stale, opening the
+  screen renders all 3 patch-note entries correctly and clears the badge, no
+  console errors.
+
 ## v1.7.0 — Skeleton Splitter
 
 ### Added

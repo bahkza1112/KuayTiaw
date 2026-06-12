@@ -379,6 +379,16 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .run-score{font-size:12px;color:#ffe082;font-weight:700;}
 .run-wave{font-size:9px;color:#8bc34a;}
 .lb-empty{text-align:center;color:#444;font-size:13px;padding:40px 20px;line-height:1.8;}
+/* ── WHAT'S NEW ── */
+#whatsnew{display:none;background:#0e1a0e;min-height:600px;border-radius:16px;flex-direction:column;overflow:hidden;}
+.news-badge{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ff5252;margin-left:5px;vertical-align:middle;box-shadow:0 0 4px #ff5252;}
+.news-item{background:rgba(0,0,0,.3);border:1px solid #1a2a1a;border-radius:10px;padding:12px;margin-bottom:10px;}
+.news-item-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.news-ver{font-size:11px;color:#ffe082;font-weight:900;}
+.news-date{font-size:10px;color:#555;}
+.news-title{font-size:14px;color:#fff;font-weight:700;margin-bottom:6px;}
+.news-list{margin:0;padding-left:18px;color:#aaa;font-size:12px;line-height:1.7;}
+.news-list li{margin-bottom:2px;}
 /* ── SAVE NAME OVERLAY ── */
 .save-overlay{display:none;position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);align-items:center;justify-content:center;z-index:25;border-radius:16px;}
 .save-box{background:#0d1f0d;border:2px solid #4caf50;border-radius:16px;padding:22px 24px;width:280px;text-align:center;}

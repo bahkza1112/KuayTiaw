@@ -61,6 +61,14 @@ appearing instantly.
 
 ---
 
+✅ **"What's New" patch notes screen** (v1.7.1) — clicking the version label
+on the main menu opens a player-facing patch-notes screen (`PATCH_NOTES` in
+`js/ui.js`), with an unread red-dot badge tracked via
+`localStorage.tq_lastSeenVer`. Every future update must add a `PATCH_NOTES`
+entry alongside the `CHANGELOG.md` entry.
+
+---
+
 ## QA / Regression
 
 ✅ **Post-refactor verification (v1.6.1)** — confirmed via live browser test
