@@ -2,6 +2,20 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.9.6 — 3D Tower Idle Animations
+
+### Added
+- **Towers in the 3D view now idle-animate continuously.** Each tower mesh
+  gently bobs up/down (`Math.sin`-based, phase offset by `col`/`row` so
+  towers don't move in sync), and decorative parts spin independently of the
+  aiming turret: Ice's smaller crystal shards, Magic's orbiting ring,
+  Support's halo, Gold Mine's gold pile, and Lightning's two coil rings.
+  Previously only Awakened towers had any 3D motion (their aura). File:
+  `js/tower.js` (`_buildTowerMesh3D` — new `spin` array per type stored in
+  `grp.userData.spin`; `_sync3DTowerMesh` — applies bob via
+  `mesh.position.y` and spin rotation, independent of the existing
+  `turret.rotation.y` aim logic).
+
 ## v1.9.5 — Monster Idle Animations
 
 ### Added

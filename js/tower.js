@@ -380,6 +380,7 @@ function _buildTowerMesh3D(type){
   const roofMat=new THREE.MeshLambertMaterial({color:c[0]});
   const accentMat=new THREE.MeshLambertMaterial({color:'#fff8dc'});
   let turret=null;
+  const spin=[]; // decorative parts that idle-rotate independent of aim
 
   switch(type){
     case 0:{ // 💣 Cannon — squat bunker + thick rotating barrel
@@ -414,6 +415,7 @@ function _buildTowerMesh3D(type){
       turret.add(core);
       turret.position.y=CS*.16+CS*.46;
       grp.add(turret);
+      spin.push({mesh:shard2,axis:'y',speed:.5},{mesh:shard3,axis:'y',speed:-.4});
       break;}
     case 2:{ // ✨ Magic — tall spire with hovering orbiting orb & ring
       const base=new THREE.Mesh(new THREE.CylinderGeometry(CS*.26,CS*.36,CS*.18,12),baseMat);
@@ -429,6 +431,7 @@ function _buildTowerMesh3D(type){
       turret.add(ring,orb);
       turret.position.y=CS*.18+CS*.62+CS*.10;
       grp.add(turret);
+      spin.push({mesh:ring,axis:'z',speed:.9});
       break;}
     case 3:{ // 🎯 Sniper — tall slender tower with long precision barrel
       const base=new THREE.Mesh(new THREE.CylinderGeometry(CS*.24,CS*.30,CS*.18,10),baseMat);
@@ -461,6 +464,7 @@ function _buildTowerMesh3D(type){
       turret.add(emblem,halo);
       turret.position.y=CS*.16+CS*.40;
       grp.add(turret);
+      spin.push({mesh:halo,axis:'z',speed:.7});
       break;}
     case 5:{ // 🏹 Archer — wooden post with a drawn bow on top
       const base=new THREE.Mesh(new THREE.CylinderGeometry(CS*.24,CS*.30,CS*.16,8),baseMat);
@@ -493,6 +497,7 @@ function _buildTowerMesh3D(type){
       turret.add(pile);
       turret.position.y=CS*.16+CS*.10;
       grp.add(turret);
+      spin.push({mesh:pile,axis:'y',speed:.8});
       break;}
     case 7:{ // ⚡ Lightning — tesla rod with crackling orb & rings
       const base=new THREE.Mesh(new THREE.CylinderGeometry(CS*.30,CS*.38,CS*.18,12),baseMat);
@@ -509,6 +514,7 @@ function _buildTowerMesh3D(type){
       turret.add(coilTop,ring1,ring2);
       turret.position.y=CS*.18+CS*.58+CS*.10;
       grp.add(turret);
+      spin.push({mesh:ring1,axis:'z',speed:1.1},{mesh:ring2,axis:'z',speed:-1.4});
       break;}
     default:{
       const base=new THREE.Mesh(new THREE.CylinderGeometry(CS*.34,CS*.40,CS*.18,16),baseMat);
@@ -528,6 +534,7 @@ function _buildTowerMesh3D(type){
     }
   }
   if(turret) grp.userData.turret=turret;
+  grp.userData.spin=spin;
   return grp;
 }
 
@@ -577,9 +584,14 @@ function _sync3DTowerMesh(tw,cx2,cy2,bounce){
     _twMeshes.set(tw,mesh);
   }
   const wp=_gridToWorld3D(tw.col,tw.row);
-  mesh.position.set(wp.x,0,wp.z);
+  const _t=performance.now()*.001;
+  // idle bob — subtle up/down sway, phase offset per tower so they don't sync
+  const _bobPhase=tw.col*1.7+tw.row*2.3;
+  mesh.position.set(wp.x,Math.sin(_t*1.6+_bobPhase)*CS*.02,wp.z);
   mesh.scale.setScalar(bounce);
   if(mesh.userData.turret) mesh.userData.turret.rotation.y=Math.PI/2-(tw.angle||0);
+  // idle spin — decorative parts (orbs/rings/halos) rotate continuously
+  if(mesh.userData.spin) mesh.userData.spin.forEach(s=>{ s.mesh.rotation[s.axis]=_t*s.speed; });
 
   // ⚡ Awakened — extra dramatic aura FX (golden rings, orbiting motes, energy beam)
   if(tw.awakened){
