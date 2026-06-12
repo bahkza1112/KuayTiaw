@@ -108,6 +108,15 @@ function getSynergySlowBonus(type,col,row){
   getActiveSynergies(type,col,row).forEach(s=>{ if(s.effect==='slow') b+=s.amount; });
   return b;
 }
+// 💚 ป้อม Support ที่ตื่นแล้ว (awakened) จะดับเบิลโบนัส Awaken ของป้อมอื่นที่อยู่ในระยะ
+function getSupportAwakenBoost(col,row){
+  if(!G) return 1;
+  let boost=1;
+  G.towers.forEach(t=>{
+    if(t.type===4&&t.awakened&&Math.hypot(t.col-col,t.row-row)<=getTowerRange(t.type,t.rngLv||t.lv)) boost=2;
+  });
+  return boost;
+}
 /* ══ SPRITE DRAWING ══ */
 /* ── sprite cache: pre-render static tower bodies once, drawImage every frame ── */
 let _SC=null;

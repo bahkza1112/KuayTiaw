@@ -2,6 +2,42 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.6.9 — Per-Type Awaken Effects
+
+### Added
+- **Unique Awaken effect per tower type**, on top of the existing generic
+  bonus (+15% effective dmg, +13% rune bonus, per-type aura):
+  - 💣 **Cannon**: splash radius ×1.5 when awakened.
+  - ❄️ **Ice**: on-hit freeze (full stop) for 3s instead of the normal 45%
+    slow for 2s — extended to 6s if an awakened 💚 Support is in range.
+  - ✨ **Magic**: extra-shot chance 20%→40%, firing up to 3 total shots at
+    the same target instead of 2.
+  - 🎯 **Sniper**: shots now pierce in a straight line, damaging enemies
+    behind the original target (within a narrow corridor, up to max range),
+    respecting flying/shield rules.
+  - 💚 **Support**: doubles the Awaken bonus of nearby awakened towers —
+    Ice's freeze duration (3s→6s) and the Support→Gold Mine synergy gold
+    bonus (+25%→+50%), via new `getSupportAwakenBoost()` (`js/tower.js`).
+  - 💰 **Gold Mine**: gold production ×2.
+  - ⚡ **Thunder**: chain target count 2→4.
+  - 🏹 **Archer**: no Awaken-specific effect (per design table).
+
+### Fixed
+- Endgame (survival) mode's combat loop was missing the generic Awaken +15%
+  damage bonus and the awakened-crit-chance bonus that story mode already
+  had — both loops now apply Awaken bonuses consistently. (`js/game.js`)
+
+### Notes
+- `js/game.js` story-mode (~line 690) and endgame-mode (~line 1985) combat
+  loops were updated in parallel to keep both modes consistent.
+- Verified in-browser: spawned all 8 awakened tower types against test
+  enemies — confirmed Cannon splash 0.8→1.2, Thunder chain 2→4, Ice
+  freeze (slow=0, slowT≈6 with an awakened Support in range), Gold Mine
+  production 2→6/tick (×2 base × doubled Support synergy), and Sniper
+  pierce-line damaging an enemy behind the target while leaving off-line/
+  out-of-range enemies untouched. No console errors. `docs/TowerDesign.md`
+  and `docs/Roadmap.md` updated to reflect implementation status.
+
 ## v1.6.8 — Tower Visual Diversity Pass
 
 ### Changed

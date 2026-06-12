@@ -85,6 +85,20 @@ save changes.
 
 ---
 
+## Tower Awaken System (MINOR-level)
+
+✅ **Per-type Awaken effects** (v1.6.9) — the generic Awaken bonus (+15%
+effective dmg, +13% rune bonus, per-type aura color) is now joined by a
+unique effect per tower type: Cannon splash ×1.5, Ice freezes target (slow=0)
+for 3s (6s if an awakened Support is in range), Magic's extra-shot chance
+20%→40% (up to 3 total shots), Sniper pierces in a straight line damaging
+enemies behind the target, Support doubles nearby awakened towers' bonuses
+(Ice freeze duration, Gold Mine synergy bonus), Gold Mine output ×2, Thunder
+chain targets 2→4. Archer unchanged per design. See
+[TowerDesign.md → Built-in Skills & Awaken
+Effects](TowerDesign.md#built-in-skills--awaken-effects-design-target) for
+details.
+
 ## Future / Unscoped Ideas
 
 These are larger and need a dedicated design pass before scoping:
@@ -92,13 +106,3 @@ These are larger and need a dedicated design pass before scoping:
 - New tower type(s) / monster type(s) / stage(s) (MINOR)
 - Additional rune types
 - New achievements
-
-🟡 **Per-type Awaken effects** — replace the current generic Awaken bonus
-(+15% effective dmg, +13% rune bonus, per-type aura color) with a unique
-effect per tower type (e.g. Cannon → full-area AoE, Ice → 3s freeze, Magic →
-3 shots @ 40% chance, Sniper → piercing line shot, Support → doubles nearby
-towers' Awaken bonuses, Gold Mine → 5→10 gold/tick, Thunder → chains to 2-4
-targets). See [TowerDesign.md → Built-in Skills & Awaken
-Effects](TowerDesign.md#built-in-skills--awaken-effects-design-target) for
-the full design target. Significant balance/implementation effort — needs
-its own plan before scoping.

@@ -730,29 +730,40 @@ function update(dt){
         G.particles.push({x:tw.col*CS+CS/2,y:tw.row*CS+CS/2-22,txt:'⚡รัว!',col:'#ffe234',life:.45,vy:-1.3,vx:0,decay:2.6,scale:.75});
       }
       const fx=tw.col*CS+CS/2, fy=tw.row*CS+CS/2;
+      const _aw=tw.awakened&&!(tw._drainT>0); // ⚡ ป้อมตื่นแล้วและไม่ได้ถูกดูดพลัง
       let _rdmg=getTowerDmg(tw.type,tw.dmgLv||tw.lv)*getBuffMult(tw.col,tw.row)*getSynergyMult(tw.type,tw.col,tw.row);
-      if(tw.awakened&&!(tw._drainT>0)) _rdmg*=1.15; // Awaken bonus +15% (ใช้ไม่ได้ถ้าโดนดูดพลัง)
+      if(_aw) _rdmg*=1.15; // Awaken bonus +15% (ใช้ไม่ได้ถ้าโดนดูดพลัง)
       let _risCrit=false;
       let _rSlow=(TSLOW[tw.type]||0)+getSynergySlowBonus(tw.type,tw.col,tw.row);
       if(tw.rune===5) _rdmg*=1.25; // Power rune
-      if(tw.rune===3&&Math.random()<(tw.awakened?.28:.2)){_rdmg*=2.5;_risCrit=true;} // Precision rune (awakened: 28% crit)
-      if(tw.rune===1) _rSlow=Math.min((_rSlow||0)+(tw.awakened?.35:.25),0.85); // Frost rune (awakened: +35%)
+      if(tw.rune===3&&Math.random()<(_aw?.28:.2)){_rdmg*=2.5;_risCrit=true;} // Precision rune (awakened: 28% crit)
+      if(tw.rune===1) _rSlow=Math.min((_rSlow||0)+(_aw?.35:.25),0.85); // Frost rune (awakened: +35%)
       const _wSplashMult=((tw.type===0||tw.type===2)&&G.weather&&G.weather.splashMult)?G.weather.splashMult:1;
+      // ⚡ Awaken เฉพาะป้อม: Cannon=splash ใหญ่ขึ้น, Thunder=chain เพิ่ม
+      const _awSplashMult=(_aw&&tw.type===0)?1.5:1;
+      const _awChainBonus=(_aw&&tw.type===7)?2:0;
       const _rp=G.projs[G.projs.push({
-        x:fx,y:fy,tx:best.x,ty:best.y,target:best,
+        x:fx,y:fy,tx:best.x,ty:best.y,target:best,ox:fx,oy:fy,
         spd:280+(tw.type===3?120:0)+(tw.type===7?80:0),
         type:tw.type,
         dmg:_rdmg,
-        splash:TSPLASH[tw.type]*_wSplashMult,slow:_rSlow,alive:true,
-        chain:TCHAIN[tw.type]||0,
-        _rngPierce:(tw.rngLv||tw.lv)>=4
+        splash:TSPLASH[tw.type]*_wSplashMult*_awSplashMult,slow:_rSlow,alive:true,
+        chain:(TCHAIN[tw.type]||0)+_awChainBonus,
+        _rngPierce:(tw.rngLv||tw.lv)>=4,
+        _maxR:range*CS,
+        _supBoost:_aw?getSupportAwakenBoost(tw.col,tw.row):1
       })-1];
       if(_risCrit) _rp._crit=true;
       if(tw.rune===1) _rp._frostRune=true;
       if(tw.rune===0) _rp._burnRune=true;
       if(tw.rune===2) _rp._stormRune=true;
       if(tw.rune===4) _rp._avaRune=true;
-      if(tw.awakened) _rp._awakenedRune=true;
+      if(_aw) _rp._awakenedRune=true;
+      // ✨ Magic Awaken: โอกาสยิงเพิ่ม 20% (ตื่นแล้ว 40%) สูงสุด 3 นัด
+      if(tw.type===2&&Math.random()<(_aw?.4:.2)){
+        const _extra=_aw?2:1;
+        for(let _m=0;_m<_extra;_m++) G.projs.push(Object.assign({},_rp));
+      }
       // muzzle flash ring per tower type
       const mCol=TPROJ[tw.type];
       G.fxRings.push({x:fx,y:fy,r:2,maxR:tw.type===3?CS*.8:CS*.4,
@@ -811,7 +822,11 @@ function update(dt){
     G.gmTimers[key]=(G.gmTimers[key]||0)+dt;
     if(G.gmTimers[key]>=CFG.t_goldrate){
       G.gmTimers[key]=0;
-      const goldAmt=Math.round(CFG.t_goldamt[Math.min(tw.lv-1,3)]*((G.weather&&G.weather.goldMineMult)?G.weather.goldMineMult:1)*getSynergyGoldMult(tw.col,tw.row));
+      // 💚 Support Awaken: ดับเบิลโบนัส synergy ทองที่ได้รับ (+25% → +50%)
+      let _gmSynMult=getSynergyGoldMult(tw.col,tw.row);
+      if(_gmSynMult>1) _gmSynMult=1+(_gmSynMult-1)*getSupportAwakenBoost(tw.col,tw.row);
+      // 💰 Gold Mine Awaken: ผลผลิตทอง x2
+      const goldAmt=Math.round(CFG.t_goldamt[Math.min(tw.lv-1,3)]*((G.weather&&G.weather.goldMineMult)?G.weather.goldMineMult:1)*_gmSynMult*(tw.awakened?2:1));
       G.gold+=goldAmt; updateHUD();
       addParticle(tw.col*CS+CS/2,tw.row*CS+CS/2,'+'+goldAmt+'💰','#ffd54f');
       // V6: flying coin particles
@@ -869,7 +884,32 @@ function update(dt){
       if(p._frostRune&&p.slow>0&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)&&!(G.weather&&G.weather.iceImmune&&p.type===1)){
         p.target.slow=p.slow; p.target.slowT=3; // +1s over base 2
       }
-      if(p.slow>0&&!p._frostRune&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)&&!(G.weather&&G.weather.iceImmune&&p.type===1)){p.target.slow=p.slow;p.target.slowT=2;}
+      if(p.slow>0&&!p._frostRune&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)&&!(G.weather&&G.weather.iceImmune&&p.type===1)){
+        // ❄️ Ice Awaken: ติดแข็ง (หยุดสนิท) 3 วินาที — Support ตื่นใกล้เคียงเพิ่มเป็น 6 วินาที
+        if(p._awakenedRune&&p.type===1){ p.target.slow=0; p.target.slowT=3*(p._supBoost||1); }
+        else { p.target.slow=p.slow; p.target.slowT=2; }
+      }
+      // 🎯 Sniper Awaken: ยิงทะลุเป็นเส้นตรง — สร้างความเสียหายให้ศัตรูที่อยู่หลังเป้าหมายบนเส้นยิงด้วย
+      if(p.type===3&&p._awakenedRune){
+        const _ddx=tx-p.ox,_ddy=ty-p.oy,_dlen=Math.hypot(_ddx,_ddy)||1;
+        const _ux=_ddx/_dlen,_uy=_ddy/_dlen;
+        G.enemies.forEach(e=>{
+          if(!e.alive||e===p.target) return;
+          if(e.isAir&&!TCANAIR[3]) return;
+          if(e.shieldHp>0&&!TPIERCE[3]) return;
+          const _ex=e.x-p.ox,_ey=e.y-p.oy;
+          const _proj=_ex*_ux+_ey*_uy;
+          if(_proj<=_dlen+1||_proj>(p._maxR||_dlen)) return;
+          const _perp=Math.abs(_ex*_uy-_ey*_ux);
+          if(_perp<CS*.35){
+            applyDmg(e,p.dmg,p.type,true);
+            e.hitFlash=.6;
+            G.fxTrails.push({x:tx,y:ty,tx:e.x,ty:e.y,col:'#fff9c4',life:.35,type:99,lw:2});
+            G.particles.push({x:e.x+(Math.random()-.5)*10,y:e.y-8,txt:'-'+Math.round(p.dmg),col:'#ff5252',
+              life:1,vy:-1.5,vx:(Math.random()-.5)*.6,scale:1,decay:1.6});
+          }
+        });
+      }
       // impact ring per type
       if(p.type===0){// Cannon: explosion ring
         G.fxRings.push({x:tx,y:ty,r:4,maxR:p.splash>0?p.splash*CS*1.2:CS*.5,life:.7,lw:3,col:'#ff7043',delay:0});
@@ -1978,7 +2018,11 @@ function updateEg(dt){
     G.gmTimers[key]=(G.gmTimers[key]||0)+dt;
     if(G.gmTimers[key]>=CFG.t_goldrate){
       G.gmTimers[key]=0;
-      const goldAmt=Math.round(CFG.t_goldamt[Math.min(tw.lv-1,3)]*((G.weather&&G.weather.goldMineMult)?G.weather.goldMineMult:1)*getSynergyGoldMult(tw.col,tw.row));
+      // 💚 Support Awaken: ดับเบิลโบนัส synergy ทองที่ได้รับ (+25% → +50%)
+      let _gmSynMult=getSynergyGoldMult(tw.col,tw.row);
+      if(_gmSynMult>1) _gmSynMult=1+(_gmSynMult-1)*getSupportAwakenBoost(tw.col,tw.row);
+      // 💰 Gold Mine Awaken: ผลผลิตทอง x2
+      const goldAmt=Math.round(CFG.t_goldamt[Math.min(tw.lv-1,3)]*((G.weather&&G.weather.goldMineMult)?G.weather.goldMineMult:1)*_gmSynMult*(tw.awakened?2:1));
       G.gold+=goldAmt; updateHUD();
       addParticle(tw.col*CS+CS/2,tw.row*CS+CS/2,'+'+goldAmt+'💰','#ffd54f');
     }
@@ -2007,26 +2051,39 @@ function updateEg(dt){
         G.particles.push({x:tw.col*CS+CS/2,y:tw.row*CS+CS/2-22,txt:'⚡รัว!',col:'#ffe234',life:.45,vy:-1.3,vx:0,decay:2.6,scale:.75});
       }
       const fx=tw.col*CS+CS/2,fy=tw.row*CS+CS/2;
+      const _aw2=tw.awakened&&!(tw._drainT>0);
       let _rdmg2=getTowerDmg(tw.type,tw.dmgLv||tw.lv)*getBuffMult(tw.col,tw.row)*getSynergyMult(tw.type,tw.col,tw.row);
+      if(_aw2) _rdmg2*=1.15;
       let _risCrit2=false;
       let _rSlow2=(TSLOW[tw.type]||0)+getSynergySlowBonus(tw.type,tw.col,tw.row);
       if(tw.rune===5) _rdmg2*=1.25;
-      if(tw.rune===3&&Math.random()<0.2){_rdmg2*=2.5;_risCrit2=true;}
-      if(tw.rune===1) _rSlow2=Math.min((_rSlow2||0)+0.25,0.85);
+      if(tw.rune===3&&Math.random()<(_aw2?.28:.2)){_rdmg2*=2.5;_risCrit2=true;}
+      if(tw.rune===1) _rSlow2=Math.min((_rSlow2||0)+(_aw2?.35:.25),0.85);
       const _wSplashMult2=((tw.type===0||tw.type===2)&&G.weather&&G.weather.splashMult)?G.weather.splashMult:1;
+      // ⚡ Awaken เฉพาะป้อม: Cannon=splash ใหญ่ขึ้น, Thunder=chain เพิ่ม
+      const _awSplashMult2=(_aw2&&tw.type===0)?1.5:1;
+      const _awChainBonus2=(_aw2&&tw.type===7)?2:0;
       const _rp2=G.projs[G.projs.push({
-        x:fx,y:fy,tx:best.x,ty:best.y,target:best,
+        x:fx,y:fy,tx:best.x,ty:best.y,target:best,ox:fx,oy:fy,
         spd:280+(tw.type===3?120:0)+(tw.type===7?80:0),type:tw.type,
         dmg:_rdmg2,
-        splash:TSPLASH[tw.type]*_wSplashMult2,slow:_rSlow2,alive:true,
-        chain:TCHAIN[tw.type]||0,
-        _rngPierce:(tw.rngLv||tw.lv)>=4
+        splash:TSPLASH[tw.type]*_wSplashMult2*_awSplashMult2,slow:_rSlow2,alive:true,
+        chain:(TCHAIN[tw.type]||0)+_awChainBonus2,
+        _rngPierce:(tw.rngLv||tw.lv)>=4,
+        _maxR:range*CS,
+        _supBoost:_aw2?getSupportAwakenBoost(tw.col,tw.row):1
       })-1];
       if(_risCrit2) _rp2._crit=true;
       if(tw.rune===1) _rp2._frostRune=true;
       if(tw.rune===0) _rp2._burnRune=true;
       if(tw.rune===2) _rp2._stormRune=true;
       if(tw.rune===4) _rp2._avaRune=true;
+      if(_aw2) _rp2._awakenedRune=true;
+      // ✨ Magic Awaken: โอกาสยิงเพิ่ม 20% (ตื่นแล้ว 40%) สูงสุด 3 นัด
+      if(tw.type===2&&Math.random()<(_aw2?.4:.2)){
+        const _extra2=_aw2?2:1;
+        for(let _m=0;_m<_extra2;_m++) G.projs.push(Object.assign({},_rp2));
+      }
       G.fxRings.push({x:fx,y:fy,r:2,maxR:tw.type===3?CS*.8:CS*.4,life:.5,lw:1.5,col:TPROJ[tw.type],delay:0});
       if(tw.type===7){
         for(let k=0;k<6;k++){const ang=k/6*Math.PI*2;G.particles.push({x:fx,y:fy,txt:'·',col:'#ffe57f',life:.35,vy:Math.sin(ang)*1.4,vx:Math.cos(ang)*1.4,decay:4,scale:.9});}
@@ -2079,7 +2136,32 @@ function updateEg(dt){
       if(p._frostRune&&p.slow>0&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)){
         p.target.slow=p.slow; p.target.slowT=3;
       }
-      if(p.slow>0&&!p._frostRune&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)){p.target.slow=p.slow;p.target.slowT=2;}
+      if(p.slow>0&&!p._frostRune&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)){
+        // ❄️ Ice Awaken: ติดแข็ง (หยุดสนิท) 3 วินาที — Support ตื่นใกล้เคียงเพิ่มเป็น 6 วินาที
+        if(p._awakenedRune&&p.type===1){ p.target.slow=0; p.target.slowT=3*(p._supBoost||1); }
+        else { p.target.slow=p.slow; p.target.slowT=2; }
+      }
+      // 🎯 Sniper Awaken: ยิงทะลุเป็นเส้นตรง — สร้างความเสียหายให้ศัตรูที่อยู่หลังเป้าหมายบนเส้นยิงด้วย
+      if(p.type===3&&p._awakenedRune){
+        const _ddx2=tx-p.ox,_ddy2=ty-p.oy,_dlen2=Math.hypot(_ddx2,_ddy2)||1;
+        const _ux2=_ddx2/_dlen2,_uy2=_ddy2/_dlen2;
+        G.enemies.forEach(e=>{
+          if(!e.alive||e===p.target) return;
+          if(e.isAir&&!TCANAIR[3]) return;
+          if(e.shieldHp>0&&!TPIERCE[3]) return;
+          const _ex2=e.x-p.ox,_ey2=e.y-p.oy;
+          const _proj2=_ex2*_ux2+_ey2*_uy2;
+          if(_proj2<=_dlen2+1||_proj2>(p._maxR||_dlen2)) return;
+          const _perp2=Math.abs(_ex2*_uy2-_ey2*_ux2);
+          if(_perp2<CS*.35){
+            applyDmg(e,p.dmg,p.type,true);
+            e.hitFlash=.6;
+            G.fxTrails.push({x:tx,y:ty,tx:e.x,ty:e.y,col:'#fff9c4',life:.35,type:99,lw:2});
+            G.particles.push({x:e.x+(Math.random()-.5)*10,y:e.y-8,txt:'-'+Math.round(p.dmg),col:'#ff5252',
+              life:1,vy:-1.5,vx:(Math.random()-.5)*.6,scale:1,decay:1.6});
+          }
+        });
+      }
       if(p.type===7){
         G.fxRings.push({x:tx,y:ty,r:2,maxR:CS*.55,life:.45,lw:2.5,col:'#ffe57f',delay:0});
         if(p.chain>0&&p.target){

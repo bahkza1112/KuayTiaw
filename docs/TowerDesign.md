@@ -77,15 +77,16 @@ per-type Awaken effect:
 | 🎯 Sniper | Single | Can hit flying enemies | Shot pierces in a straight line |
 | 💚 Support | Cannot attack | Cleanses monster debuffs/weather effects from towers in range | Doubles the Awaken bonus of nearby awakened towers (e.g. Ice freeze 3s→6s); reduces Gold Mine cooldown when nearby |
 | 🏹 Archer | Single, anti-air | Fast fire rate | — |
-| 💰 Gold Mine | Cannot attack | Produces 5 gold per tick; upgrades reduce cooldown | Gold output 5→10 |
+| 💰 Gold Mine | Cannot attack | Produces 5 gold per tick; upgrades reduce cooldown | Gold output ×2 |
 | ⚡ Thunder | Single + chain | Chains to 1–2 nearby enemies | Chains to 2–4 nearby enemies |
 
-> **Implementation status**: as of v1.6.8, the Awaken upgrade is implemented
-> generically for all types (flat +15% effective damage, +13% rune bonus,
-> per-type-colored 3D aura — see [`_buildAwakenAura3D`](../js/tower.js)).
-> The per-type Awaken effects in the table above (freeze, AoE conversion,
-> extra chain target, etc.) are the **target design**, not yet implemented.
-> See [Roadmap.md](Roadmap.md) for status.
+> **Implementation status**: as of v1.6.9, the Awaken upgrade grants both the
+> generic bonus (flat +15% effective damage, +13% rune bonus, per-type-colored
+> 3D aura — see [`_buildAwakenAura3D`](../js/tower.js)) **and** the per-type
+> effects in the table above (Cannon splash ×1.5, Ice freeze 3s/6s, Magic
+> 20%→40% extra-shot chance, Sniper pierce-line, Support doubles nearby
+> Awaken bonuses, Gold Mine output ×2, Thunder chain 2→4). See
+> [Roadmap.md](Roadmap.md) for status.
 
 ## Runes
 
