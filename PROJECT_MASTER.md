@@ -24,8 +24,9 @@ Three.js loaded via CDN for an optional 3D tower-rendering layer
 
 Key high-level elements:
 
-- **Story Mode**: 10 stages (`STAGES`, line 944), each with its own grid
-  layout, enemy path, unlockable towers, and a story cutscene.
+- **Story Mode**: 11 stages (`STAGES`, line 944), each with its own grid
+  layout, enemy path, unlockable towers, and a story cutscene. Stage 11
+  (Shadow Remnant) is the true final stage (`isFinalStage`).
 - **Endgame / Survival Mode**: an infinite, difficulty-scaled wave survival
   mode unlocked after finishing story content (functions starting around
   line 5278, `openEgMenu` onward).
@@ -331,7 +332,7 @@ Notes:
 ## 7. Progression Systems
 
 ### Stage Progression
-- 10 stages (`STAGES`, line 944), each defining: grid path, available enemy
+- 11 stages (`STAGES`, line 944), each defining: grid path, available enemy
   types, `unlockedTowers`, `maxTowers`/`stageMaxTowers`, `bossChance`,
   `enemyMult` (difficulty scaling), `unlocks` (tower or item unlocked on
   clear), background/path/grass colors, and Thai story text.

@@ -155,10 +155,21 @@ except Goblin keeps HP=55 (intentional ratio exception for the first enemy
 players meet). Net ~+2% economy shift. See
 [BalanceSheet.md](BalanceSheet.md#gold-reward-rounding-v172).
 
+## New Content (MINOR-level)
+
+✅ **Stage 11 — Shadow Remnant** (v1.9.0) — new true-final story stage
+(`id:10`), unlocked after Dark Tower Summit. 13 waves, full enemy roster
+(every monster type 0–10 incl. Demon Lord/Shaman), `bossChance:.13`, new
+40-waypoint path + violet/black "abyss" palette, heaviest weather pool
+(darknight/lightning/blizzard/tornado/fog), 3-slide intro cutscene, and a new
+"ผู้ยุติเงามืด" achievement. Dark Tower Summit (Stage 10) is no longer the
+final stage — it now leads into Shadow Remnant for the true ending. No new
+tower/monster mechanics, so Codex is unchanged.
+
 ## Future / Unscoped Ideas
 
 These are larger and need a dedicated design pass before scoping:
 
-- New tower type(s) / monster type(s) / stage(s) (MINOR)
+- New tower type(s) / monster type(s) (MINOR)
 - Additional rune types
-- New achievements
+- New achievements (beyond the Shadow Remnant ones added in v1.9.0)

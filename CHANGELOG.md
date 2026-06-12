@@ -2,6 +2,37 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.9.0 — New Stage: Shadow Remnant
+
+### Added
+- **🌑 Stage 11: Shadow Remnant** — new true-final story stage (`id:10`,
+  `isFinalStage:true`, moved from Stage 10/Dark Tower Summit). Unlocked after
+  clearing Stage 10.
+- 13 waves, full enemy roster `[0..10]` (every monster type including the
+  Demon Lord and Shaman), `bossChance:.13` — the toughest gauntlet in the
+  game.
+- New 40-waypoint path on a deep violet/black "abyss" palette
+  (`bgColor:'#03000a'`, `pathColor:'#4a1a5e'`).
+- New `STAGE_WEATHER[10]` pool: darknight, lightning, blizzard, tornado, fog
+  — heaviest chaos pool in the game.
+- New intro cutscene (3 slides) framing the stage as the Demon Lord's
+  lingering shadow remnant making one final stand.
+- New achievement **🌑 ผู้ยุติเงามืด** (`s10`) for clearing Shadow Remnant;
+  **ราชันผู้พิทักษ์** (`sall`) now requires all 11 stages.
+
+### Changed
+- Stage 10 (Dark Tower Summit) is no longer `isFinalStage` — clearing it now
+  shows a normal "Next Stage" prompt into Shadow Remnant. Its intro cutscene
+  was lightly reworded to foreshadow that the Demon Lord's defeat isn't the
+  true end.
+- Total story stars goal is now 33 (11 stages × 3).
+
+### Notes
+- No new tower/monster mechanics — Codex (`MSPECIAL`/tower descriptions)
+  unchanged. Verified via live preview: stage select shows "Stage 11: Shadow
+  Remnant", tower selection/deploy/wave loop run with the full enemy roster
+  and no console errors.
+
 ## v1.8.0 — Monster Mechanic Pass
 
 ### Added

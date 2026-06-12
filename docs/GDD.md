@@ -18,7 +18,7 @@ light story campaign, an endless endgame mode, and long-term progression
 - **Build variety** — 8 tower types with distinct roles (splash, slow,
   single-target, support, utility, chain) plus a synergy system that
   rewards mixed compositions.
-- **Readable difficulty curve** — story mode ramps gently across 10 stages;
+- **Readable difficulty curve** — story mode ramps gently across 11 stages;
   endgame provides infinite scaling for players who want a harder challenge.
 - **Replayability hooks** — Codex collection, achievements, runes, local
   leaderboard.
@@ -26,7 +26,7 @@ light story campaign, an endless endgame mode, and long-term progression
 ## 3. Game Modes
 
 ### Story Mode
-10 hand-designed stages (`STAGES`), each with a fixed grid/path, enemy
+11 hand-designed stages (`STAGES`), each with a fixed grid/path, enemy
 roster, tower unlock pool, and Thai story cutscenes. Stars (0–3) are
 awarded per stage based on performance and gate progression.
 
@@ -64,6 +64,8 @@ difficulty on a local leaderboard. Unlocked after clearing ≥1 story stage.
   targeting.
 - **Stage 10**: capstone — Demon Lord (final boss), requires full roster
   mastery.
+- **Stage 11**: true final — Shadow Remnant, full enemy roster including
+  the Demon Lord again, heaviest weather chaos pool.
 - **Endgame**: designed to eventually outscale any fixed strategy — the
   long-term test of build optimization.
 
