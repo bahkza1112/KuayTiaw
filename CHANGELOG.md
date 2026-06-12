@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.9.4 — Gold Mine Idle Production Fix
+
+### Fixed
+- **Gold Mine no longer produces gold while waiting between waves.** The
+  production tick in `update(dt)` (story mode) and the endgame loop wasn't
+  gated on `G.waveActive`, so a placed Gold Mine kept ticking income forever
+  while the player sat on the "start next wave" screen — letting players
+  farm unlimited free gold by idling. Both production blocks are now wrapped
+  in `if(G.waveActive)`. Files: `js/game.js` (story Gold Mine production
+  ~line 873, endgame Gold Mine production ~line 2177).
+
 ## v1.9.3 — Enemy Order by HP (Smooth Curve Fix)
 
 ### Fixed

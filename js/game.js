@@ -870,8 +870,8 @@ function update(dt){
       }
     });
   }
-  // Gold Mine production
-  G.towers.forEach(tw=>{
+  // Gold Mine production (only while a wave is active)
+  if(G.waveActive) G.towers.forEach(tw=>{
     if(!TGOLDMINE[tw.type]) return;
     if(!G.gmTimers) G.gmTimers={};
     const key=tw.col+'_'+tw.row;
@@ -2174,8 +2174,8 @@ function updateEg(dt){
       sk.shieldHp=Math.min(sk.maxShieldHp,sk.shieldHp+sk.maxShieldHp*.15*dt);
     }
   });
-  // Gold Mine production (endgame)
-  G.towers.forEach(tw=>{
+  // Gold Mine production (endgame, only while a wave is active)
+  if(G.waveActive) G.towers.forEach(tw=>{
     if(!TGOLDMINE[tw.type]) return;
     if(!G.gmTimers) G.gmTimers={};
     const key=tw.col+'_'+tw.row;
