@@ -37,6 +37,15 @@ Shield Knight, Shaman, Demon Lord). Stage 11 keeps its full 11-type roster
 as the intentional "every monster returns" exception. File: `js/game.js`
 (`STAGES[1..9].enemyTypes`).
 
+✅ **Enemy order by HP** (v1.9.3) — follow-up to v1.9.2: reordered
+Stages 3-9's `enemyTypes` by ascending HP (Bat 35 → Goblin 55 → Shaman 58 →
+Skeleton 75 → Shadow 105 → Shield Knight 129 → Fire Spirit 144 → Wyvern 160
+→ Golem 236, Boss/Demon Lord last since they spawn via separate overrides).
+Wave 1 of every stage now starts with its lowest-HP type instead of
+occasionally a tanky one like Golem. Also fixed Stage 10's intro cutscene
+mentioning Goblin (no longer in its roster) → Bat. File: `js/game.js`
+(`STAGES[3..9].enemyTypes`), `js/ui.js` (`CUTSCENES[9]`).
+
 > See [BalanceSheet.md](BalanceSheet.md) for full current numbers and
 > derivations.
 
