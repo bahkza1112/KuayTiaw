@@ -122,14 +122,18 @@ for details.
 🟡 **Awaken cost re-tuning** — the flat 300-gold Awaken cost (all tower
 types) may be underpriced relative to the new per-type Awaken effects added
 in v1.6.9 (e.g. Thunder chain 2→4, Support's double-boost). Decision: wait
-for playtest feedback on v1.6.9/v1.7.0 before adjusting; if needed, move to
-a per-type Awaken cost rather than a flat increase.
+for playtest feedback on v1.6.9/v1.7.0/v1.7.2 before adjusting; if needed,
+move to a per-type Awaken cost rather than a flat increase.
 
-🟡 **Gold reward rounding** — rounding `m_rew` values to the nearest 5 for
-UI/display clarity would shift the gold economy ~+5-10% on average (most
-values round up). If pursued, re-derive `m_hp` alongside the rounded
-rewards to preserve current reward/HP ratios (~0.13-0.15) rather than
-applying a net economy buff.
+## Economy (PATCH-level)
+
+✅ **Gold reward rounding** (v1.7.2) — `m_rew` rounded to nearest 5 (Goblin
+8→10, Fire Spirit 18→20, Golem 28→30, Shield Knight 28→30, Shaman 12→10).
+`m_hp`/`MSHIELD` re-derived to preserve reward/HP ratios (Fire Spirit
+130→144, Golem 220→236, Shield Knight 120→129/shield 80→86, Shaman 70→58),
+except Goblin keeps HP=55 (intentional ratio exception for the first enemy
+players meet). Net ~+2% economy shift. See
+[BalanceSheet.md](BalanceSheet.md#gold-reward-rounding-v172).
 
 ## Future / Unscoped Ideas
 

@@ -2,6 +2,27 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.7.2 — Gold Reward Rounding
+
+### Changed
+- **Gold rewards rounded to nearest 5** for all enemy types
+  (`js/game.js`, `DEFAULT_CFG.m_rew`): Goblin 8→10, Fire Spirit 18→20,
+  Golem 28→30, Shield Knight 28→30, Shaman 12→10 (others already multiples
+  of 5, unchanged).
+- **Enemy HP re-derived to preserve reward/HP ratios** alongside the rounded
+  rewards (`DEFAULT_CFG.m_hp`): Fire Spirit 130→144, Golem 220→236, Shield
+  Knight 120→129 (shield `MSHIELD[8]` 80→86, `js/enemy.js`), Shaman 70→58.
+  **Exception**: Goblin keeps HP=55 unchanged (first enemy players meet),
+  accepting a higher reward/HP ratio (0.145→0.182) rather than raising its
+  HP by 25%.
+
+### Notes
+- Net effect: ~+2% total reward economy shift, ratios preserved at
+  ~0.125–0.143 for all enemies except Goblin (intentional). See
+  `docs/BalanceSheet.md` → "Gold reward rounding (v1.7.2)" for the full
+  before/after table. Verified in-browser: `DEFAULT_CFG.m_hp`/`m_rew` and
+  `MSHIELD` load with the new values, no console errors.
+
 ## v1.7.1 — What's New Patch Notes Screen
 
 ### Added

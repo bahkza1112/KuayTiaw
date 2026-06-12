@@ -49,17 +49,17 @@ Source: `DEFAULT_CFG.m_hp/m_spd/m_rew`, `js/enemy.js` (`MSHIELD`, `MTYPE`,
 
 | # | Enemy | HP | Speed | Reward | Reward/HP | Shield HP | Type | Air |
 |---|-------|---:|------:|-------:|----------:|----------:|:----:|:---:|
-| 0 | โกบลิน Goblin 👺 | 55 | 1.40 | 8 | 0.145 | – | 0 | – |
+| 0 | โกบลิน Goblin 👺 | 55 | 1.40 | 10 | 0.182 | – | 0 | – |
 | 1 | โครงกระดูก Skeleton 💀 | 75 | 1.00 | 10 | 0.133 | – | 0 | – |
 | 2 | เงามืด Shadow 👻 | 105 | 1.15 | 15 | 0.143 | – | 0 | – |
-| 3 | วิญญาณไฟ Fire Spirit 🔥 | 130 | 0.85 | 18 | 0.138 | – | 0 | ✅ |
+| 3 | วิญญาณไฟ Fire Spirit 🔥 | 144 | 0.85 | 20 | 0.139 | – | 0 | ✅ |
 | 4 | บอส Boss 👹 | 380 | 0.50 | 60 | 0.158 | – | 1 | – |
-| 5 | โกเลม Golem 🪨 | 220 | 0.55 | 28 | 0.127 | – | 0 | – |
+| 5 | โกเลม Golem 🪨 | 236 | 0.55 | 30 | 0.127 | – | 0 | – |
 | 6 | ค้างคาว Bat 🦇 | 35 | 1.80 | 5 | 0.143 | – | 0 | ✅ |
 | 7 | วิเวิร์น Wyvern 🐉 | 160 | 1.55 | 20 | 0.125 | – | 0 | ✅ |
-| 8 | ชิลด์ไนท์ Shield Knight 🛡️ | 120 | 0.65 | 28 | 0.140* | 80 | 0 | – |
+| 8 | ชิลด์ไนท์ Shield Knight 🛡️ | 129 | 0.65 | 30 | 0.140* | 86 | 0 | – |
 | 9 | จอมมาร Demon Lord 👁️ | 900 | 0.42 | 100 | 0.087* | 250 | 1 | – |
-|10 | หมอผี Shaman 🧙 | 70 | 0.72 | 12 | 0.171 | – | 0 | – |
+|10 | หมอผี Shaman 🧙 | 58 | 0.72 | 10 | 0.172 | – | 0 | – |
 
 \* Reward/HP for shielded enemies computed against `HP + Shield`.
 
@@ -88,6 +88,32 @@ addition, not a reward-economy change. Children render at 0.65× size
 ### Resolved imbalances (v1.6.2)
 - **Shaman**: `m_rew[10]` 18 → 12 (reward/HP 0.257 → 0.171) — now in line
   with other units (~0.13–0.15) while still rewarding priority kills.
+
+### Gold reward rounding (v1.7.2)
+
+All `m_rew` values rounded to a multiple of 5 for cleaner on-screen numbers.
+`m_hp` (and Shield Knight's `MSHIELD`) re-derived to preserve each enemy's
+original reward/HP ratio — **except Goblin**, which keeps HP=55 (first enemy
+players meet) and accepts a higher ratio (0.145 → 0.182) instead of raising
+its HP by 25%.
+
+| Enemy | Reward (old→new) | HP (old→new) | Shield (old→new) |
+|---|---|---|---|
+| Goblin 👺 | 8 → 10 | 55 → 55 (unchanged, ratio 0.145→0.182) | – |
+| Skeleton 💀 | 10 → 10 | 75 → 75 | – |
+| Shadow 👻 | 15 → 15 | 105 → 105 | – |
+| Fire Spirit 🔥 | 18 → 20 | 130 → 144 | – |
+| Boss 👹 | 60 → 60 | 380 → 380 | – |
+| Golem 🪨 | 28 → 30 | 220 → 236 | – |
+| Bat 🦇 | 5 → 5 | 35 → 35 | – |
+| Wyvern 🐉 | 20 → 20 | 160 → 160 | – |
+| Shield Knight 🛡️ | 28 → 30 | 120 → 129 | 80 → 86 |
+| Demon Lord 👁️ | 100 → 100 | 900 → 900 | 250 → 250 |
+| Shaman 🧙 | 12 → 10 | 70 → 58 | – |
+
+Net effect: ~+2% total reward economy shift (304→320 across one of each
+enemy), reward/HP ratios preserved at ~0.125–0.143 for all enemies except
+Goblin (intentional exception).
 
 ---
 

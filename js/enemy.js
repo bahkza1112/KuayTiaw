@@ -47,7 +47,7 @@ const MWEAKNESS=[
 /* 0=มอนธรรมดา 1=บอส */
 const MTYPE=[0,0,0,0,1,0,0,0,0,1,0];
 const MISAIR=[false,false,false,false,false,false,true,true,false,false,false]; /* บินได้ */
-const MSHIELD=[0,0,0,0,0,0,0,0,80,250,0]; /* shield HP เริ่มต้น (0=ไม่มีโล่) */
+const MSHIELD=[0,0,0,0,0,0,0,0,86,250,0]; /* shield HP เริ่มต้น (0=ไม่มีโล่); v1.7.2: Shield Knight 80→86 ตาม HP ใหม่ */
 function getEnemyHP(ti,si,wave){return CFG.m_hp[ti]*(1+si*CFG.stageMult)*(1+wave*CFG.waveMult);}
 function getEnemySpd(ti,si){return Math.min(CFG.m_spd[ti]*(1+si*CFG.spdStageMult),CFG.spdCap);}
 
