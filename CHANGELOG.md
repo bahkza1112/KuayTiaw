@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.9.5 — Monster Idle Animations
+
+### Added
+- **Idle animations for Goblin, Skeleton, Shadow, Golem, and Shield Knight**
+  — the only 5 of 11 enemy types that previously had no idle motion (every
+  other type already bobbed/pulsed/glowed). Goblin, Skeleton, Golem, and
+  Shield Knight now gently bob up and down with flickering/pulsing eye or
+  visor glow; Shadow now squishes/stretches like a floating jelly. Purely
+  visual, file: `js/enemy.js` (`drawEnemySprite` cases 0,1,2,5,8). Shared by
+  story mode, endgame mode, and the Codex preview.
+
 ## v1.9.4 — Gold Mine Idle Production Fix
 
 ### Fixed

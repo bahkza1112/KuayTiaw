@@ -237,6 +237,8 @@ function drawEnemySprite(ctx,ti,x,y,sz){
   }
   switch(ti){
     case 0:{// Goblin — chibi green gremlin
+      const _gb=Math.sin(Date.now()*.006+x*.05)*r*.05;
+      ctx.save();ctx.translate(0,_gb);
       // outline first
       _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.1,r*.78,0,Math.PI*2);});
       _ol(()=>{ctx.beginPath();ctx.ellipse(0,r*.55,r*.38,r*.3,0,0,Math.PI*2);});
@@ -256,8 +258,11 @@ function drawEnemySprite(ctx,ti,x,y,sz){
       // tiny tusks
       ctx.fillStyle='#fffde7';ctx.beginPath();ctx.moveTo(-r*.14,r*.22);ctx.lineTo(-r*.06,r*.42);ctx.lineTo(r*.02,r*.22);ctx.closePath();ctx.fill();
       ctx.beginPath();ctx.moveTo(r*.06,r*.22);ctx.lineTo(r*.14,r*.42);ctx.lineTo(r*.22,r*.22);ctx.closePath();ctx.fill();
+      ctx.restore();
       break;}
     case 1:{// Skeleton — chibi cute skull
+      const _sk=Math.sin(Date.now()*.005+x*.05)*r*.04;
+      ctx.save();ctx.translate(0,_sk);
       _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.12,r*.75,0,Math.PI*2);});
       _ol(()=>{ctx.beginPath();ctx.ellipse(0,r*.55,r*.3,r*.26,0,0,Math.PI*2);});
       // tiny body
@@ -271,16 +276,20 @@ function drawEnemySprite(ctx,ti,x,y,sz){
       // big dark eye sockets
       ctx.fillStyle='#1a1a2e';ctx.beginPath();ctx.arc(-r*.28,-r*.12,r*.26,0,Math.PI*2);ctx.fill();
       ctx.fillStyle='#1a1a2e';ctx.beginPath();ctx.arc(r*.28,-r*.12,r*.26,0,Math.PI*2);ctx.fill();
-      // glowing purple pupils
-      ctx.fillStyle='#7c4dff';ctx.beginPath();ctx.arc(-r*.28,-r*.12,r*.14,0,Math.PI*2);ctx.fill();
-      ctx.fillStyle='#7c4dff';ctx.beginPath();ctx.arc(r*.28,-r*.12,r*.14,0,Math.PI*2);ctx.fill();
+      // glowing purple pupils (idle flicker)
+      const _skg=.7+.3*Math.sin(Date.now()*.006+x*.05);
+      ctx.fillStyle=`rgba(124,77,255,${_skg})`;ctx.beginPath();ctx.arc(-r*.28,-r*.12,r*.14,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(r*.28,-r*.12,r*.14,0,Math.PI*2);ctx.fill();
       ctx.fillStyle='rgba(255,255,255,.75)';ctx.beginPath();ctx.arc(-r*.22,-r*.18,r*.06,0,Math.PI*2);ctx.fill();
       ctx.fillStyle='rgba(255,255,255,.75)';ctx.beginPath();ctx.arc(r*.22,-r*.18,r*.06,0,Math.PI*2);ctx.fill();
       // cute teeth smile
       ctx.fillStyle='#fafafa';ctx.beginPath();ctx.arc(0,r*.2,r*.24,0,Math.PI,false);ctx.fill();
       ctx.fillStyle='#1a1a2e';for(let i=0;i<3;i++) ctx.fillRect(-r*.18+i*r*.14,r*.2,r*.1,r*.14);
+      ctx.restore();
       break;}
     case 2:{// Shadow — chibi ghost blob
+      const _gt2=Date.now()*.0045+x*.05;
+      ctx.save();ctx.translate(0,Math.sin(_gt2)*r*.05);ctx.scale(1+Math.sin(_gt2)*.04,1-Math.sin(_gt2)*.04);
       _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.08,r*.76,0,Math.PI*2);});
       // wispy ghost tail
       ctx.globalAlpha=.55;ctx.fillStyle='#311b92';
@@ -301,6 +310,7 @@ function drawEnemySprite(ctx,ti,x,y,sz){
       // cute little smile
       ctx.strokeStyle='#311b92';ctx.lineWidth=r*.08;ctx.lineCap='round';
       ctx.beginPath();ctx.arc(0,r*.18,r*.2,0.2,Math.PI-.2);ctx.stroke();
+      ctx.restore();
       break;}
     case 3:{// Fire Spirit — chibi fireball
       _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.08,r*.72,0,Math.PI*2);});
@@ -355,6 +365,8 @@ function drawEnemySprite(ctx,ti,x,y,sz){
       ctx.fillStyle='#fffde7';ctx.fillRect(-r*.3,r*.24,r*.14,r*.22);ctx.fillRect(r*.14,r*.24,r*.14,r*.22);
       break;}
     case 5:{// Golem — chibi rock monster
+      const _gl=Math.sin(Date.now()*.0025+x*.05)*r*.04;
+      ctx.save();ctx.translate(0,_gl);
       _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.18,r*.82,0,Math.PI*2);});
       _ol(()=>{ctx.beginPath();if(ctx.roundRect)ctx.roundRect(-r*.52,r*.05,r*1.04,r*.62,r*.2);else ctx.rect(-r*.52,r*.05,r*1.04,r*.62);});
       // chunky arms
@@ -375,9 +387,10 @@ function drawEnemySprite(ctx,ti,x,y,sz){
       // head crack
       ctx.strokeStyle='#424242';ctx.lineWidth=r*.08;
       ctx.beginPath();ctx.moveTo(-r*.08,-r*.78);ctx.lineTo(r*.06,-r*.2);ctx.stroke();
-      // glowing orange eyes
-      ctx.fillStyle='#ff8f00';ctx.beginPath();ctx.arc(-r*.28,-r*.2,r*.28,0,Math.PI*2);ctx.fill();
-      ctx.fillStyle='#ff8f00';ctx.beginPath();ctx.arc(r*.28,-r*.2,r*.28,0,Math.PI*2);ctx.fill();
+      // glowing orange eyes (idle flicker)
+      const _glg=.75+.25*Math.sin(Date.now()*.005+x*.05);
+      ctx.fillStyle=`rgba(255,143,0,${_glg})`;ctx.beginPath();ctx.arc(-r*.28,-r*.2,r*.28,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(r*.28,-r*.2,r*.28,0,Math.PI*2);ctx.fill();
       ctx.fillStyle='#ffe082';ctx.beginPath();ctx.arc(-r*.28,-r*.22,r*.16,0,Math.PI*2);ctx.fill();
       ctx.fillStyle='#ffe082';ctx.beginPath();ctx.arc(r*.28,-r*.22,r*.16,0,Math.PI*2);ctx.fill();
       ctx.fillStyle='rgba(255,255,255,.75)';ctx.beginPath();ctx.arc(-r*.22,-r*.28,r*.07,0,Math.PI*2);ctx.fill();
@@ -385,6 +398,7 @@ function drawEnemySprite(ctx,ti,x,y,sz){
       // grumpy line mouth
       ctx.strokeStyle='#424242';ctx.lineWidth=r*.1;ctx.lineCap='round';
       ctx.beginPath();ctx.moveTo(-r*.28,r*.1);ctx.lineTo(r*.28,r*.1);ctx.stroke();
+      ctx.restore();
       break;}
     case 6:{// Bat — chibi cute bat
       _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.05,r*.65,0,Math.PI*2);});
@@ -411,6 +425,8 @@ function drawEnemySprite(ctx,ti,x,y,sz){
       ctx.beginPath();ctx.moveTo(r*.06,r*.18);ctx.lineTo(r*.12,r*.34);ctx.lineTo(r*.18,r*.18);ctx.fill();
       break;}
     case 8:{// Shield Knight — chibi armored knight
+      const _sn=Math.sin(Date.now()*.0035+x*.05)*r*.035;
+      ctx.save();ctx.translate(0,_sn);
       _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.18,r*.8,0,Math.PI*2);});
       _ol(()=>{ctx.beginPath();ctx.moveTo(-r*.56,r*.04);ctx.lineTo(r*.56,r*.04);ctx.lineTo(r*.64,r*.55);ctx.lineTo(0,r*.95);ctx.lineTo(-r*.64,r*.55);ctx.closePath();});
       // big round helmet (chibi head!)
@@ -419,9 +435,10 @@ function drawEnemySprite(ctx,ti,x,y,sz){
       const _hg=ctx.createLinearGradient(-r*.5,-r*.7,r*.2,-r*.1);
       _hg.addColorStop(0,'rgba(255,255,255,.3)');_hg.addColorStop(1,'transparent');
       ctx.fillStyle=_hg;ctx.beginPath();ctx.arc(0,-r*.18,r*.8,0,Math.PI*2);ctx.fill();
-      // visor bar
+      // visor bar (idle glow pulse)
       ctx.fillStyle='#263238';ctx.beginPath();if(ctx.roundRect)ctx.roundRect(-r*.58,-r*.34,r*1.16,r*.26,r*.06);else ctx.rect(-r*.58,-r*.34,r*1.16,r*.26);ctx.fill();
-      ctx.fillStyle='rgba(255,60,60,.7)';ctx.beginPath();if(ctx.roundRect)ctx.roundRect(-r*.5,-r*.3,r*1.0,r*.17,r*.04);else ctx.rect(-r*.5,-r*.3,r*1.0,r*.17);ctx.fill();
+      const _snv=.55+.3*Math.sin(Date.now()*.006+x*.05);
+      ctx.fillStyle=`rgba(255,60,60,${_snv})`;ctx.beginPath();if(ctx.roundRect)ctx.roundRect(-r*.5,-r*.3,r*1.0,r*.17,r*.04);else ctx.rect(-r*.5,-r*.3,r*1.0,r*.17);ctx.fill();
       // tiny armored body
       ctx.fillStyle='#455a64';ctx.beginPath();ctx.ellipse(0,r*.44,r*.35,r*.3,0,0,Math.PI*2);ctx.fill();
       ctx.fillStyle='#546e7a';ctx.beginPath();ctx.ellipse(-r*.58,-r*.24,r*.2,r*.16,-.3,0,Math.PI*2);ctx.fill();// shoulder L
@@ -434,6 +451,7 @@ function drawEnemySprite(ctx,ti,x,y,sz){
       ctx.beginPath();ctx.moveTo(0,r*.14);ctx.lineTo(0,r*.8);ctx.stroke();
       ctx.beginPath();ctx.moveTo(-r*.46,r*.44);ctx.lineTo(r*.46,r*.44);ctx.stroke();
       ctx.fillStyle='#e3f2fd';ctx.beginPath();ctx.arc(0,r*.44,r*.1,0,Math.PI*2);ctx.fill();
+      ctx.restore();
       break;}
     case 7:{// Wyvern — chibi cute dragon
       _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.1,r*.8,0,Math.PI*2);});
