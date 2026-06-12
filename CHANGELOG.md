@@ -2,6 +2,18 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.9.1 — Shadow Remnant Balance Fix
+
+### Fixed
+- **Stage 11 enemy spawn pool**: `startWave()`'s spawn formula
+  (`maxIdx=min(avail.length-1, ceil(wave/2)-1)`) only ever draws from the
+  first 7 entries of `enemyTypes` over 13 waves, so Wyvern (7), Shield
+  Knight (8), and Shaman (10) never spawned despite being listed. Reordered
+  Stage 11's `enemyTypes` to `[7,8,10,0,2,5,6,1,3,4,9]` so all three now
+  appear in normal rotation, fulfilling the stage's "every monster returns"
+  premise. Boss (4) and Demon Lord (9) still spawn via their existing
+  special-case overrides regardless of position. (`js/game.js`)
+
 ## v1.9.0 — New Stage: Shadow Remnant
 
 ### Added

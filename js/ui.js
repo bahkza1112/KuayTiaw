@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='1.9.0';
+const GAME_VERSION='1.9.1';
 const PATCH_NOTES=[
+  {ver:'1.9.1',date:'2026-06-12',title:'⚖️ ปรับสมดุล Shadow Remnant',notes:[
+    'ปรับลำดับศัตรูใน Stage 11 ให้ Wyvern, Shield Knight และหมอผีปรากฏได้จริงในด่าน',
+    'ด่านสุดท้ายจึงมีศัตรูครบทุกชนิดตามธีม "ทุกชนิดสัตว์ร้ายรวมพล"'
+  ]},
   {ver:'1.9.0',date:'2026-06-12',title:'🌑 ด่านใหม่! Shadow Remnant',notes:[
     'เพิ่ม Stage 11: Shadow Remnant — ด่านสุดท้ายที่แท้จริง หลังจากเอาชนะจอมมาร',
     'ศัตรูทุกชนิด (รวมจอมมาร) รวมพลในด่านเดียว 13 เวฟ',
