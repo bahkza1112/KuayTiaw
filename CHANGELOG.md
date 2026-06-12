@@ -2,6 +2,25 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.7.4 — Wyvern Dive Bomb
+
+### Added
+- **🐉 Wyvern Dive Bomb mechanic**: Wyvern (ti=7) periodically (~every 5s,
+  randomized first trigger) dives — moves at 1.5× speed for 1.2s and stuns
+  1 random placed tower for 3s (stunned tower cannot acquire targets or
+  fire). Implemented in both story and endgame combat loops (`js/game.js`:
+  `_diveT`/`diveCd` on the enemy, `_stunT` on the tower).
+- **Visuals**: diving Wyvern shows an enlarged shadow + speed-trail line;
+  stunned towers show a pulsing orange overlay with a 💫 icon (mirrors the
+  existing Shadow drain overlay pattern).
+
+### Notes
+- Gives Wyvern (previously "flying tank, no special") a distinct disruptor
+  identity — rewards spreading tower coverage so no single stunned tower
+  opens a path gap. Verified in-browser: spawning a Wyvern and running the
+  update loop triggers `_diveT`/`_stunT` within ~5s, render pass produces no
+  errors. `docs/EnemyDesign.md` updated.
+
 ## v1.7.3 — Awaken Cost Increase
 
 ### Changed

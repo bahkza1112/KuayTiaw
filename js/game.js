@@ -582,7 +582,7 @@ function update(dt){
     if(!e.alive){G.enemies.splice(i,1);continue;}
     if(e.slowT>0){e.slowT-=dt;if(e.slowT<=0)e.slow=1;}
     if(e._enrageT>0) e._enrageT-=dt;
-    e.prog+=e.spd*e.slow*((e._enrageT>0)?(e._enrageMult||1):1)*((G&&G.weather&&G.weather.spdMult)?G.weather.spdMult:1)*CS*dt;
+    e.prog+=e.spd*e.slow*((e._enrageT>0)?(e._enrageMult||1):1)*((e._diveT>0)?1.5:1)*((G&&G.weather&&G.weather.spdMult)?G.weather.spdMult:1)*CS*dt;
     while(e.prog>=CS){
       e.prog-=CS; e.pi++;
       if(e.pi>=plen-1){
@@ -660,6 +660,23 @@ function update(dt){
         life:1.1,vy:-1.0,vx:0,decay:1.1,scale:.9});
     }
   });
+  // 🐉 วิเวิร์น (ti===7) โฉบ: เร่งความเร็ว 1.5x ชั่วครู่ + หยุดป้อมสุ่ม 1 ตัว 3 วิ
+  G.enemies.forEach(wv=>{
+    if(!wv.alive||wv.ti!==7) return;
+    if(wv._diveT>0) wv._diveT-=dt;
+    wv.diveCd=(wv.diveCd||3+Math.random()*2)-dt;
+    if(wv.diveCd>0) return;
+    wv.diveCd=5.0; // โฉบทุก 5 วิ
+    wv._diveT=1.2;
+    if(G.towers.length){
+      const tw=G.towers[Math.floor(Math.random()*G.towers.length)];
+      tw._stunT=3.0; // หยุดทำงานป้อม 3 วินาที
+      G.particles.push({x:tw.col*CS+CS/2,y:tw.row*CS,txt:'💫 หยุดทำงาน!',col:'#ff8a65',
+        life:1.1,vy:-1.0,vx:0,decay:1.2,scale:.9});
+    }
+    G.particles.push({x:wv.x,y:wv.y-ESIZES[7]-14,txt:'🐉 โฉบ!',col:'#ff8a65',
+      life:1.0,vy:-1.4,vx:0,decay:1.2,scale:1});
+  });
   // 👹 ทักษะพิเศษบอส (ขึ้นกับด่าน): ด่าน%3===0=คลั่งเร่งความเร็ว, ===1=เรียกร่างเสริม, ===2=ฟื้นพลังตัวเอง
   G.enemies.forEach(boss=>{
     if(!boss.alive||MTYPE[boss.ti]!==1) return;
@@ -706,6 +723,7 @@ function update(dt){
   // towers shoot
   G.towers.forEach(tw=>{
     if(tw._drainT>0) tw._drainT-=dt;
+    if(tw._stunT>0){tw._stunT-=dt;return;} // 🐉 ถูกวิเวิร์นโฉบหยุดทำงาน
     if(CFG.t_dmg[tw.type]===0) return;
     if(G.weather&&G.weather.struckTowers&&G.weather.struckTowers.length&&G.weather.struckTowers.includes(tw)) return; // ⚡ struck by lightning
     tw.cd=Math.max(0,tw.cd-dt);
@@ -1299,6 +1317,26 @@ function render(){
       ctx.fillText('🌑',cx2,y+CS*.16);
       ctx.restore();
     }
+    // 🐉 ถูกวิเวิร์นโฉบหยุดทำงาน — overlay สีส้มกะพริบ + ไอคอนหยุด
+    if(tw._stunT>0){
+      const _st2=Date.now()*.006;
+      ctx.save();
+      ctx.globalAlpha=.25+.15*Math.sin(_st2*2);
+      ctx.fillStyle='#bf360c';
+      ctx.beginPath();ctx.roundRect?ctx.roundRect(x+2,y+2,CS-4,CS-4,8):ctx.rect(x+2,y+2,CS-4,CS-4);
+      ctx.fill();
+      ctx.globalAlpha=.7;
+      ctx.strokeStyle='#ff8a65'; ctx.lineWidth=2; ctx.setLineDash([4,3]);
+      ctx.beginPath();ctx.roundRect?ctx.roundRect(x+2,y+2,CS-4,CS-4,8):ctx.rect(x+2,y+2,CS-4,CS-4);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+      ctx.save();
+      ctx.font=(CS*.34)+'px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.globalAlpha=.9;
+      ctx.fillText('💫',cx2,y+CS*.16);
+      ctx.restore();
+    }
     // ground shadow (ellipse, not scaled)
     ctx.globalAlpha=.32; ctx.fillStyle='#000';
     ctx.beginPath(); ctx.ellipse(cx2,cy2+CS*.35,CS*.46,CS*.13,0,0,Math.PI*2); ctx.fill();
@@ -1373,6 +1411,14 @@ function render(){
     ctx.beginPath();ctx.ellipse(e.x+2,e.y+sz*.68,sz*.8,sz*.27,0,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
     ctx.globalAlpha=.10;ctx.strokeStyle='#000';ctx.lineWidth=sz*.4;
     ctx.beginPath();ctx.ellipse(e.x,e.y+sz*.58,sz*.62,sz*.18,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;
+    // 🐉 วิเวิร์นโฉบ — เงาขยายใหญ่ + เส้นแสงโฉบด้านหลัง
+    if(e._diveT>0){
+      ctx.globalAlpha=.30;ctx.fillStyle='#000';
+      ctx.beginPath();ctx.ellipse(e.x+2,e.y+sz*.68,sz*1.3,sz*.4,0,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
+      ctx.globalAlpha=.5*e._diveT;ctx.strokeStyle='#ff8a65';ctx.lineWidth=3;
+      ctx.beginPath();ctx.moveTo(e.x-sz*1.4,e.y);ctx.lineTo(e.x-sz*.6,e.y);ctx.stroke();
+      ctx.globalAlpha=1;
+    }
     // emoji
     // heal glow indicator
     if(currentStage&&currentStage.healTypes&&currentStage.healTypes.includes(e.ti)&&e.hp<e.mhp){
@@ -1964,7 +2010,7 @@ function updateEg(dt){
     if(!e.alive){G.enemies.splice(i,1);continue;}
     if(e.slowT>0){e.slowT-=dt;if(e.slowT<=0)e.slow=1;}
     if(e._enrageT>0) e._enrageT-=dt;
-    e.prog+=e.spd*e.slow*((e._enrageT>0)?(e._enrageMult||1):1)*((G&&G.weather&&G.weather.spdMult)?G.weather.spdMult:1)*CS*dt;
+    e.prog+=e.spd*e.slow*((e._enrageT>0)?(e._enrageMult||1):1)*((e._diveT>0)?1.5:1)*((G&&G.weather&&G.weather.spdMult)?G.weather.spdMult:1)*CS*dt;
     while(e.prog>=CS){
       e.prog-=CS; e.pi++;
       if(e.pi>=plen-1){
@@ -2010,6 +2056,21 @@ function updateEg(dt){
     G.fxRings.push({x:healer.x,y:healer.y,r:5,maxR:healRange,life:.55,lw:2,col:'#69f0ae',delay:0});
     if(healed){G.particles.push({x:healer.x,y:healer.y-ESIZES[10]-10,txt:'✨ Heal!',col:'#b2ff59',life:1.1,vy:-1.0,vx:0,decay:1.1,scale:.9});_playSound('heal');}
   });
+  // 🐉 วิเวิร์น (ti===7) โฉบ ในโหมด endgame
+  G.enemies.forEach(wv=>{
+    if(!wv.alive||wv.ti!==7) return;
+    if(wv._diveT>0) wv._diveT-=dt;
+    wv.diveCd=(wv.diveCd||3+Math.random()*2)-dt;
+    if(wv.diveCd>0) return;
+    wv.diveCd=5.0;
+    wv._diveT=1.2;
+    if(G.towers.length){
+      const tw=G.towers[Math.floor(Math.random()*G.towers.length)];
+      tw._stunT=3.0;
+      G.particles.push({x:tw.col*CS+CS/2,y:tw.row*CS,txt:'💫 หยุดทำงาน!',col:'#ff8a65',life:1.1,vy:-1.0,vx:0,decay:1.2,scale:.9});
+    }
+    G.particles.push({x:wv.x,y:wv.y-ESIZES[7]-14,txt:'🐉 โฉบ!',col:'#ff8a65',life:1.0,vy:-1.4,vx:0,decay:1.2,scale:1});
+  });
   // Gold Mine production (endgame)
   G.towers.forEach(tw=>{
     if(!TGOLDMINE[tw.type]) return;
@@ -2028,6 +2089,7 @@ function updateEg(dt){
     }
   });
   G.towers.forEach(tw=>{
+    if(tw._stunT>0){tw._stunT-=dt;return;} // 🐉 ถูกวิเวิร์นโฉบหยุดทำงาน
     if(CFG.t_dmg[tw.type]===0) return;
     if(G.weather&&G.weather.struckTowers&&G.weather.struckTowers.length&&G.weather.struckTowers.includes(tw)) return;
     tw.cd=Math.max(0,tw.cd-dt);

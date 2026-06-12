@@ -15,7 +15,7 @@ Design rationale for the 11 monster types. For raw numbers, see
 | 4 | บอส (Boss) | 👹 | Boss | High HP, stage-dependent skills |
 | 5 | โกเลม (Golem) | 🪨 | Tank | High HP, slow |
 | 6 | ค้างคาว (Bat) | 🦇 | Flying swarm | Lowest HP/reward, fast flyer |
-| 7 | วิเวิร์น (Wyvern) | 🐉 | Flying tank | High HP flyer |
+| 7 | วิเวิร์น (Wyvern) | 🐉 | Flying tank / Disruptor | High HP flyer; periodically dive-bombs, gaining 1.5× speed for 1.2s and stunning 1 random tower for 3s |
 | 8 | ชิลด์ไนท์ (Shield Knight) | 🛡️ | Shielded | 80 shield HP — needs pierce |
 | 9 | จอมมาร (Demon Lord) | 👁️ | Final boss | 250 shield HP, highest HP overall |
 | 10 | หมอผี (Shaman) | 🧙 | Support/healer | Heals nearby allies 18% of base HP periodically |
@@ -37,6 +37,13 @@ Design rationale for the 11 monster types. For raw numbers, see
   farming it trivializes the gold economy (see Roadmap).
 - **Drain (Shadow)**: disables synergies on nearby towers for a duration —
   a soft "tower denial" mechanic, distinct from raw HP/speed pressure.
+- **Disruptor (Wyvern)**: every ~5s (with initial random offset), dives —
+  moves at 1.5× speed for 1.2s and stuns 1 random placed tower for 3s
+  (stunned tower cannot acquire targets or fire, shown with an orange
+  pulsing overlay + 💫 icon). Rewards spreading tower coverage so a single
+  stunned tower doesn't open a gap, and punishes over-reliance on one
+  high-value tower. Implemented in both story and endgame loops
+  (`js/game.js`, `_diveT`/`_stunT`/`diveCd`).
 - **Splitter (Skeleton)**: on death (if not already a split child), spawns 2
   smaller skeletons at 40% of its current max HP and reward each (combined
   80% — reward/HP ratio unchanged at ~0.133). Split children render at 0.65×

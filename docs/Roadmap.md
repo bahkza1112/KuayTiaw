@@ -117,6 +117,15 @@ AoE towers (Cannon/Magic/Thunder) for cleaning up the spawned children. See
 [EnemyDesign.md](EnemyDesign.md) and [BalanceSheet.md](BalanceSheet.md#skeleton-splitter-v170)
 for details.
 
+✅ **Wyvern Dive Bomb** (v1.7.4) — Wyvern (🐉) now periodically (~every 5s,
+randomized first trigger) dives: moves at 1.5× speed for 1.2s and stuns 1
+random placed tower for 3s (stunned tower cannot acquire targets or fire,
+shown with a pulsing orange overlay + 💫 icon). Gives the previously
+"flying tank, no special" Wyvern a distinct Disruptor identity and rewards
+spreading tower coverage so no single stunned tower opens a path gap.
+Implemented in both story and endgame combat loops. See
+[EnemyDesign.md](EnemyDesign.md#design-intent-per-archetype) for details.
+
 ## Economy (PATCH-level)
 
 ✅ **Awaken cost re-tuning** (v1.7.3) — flat Awaken cost 300 → 350 gold for
