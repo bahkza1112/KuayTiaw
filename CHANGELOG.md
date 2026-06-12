@@ -2,6 +2,32 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.9.2 — Stage Enemy Roster Rebalance
+
+### Changed
+- **Reworked `enemyTypes` for Stages 1-10** so every listed type is actually
+  reachable by `startWave()`'s spawn formula
+  (`maxIdx=min(avail.length-1, ceil(wave/2)-1)`), and each stage uses at most
+  7 types (most use 4-6):
+  - **Desert Crossing** (s3): `[0,1,2,5,6]` → `[0,1,5,6]` — Bat (signature
+    enemy) is now actually reachable.
+  - **Treasure Valley** (s4): `[0,1,2,3,5,6]` → `[0,1,3,6]` — Bat Swarm
+    (story focus) now reachable.
+  - **Thunder Cave** (s5): `[0,1,2,3,5,6]` → `[0,2,3,5,6]`.
+  - **Cursed Swamp** (s6): `[0,1,2,3,4,5,6]` → `[2,3,4,5,6]` — drops
+    Goblin/Skeleton, adds Golem/Bat to reachable pool.
+  - **Dark Fortress** (s7): `[0,1,2,3,4,5,6,7,8]` → `[3,5,6,4,7,8]` — Wyvern
+    and Shield Knight (signature enemies) now reachable.
+  - **Dark Throne** (s8): `[0,1,2,3,4,5,6,10]` → `[2,3,5,6,4,10]` — Shaman
+    (signature healer) now reachable.
+  - **Dark Tower Summit** (s9): `[0,1,2,3,4,5,6,7,8,9,10]` →
+    `[5,6,7,8,4,9]` — drops Goblin/Skeleton/Shadow/Fire Spirit/Shaman,
+    keeping a high-tier roster (Golem/Bat/Wyvern/Shield Knight/Boss/Demon
+    Lord) fitting the "final army" stage.
+  - Stages 0-2 unchanged (already within limits). Stage 11 (Shadow Remnant)
+    intentionally keeps the full 11-type roster as its "every monster
+    returns" theme.
+
 ## v1.9.1 — Shadow Remnant Balance Fix
 
 ### Fixed

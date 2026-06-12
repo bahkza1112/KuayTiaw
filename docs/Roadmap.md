@@ -28,6 +28,15 @@ tower. File: `js/game.js` (`DEFAULT_CFG.t_dmg`).
 from 0.257 to 0.171, in line with other units (~0.13–0.15) while still
 rewarding priority kills. File: `js/game.js` (`DEFAULT_CFG.m_rew`).
 
+✅ **Stage enemy roster rebalance** (v1.9.2) — reworked `enemyTypes` for
+Stages 1-10 so every listed type is actually reachable by `startWave()`'s
+spawn formula, capped at ≤7 types per stage (mostly 4-6). High-difficulty
+stages (Dark Fortress, Dark Throne, Dark Tower Summit) drop low-tier
+Goblin/Skeleton in favor of their signature higher-tier enemies (Wyvern,
+Shield Knight, Shaman, Demon Lord). Stage 11 keeps its full 11-type roster
+as the intentional "every monster returns" exception. File: `js/game.js`
+(`STAGES[1..9].enemyTypes`).
+
 > See [BalanceSheet.md](BalanceSheet.md) for full current numbers and
 > derivations.
 
