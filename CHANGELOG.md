@@ -2,6 +2,23 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.9.3 — Enemy Order by HP (Smooth Curve Fix)
+
+### Fixed
+- **Stages 3-9 `enemyTypes` reordered by ascending HP** (Bat 35 → Goblin 55
+  → Shaman 58 → Skeleton 75 → Shadow 105 → Shield Knight 129 → Fire Spirit
+  144 → Wyvern 160 → Golem 236, with Boss 380 / Demon Lord 900 last since
+  they spawn via separate wave-gated overrides regardless of position).
+  The v1.9.2 rework had ordered some stages by "theme" rather than HP,
+  putting tanky enemies like Golem (236 HP) in wave 1 of stages where
+  starting defenses can't handle them yet. Now wave 1 of every stage spawns
+  only its lowest-HP type, and each stage's signature enemy (Shield
+  Knight/Shaman/Wyvern/etc.) still appears mid-to-late as intended. File:
+  `js/game.js` (`STAGES[3..9].enemyTypes`).
+- Updated Stage 10 (Dark Tower Summit) intro cutscene — replaced a mention
+  of "โกบลิน" (no longer in this stage's roster) with "ค้างคาว" (Bat, which
+  is). File: `js/ui.js` (`CUTSCENES[9]`).
+
 ## v1.9.2 — Stage Enemy Roster Rebalance
 
 ### Changed
