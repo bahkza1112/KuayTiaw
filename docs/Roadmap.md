@@ -117,15 +117,11 @@ AoE towers (Cannon/Magic/Thunder) for cleaning up the spawned children. See
 [EnemyDesign.md](EnemyDesign.md) and [BalanceSheet.md](BalanceSheet.md#skeleton-splitter-v170)
 for details.
 
-## Pending Discussion
-
-🟡 **Awaken cost re-tuning** — the flat 300-gold Awaken cost (all tower
-types) may be underpriced relative to the new per-type Awaken effects added
-in v1.6.9 (e.g. Thunder chain 2→4, Support's double-boost). Decision: wait
-for playtest feedback on v1.6.9/v1.7.0/v1.7.2 before adjusting; if needed,
-move to a per-type Awaken cost rather than a flat increase.
-
 ## Economy (PATCH-level)
+
+✅ **Awaken cost re-tuning** (v1.7.3) — flat Awaken cost 300 → 350 gold for
+all tower types, re-tuned given the per-type Awaken effects added in v1.6.9
+(e.g. Thunder chain 2→4, Support's double-boost). (`js/tower.js`)
 
 ✅ **Gold reward rounding** (v1.7.2) — `m_rew` rounded to nearest 5 (Goblin
 8→10, Fire Spirit 18→20, Golem 28→30, Shield Knight 28→30, Shaman 12→10).

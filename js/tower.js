@@ -640,7 +640,7 @@ function showTowerPopup(tw,px,py){
   const rngVal=getTowerRange(tw.type,tw.rngLv).toFixed(1);
   const rateVal=CFG.t_rate[tw.type]===0?'—':getTowerRate(tw.type,tw.rateLv).toFixed(1);
   const dpsVal=(CFG.t_dmg[tw.type]!==0&&CFG.t_rate[tw.type]!==0)?(dmgVal*parseFloat(rateVal)).toFixed(1):null;
-  const canAwaken=tw.lv>=5&&!tw.awakened&&G.gold>=300;
+  const canAwaken=tw.lv>=5&&!tw.awakened&&G.gold>=350;
   const showAwakenBtn=tw.lv>=5&&!tw.awakened;
   const activeSyn=getActiveSynergies(tw.type,tw.col,tw.row);
   const _synBonusTxt=s=>s.effect==='dmg'?`+${Math.round(s.mult*100)}% dmg`:s.effect==='gold'?`+${Math.round(s.amount*100)}% ทอง`:s.effect==='slow'?`+${Math.round(s.amount*100)}% หน่วงเหนี่ยว`:'';
@@ -670,7 +670,7 @@ function showTowerPopup(tw,px,py){
   <div class="tp-btns">
     ${showAwakenBtn?
       `<button class="tp-upbtn" ${canAwaken?'':'disabled'} onclick="awakenTowerFromPopup()" style="background:${canAwaken?'linear-gradient(180deg,#ffe234,#ff9800)':''};color:${canAwaken?'#6d2900':''};">
-        ⚡ Awaken<br><small>💰300</small>
+        ⚡ Awaken<br><small>💰350</small>
       </button>`
       : tw.lv>=5 ?
       `<button class="tp-upbtn" disabled>🔝 MAX</button>`
@@ -772,8 +772,8 @@ function awakenTowerFromPopup(){
   const tw=_popupTw;
   if(tw.awakened){showToast('⚡ อเวคแล้ว!');return;}
   if(tw.lv<5){showToast('⚡ ต้องอัพป้อมเป็น Lv.5 ก่อนถึงจะ Awaken ได้!');return;}
-  if(G.gold<300){showToast('💰 ต้องการ 300 ทอง!');hideTowerPopup();return;}
-  G.gold-=300; tw.awakened=true;
+  if(G.gold<350){showToast('💰 ต้องการ 350 ทอง!');hideTowerPopup();return;}
+  G.gold-=350; tw.awakened=true;
   tw.spawnAnim=0.8;
   const ax=tw.col*CS+CS/2, ay=tw.row*CS+CS/2;
   // FX — golden burst

@@ -2,6 +2,19 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.7.3 — Awaken Cost Increase
+
+### Changed
+- **Awaken cost**: flat 300 → 350 gold for all tower types
+  (`js/tower.js`: `canAwaken` threshold, popup button label, and
+  `awakenTowerFromPopup` gold check/deduction).
+
+### Notes
+- Re-tunes the Awaken cost upward given the per-type Awaken effects added in
+  v1.6.9 (e.g. Thunder chain 2→4, Support's double-boost). Verified
+  in-browser: all three references (`canAwaken`, button label, deduction)
+  consistently read 350, no console errors.
+
 ## v1.7.2 — Gold Reward Rounding
 
 ### Changed
