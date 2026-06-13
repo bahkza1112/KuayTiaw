@@ -2,7 +2,7 @@
 <html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Tower Quest 🏰 v1.9.20</title>
+<title>Tower Quest 🏰 v1.10.0</title>
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -43,7 +43,7 @@
   <div class="island">🏰</div>
   <div class="gtitle">TOWER QUEST</div>
   <div class="gsub">⚔️ Defend Your Kingdom!</div>
-  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v1.9.20 — What's New<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
+  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v1.10.0 — What's New<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
 
   <!-- battle buttons -->
   <button class="bbattle" id="startBtn">⚔️ Story Mode</button>
@@ -260,8 +260,9 @@
     <div class="huditem"><span class="stage-badge" id="stageBadge">S1</span></div>
     <div class="weather-hud" id="weatherHud"></div>
     <button class="pausebtn" id="pauseBtn">⏸</button>
-    <button class="speedbtn" id="speedBtn">1×</button>
-    <button class="speedbtn" id="sfxBtn" onclick="toggleSfx()" title="เปิด/ปิดเสียง">🔊</button>
+    <button class="speedbtn" id="speedBtn" style="display:none;">1×</button>
+    <button class="speedbtn" id="sfxBtn" onclick="toggleSfx()" style="display:none;" title="เปิด/ปิดเสียง">🔊</button>
+    <button class="pausebtn" id="settingsBtn" title="ตั้งค่า">⚙</button>
     <button class="devbtn" id="devIngameBtn">🔧</button>
     <button class="surrender-btn" id="surrenderBtn" style="display:none" onclick="surrender()">🏳 Surrender</button>
   </div>
@@ -278,6 +279,7 @@
       <div class="wave-preview-enemies" id="wavePreviewEnemies"></div>
     </div>
     <div class="range-info" id="rangeInfo"></div>
+    <div id="dragGhost"></div>
     <div class="tpanel">
       <div style="display:flex;gap:5px;flex:1;flex-wrap:wrap;">
         <div class="tbtn" id="tb0" onclick="selTower(0)"><div class="ticon">💣</div><div>Cannon</div><div class="tcost" id="tc0">💰50</div></div>
@@ -338,6 +340,16 @@
       <button class="obtn" onclick="togglePause()">▶ Resume</button>
       <button class="obtn" style="background:linear-gradient(180deg,#66bb6a,#2e7d32);color:#fff;" onclick="pausedRestart()">🔄 Restart</button>
       <button class="obtn sec" onclick="goStageSelect()">🗺️ Select Stage</button>
+    </div>
+  </div>
+  <div class="pausescreen" id="settingsScreen">
+    <div class="obox">
+      <h2>⚙ Settings</h2>
+      <div class="settings-row"><span>⚡ Speed</span><button class="speedbtn" id="settSpeedBtn">1×</button></div>
+      <div class="settings-row"><span>🔊 เสียง</span><button class="speedbtn" id="settSfxBtn">🔊</button></div>
+      <div class="settings-row"><span>🔉 ระดับเสียง</span><input type="range" id="settVolSlider" min="0" max="100" value="35"></div>
+      <div class="settings-row"><span>🔁 Auto Wave</span><button class="autobtn" id="settAutoBtn">🔁 Auto</button></div>
+      <button class="obtn" onclick="closeSettings()">✔ Close</button>
     </div>
   </div>
   <div class="toast" id="toast"></div>

@@ -308,9 +308,10 @@ function initGame(){
   document.getElementById('stageBadge').textContent='S'+(s.id+1)+' '+s.icon;
   // BUG FIX: reset selTwr highlight on restart
   for(let i=0;i<8;i++){const b=document.getElementById('tb'+i);if(b)b.classList.remove('sel','locked-tower');}
-  paused=false;speed=1;autoWave=false;
+  paused=false;speed=1;autoWave=false;_settingsPausedGame=false;
   document.getElementById('speedBtn').textContent='1×';
   document.getElementById('pauseBtn').textContent='⏸';
+  document.getElementById('settingsScreen').style.display='none';
   const ab=document.getElementById('autoBtn');if(ab){ab.classList.remove('on');ab.textContent='🔁 Auto';}
   updateTowerPanel();
   updateHUD();
@@ -367,6 +368,22 @@ function pausedRestart(){
   paused=false;
   document.getElementById('pauseScreen').style.display='none';
   restartGame();
+}
+let _settingsPausedGame=false;
+function openSettings(){
+  if(!G||G.over||G.win||document.getElementById('pauseScreen').style.display==='flex') return;
+  if(!paused){paused=true;document.getElementById('pauseBtn').textContent='▶';_settingsPausedGame=true;}
+  else _settingsPausedGame=false;
+  document.getElementById('settSpeedBtn').textContent=speed+'×';
+  document.getElementById('settSfxBtn').textContent=_sfxOn?'🔊':'🔇';
+  document.getElementById('settVolSlider').value=Math.round(_sfxVol*100);
+  document.getElementById('settAutoBtn').classList.toggle('on',autoWave);
+  document.getElementById('settAutoBtn').textContent=autoWave?'🔁 Auto ON':'🔁 Auto';
+  document.getElementById('settingsScreen').style.display='flex';
+}
+function closeSettings(){
+  document.getElementById('settingsScreen').style.display='none';
+  if(_settingsPausedGame){paused=false;document.getElementById('pauseBtn').textContent='⏸';_settingsPausedGame=false;}
 }
 function updateTowerPanel(){
   const active=selectedTowersForStage.length>0?selectedTowersForStage:(currentStage.unlockedTowers||[0,1,2,3,4,5,6,7]);
@@ -1177,13 +1194,15 @@ function render(){
       });
     }
   }
-  // path arrows
+  // path arrows — animated flow pulse for readability
+  const _flowT=Date.now()*.0015;
   for(let i=0;i<currentPath.length-1;i++){
     const a=currentPath[i],b=currentPath[i+1];
+    const pulse=.55+.35*Math.sin(_flowT-i*.6);
     ctx.save();
     ctx.translate((a[0]+b[0])/2*CS+CS/2,(a[1]+b[1])/2*CS+CS/2);
     ctx.rotate(Math.atan2(b[1]-a[1],b[0]-a[0]));
-    ctx.font='bold 12px Arial';ctx.fillStyle='rgba(255,255,255,.42)';
+    ctx.font='bold 13px Arial';ctx.fillStyle='rgba(255,255,255,'+pulse+')';
     ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillText('▶',0,0);ctx.restore();
   }
@@ -1226,14 +1245,18 @@ function render(){
     ctx.setLineDash([]);ctx.globalAlpha=1;
   }
   // tower ghost
-  if(G.selTwr>=0&&G.mx>=0&&G.my>=0){
+  if(G.selTwr>=0&&G.mx>=0&&G.my>=0&&G.mx<COLS&&G.my<ROWS){
     const mc=G.mx,mr=G.my;
     const ok=!currentPset.has(mc+','+mr)&&!G.towers.find(t=>t.col===mc&&t.row===mr);
     ctx.globalAlpha=.35;ctx.fillStyle=ok?TCOLORS[G.selTwr]:'#f44336';
     ctx.fillRect(mc*CS,mr*CS,CS,CS);
-    ctx.globalAlpha=.1;ctx.fillStyle=TCOLORS[G.selTwr];
-    ctx.beginPath();ctx.arc(mc*CS+CS/2,mr*CS+CS/2,CFG.t_rng[G.selTwr]*CS,0,Math.PI*2);ctx.fill();
-    ctx.globalAlpha=1;
+    const gx=mc*CS+CS/2, gy=mr*CS+CS/2, grang=getTowerRange(G.selTwr,1)*CS;
+    ctx.globalAlpha=.12;ctx.fillStyle=TACCENT[G.selTwr];
+    ctx.beginPath();ctx.arc(gx,gy,grang,0,Math.PI*2);ctx.fill();
+    ctx.globalAlpha=.6;ctx.strokeStyle=TACCENT[G.selTwr];ctx.lineWidth=1.5;
+    ctx.setLineDash([4,3]);
+    ctx.beginPath();ctx.arc(gx,gy,grang,0,Math.PI*2);ctx.stroke();
+    ctx.setLineDash([]);ctx.globalAlpha=1;
   }
   // muzzle flashes
   G.fxFlash.forEach(f=>{
@@ -1855,6 +1878,28 @@ function _onCvTouchStart(e){
   // ป้องกัน browser scroll / zoom เมื่อ touch บน canvas
   if(e.cancelable) e.preventDefault();
 }
+/* shared placement logic — used by click-to-place and drag-to-place */
+function tryPlaceTower(type,col,row){
+  if(!G||G.over||G.win||paused) return false;
+  if(col<0||col>=COLS||row<0||row>=ROWS) return false;
+  if(currentPset.has(col+','+row)){showToast('❌ สร้างบนเส้นทางไม่ได้!');return false;}
+  if(G.towers.find(t=>t.col===col&&t.row===row)){showToast('❌ ช่องนี้มีป้อมอยู่แล้ว!');return false;}
+  if(G.gold<CFG.t_cost[type]){showToast('💰 ต้องการ '+CFG.t_cost[type]+' ทอง!');return false;}
+  G.gold-=CFG.t_cost[type];
+  G.towers.push({col,row,type,lv:1,dmgLv:1,rngLv:1,rateLv:1,cd:0,angle:0,spawnAnim:1.0,rune:-1,awakened:false});
+  // FX: ring pulse + burst particles
+  const bx=col*CS+CS/2, by=row*CS+CS/2;
+  G.fxRings.push({x:bx,y:by,r:0,maxR:CS*1.6,life:1,col:TACCENT[type],lw:3});
+  G.fxRings.push({x:bx,y:by,r:0,maxR:CS*1.1,life:1,col:'#fff',lw:1.5,delay:.08});
+  for(let k=0;k<10;k++){
+    const ang=k/10*Math.PI*2, spd=1.5+Math.random()*1.5;
+    G.particles.push({x:bx,y:by,txt:'●',col:TACCENT[type],
+      life:.8,vy:Math.sin(ang)*spd,vx:Math.cos(ang)*spd,decay:2.2});
+  }
+  addParticle(col*CS+CS/2,row*CS+CS/2,'✅ สร้างแล้ว!','#ffe234');
+  updateHUD();
+  return true;
+}
 function onCanvasClick(e){
   if(!G||G.over||G.win||paused) return;
   const rect=cv.getBoundingClientRect();
@@ -1863,22 +1908,7 @@ function onCanvasClick(e){
   if(col<0||col>=COLS||row<0||row>=ROWS) return;
   G.selTowerInfo=null; hideTowerPopup(); // deselect range on any click
   if(G.selTwr>=0){
-    if(currentPset.has(col+','+row)){showToast('❌ สร้างบนเส้นทางไม่ได้!');return;}
-    if(G.towers.find(t=>t.col===col&&t.row===row)){showToast('❌ ช่องนี้มีป้อมอยู่แล้ว!');return;}
-    if(G.gold<CFG.t_cost[G.selTwr]){showToast('💰 ต้องการ '+CFG.t_cost[G.selTwr]+' ทอง!');return;}
-    G.gold-=CFG.t_cost[G.selTwr];
-    G.towers.push({col,row,type:G.selTwr,lv:1,dmgLv:1,rngLv:1,rateLv:1,cd:0,angle:0,spawnAnim:1.0,rune:-1,awakened:false});
-    // FX: ring pulse + burst particles
-    const bx=col*CS+CS/2, by=row*CS+CS/2;
-    G.fxRings.push({x:bx,y:by,r:0,maxR:CS*1.6,life:1,col:TACCENT[G.selTwr],lw:3});
-    G.fxRings.push({x:bx,y:by,r:0,maxR:CS*1.1,life:1,col:'#fff',lw:1.5,delay:.08});
-    for(let k=0;k<10;k++){
-      const ang=k/10*Math.PI*2, spd=1.5+Math.random()*1.5;
-      G.particles.push({x:bx,y:by,txt:'●',col:TACCENT[G.selTwr],
-        life:.8,vy:Math.sin(ang)*spd,vx:Math.cos(ang)*spd,decay:2.2});
-    }
-    addParticle(col*CS+CS/2,row*CS+CS/2,'✅ สร้างแล้ว!','#ffe234');
-    updateHUD();
+    tryPlaceTower(G.selTwr,col,row);
   } else {
     const tw=G.towers.find(t=>t.col===col&&t.row===row);
     if(tw){
@@ -1896,6 +1926,19 @@ function onCanvasMove(e){
   const rect=cv.getBoundingClientRect();
   G.mx=Math.floor((e.clientX-rect.left)*cv.width/rect.width/CS);
   G.my=Math.floor((e.clientY-rect.top)*cv.height/rect.height/CS);
+  const info=document.getElementById('rangeInfo');
+  if(info){
+    if(G.selTwr>=0&&!G.over&&!G.win&&!paused){
+      const t=G.selTwr;
+      info.innerHTML=TICONS[t]+' '+TNAMES[t]+'<br>🎯 ระยะ '+getTowerRange(t,1).toFixed(1)+' | ⚔️ '+Math.round(getTowerDmg(t,1))+' | 💰 '+CFG.t_cost[t];
+      const gpRect=document.getElementById('gp').getBoundingClientRect();
+      info.style.left=(e.clientX-gpRect.left+14)+'px';
+      info.style.top=(e.clientY-gpRect.top-10)+'px';
+      info.style.display='block';
+    } else {
+      info.style.display='none';
+    }
+  }
 }
 function onCanvasHoldStart(e){
   if(!G||G.over||G.win||paused||G.selTwr>=0) return;
@@ -1939,6 +1982,61 @@ function onCanvasHoldEnd(e){
   if(holdTimer){clearTimeout(holdTimer);holdTimer=null;}
   holdTower=null;
   document.getElementById('sellTooltip').style.display='none';
+  if(e&&e.type==='pointerleave'){const info=document.getElementById('rangeInfo');if(info)info.style.display='none';}
+}
+
+/* ══ DRAG-TO-PLACE ══ */
+let _dragTwr=-1,_dragging=false,_dragSX=0,_dragSY=0;
+function onTbtnPointerDown(e,i){
+  if(!G||G.over||G.win||paused) return;
+  if(!currentStage.unlockedTowers.includes(i)) return;
+  _dragTwr=i; _dragging=false;
+  _dragSX=e.clientX; _dragSY=e.clientY;
+  document.addEventListener('pointermove',_onDragMove);
+  document.addEventListener('pointerup',_onDragUp);
+}
+function _onDragMove(e){
+  if(_dragTwr<0) return;
+  if(!_dragging&&Math.hypot(e.clientX-_dragSX,e.clientY-_dragSY)>10){
+    _dragging=true;
+    G.selTwr=_dragTwr;
+    for(let j=0;j<8;j++){const b=document.getElementById('tb'+j);if(b)b.classList.toggle('sel',j===_dragTwr);}
+    const ghost=document.getElementById('dragGhost');
+    ghost.textContent=TICONS[_dragTwr]; ghost.style.display='flex';
+  }
+  if(!_dragging) return;
+  e.preventDefault();
+  const ghost=document.getElementById('dragGhost');
+  ghost.style.left=e.clientX+'px'; ghost.style.top=e.clientY+'px';
+  if(!cv) return;
+  const rect=cv.getBoundingClientRect();
+  if(e.clientX>=rect.left&&e.clientX<=rect.right&&e.clientY>=rect.top&&e.clientY<=rect.bottom){
+    G.mx=Math.floor((e.clientX-rect.left)*cv.width/rect.width/CS);
+    G.my=Math.floor((e.clientY-rect.top)*cv.height/rect.height/CS);
+    onCanvasMove(e);
+  } else {
+    G.mx=-1; G.my=-1;
+    const info=document.getElementById('rangeInfo'); if(info) info.style.display='none';
+  }
+}
+function _onDragUp(e){
+  document.removeEventListener('pointermove',_onDragMove);
+  document.removeEventListener('pointerup',_onDragUp);
+  if(_dragging){
+    if(cv&&G){
+      const rect=cv.getBoundingClientRect();
+      if(e.clientX>=rect.left&&e.clientX<=rect.right&&e.clientY>=rect.top&&e.clientY<=rect.bottom){
+        const col=Math.floor((e.clientX-rect.left)*cv.width/rect.width/CS);
+        const row=Math.floor((e.clientY-rect.top)*cv.height/rect.height/CS);
+        tryPlaceTower(_dragTwr,col,row);
+      }
+    }
+    document.getElementById('dragGhost').style.display='none';
+    const info=document.getElementById('rangeInfo'); if(info) info.style.display='none';
+    if(G){G.selTwr=-1; G.mx=-1; G.my=-1;}
+    for(let j=0;j<8;j++){const b=document.getElementById('tb'+j);if(b)b.classList.remove('sel');}
+  }
+  _dragTwr=-1; _dragging=false;
 }
 
 /* ══ ENDGAME MENU ══ */
@@ -2016,9 +2114,10 @@ function initEgGame(){
   document.getElementById('stageBadge').textContent='🔥 Round '+(egRound+1);
   document.getElementById('stageBadge').className='eg-round-badge';
   for(let i=0;i<8;i++){const b=document.getElementById('tb'+i);if(b){b.classList.remove('sel','locked-tower');const c=document.getElementById('tc'+i);if(c)c.textContent='💰'+CFG.t_cost[i];}}
-  paused=false; speed=1; autoWave=false;
+  paused=false; speed=1; autoWave=false; _settingsPausedGame=false;
   document.getElementById('speedBtn').textContent='1×';
   document.getElementById('pauseBtn').textContent='⏸';
+  document.getElementById('settingsScreen').style.display='none';
   const ab=document.getElementById('autoBtn');if(ab){ab.classList.remove('on');ab.textContent='🔁 Auto';}
   updateHUD();
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}

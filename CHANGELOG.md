@@ -2,6 +2,35 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.10.0 — Tower Placement UX + Settings Menu
+
+### Added
+- **Drag-to-place towers** (`js/game.js`, `js/ui.js`, `Tower Quest 🏰.html`,
+  `css/main.css`): pointer-based drag from a `.tbtn` tower button onto the
+  canvas places the tower at drop, as an alternative to the existing
+  click-select-then-click-place flow. A floating `#dragGhost` icon follows
+  the cursor during the drag. New shared `tryPlaceTower(type,col,row)`
+  helper extracted from `onCanvasClick` is used by both flows.
+- **Consolidated Settings overlay** (`Tower Quest 🏰.html`, `css/main.css`,
+  `js/game.js`, `js/ui.js`): new ⚙ button opens a `#settingsScreen` overlay
+  combining game speed (1x/2x/3x), SFX on/off, SFX volume slider, and
+  Auto Wave toggle. The old `#speedBtn`/`#sfxBtn` HUD buttons are now
+  hidden (still updated for state-sync) in favor of this single menu.
+  Opening Settings auto-pauses gameplay (`openSettings`/`closeSettings`,
+  `_settingsPausedGame` flag) if not already paused.
+
+### Changed
+- **Tower placement range preview** (`js/game.js` `render()`): the
+  placement-ghost range circle now uses the same dashed-ring style as the
+  selected-tower range ring (previously a faint unbordered fill), for
+  visual consistency.
+- **`#rangeInfo` wired up** (`js/game.js` `onCanvasMove`): previously a
+  dead HTML element, now shows the selected tower type's range/damage/cost
+  near the cursor while placing.
+- **Path direction arrows** (`js/game.js` `render()`): increased base
+  opacity and added a subtle per-arrow pulse animation so the enemy path
+  direction reads more clearly during gameplay.
+
 ## v1.9.20 — Endless Mode Demon Lord Shield Cap Fix
 
 ### Changed

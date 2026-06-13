@@ -1,6 +1,12 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='1.9.20';
+const GAME_VERSION='1.10.0';
 const PATCH_NOTES=[
+  {ver:'1.10.0',date:'2026-06-13',title:'🎮 ปรับปรุง UX การวางป้อม + เมนูตั้งค่า',notes:[
+    'ตอนเลือกป้อมเพื่อวาง จะเห็นวงแหวนระยะยิงชัดเจนขึ้น พร้อมป้ายแสดงระยะ/ดาเมจ/ราคา',
+    'ลากไอคอนป้อมจากแถบด้านล่างไปวางบนกริดได้โดยตรง (drag-to-place)',
+    'เส้นทางเดินของศัตรูมีลูกศรเรืองแสงไหลเป็นจังหวะ มองเห็นทิศทางง่ายขึ้น',
+    'เพิ่มเมนู ⚙ ตั้งค่า รวมปุ่มความเร็วเกม / เปิด-ปิดเสียง / ระดับเสียง / Auto Wave ไว้ที่เดียว'
+  ]},
   {ver:'1.9.20',date:'2026-06-13',title:'⚖️ แก้ชิลด์จอมมารใน Endless Mode',notes:[
     'จอมมาร (Demon Lord) ในรอบหลังๆของ Endless Mode มีชิลด์ที่คุ้มทองมากขึ้น ไม่ลดต่อเนื่องเหมือนเดิม'
   ]},
@@ -627,6 +633,7 @@ function selTower(i){
   if(!currentStage.unlockedTowers.includes(i)){showToast('🔒 ยังไม่ได้ปลดล็อค!');return;}
   G.selTwr=(G.selTwr===i)?-1:i;
   for(let j=0;j<8;j++){const b=document.getElementById('tb'+j);if(b)b.classList.toggle('sel',j===G.selTwr);}
+  if(G.selTwr<0){const info=document.getElementById('rangeInfo');if(info)info.style.display='none';}
 }
 
 /* ══ HUD / UTILS ══ */
@@ -1397,6 +1404,28 @@ document.getElementById('speedBtn').addEventListener('click',function(){
   speed=speed===1?2:speed===2?3:1;
   this.textContent=speed+'×';
 });
+document.getElementById('settingsBtn').addEventListener('click',openSettings);
+document.getElementById('settSpeedBtn').addEventListener('click',function(){
+  speed=speed===1?2:speed===2?3:1;
+  this.textContent=speed+'×';
+  document.getElementById('speedBtn').textContent=speed+'×';
+});
+document.getElementById('settSfxBtn').addEventListener('click',function(){
+  toggleSfx();
+  this.textContent=_sfxOn?'🔊':'🔇';
+});
+document.getElementById('settVolSlider').addEventListener('input',function(){
+  _sfxVol=this.value/100;
+});
+document.getElementById('settAutoBtn').addEventListener('click',function(){
+  toggleAutoWave();
+  this.classList.toggle('on',autoWave);
+  this.textContent=autoWave?'🔁 Auto ON':'🔁 Auto';
+});
+for(let _i=0;_i<8;_i++){
+  const _tb=document.getElementById('tb'+_i);
+  if(_tb) _tb.addEventListener('pointerdown',(e)=>onTbtnPointerDown(e,_i));
+}
 document.getElementById('devIngameBtn').addEventListener('click',()=>{if(!G||G.over||G.win)return;openDev(false);});
 document.getElementById('devNavBtn').addEventListener('click',()=>openDev(true));
 document.getElementById('devCloseBtn').addEventListener('click',closeDev);
