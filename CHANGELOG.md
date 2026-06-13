@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.9.11 — Custom Bottom-Nav Icons
+
+### Changed
+- Replaced the emoji icons in `#mm`'s `.bottom-nav` (Endgame/Story/Codex/
+  Rankings/Dev) with hand-drawn inline SVG line icons (`.bnav-ico`,
+  `css/main.css`) — flame, crossed swords, book, trophy, and wrench —
+  using `stroke="currentColor"` so they follow the existing
+  `.bnav`/`.bnav.active` color states.
+- Active tab icons get a soft gold glow (`drop-shadow`) to match the
+  rest of the menu's glow language.
+
 ## v1.9.10 — Main Menu Visual Polish
 
 ### Changed

@@ -42,6 +42,9 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .bnav{color:#aaa;font-size:11px;text-align:center;cursor:pointer;transition:color .2s;}
 .bnav:hover,.bnav.active{color:#ffe082;}
 .bnav span{font-size:22px;display:block;margin-bottom:2px;}
+.bnav span.bnav-ico{display:flex;justify-content:center;align-items:center;margin-bottom:3px;filter:drop-shadow(0 0 4px rgba(0,0,0,.35));}
+.bnav span.bnav-ico svg{width:22px;height:22px;}
+.bnav.active span.bnav-ico svg{filter:drop-shadow(0 0 6px rgba(255,224,130,.6));}
 /* STAGE SELECT */
 #stagesel{display:none;background:linear-gradient(160deg,#0d1f0d 0%,#1a3a1a 100%);min-height:600px;border-radius:16px;flex-direction:column;overflow:hidden;}
 .ss-header{background:rgba(0,0,0,.6);border-bottom:2px solid #4caf50;padding:12px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
