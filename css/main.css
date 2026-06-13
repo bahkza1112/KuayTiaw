@@ -224,7 +224,11 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .cs-stage-label.show{opacity:1;}
 .cs-icon-wrap{font-size:64px;margin-bottom:12px;filter:drop-shadow(0 4px 20px rgba(0,0,0,.8));
   transform:scale(.8);opacity:0;transition:all .6s cubic-bezier(.34,1.56,.64,1);}
-.cs-icon-wrap.show{transform:scale(1);opacity:1;}
+.cs-icon-wrap.show{transform:scale(1);opacity:1;animation:csIconGlow 3s ease-in-out .6s infinite;}
+@keyframes csIconGlow{
+  0%,100%{filter:drop-shadow(0 4px 20px rgba(0,0,0,.8)) drop-shadow(0 0 0 rgba(255,224,130,0));}
+  50%{filter:drop-shadow(0 4px 20px rgba(0,0,0,.8)) drop-shadow(0 0 18px rgba(255,224,130,.45));}
+}
 .cs-title{font-size:28px;font-weight:900;color:#fff;text-align:center;
   text-shadow:2px 2px 0 rgba(0,0,0,.8);margin-bottom:16px;
   transform:translateY(20px);opacity:0;transition:all .5s .1s;}
@@ -233,6 +237,7 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .cs-dialogue{background:rgba(0,0,0,.75);border:1px solid rgba(255,255,255,.15);
   border-radius:14px;padding:16px 20px;margin:0 20px 16px;width:calc(100% - 40px);
   max-width:480px;backdrop-filter:blur(4px);
+  box-shadow:0 0 24px rgba(255,224,130,.07),inset 0 1px 0 rgba(255,255,255,.06);
   transform:translateY(30px);opacity:0;transition:all .4s .2s;}
 .cs-dialogue.show{transform:translateY(0);opacity:1;}
 .cs-speaker{font-size:10px;color:#ffe082;font-weight:700;letter-spacing:1px;
@@ -245,8 +250,12 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .cs-unlock{background:linear-gradient(135deg,rgba(255,224,52,.12),rgba(255,152,0,.08));
   border:2px solid rgba(255,224,52,.4);border-radius:14px;padding:14px 20px;
   margin:0 20px 14px;width:calc(100% - 40px);max-width:480px;
+  box-shadow:0 0 22px rgba(255,224,52,.18);position:relative;overflow:hidden;
   transform:scale(.9);opacity:0;transition:all .5s .1s;display:none;}
 .cs-unlock.show{transform:scale(1);opacity:1;}
+.cs-unlock.show::before{content:'';position:absolute;top:0;left:-150%;width:60%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.22),transparent);
+  animation:btnShine 2.6s ease-in-out 1s infinite;pointer-events:none;}
 .cs-unlock-title{font-size:11px;color:#ffe082;font-weight:700;letter-spacing:1px;margin-bottom:10px;}
 .cs-unlock-items{display:flex;gap:10px;flex-wrap:wrap;}
 .cs-unlock-item{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.3);
@@ -261,9 +270,10 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
   padding:12px 40px;cursor:pointer;box-shadow:0 5px 0 #bf360c;
   transition:transform .1s,box-shadow .1s;margin:0 20px;
   opacity:0;transform:translateY(10px);transition:all .3s .3s;}
-.cs-next.show{opacity:1;transform:translateY(0);}
-.cs-next:hover{transform:translateY(-2px);box-shadow:0 7px 0 #bf360c;}
+.cs-next.show{opacity:1;transform:translateY(0);animation:csNextPulse 2.4s ease-in-out 1s infinite;}
+.cs-next:hover{transform:translateY(-2px);box-shadow:0 7px 0 #bf360c,0 0 18px rgba(255,224,52,.7);animation:none;}
 .cs-next:active{transform:translateY(3px);box-shadow:0 2px 0 #bf360c;}
+@keyframes csNextPulse{0%,100%{box-shadow:0 5px 0 #bf360c,0 0 0 rgba(255,224,52,0)}50%{box-shadow:0 5px 0 #bf360c,0 0 16px rgba(255,224,52,.6)}}
 
 .menu-action-btn{flex:1;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 6px;text-align:center;cursor:pointer;transition:background .2s,border-color .2s;}
 .menu-action-btn:hover{background:rgba(76,175,80,.18);border-color:rgba(76,175,80,.4);}

@@ -2,6 +2,20 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.9.17 — Cutscene Glow Pass
+
+### Changed
+- **Cutscene icon** (`.cs-icon-wrap.show`): gained a slow pulsing warm
+  glow (`csIconGlow` keyframes) layered on its existing drop shadow.
+- **Dialogue box** (`.cs-dialogue`): added a subtle warm glow around the
+  box border for depth, matching the glow language used elsewhere.
+- **Unlock reveal panel** (`.cs-unlock`): stronger gold glow border plus
+  a periodic light sweep (reusing `btnShine`) to highlight newly
+  unlocked towers/items.
+- **Next button** (`.cs-next`): now pulses with a gold glow
+  (`csNextPulse` keyframes) to draw attention; pulse pauses on hover in
+  favor of a stronger static glow.
+
 ## v1.9.16 — Remaining Menu Pages Glow Pass
 
 ### Changed
