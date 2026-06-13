@@ -2,6 +2,26 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.9.10 — Main Menu Visual Polish
+
+### Changed
+- **Main menu "quick win" visual upgrade** (`#mm` in `Tower Quest 🏰.html`,
+  styles in `css/main.css`), scoped to the main menu screen only:
+  - `.gtitle` ("TOWER QUEST") now has a pulsing warm glow animation
+    (`titleGlow` keyframes) layered on top of the existing hard-edge
+    cartoon text-shadow.
+  - `.gsub` subtitle gets a soft glow (`text-shadow`).
+  - `.bbattle` (Story Mode) and `#egMenuBtn` (Endgame) buttons gained
+    colored glow `box-shadow` (idle/hover/active states) on top of their
+    existing 3D button shadows.
+  - `#mm::before`/`#mm::after` add a vignette and a warm radial glow
+    behind the logo for more depth.
+  - `.island` (castle logo) gained a soft green glow.
+  - Added 4 new smaller/blurred "far" parallax stars (`.star.far`) for
+    background depth.
+  - `.curr` (currency pills), `.topbar`, and `.bottom-nav` now use a
+    frosted-glass `backdrop-filter: blur(...)` effect.
+
 ## v1.9.9 — Rankings & Stats Improvements
 
 ### Added
