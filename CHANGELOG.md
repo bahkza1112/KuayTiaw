@@ -2,6 +2,23 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.9.13 — Battle HUD Depth Pass
+
+### Changed
+- **HUD bar** (`.hud`): flat black background replaced with a subtle
+  gradient + green glow under the border for more depth.
+- **HUD items** (`.huditem`): HP/Gold/Wave/Stage indicators now sit in
+  individual rounded pill backgrounds instead of plain text on black.
+- **HP bar** (`.hpbar`): added a colored glow matching the bar's
+  red→orange→green gradient.
+- **Tower panel** (`.tpanel`): added an inner green glow along the top
+  edge for depth.
+- **Tower buttons** (`.tbtn`): hover now lifts the button slightly;
+  the selected tower (`.sel`) has a stronger double-layer glow.
+- **Send Wave button** (`.wavebtn`): added a slow pulsing glow
+  (`wavePulse` keyframes) to draw attention when a wave can be sent;
+  pulse disabled while the button is `:disabled`.
+
 ## v1.9.12 — Main Menu Liveliness Pass
 
 ### Added
