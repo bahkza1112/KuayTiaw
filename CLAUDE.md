@@ -235,3 +235,21 @@ After successful validation:
 3. Create commit
 4. Push to GitHub
 5. Show commit summary
+
+---
+
+# Mandatory Per-Update Checklist
+
+These apply to **every** gameplay update/patch, no exceptions:
+
+1. **PATCH_NOTES entry** — add a new first entry to the `PATCH_NOTES` array
+   in `js/ui.js` (player-facing Thai text shown in the in-game "What's New"
+   screen), with `ver`, `date` (YYYY-MM-DD), `title`, and `notes`. Bump
+   `GAME_VERSION` to match.
+2. **CHANGELOG.md entry** — add a corresponding developer-facing entry.
+3. **Codex sync** — if a monster or tower ability/mechanic was added or
+   changed, update the corresponding in-game Codex entry in the same
+   change/commit (`MSPECIAL` in `js/enemy.js` for monsters, equivalent
+   tower description data for towers) so players see accurate info in-game.
+4. **Version string** — update the `<title>` and `#verBtn` text in
+   `Tower Quest 🏰.html` to match `GAME_VERSION`.
