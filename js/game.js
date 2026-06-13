@@ -1523,7 +1523,12 @@ function render(){
       ctx.beginPath();ctx.arc(e.x,e.y,sz+5,0,Math.PI*2);ctx.stroke();
       ctx.globalAlpha=1;
     }
-    drawEnemySprite(ctx,e.ti,e.x,e.y,sz);
+    {
+      const _p0=currentPath[Math.min(e.pi,currentPath.length-1)],_p1=currentPath[Math.min(e.pi+1,currentPath.length-1)];
+      const _dir=Math.atan2(_p1[1]-_p0[1],_p1[0]-_p0[0]);
+      const _moveSpd=e.spd*e.slow*((e._enrageT>0)?(e._enrageMult||1):1)*((e._diveT>0)?1.5:1);
+      drawEnemySprite(ctx,e.ti,e.x,e.y,sz,{dir:_dir,spd:_moveSpd});
+    }
     // HP bar (taller, more visible)
     const bw=sz*2+4, bh=6, bx=e.x-sz-2, by=e.y-sz-13;
     ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(bx,by,bw,bh);

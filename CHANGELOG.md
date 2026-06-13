@@ -2,6 +2,22 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.9.7 — Speed-Synced Movement Animations
+
+### Added
+- **Enemy idle animations now react to actual movement speed and direction.**
+  `drawEnemySprite(ctx,ti,x,y,sz,mv)` (`js/enemy.js`) accepts a new optional
+  `mv={dir,spd}` argument: `dir` is the travel-direction angle (from the
+  current path segment) and `spd` is the effective speed multiplier
+  (`e.spd*e.slow*enrage*dive`). A universal "walk lean" rotates each sprite
+  slightly toward its travel direction, swaying faster at higher speed. Each
+  ground-walker's existing bob frequency (Goblin, Skeleton, Shadow, Golem,
+  Shield Knight) is also scaled by `spd`, and the wing-flap frequency for Bat
+  and Wyvern now speeds up/slows down with their actual movement speed (e.g.
+  during dive attacks or while slowed). Computed and passed at the shared
+  `render()` call site (`js/game.js`), used by both story and endgame modes;
+  the Codex preview call (`js/ui.js`) omits `mv` and falls back to defaults.
+
 ## v1.9.6 — 3D Tower Idle Animations
 
 ### Added
