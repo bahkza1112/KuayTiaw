@@ -2,6 +2,21 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.9.15 — Codex & Rankings Visual Polish
+
+### Changed
+- **Codex** (`.cdx-header`, `.cdx-tabs`, `.cdx-card`): header now has a
+  gradient background and green glow matching the battle HUD; title
+  has a soft text glow; active tab gets a glow underline and text
+  glow; cards lift and glow on hover, with a stronger green glow for
+  the active card.
+- **Rankings** (`.lb-hd`, `.lb-tabs`, `.lb-item`, `.my-stat-card`,
+  `.run-row`): same header/tab glow treatment as Codex; leaderboard
+  rows lift slightly on hover; gold/silver/bronze ranks (`.lb-rank.g/
+  .s/.b`) get a matching colored text glow; the player's own row
+  (`.lb-item.me`) has a gold glow; "My Stats" cards get a subtle glow
+  matching their accent color.
+
 ## v1.9.14 — UX Polish: Micro-interactions, Toasts, Overlays, Tooltips
 
 ### Added
