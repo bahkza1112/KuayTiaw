@@ -151,14 +151,33 @@ Goblin (intentional exception).
 
 ### Reward/HP recovery (v1.9.18)
 
-At `egRound=14` (where HP `roundBonus` caps), reward/HP vs. the Stage-0
-baseline:
+Verified live in-browser (`spawnEgEnemy`/`getEgEnemyHP`/`getEgRewardBonus`
+called directly with `egDiff=1` normal, `wave=0`). Reward/HP vs. the
+Stage-0 baseline:
 
-| Enemy | Baseline | Old (`+egRound*2`) | New (`getEgRewardBonus`) |
-|---|---:|---:|---:|
-| Goblin (normal) | 0.182 | 0.065 (-64%) | 0.109 (-40%) |
-| Demon Lord (incl. shield, boss) | 0.087 | 0.017 (-80%) | 0.075 (-14%) |
+| egRound | Goblin baseline | Goblin old | Goblin new | Demon Lord baseline (incl. shield) | Demon Lord old | Demon Lord new |
+|---:|---:|---:|---:|---:|---:|---:|
+| 5 | 0.182 | 0.145 (-20%) | 0.131 (-28%) | 0.087 | 0.0471 (-46%) | 0.0749 (-14%) |
+| 10 | 0.182 | 0.136 (-25%) | 0.114 (-37%) | 0.087 | 0.0341 (-61%) | 0.071 (-18%) |
+| 14 | 0.182 | 0.138 (-24%) | 0.109 (-40%) | 0.087 | 0.0288 (-67%) | 0.0674 (-23%) |
+| 20 | 0.182 | 0.182 (0%) | 0.109 (-40%) | 0.087 | 0.0286 (-67%) | 0.0612 (-30%) |
+
+Notes:
+- The old formula's Goblin ratio happens to return to baseline at
+  egRound=20 because its uncapped linear reward (`+egRound*2`) catches up
+  to the HP cap — this was a coincidence, not a fix; at egRound 10-15 it
+  still dipped ~25%.
+- For Demon Lord, the new formula is a clear improvement at every sampled
+  round (-14% to -30% vs. -46% to -67% under the old formula).
+- **Residual**: Demon Lord's shield HP (`MSHIELD[9]*(1+egRound*0.3)`) is
+  *uncapped*, while `getEgRewardBonus()` caps at ×3.0. So Demon Lord's
+  reward/HP keeps slowly declining past egRound≈14 (e.g. -30% at
+  egRound=20) instead of leveling off like normal enemies. Not addressed
+  in this pass — flagged for a future balance pass if Demon Lord becomes a
+  frequent late-Endless spawn (see
+  [Roadmap.md](Roadmap.md#future--unscoped-ideas)).
 
 Late-Endless enemies remain tankier per gold than early rounds by design,
-but the drop-off is now much shallower. See
-[Roadmap.md](Roadmap.md) for the original finding and fix.
+but the drop-off is now meaningfully shallower for the boss-type enemy
+that was previously worst-affected. See [Roadmap.md](Roadmap.md) for the
+original finding and fix.
