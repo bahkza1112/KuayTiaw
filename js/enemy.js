@@ -318,6 +318,8 @@ function drawEnemySprite(ctx,ti,x,y,sz,mv){
       ctx.restore();
       break;}
     case 3:{// Fire Spirit — chibi fireball
+      const _fb=Math.sin(Date.now()*.005*_sm+x*.05)*r*.06;
+      ctx.save();ctx.translate(0,_fb);
       _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.08,r*.72,0,Math.PI*2);});
       const fl=Math.sin(Date.now()*.012+x)*.14;
       // flame aura behind
@@ -336,8 +338,11 @@ function drawEnemySprite(ctx,ti,x,y,sz,mv){
       // smile
       ctx.strokeStyle='#bf360c';ctx.lineWidth=r*.09;ctx.lineCap='round';
       ctx.beginPath();ctx.arc(0,r*.14,r*.22,.15,Math.PI-.15);ctx.stroke();
+      ctx.restore();
       break;}
     case 4:{// Boss — chibi demon king (HUGE head)
+      const _bs=Math.sin(Date.now()*.003*_sm+x*.05)*r*.04;
+      ctx.save();ctx.translate(0,_bs);
       _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.1,r*.92,0,Math.PI*2);});
       _ol(()=>{ctx.beginPath();ctx.ellipse(0,r*.55,r*.4,r*.3,0,0,Math.PI*2);});
       // tiny arms
@@ -368,6 +373,7 @@ function drawEnemySprite(ctx,ti,x,y,sz,mv){
       // evil grin + fangs
       ctx.fillStyle='#7f0000';ctx.beginPath();ctx.arc(0,r*.24,r*.38,.08,Math.PI-.08,false);ctx.fill();
       ctx.fillStyle='#fffde7';ctx.fillRect(-r*.3,r*.24,r*.14,r*.22);ctx.fillRect(r*.14,r*.24,r*.14,r*.22);
+      ctx.restore();
       break;}
     case 5:{// Golem — chibi rock monster
       const _gl=Math.sin(Date.now()*.0025*_sm+x*.05)*r*.04;
@@ -493,6 +499,8 @@ function drawEnemySprite(ctx,ti,x,y,sz,mv){
       _blush(-r*.55,r*.04,r*.2);_blush(r*.55,r*.04,r*.2);
       break;}
     case 9:{// Dark Lord — chibi evil overlord (giant eye body)
+      const _dl=Math.sin(Date.now()*.0035*_sm+x*.05)*r*.05;
+      ctx.save();ctx.translate(0,_dl);
       _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.05,r*.88,0,Math.PI*2);});
       _ol(()=>{ctx.beginPath();ctx.ellipse(0,-r*.08,r*.55,r*.4,0,0,Math.PI*2);});
       const _t9=Date.now()*.002;
@@ -542,8 +550,11 @@ function drawEnemySprite(ctx,ti,x,y,sz,mv){
       ctx.fillStyle=`rgba(156,39,176,${.55+.3*Math.sin(_t9*4)})`;ctx.beginPath();ctx.arc(_ox,_oy,r*.2,0,Math.PI*2);ctx.fill();
       ctx.strokeStyle=`rgba(234,128,252,${.9+.1*Math.sin(_t9*5)})`;ctx.lineWidth=r*.05;ctx.stroke();
       ctx.fillStyle='rgba(255,255,255,.85)';ctx.beginPath();ctx.arc(_ox-r*.06,_oy-r*.06,r*.06,0,Math.PI*2);ctx.fill();
+      ctx.restore();
       break;}
     case 10:{// Shaman — chibi mushroom healer
+      const _sh=Math.sin(Date.now()*.004*_sm+x*.05)*r*.045;
+      ctx.save();ctx.translate(0,_sh);
       _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.15,r*.72,0,Math.PI*2);});
       _ol(()=>{ctx.beginPath();ctx.ellipse(0,-r*.88,r*.78,r*.38,0,0,Math.PI*2);});
       const _th=Date.now()*.0025;
@@ -589,6 +600,7 @@ function drawEnemySprite(ctx,ti,x,y,sz,mv){
       ctx.beginPath();ctx.arc(r*.26,-r*.82,r*.09,0,Math.PI*2);ctx.fill();
       ctx.beginPath();ctx.arc(r*.05,-r*1.02,r*.08,0,Math.PI*2);ctx.fill();
       ctx.beginPath();ctx.arc(-r*.55,-r*.78,r*.08,0,Math.PI*2);ctx.fill();
+      ctx.restore();
       break;}
   }
   ctx.restore();

@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.9.8 — Remaining Monster Idle Animations
+
+### Added
+- **Idle bob animations for Fire Spirit, Boss, Dark Lord, and Shaman** —
+  the last 4 of 11 enemy types without their own idle motion (they
+  previously relied only on the shared v1.9.7 walk-lean). Each now gently
+  floats/bobs up and down, with frequency scaled by the same `_sm`
+  speed multiplier introduced in v1.9.7. File: `js/enemy.js`
+  (`drawEnemySprite` cases 3, 4, 9, 10).
+
 ## v1.9.7 — Speed-Synced Movement Animations
 
 ### Added
