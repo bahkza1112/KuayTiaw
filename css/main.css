@@ -556,15 +556,7 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .ach-progress-fill{height:100%;background:linear-gradient(90deg,#ffe234,#ff9800);border-radius:6px;transition:width .5s;}
 .ach-count{font-size:10px;color:#ffe082;font-weight:700;text-align:center;margin-top:4px;}
 
-/* Rune system */
-.tp-rune-row{padding:6px 12px;border-bottom:1px solid rgba(255,255,255,.06);min-height:32px;}
-.tp-rune-label{font-size:9px;color:#8bc34a;letter-spacing:.5px;margin-bottom:4px;}
-.tp-rune-equipped{display:flex;align-items:center;gap:6px;font-size:11px;color:#fff;font-weight:700;}
-.tp-rune-equipped .ri{font-size:16px;}
-.tp-rune-remove{background:rgba(244,67,54,.2);color:#ef9a9a;border:1px solid rgba(244,67,54,.4);
-  border-radius:6px;padding:2px 7px;font-size:10px;cursor:pointer;margin-left:auto;}
-.tp-rune-remove:hover{background:rgba(244,67,54,.4);}
-.tp-rune-empty{font-size:10px;color:#555;font-style:italic;}
+.tp-syn-empty{font-size:10px;color:#555;font-style:italic;}
 .tp-syn-row{padding:6px 12px;border-bottom:1px solid rgba(255,255,255,.06);}
 .tp-syn-label{font-size:9px;color:#4fc3f7;letter-spacing:.5px;margin-bottom:4px;}
 .tp-syn-item{display:flex;flex-direction:column;gap:1px;background:rgba(79,195,247,.10);border:1px solid rgba(79,195,247,.3);
@@ -581,11 +573,6 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .tp-pickbtn small{display:block;color:#bbb;font-weight:600;}
 .tp-pickbtn:hover:not(:disabled){background:linear-gradient(180deg,#4a4a5e,#34344a);border-color:rgba(255,226,52,.5);}
 .tp-pickbtn:disabled{opacity:.32;cursor:not-allowed;}
-.tp-rune-picker{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px;}
-.tp-rune-pick-btn{background:rgba(255,255,255,.08);border:1px solid #444;border-radius:8px;
-  padding:4px 6px;cursor:pointer;font-size:11px;display:flex;align-items:center;gap:3px;
-  color:#fff;transition:all .15s;}
-.tp-rune-pick-btn:hover{border-color:#ffe082;background:rgba(255,224,52,.15);}
 
 /* ── TUTORIAL ── */
 #tutOverlay{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:40;}

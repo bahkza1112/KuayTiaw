@@ -47,16 +47,6 @@ const TWEAKNESS=[
   ['ไม่โจมตีเลย','ถ้าถูกทำลายเสียทอง'],
   ['ดาเมจต่อตัวต่ำกว่าป้อมอื่น','Chain ต้องการหลายศัตรู'],
 ];
-/* ══ RUNE SYSTEM ══ */
-const RUNES=[
-  {id:0,icon:'🔥',name:'อัคนีรูน',  desc:'25% ติดเพลิง — DoT 8dmg ทุก 0.5s × 5 ครั้ง',  col:'#ff5722'},
-  {id:1,icon:'❄️',name:'หิมะรูน',   desc:'Slow แรงขึ้น +25% และนานขึ้น +1 วินาที',       col:'#80d8ff'},
-  {id:2,icon:'⚡',name:'พายุรูน',   desc:'On hit: 35% chain ฟ้า 1 ตัวใกล้ที่สุด (40% dmg)',col:'#ffe57f'},
-  {id:3,icon:'🎯',name:'แม่นยำรูน', desc:'20% Crit → ×2.5 damage',                       col:'#69f0ae'},
-  {id:4,icon:'💰',name:'ทองรูน',    desc:'+60% Gold จากการ Kill',                         col:'#ffd54f'},
-  {id:5,icon:'💥',name:'พลังรูน',   desc:'Damage ทั้งหมด +25%',                          col:'#ff8a65'},
-];
-
 function getTowerDmg(t,lv){return CFG.t_dmg[t]*(1+(lv-1)*.25);}
 function getTowerRange(t,lv){return CFG.t_rng[t]*(1+(lv-1)*.15);}
 function getTowerRate(t,lv){return CFG.t_rate[t]*(1+(lv-1)*.1);}
@@ -648,7 +638,7 @@ function showTowerPopup(tw,px,py){
   const refund=Math.floor(CFG.t_cost[tw.type]*tw.lv*.6);
   const canUp=tw.lv<5&&G.gold>=cost;
   const synMult=getSynergyMult(tw.type,tw.col,tw.row);
-  const dmgVal=CFG.t_dmg[tw.type]===0?'—':Math.round(getTowerDmg(tw.type,tw.dmgLv)*(tw.awakened?1.15:1)*synMult);
+  const dmgVal=CFG.t_dmg[tw.type]===0?'—':Math.round(getTowerDmg(tw.type,tw.dmgLv)*synMult);
   const rngVal=getTowerRange(tw.type,tw.rngLv).toFixed(1);
   const rateVal=CFG.t_rate[tw.type]===0?'—':getTowerRate(tw.type,tw.rateLv).toFixed(1);
   const dpsVal=(CFG.t_dmg[tw.type]!==0&&CFG.t_rate[tw.type]!==0)?(dmgVal*parseFloat(rateVal)).toFixed(1):null;
@@ -662,7 +652,7 @@ function showTowerPopup(tw,px,py){
     `<div class="tp-syn-row"><div class="tp-syn-label">🔗 SYNERGY (${activeSyn.length})</div>`+
     activeSyn.map(s=>`<div class="tp-syn-item"><div class="tp-syn-name">${s.name} <span style="color:#80deea;">${_synBonusTxt(s)}</span></div><div class="tp-syn-desc">${s.desc}</div></div>`).join('')+
     `</div>`
-    : `<div class="tp-syn-row"><div class="tp-syn-label">🔗 SYNERGY</div><div class="tp-rune-empty" style="color:#555;">วางป้อมชนิดอื่นใกล้ๆ เพื่อปลดล็อกซินเนอร์จี้</div></div>`;
+    : `<div class="tp-syn-row"><div class="tp-syn-label">🔗 SYNERGY</div><div class="tp-syn-empty" style="color:#555;">วางป้อมชนิดอื่นใกล้ๆ เพื่อปลดล็อกซินเนอร์จี้</div></div>`;
   pop.innerHTML=`<div class="tp-head">
     <canvas id="_tpIco" width="42" height="42" style="flex-shrink:0;border-radius:6px;"></canvas>
     <div>
@@ -671,14 +661,13 @@ function showTowerPopup(tw,px,py){
     </div>
   </div>
   <div class="tp-stats">
-    <div class="tp-stat">⚔️ ดาเมจ <small style="opacity:.5">Lv.${tw.dmgLv}</small><span>${dmgVal}${tw.awakened?' <span style="color:#ffe082;font-size:9px;">(+15%)</span>':''}${synMult>1?` <span style="color:#80deea;font-size:9px;">(+${Math.round((synMult-1)*100)}% synergy)</span>`:''}</span></div>
+    <div class="tp-stat">⚔️ ดาเมจ <small style="opacity:.5">Lv.${tw.dmgLv}</small><span>${dmgVal}${synMult>1?` <span style="color:#80deea;font-size:9px;">(+${Math.round((synMult-1)*100)}% synergy)</span>`:''}</span></div>
     <div class="tp-stat">📡 ระยะ <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${rngVal} ช่อง${tw.rngLv>=4?' <span style="color:#90caf9;font-size:9px;" title="กระสุนเจาะโล่ศัตรู ดาเมจเข้า HP ตรงๆ">🛡️✨เจาะโล่</span>':''}</span></div>
     <div class="tp-stat">⚡ Fire Rate <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${rateVal}${tw.rateLv>=4?' <span style="color:#ffe234;font-size:9px;" title="มีโอกาสคูลดาวน์สั้นลงทันทีหลังยิง">⚡ยิงรัว</span>':''}</span></div>
     ${dpsVal?`<div class="tp-stat">📊 DPS<span>${dpsVal}</span></div>`:''}
     ${tw.lv<5?`<div class="tp-stat">💰 ค่าอัพต่อไป<span>${cost} ทอง</span></div>`:''}
   </div>
   ${synHtml}
-  <div class="tp-rune-row" id="tpRuneRow"></div>
   <div class="tp-btns">
     ${showAwakenBtn?
       `<button class="tp-upbtn" ${canAwaken?'':'disabled'} onclick="awakenTowerFromPopup()" style="background:${canAwaken?'linear-gradient(180deg,#ffe234,#ff9800)':''};color:${canAwaken?'#6d2900':''};">
@@ -708,7 +697,6 @@ function showTowerPopup(tw,px,py){
   requestAnimationFrame(()=>{
     const ic=document.getElementById('_tpIco');
     if(ic){const ix=ic.getContext('2d');ix.translate(21,23);drawTowerIcon(ix,tw.type,40,0);}
-    updateTpRune(tw);
   });
   // position near tower but inside #gp
   const gp=document.getElementById('gp');
@@ -730,55 +718,6 @@ function hideTowerPopup(){
   setTimeout(()=>{if(!pop.classList.contains('show'))pop.style.display='none';},160);
 }
 
-/* ══ RUNE FUNCTIONS ══ */
-function updateTpRune(tw){
-  const row=document.getElementById('tpRuneRow');
-  if(!row||!G) return;
-  // ล็อก rune slot ถ้ายังไม่อเวค
-  if(!tw.awakened){
-    row.innerHTML=`<div class="tp-rune-label">🔮 RUNE</div><div class="tp-rune-empty" style="color:#555;">🔒 ต้องอัพเป็น Lv.5 แล้ว Awaken ก่อน</div>`;
-    return;
-  }
-  if(tw.rune>=0){
-    const r=RUNES[tw.rune];
-    // แสดง rune ที่ใส่อยู่ — ไม่มีปุ่ม Remove, แต่สามารถใส่ทับได้
-    let btns='';
-    if(G.runeInv&&G.runeInv.length>0){
-      const counts={};
-      G.runeInv.forEach(id=>counts[id]=(counts[id]||0)+1);
-      Object.entries(counts).forEach(([rid,cnt])=>{
-        const rr=RUNES[+rid];
-        btns+=`<button class="tp-rune-pick-btn" onclick="equipRuneToTower(${rid})" title="ใส่ทับ — อันเก่าจะหาย!">${rr.icon} ${rr.name}${cnt>1?' ×'+cnt:''}</button>`;
-      });
-    }
-    row.innerHTML=`<div class="tp-rune-label">🔮 RUNE <span style="color:#ffe082;">(ใส่ทับได้ — อันเก่าหาย)</span></div>
-    <div class="tp-rune-equipped" style="margin-bottom:${btns?'5px':'0'}"><span class="ri">${r.icon}</span><span style="color:${r.col}">${r.name}</span></div>
-    ${btns?`<div class="tp-rune-picker">${btns}</div>`:''}`;
-  } else if(G.runeInv&&G.runeInv.length>0){
-    const counts={};
-    G.runeInv.forEach(id=>counts[id]=(counts[id]||0)+1);
-    let btns='';
-    Object.entries(counts).forEach(([rid,cnt])=>{
-      const r=RUNES[+rid];
-      btns+=`<button class="tp-rune-pick-btn" onclick="equipRuneToTower(${rid})" title="${r.desc}">${r.icon} ${r.name}${cnt>1?' ×'+cnt:''}</button>`;
-    });
-    row.innerHTML=`<div class="tp-rune-label">🔮 RUNE</div><div class="tp-rune-picker">${btns}</div>`;
-  } else {
-    row.innerHTML=`<div class="tp-rune-label">🔮 RUNE</div><div class="tp-rune-empty">ยังไม่มี Rune — รอ Boss drop</div>`;
-  }
-}
-function equipRuneToTower(runeId){
-  if(!_popupTw||!G||!_popupTw.awakened) return;
-  const idx=G.runeInv.indexOf(runeId);
-  if(idx<0) return;
-  // อันเก่าหายเลย — ไม่คืน inventory
-  _popupTw.rune=runeId;
-  G.runeInv.splice(idx,1);
-  updateTpRune(_popupTw);
-  const tx=_popupTw.col*CS+CS/2, ty=_popupTw.row*CS+CS/2;
-  G.fxRings.push({x:tx,y:ty,r:4,maxR:CS*1.5,life:.7,lw:3,col:RUNES[runeId].col,delay:0});
-  G.particles.push({x:tx,y:ty-CS*.3,txt:RUNES[runeId].icon+' Equipped!',col:RUNES[runeId].col,life:1.2,vy:-1,vx:0,decay:1,scale:1});
-}
 function awakenTowerFromPopup(){
   if(!_popupTw||!G) return;
   const tw=_popupTw;
@@ -799,7 +738,7 @@ function awakenTowerFromPopup(){
   G.particles.push({x:ax,y:ay-CS*.4,txt:'⚡ AWAKENED!',col:'#ffe082',
     life:1.6,vy:-1.4,vx:0,decay:.8,scale:1.2});
   updateHUD();
-  showToast(`⚡ ${TNAMES[tw.type]} อเวคแล้ว! +15% dmg ปลดล็อค Rune Slot!`);
+  showToast(`⚡ ${TNAMES[tw.type]} อเวคแล้ว! ปลดล็อกพลังพิเศษ!`);
   hideTowerPopup();
   setTimeout(()=>{
     if(G&&!G.over&&!G.win&&G.selTowerInfo===tw){
@@ -807,18 +746,6 @@ function awakenTowerFromPopup(){
       showTowerPopup(tw,(tw.col+.5)*CS*r.width/cv.width+r.left,tw.row*CS*r.height/cv.height+r.top);
     }
   },80);
-}
-function _dropRune(x,y){
-  if(!G||G.runeInv.length>=6) return;
-  const rid=Math.floor(Math.random()*RUNES.length);
-  G.runeInv.push(rid);
-  const r=RUNES[rid];
-  for(let k=0;k<8;k++){
-    const ang=k/8*Math.PI*2;
-    G.particles.push({x,y,txt:'✦',col:r.col,life:.9,vy:Math.sin(ang)*1.4,vx:Math.cos(ang)*1.4,decay:2,scale:.8});
-  }
-  G.particles.push({x,y:y-20,txt:r.icon+' Rune Drop!',col:r.col,life:1.6,vy:-1.2,vx:0,decay:.8,scale:1.1});
-  showToast(r.icon+' ได้รับ '+r.name+'!');
 }
 function upgradeTowerFromPopup(stat){
   if(!_popupTw||!G) return;

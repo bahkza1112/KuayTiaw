@@ -2,6 +2,27 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.11.0 — Remove Rune System
+
+### Removed
+- **Rune system** (`js/tower.js`, `js/game.js`, `js/enemy.js`, `css/main.css`):
+  removed the `RUNES` array (Inferno/Frost/Storm/Precision/Gold-Avarice/Power),
+  `G.runeInv`, `tw.rune`, `equipRuneToTower()`, `updateTpRune()`, `_dropRune()`,
+  the boss-kill rune drop, the wave-clear "no damage taken → 50% rune drop"
+  trigger, the rune inventory HUD overlay, the rune icon overlays on towers
+  (floating above awakened towers and on tower corners), the `tp-rune-row`
+  popup section, and all associated `.tp-rune-*` CSS classes. All
+  rune-derived projectile flags (`_frostRune`, `_burnRune`, `_stormRune`,
+  `_avaRune`, `_crit`/`_risCrit`) and the burn DoT tick (story + endless
+  modes) were removed.
+- **Awaken generic +15% damage bonus**: Awaken no longer multiplies tower
+  damage by 1.15. All per-type Awaken special abilities are preserved
+  (Cannon splash boost, Thunder chain boost, Magic extra shot, Ice freeze,
+  Sniper pierce-line, Support double synergy gold/freeze boost, Gold Mine
+  x2 production). The `_awakenedRune` projectile flag was renamed to
+  `_awakened` since it's still needed for the Ice freeze and Sniper
+  pierce-line mechanics.
+
 ## v1.10.1 — Remove Hold-to-Sell
 
 ### Removed

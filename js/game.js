@@ -177,7 +177,7 @@ function mkState(){
     wave:0,score:0,selTwr:-1,waveActive:false,
     over:false,win:false,queue:[],spawnT:0,mx:-1,my:-1,
     selTowerInfo:null,gmTimers:{},shakeT:0,waveBanner:null,bossWarning:null,
-    kills:0,comboN:0,comboT:0,maxCombo:0,runeInv:[],
+    kills:0,comboN:0,comboT:0,maxCombo:0,
     weather:mkWeatherState()};
 }
 /* ══ WEATHER SYSTEM ══ */
@@ -633,19 +633,6 @@ function update(dt){
     e.x=p0[0]*CS+CS/2+(p1[0]-p0[0])*CS*t;
     e.y=p0[1]*CS+CS/2+(p1[1]-p0[1])*CS*t;
   }
-  // burn DoT (Inferno rune)
-  G.enemies.forEach(e=>{
-    if(!e.alive||!e.burnT) return;
-    e.burnT-=dt;
-    e._burnTick=(e._burnTick||0)-dt;
-    if(e._burnTick<=0){
-      e._burnTick=0.5;
-      applyDmg(e,e.burnDmg,0);
-      G.particles.push({x:e.x+(Math.random()-.5)*8,y:e.y-ESIZES[e.ti]-4,
-        txt:'🔥',col:'#ff5722',life:.5,vy:-.8,vx:(Math.random()-.5)*.5,decay:2,scale:.7});
-    }
-    if(e.burnT<=0){e.burnT=0;e.burnDmg=0;}
-  });
   // healer monsters (ti===10) heal nearby allies every 2s
   G.enemies.forEach(healer=>{
     if(!healer.alive||healer.ti!==10) return;
@@ -803,12 +790,7 @@ function update(dt){
       const fx=tw.col*CS+CS/2, fy=tw.row*CS+CS/2;
       const _aw=tw.awakened&&!(tw._drainT>0); // ⚡ ป้อมตื่นแล้วและไม่ได้ถูกดูดพลัง
       let _rdmg=getTowerDmg(tw.type,tw.dmgLv||tw.lv)*getBuffMult(tw.col,tw.row)*getSynergyMult(tw.type,tw.col,tw.row);
-      if(_aw) _rdmg*=1.15; // Awaken bonus +15% (ใช้ไม่ได้ถ้าโดนดูดพลัง)
-      let _risCrit=false;
       let _rSlow=(TSLOW[tw.type]||0)+getSynergySlowBonus(tw.type,tw.col,tw.row);
-      if(tw.rune===5) _rdmg*=1.25; // Power rune
-      if(tw.rune===3&&Math.random()<(_aw?.28:.2)){_rdmg*=2.5;_risCrit=true;} // Precision rune (awakened: 28% crit)
-      if(tw.rune===1) _rSlow=Math.min((_rSlow||0)+(_aw?.35:.25),0.85); // Frost rune (awakened: +35%)
       const _wSplashMult=((tw.type===0||tw.type===2)&&G.weather&&G.weather.splashMult)?G.weather.splashMult:1;
       // ⚡ Awaken เฉพาะป้อม: Cannon=splash ใหญ่ขึ้น, Thunder=chain เพิ่ม
       const _awSplashMult=(_aw&&tw.type===0)?1.5:1;
@@ -824,12 +806,7 @@ function update(dt){
         _maxR:range*CS,
         _supBoost:_aw?getSupportAwakenBoost(tw.col,tw.row):1
       })-1];
-      if(_risCrit) _rp._crit=true;
-      if(tw.rune===1) _rp._frostRune=true;
-      if(tw.rune===0) _rp._burnRune=true;
-      if(tw.rune===2) _rp._stormRune=true;
-      if(tw.rune===4) _rp._avaRune=true;
-      if(_aw) _rp._awakenedRune=true;
+      if(_aw) _rp._awakened=true;
       // ✨ Magic Awaken: โอกาสยิงเพิ่ม 20% (ตื่นแล้ว 40%) สูงสุด 3 นัด
       if(tw.type===2&&Math.random()<(_aw?.4:.2)){
         const _extra=_aw?2:1;
@@ -924,8 +901,6 @@ function update(dt){
           if(e.isAir&&!TCANAIR[p.type]) return; // splash ไม่โดน air ถ้าป้อมยิง air ไม่ได้
           if(_wDodge>0&&Math.random()<_wDodge) return; // 🌪️ tornado dodge
           applyDmg(e,p.dmg,p.type,p._rngPierce);
-          if(p._burnRune&&Math.random()<0.25){e.burnT=p._awakenedRune?3.5:2.5;e.burnDmg=p._awakenedRune?12:8;}
-          if(p._avaRune) e._avaRune=true;
         });
       } else {
         if(p.target&&p.target.alive){
@@ -933,35 +908,16 @@ function update(dt){
             G.particles.push({x:p.target.x,y:p.target.y-ESIZES[p.target.ti]-6,txt:'MISS',col:'#e0e0e0',life:.6,vy:-1,vx:0,decay:1.5,scale:.7});
           } else {
             applyDmg(p.target,p.dmg,p.type,p._rngPierce);
-            if(p._burnRune&&Math.random()<0.25){p.target.burnT=p._awakenedRune?3.5:2.5;p.target.burnDmg=p._awakenedRune?12:8;}
-            if(p._avaRune) p.target._avaRune=true;
           }
         }
       }
-      // Storm rune chain
-      if(p._stormRune&&Math.random()<0.35&&p.target){
-        let nearest=null,nDist=Infinity;
-        G.enemies.forEach(e=>{
-          if(!e.alive||e===p.target) return;
-          const cd=Math.hypot(e.x-p.target.x,e.y-p.target.y);
-          if(cd<CS*3&&cd<nDist){nDist=cd;nearest=e;}
-        });
-        if(nearest){
-          G.fxTrails.push({x:p.target.x,y:p.target.y,tx:nearest.x,ty:nearest.y,col:'#ffe57f',life:.5,type:99,lw:2});
-          applyDmg(nearest,p.dmg*0.4,p.type,p._rngPierce);
-        }
-      }
-      // Frost rune: extend slow duration
-      if(p._frostRune&&p.slow>0&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)&&!(G.weather&&G.weather.iceImmune&&p.type===1)){
-        p.target.slow=p.slow; p.target.slowT=3; // +1s over base 2
-      }
-      if(p.slow>0&&!p._frostRune&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)&&!(G.weather&&G.weather.iceImmune&&p.type===1)){
+      if(p.slow>0&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)&&!(G.weather&&G.weather.iceImmune&&p.type===1)){
         // ❄️ Ice Awaken: ติดแข็ง (หยุดสนิท) 3 วินาที — Support ตื่นใกล้เคียงเพิ่มเป็น 6 วินาที
-        if(p._awakenedRune&&p.type===1){ p.target.slow=0; p.target.slowT=3*(p._supBoost||1); }
+        if(p._awakened&&p.type===1){ p.target.slow=0; p.target.slowT=3*(p._supBoost||1); }
         else { p.target.slow=p.slow; p.target.slowT=2; }
       }
       // 🎯 Sniper Awaken: ยิงทะลุเป็นเส้นตรง — สร้างความเสียหายให้ศัตรูที่อยู่หลังเป้าหมายบนเส้นยิงด้วย
-      if(p.type===3&&p._awakenedRune){
+      if(p.type===3&&p._awakened){
         const _ddx=tx-p.ox,_ddy=ty-p.oy,_dlen=Math.hypot(_ddx,_ddy)||1;
         const _ux=_ddx/_dlen,_uy=_ddy/_dlen;
         G.enemies.forEach(e=>{
@@ -1095,8 +1051,6 @@ function update(dt){
   if(G.waveActive&&G.queue.length===0&&G.enemies.length===0){
     // achievement: no-damage wave
     _onWaveEndForAch(G._waveHpAtStart||G.hp, G.hp);
-    // 50% chance to drop rune if no damage taken this wave
-    if(G.hp>=(G._waveHpAtStart||G.hp)&&Math.random()<0.5) _dropRune(COLS*CS*.5,ROWS*CS*.35);
     G.waveActive=false;
     clearWeather(); // 🌦 clear weather when wave ends
     _playSound('wave_clear');
@@ -1415,13 +1369,6 @@ function render(){
       drawTowerIcon(ctx,tw.type,CS-2,tw.angle);
       ctx.restore();
     }
-    // rune icon floating above awakened tower
-    if(tw.awakened&&tw.rune>=0){
-      const _ri=RUNES[tw.rune];
-      const _ry=y+4+Math.sin(Date.now()*.003)*3;
-      ctx.font='13px serif';ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.fillText(_ri.icon,cx2,_ry);
-    }
     // level badge
     if(tw.lv>1){
       ctx.fillStyle='rgba(0,0,0,.75)';
@@ -1436,11 +1383,6 @@ function render(){
       const key=tw.col+'_'+tw.row;const t2=G.gmTimers[key]||0;const pct=t2/CFG.t_goldrate;
       ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(x+4,y+CS-7,CS-8,4);
       ctx.fillStyle='#ffd54f';ctx.fillRect(x+4,y+CS-7,(CS-8)*pct,4);
-    }
-    // rune icon on tower corner
-    if(tw.rune>=0){
-      ctx.font='11px Arial';ctx.textAlign='right';ctx.textBaseline='top';
-      ctx.fillText(RUNES[tw.rune].icon,tw.col*CS+CS-2,tw.row*CS+2);
     }
     // support aura ring
     if(TBUFF[tw.type]){
@@ -1808,22 +1750,6 @@ function render(){
     ctx.fillText((isFinalBoss?'👁️ ':' 👹 ')+ENAMES[_boss.ti]+'  ❤️ '+Math.ceil(_boss.hp)+' / '+Math.ceil(_boss.mhp)+_bShieldTxt,cv.width/2,by-3);
     ctx.restore();
   }
-  // Rune inventory overlay
-  if(G.runeInv&&G.runeInv.length>0){
-    const rcounts={};
-    G.runeInv.forEach(r=>rcounts[r]=(rcounts[r]||0)+1);
-    ctx.textAlign='center';ctx.textBaseline='middle';
-    let rx=COLS*CS-8;
-    Object.entries(rcounts).reverse().forEach(([rid,cnt])=>{
-      const r=RUNES[+rid];
-      ctx.fillStyle='rgba(0,0,0,.6)';
-      ctx.fillRect(rx-22,3,24,17);
-      ctx.font='12px Arial';ctx.fillStyle='#fff';ctx.fillText(r.icon,rx-14,12);
-      ctx.font='bold 9px Arial';ctx.fillStyle='#ffe082';ctx.fillText('\xd7'+cnt,rx-3,13);
-      rx-=28;
-    });
-    ctx.globalAlpha=1;
-  }
   // V5: wave incoming banner
   if(G.waveBanner&&G.waveBanner.t>0){
     const bmax=1.5,bt=G.waveBanner.t,prog=1-bt/bmax;
@@ -1884,7 +1810,7 @@ function tryPlaceTower(type,col,row){
   if(G.towers.find(t=>t.col===col&&t.row===row)){showToast('❌ ช่องนี้มีป้อมอยู่แล้ว!');return false;}
   if(G.gold<CFG.t_cost[type]){showToast('💰 ต้องการ '+CFG.t_cost[type]+' ทอง!');return false;}
   G.gold-=CFG.t_cost[type];
-  G.towers.push({col,row,type,lv:1,dmgLv:1,rngLv:1,rateLv:1,cd:0,angle:0,spawnAnim:1.0,rune:-1,awakened:false});
+  G.towers.push({col,row,type,lv:1,dmgLv:1,rngLv:1,rateLv:1,cd:0,angle:0,spawnAnim:1.0,awakened:false});
   // FX: ring pulse + burst particles
   const bx=col*CS+CS/2, by=row*CS+CS/2;
   G.fxRings.push({x:bx,y:by,r:0,maxR:CS*1.6,life:1,col:TACCENT[type],lw:3});
@@ -2176,19 +2102,6 @@ function updateEg(dt){
     e.x=p0[0]*CS+CS/2+(p1[0]-p0[0])*CS*t2;
     e.y=p0[1]*CS+CS/2+(p1[1]-p0[1])*CS*t2;
   }
-  // burn DoT (endgame)
-  G.enemies.forEach(e=>{
-    if(!e.alive||!e.burnT) return;
-    e.burnT-=dt;
-    e._burnTick=(e._burnTick||0)-dt;
-    if(e._burnTick<=0){
-      e._burnTick=0.5;
-      applyDmg(e,e.burnDmg,0);
-      G.particles.push({x:e.x+(Math.random()-.5)*8,y:e.y-ESIZES[e.ti]-4,
-        txt:'🔥',col:'#ff5722',life:.5,vy:-.8,vx:(Math.random()-.5)*.5,decay:2,scale:.7});
-    }
-    if(e.burnT<=0){e.burnT=0;e.burnDmg=0;}
-  });
   // healer monsters in endgame
   G.enemies.forEach(healer=>{
     if(!healer.alive||healer.ti!==10) return;
@@ -2283,12 +2196,7 @@ function updateEg(dt){
       const fx=tw.col*CS+CS/2,fy=tw.row*CS+CS/2;
       const _aw2=tw.awakened&&!(tw._drainT>0);
       let _rdmg2=getTowerDmg(tw.type,tw.dmgLv||tw.lv)*getBuffMult(tw.col,tw.row)*getSynergyMult(tw.type,tw.col,tw.row);
-      if(_aw2) _rdmg2*=1.15;
-      let _risCrit2=false;
       let _rSlow2=(TSLOW[tw.type]||0)+getSynergySlowBonus(tw.type,tw.col,tw.row);
-      if(tw.rune===5) _rdmg2*=1.25;
-      if(tw.rune===3&&Math.random()<(_aw2?.28:.2)){_rdmg2*=2.5;_risCrit2=true;}
-      if(tw.rune===1) _rSlow2=Math.min((_rSlow2||0)+(_aw2?.35:.25),0.85);
       const _wSplashMult2=((tw.type===0||tw.type===2)&&G.weather&&G.weather.splashMult)?G.weather.splashMult:1;
       // ⚡ Awaken เฉพาะป้อม: Cannon=splash ใหญ่ขึ้น, Thunder=chain เพิ่ม
       const _awSplashMult2=(_aw2&&tw.type===0)?1.5:1;
@@ -2303,12 +2211,7 @@ function updateEg(dt){
         _maxR:range*CS,
         _supBoost:_aw2?getSupportAwakenBoost(tw.col,tw.row):1
       })-1];
-      if(_risCrit2) _rp2._crit=true;
-      if(tw.rune===1) _rp2._frostRune=true;
-      if(tw.rune===0) _rp2._burnRune=true;
-      if(tw.rune===2) _rp2._stormRune=true;
-      if(tw.rune===4) _rp2._avaRune=true;
-      if(_aw2) _rp2._awakenedRune=true;
+      if(_aw2) _rp2._awakened=true;
       // ✨ Magic Awaken: โอกาสยิงเพิ่ม 20% (ตื่นแล้ว 40%) สูงสุด 3 นัด
       if(tw.type===2&&Math.random()<(_aw2?.4:.2)){
         const _extra2=_aw2?2:1;
@@ -2338,41 +2241,20 @@ function updateEg(dt){
           if(!e.alive||Math.hypot(e.x-tx,e.y-ty)>p.splash*CS) return;
           if(e.isAir&&!TCANAIR[p.type]) return;
           applyDmg(e,p.dmg,p.type,p._rngPierce);
-          if(p._burnRune&&Math.random()<0.25){e.burnT=2.5;e.burnDmg=8;}
-          if(p._avaRune) e._avaRune=true;
           G.fxRings.push({x:tx,y:ty,r:4,maxR:p.splash*CS*1.2,life:.7,lw:3,col:TPROJ[p.type],delay:0});
         });
       } else {
         if(p.target&&p.target.alive){
           applyDmg(p.target,p.dmg,p.type,p._rngPierce);
-          if(p._burnRune&&Math.random()<0.25){p.target.burnT=2.5;p.target.burnDmg=8;}
-          if(p._avaRune) p.target._avaRune=true;
         }
       }
-      // Storm rune chain (endgame)
-      if(p._stormRune&&Math.random()<0.35&&p.target){
-        let nearest=null,nDist=Infinity;
-        G.enemies.forEach(e=>{
-          if(!e.alive||e===p.target) return;
-          const cd=Math.hypot(e.x-p.target.x,e.y-p.target.y);
-          if(cd<CS*3&&cd<nDist){nDist=cd;nearest=e;}
-        });
-        if(nearest){
-          G.fxTrails.push({x:p.target.x,y:p.target.y,tx:nearest.x,ty:nearest.y,col:'#ffe57f',life:.5,type:99,lw:2});
-          applyDmg(nearest,p.dmg*0.4,p.type);
-        }
-      }
-      // Frost rune: extend slow
-      if(p._frostRune&&p.slow>0&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)){
-        p.target.slow=p.slow; p.target.slowT=3;
-      }
-      if(p.slow>0&&!p._frostRune&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)){
+      if(p.slow>0&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)){
         // ❄️ Ice Awaken: ติดแข็ง (หยุดสนิท) 3 วินาที — Support ตื่นใกล้เคียงเพิ่มเป็น 6 วินาที
-        if(p._awakenedRune&&p.type===1){ p.target.slow=0; p.target.slowT=3*(p._supBoost||1); }
+        if(p._awakened&&p.type===1){ p.target.slow=0; p.target.slowT=3*(p._supBoost||1); }
         else { p.target.slow=p.slow; p.target.slowT=2; }
       }
       // 🎯 Sniper Awaken: ยิงทะลุเป็นเส้นตรง — สร้างความเสียหายให้ศัตรูที่อยู่หลังเป้าหมายบนเส้นยิงด้วย
-      if(p.type===3&&p._awakenedRune){
+      if(p.type===3&&p._awakened){
         const _ddx2=tx-p.ox,_ddy2=ty-p.oy,_dlen2=Math.hypot(_ddx2,_ddy2)||1;
         const _ux2=_ddx2/_dlen2,_uy2=_ddy2/_dlen2;
         G.enemies.forEach(e=>{

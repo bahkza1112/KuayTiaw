@@ -138,8 +138,7 @@ pierce). Flavor text, tags, and strengths/weaknesses for the Codex are in
   range, +10% rate per level above 1).
 - Each placed tower (`G.towers[i]`) tracks independent `dmgLv`, `rngLv`,
   `rateLv` (path-based upgrades — see Progression) plus `lv` for legacy/base
-  level, position (`col`, `row`), turret `angle`, and optional equipped
-  rune.
+  level, position (`col`, `row`), and turret `angle`.
 
 ### Targeting, Firing & Projectiles
 - During `update(dt)`, each tower scans `G.enemies` within
@@ -168,21 +167,22 @@ pierce). Flavor text, tags, and strengths/weaknesses for the Codex are in
   constrained by `stageMaxTowers` and `STAGES[i].unlockedTowers`.
 - `onCanvasClick`, `onCanvasHoldStart/End` handle placement and long-press
   interactions on the grid.
-- `showTowerPopup` / `hideTowerPopup` / `updateTpRune` render the per-tower
+- `showTowerPopup` / `hideTowerPopup` render the per-tower
   action popup: upgrade (dmg/range/rate paths via `upgradeTowerFromPopup`),
-  sell (`sellTowerFromPopup`, with partial gold refund), rune equip
-  (`equipRuneToTower`), and "Awaken" (`awakenTowerFromPopup`, `js/tower.js`
-  line 782) — a late-game power-up (350 gold flat, raised from 300 in
-  v1.7.3) with a 3D aura effect (`_buildAwakenAura3D`, line 541). The popup
-  also shows an effective **DPS** stat and an inline `(+X% synergy)` badge
-  when synergy is boosting damage (v1.6.4).
+  sell (`sellTowerFromPopup`, with partial gold refund), and "Awaken"
+  (`awakenTowerFromPopup`, `js/tower.js`) — a late-game power-up (350 gold
+  flat, raised from 300 in v1.7.3) with a 3D aura effect
+  (`_buildAwakenAura3D`, line 541). The popup also shows an effective
+  **DPS** stat and an inline `(+X% synergy)` badge when synergy is boosting
+  damage (v1.6.4).
 
-### Awaken System (v1.6.8 / v1.6.9)
-- Generic Awaken bonus for all types: +15% effective damage, +13% rune
-  bonus, plus a per-type 3D aura (halo rings, orbiting motes, energy beam)
+### Awaken System (v1.6.8 / v1.6.9, generic bonus removed v1.11.0)
+- Awaken no longer grants a generic damage bonus (the +15% effective
+  damage bonus was removed in v1.11.0 alongside the Rune system). Awakening
+  still applies a per-type 3D aura (halo rings, orbiting motes, energy beam)
   tinted with the tower's own `TACCENT` color (v1.6.8, previously
   gold-only).
-- **Per-type unique effects** on top of the generic bonus:
+- **Per-type unique effects**:
   - 💣 **Cannon**: splash radius ×1.5.
   - ❄️ **Ice**: on-hit freeze (full stop) for 3s instead of 45% slow for 2s
     — extended to 6s if an awakened 💚 Support is in range.
@@ -195,9 +195,8 @@ pierce). Flavor text, tags, and strengths/weaknesses for the Codex are in
   - 💰 **Gold Mine**: gold production ×2.
   - ⚡ **Thunder**: chain target count 2→4.
   - 🏹 **Archer**: no Awaken-specific effect.
-- Story-mode and endgame combat loops both apply Awaken's generic +15%
-  damage and crit-chance bonuses consistently (fixed v1.6.9 — endgame was
-  previously missing both).
+- Story-mode and endgame combat loops apply these per-type effects
+  consistently (mirrored code paths).
 
 ### Visual Rendering
 - 2D: `drawTowerIcon`, `_twStatic`, `_twDecal`, `_twWeapon` procedurally draw
@@ -457,11 +456,6 @@ Notes:
 - "Awaken" (`awakenTowerFromPopup`, 4617) is an end-tier upgrade granting a
   significant power boost and a distinct 3D visual aura.
 
-### Runes
-- `RUNES` (`js/tower.js` line 51) defines equippable runes that can be
-  attached to towers via `equipRuneToTower()` and visualized via
-  `updateTpRune()` and `_dropRune()`, modifying tower behavior/stats.
-
 ### Achievements
 - `ACHIEVEMENTS` (1196) and `ACH_CATS` (1223) define ~category-grouped
   achievements (story, combat, skill, endgame, collect).
@@ -533,9 +527,9 @@ unstyled (internal tool only). No gameplay/save changes from any of these.
   `MFLAVOR`/`MTAGS`/etc.), `getEnemyHP`/`getEnemySpd`, damage-number FX,
   `applyDmg`, `spawnEnemy`, `killEnemy`, `drawEnemySprite` and helpers.
 - **`js/tower.js`** — tower static data (`TNAMES`, `TICONS`, per-type stat
-  arrays), `RUNES`, `getTowerDmg/Range/Rate`, synergy system, sprite drawing
+  arrays), `getTowerDmg/Range/Rate`, synergy system, sprite drawing
   (`drawTowerIcon`/`_tw*`), the 3D Three.js tower overlay, and the tower
-  popup/upgrade/awaken/sell/rune functions.
+  popup/upgrade/awaken/sell functions.
 - **`js/game.js`** — `STAGES`/`DEFAULT_CFG`/`CFG`, grid/state setup
   (`mkState`, `setStage`), weather system, game lifecycle (`initGame`/`loop`,
   `restartGame`, `goNextStage`, etc.), sound system, `startWave`, `endGame`,

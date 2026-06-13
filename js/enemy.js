@@ -180,7 +180,6 @@ function killEnemy(e){
   if(!e.alive) return;
   e.alive=false;
   unlockMonster(e.ti);
-  if(MTYPE[e.ti]===1) _dropRune(e.x,e.y); // boss always drops rune
   if(e.ti===1&&!e._isSplit) _spawnSkeletonSplit(e); // 💀 Skeleton split
   _onKillForAch(e); // achievement tracking
   // combo system
@@ -200,7 +199,6 @@ function killEnemy(e){
       life:1.2,vy:-1.6,vx:0,decay:.9,scale:1.3});
   }
   G.gold+=e.reward;
-  if(e._avaRune) G.gold+=Math.floor(e.reward*.6); // Avarice rune bonus
   addParticle(e.x,e.y,'+'+e.reward+'💰','#ffe082');
   updateHUD();
   // V2: death burst — color-coded by enemy type
