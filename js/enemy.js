@@ -87,6 +87,8 @@ function applyDmg(e,dmg,towerType,forcePierce){
     return;
   }
   e._lastTowerType=towerType;
+  // 🌑 Void Mark: ติดมาร์กแล้วรับดาเมจเพิ่มจากป้อมทุกชนิด
+  if(e._voidMarkT>0&&e._voidMarkBonus) dmg*=(1+e._voidMarkBonus);
   const pierce=(TPIERCE[towerType]||false)||!!forcePierce;
   // 🔥 วิญญาณไฟ: ช่วงพ่นไฟป้องกันตัวเอง ลดดาเมจที่ได้รับ 30% (Scorch Flare)
   if(e.ti===3&&e._flareT>0) dmg*=.7;

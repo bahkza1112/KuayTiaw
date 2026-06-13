@@ -2,6 +2,56 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.12.0 — Soul Gems, Workshop & Void Tower
+
+### Added
+- **Soul Gems currency** (`js/save.js`): new `tq_gems` localStorage key with
+  `loadGems()`/`saveGems()`/`addGems()`. Awarded via:
+  - `saveProgress(si,stars)` — first-time story stage star improvements
+    award gems per `GEM_STAR_TABLE=[0,10,20,30]` (cumulative, 1★/2★/3★ →
+    10/20/30 gems).
+  - `awardEndgameGems(finalWave,diff)` — called from `endEgGame()` and the
+    Endgame branch of `surrender()` (`js/game.js`), awards
+    `floor(floor(finalWave/2)*(1+egDiff*0.5))` gems on run end.
+- **Craftable materials** (`js/save.js`): new `tq_materials` localStorage key
+  (`{0,1,2}` = 🪨 เศษหินมืด / 🔘 แกนเวทอสูร / 🌟 ผงดาวตก) with
+  `loadMaterials()`/`saveMaterials()`/`addMaterial()`. Dropped only at
+  end-of-wave in Endgame via `rollEndgameMaterialDrops()` (`js/game.js`),
+  using fixed per-`egDiff` rates in `MAT_DROP_RATES` (not wave-scaled).
+- **Workshop screen** (`Tower Quest 🏰.html`, `js/ui.js`): new `#workshop`
+  screen + `#workshopBtn` on the main menu. `openWorkshop()`/
+  `renderWorkshop()`/`craftVoidTower()` and `VOID_RECIPE` (💎800 + 🪨×30 +
+  🔘×15 + 🌟×8) permanently set `tq_voidUnlocked` via
+  `isVoidUnlocked()`/`setVoidUnlocked()`.
+- **Void Tower (index 8)**: `🌑 ป้อมมนตราโมฆะ` — dmg 38, range 3.0, rate 0.6,
+  cost 90, single-target, ground-only. Appended to all per-tower parallel
+  arrays in `js/tower.js` (`TNAMES`/`TICONS`/`TCOLORS`/`TPROJ`/`TACCENT`/
+  `TSPLASH`/`TSLOW`/`TBUFF`/`TCANAIR`/`TGOLDMINE`/`TCHAIN`/`TPIERCE`/
+  `TFLAVOR`/`TTAGS`/`TSPECIAL`/`TSTRENGTH`/`TWEAKNESS`) and `CFG.t_dmg`/
+  `t_rng`/`t_rate`/`t_cost` in `js/game.js`. Also fixed a pre-existing gap in
+  `TCOLORS` (index 7/Thunder was missing). Added 2D icon decal/weapon
+  (`_twDecal`/`_twWeapon` type 8) and `BC`/`_BC3D` purple palette entries in
+  `js/tower.js`; 3D mesh falls back to `_buildTowerMesh3D`'s generic
+  `default` case with the new palette.
+- **Void Mark ability**: projectiles from Void Tower have a 30% (50% if
+  awakened) chance to mark their target, increasing damage taken from ALL
+  towers by 25% (40% if awakened) for 4s (refreshes, does not stack — capped
+  via `Math.max`). Implemented via `_voidMarkT`/`_voidMarkBonus` per-enemy
+  fields: proc/refresh in the Endgame projectile hit-handling block
+  (`js/game.js`), decay in the per-frame enemy loop, and the damage
+  multiplier in `applyDmg()` (`js/enemy.js`).
+- **Endgame tower selection**: new `towerSelMode` global parameterizes the
+  existing `#towersel` screen. `openEgTowerSelection()` (`js/ui.js`) caps
+  selectable towers at 7/6/5 for ง่าย/ปกติ/ยาก (`egDiff` 0/1/2), pool is
+  `[0-7]` plus `8` if `tq_voidUnlocked`. Selections persist per-difficulty
+  via `tq_sel_endgame_<egDiff>`. `startEndgame()` is now a thin wrapper
+  calling `openEgTowerSelection()`; `_doStartEndgame()` holds the original
+  body and uses `selectedTowersForStage` for `currentStage.unlockedTowers`.
+  Added `#tb8`/`#tc8` tower-bar button; all `<8` loop bounds over tower-bar
+  buttons bumped to `<9`.
+- **Gems display**: `#mmGemsDisplay` on the main menu (repurposed previously
+  unused `.curr`/`.gemico` markup), updated live by `updateMenuStats()`.
+
 ## v1.11.0 — Remove Rune System
 
 ### Removed

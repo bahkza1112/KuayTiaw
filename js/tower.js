@@ -1,15 +1,15 @@
-const TNAMES=['ปืนใหญ่','น้ำแข็ง','เวทมนตร์','สไนเปอร์','ซัพพอร์ต','ธนู','เหมืองทอง','สายฟ้า'];
-const TICONS=['💣','❄️','✨','🎯','💚','🏹','💰','⚡'];
-const TCOLORS=['#c62828','#0d47a1','#4a148c','#1b5e20','#00695c','#4e342e','#f57f17'];
-const TPROJ=['#ff7043','#80d8ff','#e040fb','#ffee58','#69f0ae','#a5d6a7','#ffd54f','#ffe57f'];
-const TACCENT=['#ff5252','#40c4ff','#ea80fc','#69f0ae','#64ffda','#8d6e63','#ffca28','#ffe57f'];
-const TSPLASH=[.8,0,1.2,0,0,0,0,0];
-const TSLOW=[0,.45,0,0,0,0,0,0];
-const TBUFF=[false,false,false,false,true,false,false,false];
-const TCANAIR=[false,false,false,true,false,true,false,true]; /* ยิง air ได้ */
-const TGOLDMINE=[false,false,false,false,false,false,true,false]; /* สร้างทอง */
-const TCHAIN=[0,0,0,0,0,0,0,2]; /* chain lightning targets (Thunder=2) */
-const TPIERCE=[false,false,false,true,false,false,false,true]; /* ทะลุโล่ได้ (Sniper, Thunder) */
+const TNAMES=['ปืนใหญ่','น้ำแข็ง','เวทมนตร์','สไนเปอร์','ซัพพอร์ต','ธนู','เหมืองทอง','สายฟ้า','ป้อมมนตราโมฆะ'];
+const TICONS=['💣','❄️','✨','🎯','💚','🏹','💰','⚡','🌑'];
+const TCOLORS=['#c62828','#0d47a1','#4a148c','#1b5e20','#00695c','#4e342e','#f57f17','#f9a825','#311b92'];
+const TPROJ=['#ff7043','#80d8ff','#e040fb','#ffee58','#69f0ae','#a5d6a7','#ffd54f','#ffe57f','#b388ff'];
+const TACCENT=['#ff5252','#40c4ff','#ea80fc','#69f0ae','#64ffda','#8d6e63','#ffca28','#ffe57f','#7e57c2'];
+const TSPLASH=[.8,0,1.2,0,0,0,0,0,0];
+const TSLOW=[0,.45,0,0,0,0,0,0,0];
+const TBUFF=[false,false,false,false,true,false,false,false,false];
+const TCANAIR=[false,false,false,true,false,true,false,true,false]; /* ยิง air ได้ */
+const TGOLDMINE=[false,false,false,false,false,false,true,false,false]; /* สร้างทอง */
+const TCHAIN=[0,0,0,0,0,0,0,2,0]; /* chain lightning targets (Thunder=2) */
+const TPIERCE=[false,false,false,true,false,false,false,true,false]; /* ทะลุโล่ได้ (Sniper, Thunder) */
 const TFLAVOR=['ปืนใหญ่หนักที่ยิงกระสุนระเบิด ความเสียหายแบบกระจายทำลายล้างศัตรูที่อยู่รวมกัน',
   'ยิงน้ำแข็งที่ทำให้ศัตรูเยือกแข็ง วางไว้ก่อนทางยาวจะได้ผลดีที่สุด',
   'รวมพลังเวทมนตร์เป็นการโจมตีที่รุนแรง กระจายในวงกว้าง แต่ยิงช้า',
@@ -17,7 +17,8 @@ const TFLAVOR=['ปืนใหญ่หนักที่ยิงกระส�
   'ปล่อยออร่าเสริมกำลังที่เพิ่มความเสียหายให้ป้อมใกล้เคียง ไม่โจมตีโดยตรง',
   'นักธนูผู้คล่องแคล่ว ยิงได้ทั้งศัตรูภาคพื้นดินและศัตรูที่บินอยู่บนอากาศ',
   'เหมืองทองที่สร้างรายได้ต่อเนื่อง ไม่โจมตี แต่ผลิตทองทุก 5 วินาที',
-  'หอคอยพลังสายฟ้าที่ยิงฟ้าผ่าลงใส่ศัตรู และลัดไปยังศัตรูข้างเคียงอีก 2 ตัว ยิงโดนได้ทั้งพื้นและอากาศ'];
+  'หอคอยพลังสายฟ้าที่ยิงฟ้าผ่าลงใส่ศัตรู และลัดไปยังศัตรูข้างเคียงอีก 2 ตัว ยิงโดนได้ทั้งพื้นและอากาศ',
+  'ป้อมมนตราต้องห้ามที่ปล่อยพลังโมฆะ มีโอกาสติดมาร์กศัตรู ทำให้รับดาเมจเพิ่มจากป้อมทุกชนิด ปลดล็อกได้จาก Workshop เท่านั้น และใช้ได้เฉพาะ Endgame'];
 const TTAGS=[[{t:'กระจาย',c:'tag-orange'},{t:'ความเสียหายพื้นที่',c:'tag-red'}],
   [{t:'ช้า',c:'tag-blue'},{t:'ซัพพอร์ต',c:'tag-green'}],
   [{t:'กระจายกว้าง',c:'tag-purple'},{t:'ความเสียหายสูง',c:'tag-red'}],
@@ -25,8 +26,9 @@ const TTAGS=[[{t:'กระจาย',c:'tag-orange'},{t:'ความเสี�
   [{t:'ออร่าเสริมกำลัง',c:'tag-green'},{t:'ไม่โจมตี',c:'tag-purple'}],
   [{t:'ยิง Air',c:'tag-blue'},{t:'Fire Rate เร็ว',c:'tag-orange'}],
   [{t:'ผลิตทอง',c:'tag-green'},{t:'ไม่โจมตี',c:'tag-purple'}],
-  [{t:'Chain Lightning',c:'tag-orange'},{t:'ยิง Air',c:'tag-blue'}]];
-const TSPECIAL=['กระจาย: 0.8 ช่อง','ชะลอเหลือ 45% นาน 2 วินาที','กระจาย: 1.2 ช่อง','ระยะยิง 4.5 ช่อง','+10% ความเสียหาย/ระดับ ให้ป้อมใกล้เคียง','ยิง Air ได้ — ยิงค้างคาวและวิเวิร์นได้ (ร่วมกับ Sniper และ Thunder)','ผลิต 2/4/6/8 ทอง ทุก 5 วินาที ตาม Level','Chain Lightning ถึง 2 ตัว — ดาเมจลด 40% ต่อ chain — ยิง Air ได้'];
+  [{t:'Chain Lightning',c:'tag-orange'},{t:'ยิง Air',c:'tag-blue'}],
+  [{t:'Void Mark',c:'tag-purple'},{t:'เฉพาะ Endgame',c:'tag-red'}]];
+const TSPECIAL=['กระจาย: 0.8 ช่อง','ชะลอเหลือ 45% นาน 2 วินาที','กระจาย: 1.2 ช่อง','ระยะยิง 4.5 ช่อง','+10% ความเสียหาย/ระดับ ให้ป้อมใกล้เคียง','ยิง Air ได้ — ยิงค้างคาวและวิเวิร์นได้ (ร่วมกับ Sniper และ Thunder)','ผลิต 2/4/6/8 ทอง ทุก 5 วินาที ตาม Level','Chain Lightning ถึง 2 ตัว — ดาเมจลด 40% ต่อ chain — ยิง Air ได้','Void Mark: 30% โอกาสติดมาร์ก (อเวค 50%) ทำให้ศัตรูรับดาเมจเพิ่ม +25% จากป้อมทุกชนิด (อเวค +40%) นาน 4 วินาที รีเฟรชเวลาได้แต่ไม่บวกซ้ำ'];
 const TSTRENGTH=[
   ['ทำลายหมู่ศัตรูได้ดี','ระยะใกล้-กลาง'],
   ['ชะลอความเร็วศัตรู','เพิ่มเวลาให้ป้อมอื่น'],
@@ -36,6 +38,7 @@ const TSTRENGTH=[
   ['ยิงได้ทั้ง ground และ air','Fire Rate สูง'],
   ['รายได้ต่อเนื่อง','ไม่ต้องการเป้าหมาย'],
   ['Chain ศัตรู 2 ตัวในหนึ่งยิง','ยิง Air ได้'],
+  ['เพิ่มดาเมจให้ทุกป้อมที่ยิงเป้าติดมาร์ก','ระยะยิงไกล'],
 ];
 const TWEAKNESS=[
   ['ยิงช้าถ้าศัตรูกระจาย','ระยะสั้นกว่าสไนเปอร์'],
@@ -46,6 +49,7 @@ const TWEAKNESS=[
   ['ดาเมจต่ำกว่า Sniper','ระยะสั้นกว่า'],
   ['ไม่โจมตีเลย','ถ้าถูกทำลายเสียทอง'],
   ['ดาเมจต่อตัวต่ำกว่าป้อมอื่น','Chain ต้องการหลายศัตรู'],
+  ['ยิงได้ทีละตัว ไม่มี splash','ใช้ได้แค่ Endgame'],
 ];
 function getTowerDmg(t,lv){return CFG.t_dmg[t]*(1+(lv-1)*.25);}
 function getTowerRange(t,lv){return CFG.t_rng[t]*(1+(lv-1)*.15);}
@@ -136,7 +140,8 @@ function _twStatic(ctx,type,r){
   const BC=[['#0d3b9e','#3d7ae8','#2255cc'],['#005a8a','#00b4e0','#0088bb'],
             ['#5c0090','#a04de0','#7a22c0'],['#1e4a1e','#3a9f3a','#2d7030'],
             ['#004d3a','#00b07a','#007a55'],['#5c3400','#c87020','#9a5200'],
-            ['#6b3800','#d4820a','#a06008'],['#0a1a44','#1a5abf','#122266']];
+            ['#6b3800','#d4820a','#a06008'],['#0a1a44','#1a5abf','#122266'],
+            ['#1a0a3a','#5e35b1','#3d2570']];
   const [bd,bm]=BC[type]||BC[0];
   // shadow under base
   ctx.globalAlpha=.28;ctx.fillStyle='#000';
@@ -210,6 +215,10 @@ function _twDecal(ctx,type,r){
     ctx.fillStyle='#ffe57f';
     ctx.beginPath();ctx.moveTo(r*.07,-r*.22);ctx.lineTo(-r*.08,-r*.02);ctx.lineTo(r*.03,-r*.02);ctx.lineTo(-r*.07,r*.18);ctx.lineTo(r*.14,r*.01);ctx.lineTo(r*.02,r*.01);ctx.closePath();ctx.fill();
     ctx.strokeStyle='#fff9c4';ctx.lineWidth=r*.025;ctx.stroke();
+  } else if(type===8){// void eye
+    ctx.strokeStyle='#b388ff';ctx.lineWidth=r*.05;ctx.beginPath();ctx.arc(0,-r*.03,r*.19,0,Math.PI*2);ctx.stroke();
+    ctx.fillStyle='#0a0014';ctx.beginPath();ctx.arc(0,-r*.03,r*.12,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#7e57c2';ctx.beginPath();ctx.arc(0,-r*.03,r*.05,0,Math.PI*2);ctx.fill();
   }
 }
 function _twWeapon(ctx,type,r){
@@ -298,6 +307,13 @@ function _twWeapon(ctx,type,r){
     ctx.strokeStyle='#4a7acc';ctx.lineWidth=r*.07;
     ctx.beginPath();ctx.moveTo(-r*.12,-r*.75);ctx.lineTo(-r*.38,-r*.55);ctx.stroke();
     ctx.beginPath();ctx.moveTo(r*.12,-r*.75);ctx.lineTo(r*.38,-r*.55);ctx.stroke();
+  } else if(type===8){// Void — orbiting dark orb
+    const p=.5+.4*Math.sin(Date.now()*.004);
+    ctx.globalAlpha=p*.6;ctx.strokeStyle='#7e57c2';ctx.lineWidth=r*.12;ctx.beginPath();ctx.arc(0,0,r*.42,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;
+    ctx.fillStyle='#1a0a3a';ctx.beginPath();ctx.arc(0,0,r*.26,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#311b92';ctx.beginPath();ctx.arc(0,0,r*.16,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#b388ff';ctx.beginPath();ctx.arc(-r*.05,-r*.05,r*.06,0,Math.PI*2);ctx.fill();
+    const t=Date.now()*.003;for(let k=0;k<3;k++){const a=t+k/3*Math.PI*2;ctx.fillStyle=`rgba(126,87,194,${.5+.4*Math.sin(a)})`;ctx.beginPath();ctx.arc(Math.cos(a)*r*.55,Math.sin(a)*r*.55,r*.07,0,Math.PI*2);ctx.fill();}
   }
 }
 
@@ -307,7 +323,8 @@ let _twMeshes=new Map(); // tower object -> mesh group
 const _BC3D=[['#0d3b9e','#3d7ae8','#2255cc'],['#005a8a','#00b4e0','#0088bb'],
              ['#5c0090','#a04de0','#7a22c0'],['#1e4a1e','#3a9f3a','#2d7030'],
              ['#004d3a','#00b07a','#007a55'],['#5c3400','#c87020','#9a5200'],
-             ['#6b3800','#d4820a','#a06008'],['#0a1a44','#1a5abf','#122266']];
+             ['#6b3800','#d4820a','#a06008'],['#0a1a44','#1a5abf','#122266'],
+             ['#1a0a3a','#5e35b1','#3d2570']];
 
 function _gridToWorld3D(col,row){
   return {x:(col+0.5-COLS/2)*CS, z:(row+0.5-ROWS/2)*CS};

@@ -1,6 +1,13 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='1.11.0';
+const GAME_VERSION='1.12.0';
 const PATCH_NOTES=[
+  {ver:'1.12.0',date:'2026-06-14',title:'💎 Soul Gems, Workshop และป้อมมนตราโมฆะ!',notes:[
+    'เพิ่มสกุลเงินใหม่ 💎 มณีวิญญาณ (Soul Gems) — ได้รับเมื่อทำดาวในด่านเนื้อเรื่องเพิ่มขึ้นเป็นครั้งแรก และเมื่อจบเกม Endgame',
+    'Endgame: เคลียร์เวฟจะมีโอกาสดรอปวัสดุพิเศษ 🪨 เศษหินมืด, 🔘 แกนเวทอสูร, 🌟 ผงดาวตก (โอกาสคงที่ตามความยาก)',
+    'เพิ่มหน้า 🛠️ Workshop ในเมนูหลัก — ใช้ 💎 และวัสดุปลดล็อกป้อมใหม่ถาวร',
+    'เพิ่มป้อมที่ 9: 🌑 ป้อมมนตราโมฆะ — มีโอกาสติด "Void Mark" ให้ศัตรู เพิ่มดาเมจที่รับจากป้อมทุกชนิด ใช้ได้เฉพาะ Endgame',
+    'Endgame ตอนนี้ต้องเลือกป้อมก่อนเริ่มเกม จำนวนป้อมที่เลือกได้ขึ้นกับความยาก (ง่าย 7 / ปกติ 6 / ยาก 5)'
+  ]},
   {ver:'1.11.0',date:'2026-06-13',title:'🔮 เอาระบบรูนออก + ปรับ Awaken',notes:[
     'เอาระบบรูน (Rune) ออกทั้งหมด — ไม่มีการดรอปรูนจาก Boss และไม่มีช่องใส่รูนในป้อมที่ตื่นแล้ว',
     'Awaken ไม่ให้โบนัสดาเมจ +15% แบบรวมอีกต่อไป แต่ยังคงพลังพิเศษเฉพาะป้อมไว้ครบ (เช่น Cannon สาดกว้างขึ้น, Ice แช่แข็งสนิท, Sniper ยิงทะลุเป็นเส้น, Magic ยิงซ้ำ, Thunder chain เพิ่ม, Support เพิ่มโบนัสซินเนอร์จี้, Gold Mine ผลิตทอง x2)'
@@ -215,7 +222,7 @@ function renderAchievTab(){
 }
 
 /* ══ SCREEN MANAGEMENT ══ */
-function hideAll(){['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','whatsnew','towersel','storyscr'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const cs=document.getElementById('cutscene');if(cs)cs.style.display='none';}
+function hideAll(){['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','whatsnew','towersel','storyscr','workshop'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const cs=document.getElementById('cutscene');if(cs)cs.style.display='none';}
 function showScreen(id,flex){
   hideAll();
   const el=document.getElementById(id);
@@ -243,8 +250,42 @@ function updateMenuStats(){
   const maxStar=STAGES.filter(s=>!s.comingSoon).length*3;
   if(ts) ts.textContent='⭐ '+totalStars+' / '+maxStar;
   if(si2) si2.textContent=icons||'🔒🔒🔒';
+  const gd=document.getElementById('mmGemsDisplay');
+  if(gd) gd.textContent=loadGems().toLocaleString();
   _updateAchBadge(); // อัปเดต badge ทุกครั้งที่ menu render
   _updateNewsBadge(); // อัปเดต badge ข่าวสารทุกครั้งที่ menu render
+}
+
+/* ══ WORKSHOP ══ */
+const VOID_RECIPE={gems:800,mats:{0:30,1:15,2:8}};
+const MAT_ICONS=['🪨','🔘','🌟'];
+const MAT_NAMES=['เศษหินมืด','แกนเวทอสูร','ผงดาวตก'];
+function openWorkshop(){ showScreen('workshop',true); renderWorkshop(); }
+function renderWorkshop(){
+  const gems=loadGems(), mats=loadMaterials();
+  document.getElementById('wsGems').textContent=gems.toLocaleString();
+  document.getElementById('wsMat0').textContent=mats[0]||0;
+  document.getElementById('wsMat1').textContent=mats[1]||0;
+  document.getElementById('wsMat2').textContent=mats[2]||0;
+  const unlocked=isVoidUnlocked();
+  document.getElementById('wsAlreadyUnlocked').style.display=unlocked?'block':'none';
+  const craftBtn=document.getElementById('wsCraftBtn');
+  craftBtn.style.display=unlocked?'none':'';
+  if(unlocked) return;
+  craftBtn.disabled=!(gems>=VOID_RECIPE.gems&&(mats[0]||0)>=VOID_RECIPE.mats[0]
+    &&(mats[1]||0)>=VOID_RECIPE.mats[1]&&(mats[2]||0)>=VOID_RECIPE.mats[2]);
+}
+function craftVoidTower(){
+  if(isVoidUnlocked())return;
+  const gems=loadGems(), mats=loadMaterials();
+  const ok=gems>=VOID_RECIPE.gems&&(mats[0]||0)>=VOID_RECIPE.mats[0]
+    &&(mats[1]||0)>=VOID_RECIPE.mats[1]&&(mats[2]||0)>=VOID_RECIPE.mats[2];
+  if(!ok){ showToast('❌ ทรัพยากรไม่พอ!'); return; }
+  saveGems(gems-VOID_RECIPE.gems);
+  mats[0]-=VOID_RECIPE.mats[0]; mats[1]-=VOID_RECIPE.mats[1]; mats[2]-=VOID_RECIPE.mats[2];
+  saveMaterials(mats); setVoidUnlocked();
+  showToast('🌑 ปลดล็อก ป้อมมนตราโมฆะ สำเร็จ!');
+  renderWorkshop(); updateMenuStats(); checkAchievements();
 }
 
 /* ══ STAGE SELECT ══ */
@@ -554,6 +595,7 @@ function showStoryScreen(si){
 
 /* ══ TOWER SELECTION ══ */
 function showTowerSelection(si){
+  towerSelMode='story';
   const s=STAGES[si];
   const available=s.unlockedTowers||[0,1,2,3,4,5,6];
   stageMaxTowers=s.maxTowers||99;
@@ -569,6 +611,17 @@ function showTowerSelection(si){
   selectedTowersForStage=saved.filter(t=>available.includes(t)).slice(0,stageMaxTowers);
   const info=document.getElementById('tsInfo');
   info.innerHTML=`เลือก <strong>ป้อมสูงสุด ${stageMaxTowers} แบบ</strong> สำหรับด่านนี้ — มีป้อมทั้งหมด ${available.length} แบบให้เลือก`;
+  renderTowerSelection(available);
+}
+function openEgTowerSelection(){
+  towerSelMode='endgame';
+  stageMaxTowers=[7,6,5][egDiff];
+  const available=[0,1,2,3,4,5,6,7].concat(isVoidUnlocked()?[8]:[]);
+  showScreen('towersel',true);
+  const saved=JSON.parse(localStorage.getItem('tq_sel_endgame_'+egDiff)||'[]');
+  selectedTowersForStage=saved.filter(t=>available.includes(t)).slice(0,stageMaxTowers);
+  const info=document.getElementById('tsInfo');
+  info.innerHTML=`เลือก <strong>ป้อมสูงสุด ${stageMaxTowers} แบบ</strong> สำหรับ Endgame (${EG_DIFF_NAMES[egDiff]}) — มีป้อมทั้งหมด ${available.length} แบบให้เลือก`;
   renderTowerSelection(available);
 }
 function renderTowerSelection(available){
@@ -603,10 +656,17 @@ function renderTowerSelection(available){
   document.getElementById('tsGrid').innerHTML=grid;
   document.getElementById('tsStartBtn').disabled=selectedTowersForStage.length===0;
 }
+function _tsAvailable(){
+  return towerSelMode==='endgame'
+    ? [0,1,2,3,4,5,6,7].concat(isVoidUnlocked()?[8]:[])
+    : (STAGES[pendingStageIndex].unlockedTowers||[0,1,2,3,4]);
+}
+function _tsSaveKey(){
+  return towerSelMode==='endgame' ? 'tq_sel_endgame_'+egDiff : 'tq_sel_'+pendingStageIndex;
+}
 function toggleTowerSelection(ti){
   const idx=selectedTowersForStage.indexOf(ti);
-  const s=STAGES[pendingStageIndex];
-  const available=s.unlockedTowers||[0,1,2,3,4];
+  const available=_tsAvailable();
   if(idx>=0){
     selectedTowersForStage.splice(idx,1);
   } else {
@@ -616,19 +676,19 @@ function toggleTowerSelection(ti){
     }
     selectedTowersForStage.push(ti);
   }
-  localStorage.setItem('tq_sel_'+pendingStageIndex,JSON.stringify(selectedTowersForStage));
+  localStorage.setItem(_tsSaveKey(),JSON.stringify(selectedTowersForStage));
   renderTowerSelection(available);
 }
 function removeTowerFromSelection(slotIdx){
   selectedTowersForStage.splice(slotIdx,1);
-  const s=STAGES[pendingStageIndex];
-  const available=s.unlockedTowers||[0,1,2,3,4];
-  localStorage.setItem('tq_sel_'+pendingStageIndex,JSON.stringify(selectedTowersForStage));
+  const available=_tsAvailable();
+  localStorage.setItem(_tsSaveKey(),JSON.stringify(selectedTowersForStage));
   renderTowerSelection(available);
 }
 function confirmTowerSelection(){
   if(selectedTowersForStage.length===0) return;
-  _doStartStage(pendingStageIndex);
+  if(towerSelMode==='endgame') _doStartEndgame();
+  else _doStartStage(pendingStageIndex);
 }
 
 /* ══ TOWER SELECT ══ */
@@ -636,7 +696,7 @@ function selTower(i){
   if(!G||G.over||G.win||paused) return;
   if(!currentStage.unlockedTowers.includes(i)){showToast('🔒 ยังไม่ได้ปลดล็อค!');return;}
   G.selTwr=(G.selTwr===i)?-1:i;
-  for(let j=0;j<8;j++){const b=document.getElementById('tb'+j);if(b)b.classList.toggle('sel',j===G.selTwr);}
+  for(let j=0;j<9;j++){const b=document.getElementById('tb'+j);if(b)b.classList.toggle('sel',j===G.selTwr);}
   if(G.selTwr<0){const info=document.getElementById('rangeInfo');if(info)info.style.display='none';}
 }
 
@@ -1399,8 +1459,6 @@ window.goMenu=function(){
 /* ══ BUTTON WIRING ══ */
 document.getElementById('startBtn').addEventListener('click',openStageSelect);
 document.getElementById('battleNavBtn').addEventListener('click',openStageSelect);
-document.getElementById('ssBackBtn').addEventListener('click',()=>showScreen('mm',true));
-document.getElementById('tsBackBtn').addEventListener('click',()=>openStageSelect());
 document.getElementById('backBtn').addEventListener('click',goStageSelect);
 document.getElementById('pauseBtn').addEventListener('click',()=>{if(!G||G.over||G.win)return;togglePause();});
 document.getElementById('speedBtn').addEventListener('click',function(){
@@ -1426,7 +1484,7 @@ document.getElementById('settAutoBtn').addEventListener('click',function(){
   this.classList.toggle('on',autoWave);
   this.textContent=autoWave?'🔁 Auto ON':'🔁 Auto';
 });
-for(let _i=0;_i<8;_i++){
+for(let _i=0;_i<9;_i++){
   const _tb=document.getElementById('tb'+_i);
   if(_tb) _tb.addEventListener('pointerdown',(e)=>onTbtnPointerDown(e,_i));
 }
@@ -1443,11 +1501,17 @@ document.getElementById('lbBackBtn').addEventListener('click',()=>showScreen('mm
 document.getElementById('verBtn').addEventListener('click',openWhatsNew);
 document.getElementById('whatsnewBackBtn').addEventListener('click',()=>showScreen('mm',true));
 document.getElementById('ssBackBtn').addEventListener('click',()=>showScreen('mm',true));
-document.getElementById('tsBackBtn').addEventListener('click',()=>openStageSelect());
+document.getElementById('tsBackBtn').addEventListener('click',()=>{
+  if(towerSelMode==='endgame') showScreen('egmenu',true);
+  else openStageSelect();
+});
+document.getElementById('workshopBtn').addEventListener('click',openWorkshop);
+document.getElementById('workshopBackBtn').addEventListener('click',()=>showScreen('mm',true));
+document.getElementById('wsCraftBtn').addEventListener('click',craftVoidTower);
 // update hideAll to include new screens
 const _origHideAll=hideAll;
 window.hideAll=function(){
-  ['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','whatsnew','towersel'].forEach(id=>{
+  ['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','whatsnew','towersel','workshop'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.style.display='none';
   });
 };

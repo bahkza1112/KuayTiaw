@@ -2,7 +2,7 @@
 <html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Tower Quest 🏰 v1.11.0</title>
+<title>Tower Quest 🏰 v1.12.0</title>
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -28,7 +28,7 @@
   <div class="star far" style="width:2px;height:2px;top:4%;left:90%;animation-delay:.9s"></div>
   <div class="star far" style="width:1px;height:1px;top:16%;left:30%;animation-delay:2s"></div>
   <div class="topbar">
-    <div class="curr"><div class="gemico"></div><span>580</span></div>
+    <div class="curr"><div class="gemico"></div><span id="mmGemsDisplay">0</span></div>
     <div class="energy-row">
       <svg class="energy-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
       <svg class="energy-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
@@ -43,11 +43,12 @@
   <div class="island">🏰</div>
   <div class="gtitle">TOWER QUEST</div>
   <div class="gsub">⚔️ Defend Your Kingdom!</div>
-  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v1.11.0 — What's New<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
+  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v1.12.0 — What's New<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
 
   <!-- battle buttons -->
   <button class="bbattle" id="startBtn">⚔️ Story Mode</button>
   <button id="egMenuBtn" style="margin-top:12px;font-family:'Arial Black','Segoe UI',Arial,sans-serif;background:linear-gradient(180deg,rgba(255,80,80,.35),rgba(180,20,20,.45));color:#ff8a80;font-size:17px;font-weight:800;border:2px solid rgba(255,50,50,.5);border-radius:50px;padding:13px 54px;cursor:pointer;letter-spacing:1px;transition:all .2s;box-shadow:0 0 20px rgba(255,50,50,.4);" onmouseover="this.style.background=&#39;linear-gradient(180deg,rgba(255,80,80,.5),rgba(180,20,20,.6))&#39;;this.style.boxShadow=&#39;0 0 32px rgba(255,50,50,.65)&#39;" onmouseout="this.style.background=&#39;linear-gradient(180deg,rgba(255,80,80,.35),rgba(180,20,20,.45))&#39;;this.style.boxShadow=&#39;0 0 20px rgba(255,50,50,.4)&#39;">🔥 ENDGAME</button>
+  <button id="workshopBtn" style="margin-top:12px;font-family:'Arial Black','Segoe UI',Arial,sans-serif;background:linear-gradient(180deg,rgba(126,87,194,.35),rgba(49,27,146,.45));color:#d1c4e9;font-size:15px;font-weight:800;border:2px solid rgba(126,87,194,.5);border-radius:50px;padding:11px 46px;cursor:pointer;letter-spacing:1px;transition:all .2s;box-shadow:0 0 18px rgba(126,87,194,.4);" onmouseover="this.style.background=&#39;linear-gradient(180deg,rgba(126,87,194,.5),rgba(49,27,146,.6))&#39;;this.style.boxShadow=&#39;0 0 28px rgba(126,87,194,.65)&#39;" onmouseout="this.style.background=&#39;linear-gradient(180deg,rgba(126,87,194,.35),rgba(49,27,146,.45))&#39;;this.style.boxShadow=&#39;0 0 18px rgba(126,87,194,.4)&#39;">🛠️ Workshop</button>
 
   <!-- progress bar -->
   <div id="menuProgress" style="width:84%;margin-top:22px;background:rgba(0,0,0,.32);backdrop-filter:blur(6px);border:1px solid rgba(255,224,130,.18);box-shadow:0 0 18px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.04);border-radius:16px;padding:14px 16px;display:flex;justify-content:space-around;align-items:center;">
@@ -285,6 +286,7 @@
         <div class="tbtn" id="tb5" onclick="selTower(5)"><div class="ticon">🏹</div><div>Archer</div><div class="tcost" id="tc5">💰65</div></div>
         <div class="tbtn" id="tb6" onclick="selTower(6)"><div class="ticon">💰</div><div>Gold Mine</div><div class="tcost" id="tc6">💰80</div></div>
         <div class="tbtn" id="tb7" onclick="selTower(7)" style="display:none;"><div class="ticon">⚡</div><div>Thunder</div><div class="tcost" id="tc7">💰85</div></div>
+        <div class="tbtn" id="tb8" onclick="selTower(8)" style="display:none;"><div class="ticon">🌑</div><div>Void</div><div class="tcost" id="tc8">💰90</div></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0;margin-left:auto;">
         <div style="position:relative;">
@@ -394,6 +396,42 @@
     </div>
     <div class="eg-locked-note" id="egLockedNote" style="display:none">🔒 Complete at least 1 Story stage first</div>
     <button class="eg-start-btn" id="egStartBtn" onclick="startEndgame()">🔥 Start ENDGAME</button>
+  </div>
+</div>
+
+<!-- WORKSHOP -->
+<div id="workshop" style="display: none;">
+  <div class="eg-hd">
+    <button class="bback" id="workshopBackBtn">← Back</button>
+    <div class="eg-hd-title">🛠️ WORKSHOP</div>
+  </div>
+  <div class="eg-body">
+    <div class="eg-info-box">
+      <div class="eg-info-title">💎 ทรัพยากรของคุณ</div>
+      <div class="eg-info-txt" style="display:flex;gap:18px;flex-wrap:wrap;font-size:14px;font-weight:700;">
+        <span>💎 <span id="wsGems">0</span></span>
+        <span>🪨 <span id="wsMat0">0</span></span>
+        <span>🔘 <span id="wsMat1">0</span></span>
+        <span>🌟 <span id="wsMat2">0</span></span>
+      </div>
+    </div>
+    <div class="eg-info-box">
+      <div class="eg-info-title">🌑 ป้อมมนตราโมฆะ</div>
+      <div class="eg-info-txt">
+        ป้อมมนตราต้องห้ามที่ปล่อยพลังโมฆะ มีโอกาสติด <strong>Void Mark</strong> ให้ศัตรู ทำให้รับดาเมจเพิ่มจากป้อมทุกชนิด<br>
+        ดาเมจ 38 | ระยะ 3.0 | ยิงเร็ว 0.6 วินาที/นัด | ราคา 💰90<br>
+        Awaken: โอกาสติดมาร์กเพิ่มเป็น 50% และเพิ่มดาเมจที่รับเป็น +40%<br>
+        ใช้ได้เฉพาะ Endgame เท่านั้น
+      </div>
+    </div>
+    <div class="eg-info-box">
+      <div class="eg-info-title">📜 สูตรปลดล็อก</div>
+      <div class="eg-info-txt" style="font-size:14px;font-weight:700;">
+        💎 800 + 🪨 ×30 + 🔘 ×15 + 🌟 ×8
+      </div>
+    </div>
+    <div class="eg-locked-note" id="wsAlreadyUnlocked" style="display:none;color:#b388ff;">🌑 ปลดล็อกแล้ว — สามารถเลือกใช้ในโหมด Endgame ได้</div>
+    <button class="eg-start-btn" id="wsCraftBtn" style="background:linear-gradient(180deg,#7e57c2,#311b92);">🛠️ Craft</button>
   </div>
 </div>
 

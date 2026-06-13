@@ -1,13 +1,44 @@
 
 /* ══ PROGRESS ══ */
 function loadProgress(){try{return JSON.parse(localStorage.getItem('tq_progress')||'{}');}catch(e){return{};}}
+const GEM_STAR_TABLE=[0,10,20,30]; // เพชรสะสมตามดาว 0/1/2/3
 function saveProgress(si,stars){
   const p=loadProgress();
+  const prevStars=p[si]||0;
   /* บันทึกเสมอถ้า stars ใหม่มากกว่าของเดิม หรือยังไม่เคยบันทึกด่านนี้เลย */
   if(p[si]===undefined||(stars>0&&stars>(p[si]||0))){
     p[si]=stars; localStorage.setItem('tq_progress',JSON.stringify(p));
+    if(stars>prevStars){
+      const gain=GEM_STAR_TABLE[stars]-GEM_STAR_TABLE[prevStars];
+      if(gain>0){ addGems(gain); showToast('💎 +'+gain+' Soul Gems!'); }
+    }
   }
   checkAchievements(); // ตรวจ achievement ทุกครั้งที่ clear ด่าน
+}
+
+/* ══ SOUL GEMS / MATERIALS / WORKSHOP ══ */
+function loadGems(){try{return Number(localStorage.getItem('tq_gems'))||0;}catch(e){return 0;}}
+function saveGems(n){localStorage.setItem('tq_gems',String(Math.max(0,Math.floor(n))));}
+function addGems(n){
+  if(n<=0)return;
+  saveGems(loadGems()+Math.floor(n));
+  if(typeof updateMenuStats==='function') updateMenuStats();
+}
+function loadMaterials(){
+  try{return Object.assign({0:0,1:0,2:0},JSON.parse(localStorage.getItem('tq_materials')||'{}'));}
+  catch(e){return {0:0,1:0,2:0};}
+}
+function saveMaterials(m){localStorage.setItem('tq_materials',JSON.stringify(m));}
+function addMaterial(idx,n){
+  if(n<=0)return;
+  const m=loadMaterials(); m[idx]=(m[idx]||0)+n; saveMaterials(m);
+}
+function isVoidUnlocked(){return localStorage.getItem('tq_voidUnlocked')==='1';}
+function setVoidUnlocked(){localStorage.setItem('tq_voidUnlocked','1');}
+function awardEndgameGems(finalWave,diff){
+  const gemsEarned=Math.floor(Math.floor(finalWave/2)*(1+diff*0.5));
+  if(gemsEarned>0){ addGems(gemsEarned); showToast('💎 +'+gemsEarned+' Soul Gems (Endgame)!'); }
+  return gemsEarned;
 }
 function isStageUnlocked(si){
   if(si===0) return true;

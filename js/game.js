@@ -130,10 +130,10 @@ const DEFAULT_CFG={
   m_spd:[1.4,1.0,1.15,.85,.5,.55,1.8,1.55,.65,.42,.72],
   m_rew:[10,10,15,20,60,30,5,20,30,100,10], // v1.7.2: ปัดเศษ reward เป็นเลขลงท้าย 0/5 เพื่อความชัดเจนในเกม
   // Tower — เพิ่ม DPS นิดหน่อยให้ผู้เล่นรู้สึกว่าป้อมมีพลัง
-  t_dmg:[24,12,44,65,0,20,0,20],   // [cannon,ice,magic,sniper,support,archer,goldmine,thunder] — cannon 28→24, magic 38→44
-  t_rng:[2.2,2.0,2.5,4.5,2.8,2.8,0,2.4],
-  t_rate:[1.2,1.5,.8,.4,0,2.0,0,1.8],
-  t_cost:[50,55,75,65,35,60,75,85], // thunder: 85 gold
+  t_dmg:[24,12,44,65,0,20,0,20,38],   // [cannon,ice,magic,sniper,support,archer,goldmine,thunder,void] — cannon 28→24, magic 38→44
+  t_rng:[2.2,2.0,2.5,4.5,2.8,2.8,0,2.4,3.0],
+  t_rate:[1.2,1.5,.8,.4,0,2.0,0,1.8,0.6],
+  t_cost:[50,55,75,65,35,60,75,85,90], // thunder: 85 gold, void: 90 gold
   t_goldrate:5,t_goldamt:[2,4,6,8],
   // Game settings
   startGold:200,    // เดิม 150 — ให้ซื้อป้อมได้ 4-5 ตัวก่อน wave 1
@@ -154,6 +154,18 @@ let egDiff=1; // 0=easy,1=normal,2=hard
 let egRound=0;
 const EG_DIFF_MULT=[0.7,1.0,1.5];
 const EG_DIFF_NAMES=['ง่าย','ปกติ','ยาก'];
+const MAT_DROP_RATES=[
+  [0.10,0.14,0.20], // 0: 🪨 เศษหินมืด
+  [0.05,0.08,0.12], // 1: 🔘 แกนเวทอสูร
+  [0.02,0.04,0.06], // 2: 🌟 ผงดาวตก
+]; // [matIdx][egDiff] — % ตายตัว ไม่สเกลตามเวฟ สเกลตามความยาก Endgame เท่านั้น
+function rollEndgameMaterialDrops(){
+  const drops=[];
+  for(let mi=0;mi<3;mi++){
+    if(Math.random()<MAT_DROP_RATES[mi][egDiff]){ addMaterial(mi,1); drops.push(mi); }
+  }
+  return drops;
+}
 const EG_PATH=[ /* ใช้ path ด่าน 2 */
   [0,1],[1,1],[2,1],[3,1],[3,2],[3,3],[3,4],[3,5],[4,5],[5,5],[6,5],
   [7,5],[7,4],[7,3],[7,2],[8,2],[9,2],[10,2],[11,2],
@@ -164,6 +176,7 @@ const EG_PATH=[ /* ใช้ path ด่าน 2 */
 let selectedTowersForStage=[];
 let pendingStageIndex=-1;
 let stageMaxTowers=6;
+let towerSelMode='story'; // 'story' | 'endgame'
 
 function setStage(si){
   currentStage=STAGES[si];
@@ -305,7 +318,7 @@ function initGame(){
   document.getElementById('maxWaveTxt').textContent=s.waves;
   document.getElementById('stageBadge').textContent='S'+(s.id+1)+' '+s.icon;
   // BUG FIX: reset selTwr highlight on restart
-  for(let i=0;i<8;i++){const b=document.getElementById('tb'+i);if(b)b.classList.remove('sel','locked-tower');}
+  for(let i=0;i<9;i++){const b=document.getElementById('tb'+i);if(b)b.classList.remove('sel','locked-tower');}
   paused=false;speed=1;autoWave=false;_settingsPausedGame=false;
   document.getElementById('speedBtn').textContent='1×';
   document.getElementById('pauseBtn').textContent='⏸';
@@ -385,7 +398,7 @@ function closeSettings(){
 }
 function updateTowerPanel(){
   const active=selectedTowersForStage.length>0?selectedTowersForStage:(currentStage.unlockedTowers||[0,1,2,3,4,5,6,7]);
-  for(let i=0;i<8;i++){
+  for(let i=0;i<9;i++){
     const btn=document.getElementById('tb'+i);
     if(!btn) continue;
     const locked=!active.includes(i);
@@ -1883,7 +1896,7 @@ function _onDragMove(e){
   if(!_dragging&&Math.hypot(e.clientX-_dragSX,e.clientY-_dragSY)>10){
     _dragging=true;
     G.selTwr=_dragTwr;
-    for(let j=0;j<8;j++){const b=document.getElementById('tb'+j);if(b)b.classList.toggle('sel',j===_dragTwr);}
+    for(let j=0;j<9;j++){const b=document.getElementById('tb'+j);if(b)b.classList.toggle('sel',j===_dragTwr);}
     const ghost=document.getElementById('dragGhost');
     ghost.textContent=TICONS[_dragTwr]; ghost.style.display='flex';
   }
@@ -1917,7 +1930,7 @@ function _onDragUp(e){
     document.getElementById('dragGhost').style.display='none';
     const info=document.getElementById('rangeInfo'); if(info) info.style.display='none';
     if(G){G.selTwr=-1; G.mx=-1; G.my=-1;}
-    for(let j=0;j<8;j++){const b=document.getElementById('tb'+j);if(b)b.classList.remove('sel');}
+    for(let j=0;j<9;j++){const b=document.getElementById('tb'+j);if(b)b.classList.remove('sel');}
   }
   _dragTwr=-1; _dragging=false;
 }
@@ -1957,9 +1970,12 @@ function _getEgEnemyPool(){
   return [0,1,2,3,4,5,6,7,8,9,10];             // Round 7+: ทุกตัวรวม Final Boss
 }
 function startEndgame(){
+  openEgTowerSelection();
+}
+function _doStartEndgame(){
   isEndgame=true; egRound=0;
   currentStage={id:99,name:'Endgame',icon:'🔥',waves:999,
-    enemyTypes:_getEgEnemyPool(),unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
+    enemyTypes:_getEgEnemyPool(),unlockedTowers:[...selectedTowersForStage],unlocks:null,
     bossChance:.10,
     path:EG_PATH,bgColor:'#0a0a1a',pathColor:'#3a2a1a',
     grassColors:['#1a0a0a','#1e0e0e','#120808','#1a0c0c','#160a0a']};
@@ -1994,12 +2010,13 @@ function initEgGame(){
   document.getElementById('maxWaveTxt').textContent='∞';
   document.getElementById('stageBadge').textContent='🔥 Round '+(egRound+1);
   document.getElementById('stageBadge').className='eg-round-badge';
-  for(let i=0;i<8;i++){const b=document.getElementById('tb'+i);if(b){b.classList.remove('sel','locked-tower');const c=document.getElementById('tc'+i);if(c)c.textContent='💰'+CFG.t_cost[i];}}
+  for(let i=0;i<9;i++){const b=document.getElementById('tb'+i);if(b){b.classList.remove('sel','locked-tower');const c=document.getElementById('tc'+i);if(c)c.textContent='💰'+CFG.t_cost[i];}}
   paused=false; speed=1; autoWave=false; _settingsPausedGame=false;
   document.getElementById('speedBtn').textContent='1×';
   document.getElementById('pauseBtn').textContent='⏸';
   document.getElementById('settingsScreen').style.display='none';
   const ab=document.getElementById('autoBtn');if(ab){ab.classList.remove('on');ab.textContent='🔁 Auto';}
+  updateTowerPanel();
   updateHUD();
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
   let last=performance.now();
@@ -2248,6 +2265,17 @@ function updateEg(dt){
           applyDmg(p.target,p.dmg,p.type,p._rngPierce);
         }
       }
+      // 🌑 Void Mark: มีโอกาสติดมาร์ก เพิ่มดาเมจที่ศัตรูรับจากป้อมทุกชนิด รีเฟรชเวลาแต่ไม่บวกซ้ำ
+      if(p.type===8&&p.target&&p.target.alive){
+        const procChance=p._awakened?0.5:0.3;
+        const markBonus=p._awakened?0.40:0.25;
+        if(Math.random()<procChance){
+          const e=p.target;
+          e._voidMarkT=4;
+          e._voidMarkBonus=Math.max(e._voidMarkBonus||0,markBonus);
+          G.fxRings.push({x:e.x,y:e.y,r:2,maxR:ESIZES[e.ti]*1.6,life:.5,lw:2,col:'#9575cd',delay:0});
+        }
+      }
       if(p.slow>0&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)){
         // ❄️ Ice Awaken: ติดแข็ง (หยุดสนิท) 3 วินาที — Support ตื่นใกล้เคียงเพิ่มเป็น 6 วินาที
         if(p._awakened&&p.type===1){ p.target.slow=0; p.target.slowT=3*(p._supBoost||1); }
@@ -2306,7 +2334,10 @@ function updateEg(dt){
       if(G.fxTrails.length<200) G.fxTrails.push({x:p.x,y:p.y,col:TPROJ[p.type],life:1,type:p.type});
     }
   }
-  G.enemies.forEach(e=>{if(e.hitFlash>0) e.hitFlash=Math.max(0,e.hitFlash-dt*4);});
+  G.enemies.forEach(e=>{
+    if(e.hitFlash>0) e.hitFlash=Math.max(0,e.hitFlash-dt*4);
+    if(e._voidMarkT>0){ e._voidMarkT-=dt; if(e._voidMarkT<=0){ e._voidMarkT=0; e._voidMarkBonus=0; } }
+  });
   G.towers.forEach(tw=>{if(tw.spawnAnim>0) tw.spawnAnim=Math.max(0,tw.spawnAnim-dt*3);});
   if(G.shakeT>0) G.shakeT=Math.max(0,G.shakeT-dt*3.8);
   if(G.waveBanner&&G.waveBanner.t>0) G.waveBanner.t-=dt;
@@ -2336,8 +2367,12 @@ function updateEg(dt){
     const bonus=30+G.wave*8+egRound*15; G.gold+=bonus; updateHUD();
     // heal 1 HP per wave clear
     if(G.hp<G.maxHp){G.hp=Math.min(G.maxHp,G.hp+1);updateHUD();}
+    const drops=rollEndgameMaterialDrops();
+    const matIcons=['🪨','🔘','🌟'];
+    let msg='🌊 Wave '+G.wave+' ผ่าน! +'+bonus+' ทอง ❤️+1';
+    if(drops.length) msg+=' '+drops.map(d=>matIcons[d]).join('');
     addParticle(COLS*CS/2,ROWS*CS/2,'🎉 +'+bonus+' ทอง','#ffe234');
-    showToast('🌊 Wave '+G.wave+' ผ่าน! +'+bonus+' ทอง ❤️+1');
+    showToast(msg);
     document.getElementById('waveBtn').disabled=false;
     if(autoWave) setTimeout(()=>{if(G&&!G.over&&!G.waveActive)startEgWave();},1200);
   }
@@ -2347,6 +2382,7 @@ function endEgGame(){
   if(!G) return;
   G.over=true;
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
+  awardEndgameGems(G.wave,egDiff);
   showSavePrompt(false);
 }
 
@@ -2355,6 +2391,7 @@ function surrender(){
   if(isEndgame){
     if(rafId){cancelAnimationFrame(rafId);rafId=null;}
     G.over=true;
+    awardEndgameGems(G.wave,egDiff);
     showSavePrompt(false);
   } else {
     // story mode surrender = go to stage select
