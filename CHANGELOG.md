@@ -2,6 +2,26 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.9.19 — UI Glow Polish: Save / Weather / Tower Popup / Achievement
+
+### Changed
+- **Save overlay** (`.save-overlay`/`.save-box`): added backdrop blur, a
+  green/red glow border (depending on Endless mode), and a `savePopIn`
+  scale-fade entrance animation. Result grid items glow gold on hover,
+  result values get a gold text-shadow, and inputs gain a focus glow.
+- **Weather overlay** (`.wb-warning`/`.wb-icon`/`.weather-hud`): warning
+  banner gained a red drop glow, the weather icon pulses via new
+  `wbIconPulse` keyframes, and the weather name text gets a red glow.
+  `.weather-hud.active` (toggled by `js/game.js`'s `setWeather()`/
+  `clearWeather()`) adds a subtle white glow while a weather effect is
+  active.
+- **Tower popup** (`#towerPopup`): green glow border matching the overall
+  theme, header gains an inset green glow, level text gets a gold
+  text-shadow, and the upgrade/sell buttons glow + lift on hover.
+- **Achievement notification** (`#achNotif`): gold glow border when shown,
+  icon plays a new `achIcoPop` pop-in animation with a gold drop-shadow,
+  and the label text gets a gold glow.
+
 ## v1.9.18 — Endless Mode Reward Rebalance
 
 ### Changed

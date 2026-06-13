@@ -244,7 +244,7 @@ function applyWeather(w){
   const ov=document.getElementById('weatherOverlay');
   if(ov) ov.style.background=w.color;
   const hud=document.getElementById('weatherHud');
-  if(hud){hud.style.display='flex';hud.innerHTML=w.icon+' '+w.name;hud.style.color=getWeatherColor(w.id);}
+  if(hud){hud.style.display='flex';hud.classList.add('active');hud.innerHTML=w.icon+' '+w.name;hud.style.color=getWeatherColor(w.id);}
   showWeatherWarning(w);
 }
 function clearWeather(silent){
@@ -257,7 +257,7 @@ function clearWeather(silent){
   const ov=document.getElementById('weatherOverlay');
   if(ov) ov.style.background='transparent';
   const hud=document.getElementById('weatherHud');
-  if(hud) hud.style.display='none';
+  if(hud){hud.style.display='none';hud.classList.remove('active');}
 }
 function getWeatherColor(id){
   const c={fog:'#b0bec5',blizzard:'#80d8ff',lightning:'#ffe082',
