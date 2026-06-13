@@ -2,6 +2,22 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.9.9 — Rankings & Stats Improvements
+
+### Added
+- **New "⚔️ Story" leaderboard tab** in the Rankings screen — shows
+  story-mode runs only, ranked by score (top 20), with the same
+  gold/silver/bronze rank styling as the other tabs. File: `js/ui.js`
+  (`renderLb`, new branch for `lbTab===3`), `Tower Quest 🏰.html` (new
+  `#lbt3` tab button, `switchLbTab` loop bound updated to 4).
+- **Clarifying note on the "🌍 All" tab** explaining that Endgame and
+  Story runs use different score scales, so players check the
+  dedicated per-mode tabs for real rankings (`.lb-note` class added to
+  `css/main.css`).
+- **Two new "📊 My Stats" cards**: "Best Story Score" (max score across
+  the player's story runs) and "Achievements" (unlocked/total count via
+  `loadAchievements()`/`ACHIEVEMENTS`).
+
 ## v1.9.8 — Remaining Monster Idle Animations
 
 ### Added

@@ -363,6 +363,7 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .lb-score-val{font-size:13px;color:#ffe082;font-weight:700;}
 .lb-score-sub{font-size:10px;color:#555;margin-top:1px;}
 .lb-sep{text-align:center;font-size:11px;color:#333;padding:4px;letter-spacing:4px;}
+.lb-note{font-size:10px;color:#666;background:rgba(0,0,0,.3);border:1px solid #1a2a1a;border-radius:8px;padding:6px 10px;margin-bottom:8px;text-align:center;}
 .my-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;}
 .my-stat-card{background:rgba(0,0,0,.4);border:1px solid #1a2a1a;border-radius:10px;padding:10px;text-align:center;}
 .my-stat-val{font-size:16px;font-weight:900;color:#ffe082;}

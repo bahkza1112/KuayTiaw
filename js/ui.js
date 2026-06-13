@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='1.9.8';
+const GAME_VERSION='1.9.9';
 const PATCH_NOTES=[
+  {ver:'1.9.9',date:'2026-06-13',title:'🏆 ปรับปรุงหน้า Rankings & Stats',notes:[
+    'เพิ่มแท็บ "⚔️ Story" — อันดับคะแนนเฉพาะโหมดเนื้อเรื่อง เรียงตามคะแนนสูงสุด',
+    'แท็บ "🌍 All" เพิ่มคำอธิบายว่า Endgame กับ Story ใช้สเกลคะแนนต่างกัน เพื่อไม่ให้สับสน',
+    'แท็บ "📊 My Stats" เพิ่มสถิติ "Best Story Score" และ "Achievements" (ปลดล็อกแล้ว/ทั้งหมด)'
+  ]},
   {ver:'1.9.8',date:'2026-06-13',title:'✨ Boss/Dark Lord/Shaman/Fire Spirit ขยับตัวธรรมชาติขึ้น',notes:[
     'เพิ่มแอนิเมชัน idle (โยกตัวขึ้น-ลงเบาๆ) ให้ Fire Spirit, Boss, Dark Lord และ Shaman — ครบทั้ง 11 ชนิดมอนสเตอร์แล้ว',
     'ความเร็วการโยกตัวจะปรับตามความเร็วการเคลื่อนที่จริงของมอน เหมือนมอนชนิดอื่นๆ'
@@ -1174,7 +1179,7 @@ function openLeaderboard(){
 }
 function switchLbTab(i){
   lbTab=i;
-  for(let j=0;j<3;j++) document.getElementById('lbt'+j).classList.toggle('active',j===i);
+  for(let j=0;j<4;j++) document.getElementById('lbt'+j).classList.toggle('active',j===i);
   renderLb();
 }
 function renderLb(){
@@ -1193,6 +1198,8 @@ function renderLb(){
     const bestKills=egRuns.length?Math.max(...egRuns.map(r=>r.kills||0)):0;
     const bestCombo=egRuns.length?Math.max(...egRuns.map(r=>r.maxCombo||1)):1;
     const totalEgKills=egRuns.reduce((a,r)=>a+(r.kills||0),0);
+    const bestStoryScore=stRuns.length?Math.max(...stRuns.map(r=>r.score||0)):0;
+    const achCount=loadAchievements().size;
     let html=`<div class="my-stat-grid">
       <div class="my-stat-card eg"><div class="my-stat-val">${bestWave||'—'}</div><div class="my-stat-lbl">🌊 Best Wave</div></div>
       <div class="my-stat-card eg"><div class="my-stat-val">${bestScore?bestScore.toLocaleString():'—'}</div><div class="my-stat-lbl">⭐ Best Score</div></div>
@@ -1200,8 +1207,10 @@ function renderLb(){
       <div class="my-stat-card eg"><div class="my-stat-val">×${bestCombo}</div><div class="my-stat-lbl">⚡ Best Combo</div></div>
       <div class="my-stat-card"><div class="my-stat-val">${Object.keys(p).filter(k=>(p[k]||0)>=1).length}/${STAGES.filter(s=>!s.comingSoon).length}</div><div class="my-stat-lbl">🗺️ Stages Cleared</div></div>
       <div class="my-stat-card"><div class="my-stat-val">${totalStars}★</div><div class="my-stat-lbl">⭐ Total Stars</div></div>
+      <div class="my-stat-card"><div class="my-stat-val">${bestStoryScore?bestStoryScore.toLocaleString():'—'}</div><div class="my-stat-lbl">📜 Best Story Score</div></div>
       <div class="my-stat-card"><div class="my-stat-val">${totalEgKills.toLocaleString()}</div><div class="my-stat-lbl">💀 Total Kills (EG)</div></div>
       <div class="my-stat-card"><div class="my-stat-val">${egRuns.length}</div><div class="my-stat-lbl">🔥 EG Runs</div></div>
+      <div class="my-stat-card"><div class="my-stat-val">${achCount}/${ACHIEVEMENTS.length}</div><div class="my-stat-lbl">🏅 Achievements</div></div>
     </div>`;
     if(myRuns.length){
       html+='<div class="run-hdr">⏱ Recent Runs</div>';
@@ -1218,12 +1227,12 @@ function renderLb(){
     }
     body.innerHTML=html;
   } else if(lbTab===1){
-    // All runs leaderboard
+    // All runs leaderboard (mixed modes — score scales differ, see tab icons)
     const allRuns=[...runs].sort((a,b)=>b.score-a.score);
     if(!allRuns.length){ body.innerHTML='<div class="lb-empty">No records yet<br><span style="font-size:11px;color:#333;">Play and save your name first</span></div>'; return; }
     let myRank=-1;
     const myName=lastName;
-    let html='';
+    let html='<div class="lb-note">🔥 Endgame และ ⚔️ Story ใช้สเกลคะแนนต่างกัน — ดูแยกในแท็บของตัวเอง</div>';
     allRuns.slice(0,20).forEach((r,i)=>{
       const isMe=r.name===myName;
       if(isMe&&myRank<0) myRank=i+1;
@@ -1238,7 +1247,7 @@ function renderLb(){
       </div>`;
     });
     body.innerHTML=html;
-  } else {
+  } else if(lbTab===2){
     // Endgame only
     const egOnly=[...runs].filter(r=>r.mode==='endgame').sort((a,b)=>b.wave-a.wave||b.score-a.score);
     if(!egOnly.length){ body.innerHTML='<div class="lb-empty">No records yet Endgame<br><span style="font-size:11px;color:#333;">Play Endgame and save your name</span></div>'; return; }
@@ -1254,6 +1263,25 @@ function renderLb(){
         <div class="lb-detail">Endgame · ${r.diff} · ${r.date}</div></div>
         <div class="lb-score-wrap"><div class="lb-score-val">${r.score.toLocaleString()}</div>
         <div class="lb-score-sub">🌊 Wave ${r.wave} · 💀 ${r.kills||0} kills</div></div>
+      </div>`;
+    });
+    body.innerHTML=html;
+  } else {
+    // Story only
+    const stOnly=[...runs].filter(r=>r.mode==='story').sort((a,b)=>b.score-a.score);
+    if(!stOnly.length){ body.innerHTML='<div class="lb-empty">No records yet Story<br><span style="font-size:11px;color:#333;">เล่นโหมดเนื้อเรื่องแล้วบันทึกชื่อ</span></div>'; return; }
+    const myName=lastName;
+    let html='';
+    stOnly.slice(0,20).forEach((r,i)=>{
+      const isMe=r.name===myName;
+      const rankClass=i===0?'g':i===1?'s':i===2?'b':'n';
+      html+=`<div class="lb-item${isMe?' me':''}">
+        <div class="lb-rank ${rankClass}">${i+1}</div>
+        <div class="lb-avatar">⚔️</div>
+        <div class="lb-info"><div class="lb-name">${r.name}${isMe?' (ฉัน)':''}</div>
+        <div class="lb-detail">Story · ${r.stage} · ${r.date}</div></div>
+        <div class="lb-score-wrap"><div class="lb-score-val">${r.score.toLocaleString()}</div>
+        <div class="lb-score-sub">${r.stage}</div></div>
       </div>`;
     });
     body.innerHTML=html;
