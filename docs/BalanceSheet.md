@@ -158,9 +158,9 @@ Stage-0 baseline:
 | egRound | Goblin baseline | Goblin old | Goblin new | Demon Lord baseline (incl. shield) | Demon Lord old | Demon Lord new |
 |---:|---:|---:|---:|---:|---:|---:|
 | 5 | 0.182 | 0.145 (-20%) | 0.131 (-28%) | 0.087 | 0.0471 (-46%) | 0.0749 (-14%) |
-| 10 | 0.182 | 0.136 (-25%) | 0.114 (-37%) | 0.087 | 0.0341 (-61%) | 0.071 (-18%) |
-| 14 | 0.182 | 0.138 (-24%) | 0.109 (-40%) | 0.087 | 0.0288 (-67%) | 0.0674 (-23%) |
-| 20 | 0.182 | 0.182 (0%) | 0.109 (-40%) | 0.087 | 0.0286 (-67%) | 0.0612 (-30%) |
+| 10 | 0.182 | 0.136 (-25%) | 0.114 (-37%) | 0.087 | 0.0341 (-61%) | 0.0736 (-15%) |
+| 14 | 0.182 | 0.138 (-24%) | 0.109 (-40%) | 0.087 | 0.0288 (-67%) | 0.0745 (-14%) |
+| 20 | 0.182 | 0.182 (0%) | 0.109 (-40%) | 0.087 | 0.0286 (-67%) | 0.0745 (-14%) |
 
 Notes:
 - The old formula's Goblin ratio happens to return to baseline at
@@ -168,16 +168,27 @@ Notes:
   to the HP cap — this was a coincidence, not a fix; at egRound 10-15 it
   still dipped ~25%.
 - For Demon Lord, the new formula is a clear improvement at every sampled
-  round (-14% to -30% vs. -46% to -67% under the old formula).
-- **Residual**: Demon Lord's shield HP (`MSHIELD[9]*(1+egRound*0.3)`) is
-  *uncapped*, while `getEgRewardBonus()` caps at ×3.0. So Demon Lord's
-  reward/HP keeps slowly declining past egRound≈14 (e.g. -30% at
-  egRound=20) instead of leveling off like normal enemies. Not addressed
-  in this pass — flagged for a future balance pass if Demon Lord becomes a
-  frequent late-Endless spawn (see
-  [Roadmap.md](Roadmap.md#future--unscoped-ideas)).
+  round (-14% to -15% vs. -46% to -67% under the old formula).
+
+### Demon Lord shield cap fix (v1.9.20)
+
+Demon Lord's shield HP (`MSHIELD[9]*(1+egRound*0.3)`) was previously
+*uncapped*, while `getEgRewardBonus()` caps at ×3.0 — causing reward/HP to
+keep slowly declining past egRound≈14 (down to -30% at egRound=20) instead
+of leveling off like normal enemies. Fixed by capping the shield multiplier
+at the same `roundBonus` cap used for HP (×3.5 for boss-type enemies,
+`MTYPE===1`):
+
+```js
+const shieldCap=MTYPE[ti]===1?3.5:5.0;
+const sh=shBase>0?Math.round(shBase*Math.min(1+egRound*.3,shieldCap)):0;
+```
+
+With this, Demon Lord's reward/HP now flattens at ~-14% from egRound≈12
+onward (same as the table above), matching the behavior of normal enemies
+instead of continuing to decline. File: `js/game.js` (`spawnEgEnemy`).
 
 Late-Endless enemies remain tankier per gold than early rounds by design,
-but the drop-off is now meaningfully shallower for the boss-type enemy
-that was previously worst-affected. See [Roadmap.md](Roadmap.md) for the
+but the drop-off is now meaningfully shallower and flattens for every
+enemy type, including Demon Lord. See [Roadmap.md](Roadmap.md) for the
 original finding and fix.

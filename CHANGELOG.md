@@ -2,6 +2,18 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.9.20 — Endless Mode Demon Lord Shield Cap Fix
+
+### Changed
+- **Endless Mode Demon Lord shield scaling** (`js/game.js`):
+  `spawnEgEnemy()`'s shield multiplier (`MSHIELD[9]*(1+egRound*0.3)`) is
+  now capped at the same ×3.5 `roundBonus` cap used for boss-type HP,
+  instead of being uncapped. Previously Demon Lord's reward/HP kept slowly
+  declining past `egRound≈14` (down to -30% by `egRound=20`); it now
+  flattens at ~-14% from `egRound≈12` onward, matching other enemies. See
+  [docs/BalanceSheet.md](docs/BalanceSheet.md#demon-lord-shield-cap-fix-v1920)
+  and [docs/Roadmap.md](docs/Roadmap.md).
+
 ## v1.9.19 — UI Glow Polish: Save / Weather / Tower Popup / Achievement
 
 ### Changed

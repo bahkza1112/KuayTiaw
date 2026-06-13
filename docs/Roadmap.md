@@ -201,10 +201,10 @@ These are larger and need a dedicated design pass before scoping:
 - New tower type(s) / monster type(s) (MINOR)
 - Additional rune types
 - New achievements (beyond the Shadow Remnant ones added in v1.9.0)
-- 🟡 **Demon Lord uncapped shield scaling in Endless** — `MSHIELD[9]*(1+
-  egRound*0.3)` has no cap, while `getEgRewardBonus()` caps at ×3.0, so
-  Demon Lord's reward/HP keeps slowly declining past egRound≈14 (-23% at
-  14 → -30% at 20, live-verified) instead of leveling off like other
-  enemies. Minor — only relevant if Demon Lord becomes a frequent
-  late-Endless spawn. See
-  [BalanceSheet.md](BalanceSheet.md#reward-hp-recovery-v1918).
+
+✅ **Demon Lord shield cap fix in Endless** (v1.9.20) — `MSHIELD[9]*(1+
+egRound*0.3)` is now capped at the same ×3.5 `roundBonus` cap used for HP
+(boss-type enemies), so Demon Lord's reward/HP flattens at ~-14% from
+egRound≈12 onward instead of declining to -30% by egRound=20. File:
+`js/game.js` (`spawnEgEnemy`). See
+[BalanceSheet.md](BalanceSheet.md#demon-lord-shield-cap-fix-v1920).

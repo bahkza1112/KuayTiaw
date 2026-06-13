@@ -2053,7 +2053,8 @@ function getEgRewardBonus(){
 function spawnEgEnemy(ti){
   const hp=getEgEnemyHP(ti,G.wave);
   const shBase=MSHIELD[ti]||0;
-  const sh=shBase>0?Math.round(shBase*(1+egRound*.3)):0;
+  const shieldCap=MTYPE[ti]===1?3.5:5.0; // same cap as HP roundBonus, so reward/HP flattens too
+  const sh=shBase>0?Math.round(shBase*Math.min(1+egRound*.3,shieldCap)):0;
   G.enemies.push({
     ti,pi:0,prog:0,
     x:EG_PATH[0][0]*CS+CS/2,y:EG_PATH[0][1]*CS+CS/2,
