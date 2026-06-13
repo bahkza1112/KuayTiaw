@@ -2,6 +2,26 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.9.14 — UX Polish: Micro-interactions, Toasts, Overlays, Tooltips
+
+### Added
+- **Button press feedback**: `.obtn`, `.tbtn`, `.wavebtn`, `.autobtn`,
+  and `.stage-card` now scale down slightly on `:active` for tactile
+  click feedback.
+- **Toast bounce**: `.toast` now slides in with a bounce
+  (`toastBounce` keyframes) and a drop shadow instead of a plain
+  opacity fade.
+- **Stage card polish**: hover now lifts the card with a green glow
+  shadow; completed stage cards (`.stage-card.completed`) get a
+  permanent soft gold glow that intensifies on hover.
+- **Overlay screens**: `.overlay` (pause/victory/defeat) now has a
+  backdrop blur; `.obox` uses a dark green gradient with an outer
+  glow matching its border color (green for victory/defeat, orange
+  for pause).
+- **In-game tooltips**: `.sell-tooltip`, `.wave-preview`, and
+  `.range-info` gained drop shadows and a quick fade-in
+  (`tipPopIn` keyframes) when they appear.
+
 ## v1.9.13 — Battle HUD Depth Pass
 
 ### Changed

@@ -64,9 +64,11 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .ss-title{color:#ffe082;font-size:18px;font-weight:900;flex:1;letter-spacing:1px;}
 .ss-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;}
 .stage-card{background:rgba(255,255,255,.05);border:2px solid #2a4a2a;border-radius:14px;padding:14px 16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:14px;position:relative;overflow:hidden;}
-.stage-card:hover:not(.locked){border-color:#4caf50;background:rgba(76,175,80,.1);}
+.stage-card:hover:not(.locked){border-color:#4caf50;background:rgba(76,175,80,.1);transform:translateY(-2px);box-shadow:0 4px 14px rgba(76,175,80,.25);}
+.stage-card:active:not(.locked){transform:scale(.98);}
 .stage-card.locked{opacity:.5;cursor:not-allowed;filter:grayscale(.6);}
-.stage-card.completed{border-color:#ffe234;}
+.stage-card.completed{border-color:#ffe234;box-shadow:0 0 10px rgba(255,226,52,.25);}
+.stage-card.completed:hover{box-shadow:0 4px 16px rgba(255,226,52,.35);}
 .stage-icon{font-size:36px;line-height:1;flex-shrink:0;}
 .stage-info{flex:1;min-width:0;}
 .stage-name{font-size:15px;font-weight:900;color:#fff;margin-bottom:4px;}
@@ -92,12 +94,14 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .tpanel{background:linear-gradient(0deg,#000,rgba(0,0,0,.88));border-top:2px solid #4caf50;box-shadow:0 -2px 10px rgba(76,175,80,.2);padding:7px 8px;display:flex;gap:5px;justify-content:space-between;align-items:center;flex-shrink:0;}
 .tbtn{background:rgba(255,255,255,.1);border:2px solid #555;border-radius:10px;padding:5px 7px;color:#fff;font-size:10px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all .15s;min-width:52px;-webkit-tap-highlight-color:transparent;}
 .tbtn:hover:not(.locked-tower){border-color:#ffe234;background:rgba(255,226,52,.18);transform:translateY(-2px);}
+.tbtn:active:not(.locked-tower){transform:scale(.94);}
 .tbtn.sel{border-color:#ffe234;background:rgba(255,226,52,.3);box-shadow:0 0 12px rgba(255,226,52,.7),0 0 24px rgba(255,226,52,.3);}
 .tbtn.locked-tower{opacity:.28;cursor:not-allowed;filter:grayscale(1);pointer-events:none;}
 .ticon{font-size:20px;line-height:1.1;}
 .tcost{color:#ffe082;font-size:9px;}
-.wavebtn{background:linear-gradient(180deg,#66bb6a,#2e7d32);color:#fff;border:2px solid #1b5e20;border-radius:20px;padding:6px 12px;font-weight:700;font-size:12px;cursor:pointer;transition:filter .15s;-webkit-tap-highlight-color:transparent;box-shadow:0 0 0 rgba(102,187,106,0);animation:wavePulse 2.5s ease-in-out infinite;}
+.wavebtn{background:linear-gradient(180deg,#66bb6a,#2e7d32);color:#fff;border:2px solid #1b5e20;border-radius:20px;padding:6px 12px;font-weight:700;font-size:12px;cursor:pointer;transition:filter .15s,transform .1s;-webkit-tap-highlight-color:transparent;box-shadow:0 0 0 rgba(102,187,106,0);animation:wavePulse 2.5s ease-in-out infinite;}
 .wavebtn:hover{filter:brightness(1.15);}
+.wavebtn:active:not(:disabled){transform:scale(.96);}
 .wavebtn:disabled{opacity:.45;cursor:not-allowed;filter:none;animation:none;}
 @keyframes wavePulse{0%,100%{box-shadow:0 0 0 rgba(102,187,106,0)}50%{box-shadow:0 0 14px rgba(102,187,106,.8)}}
 .bback{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:4px 8px;cursor:pointer;font-size:11px;-webkit-tap-highlight-color:transparent;}
@@ -106,20 +110,22 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .pausebtn{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:8px;padding:3px 8px;cursor:pointer;font-size:11px;-webkit-tap-highlight-color:transparent;}
 .devbtn{background:rgba(255,100,0,.2);color:#ff9800;border:1px solid #ff9800;border-radius:8px;padding:3px 8px;cursor:pointer;font-size:11px;font-weight:700;-webkit-tap-highlight-color:transparent;}
 /* OVERLAYS — position:relative on #gp makes these work */
-.overlay{display:none;position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);align-items:center;justify-content:center;z-index:20;border-radius:16px;}
-.obox{background:#1a2a1a;border:3px solid #4caf50;border-radius:16px;padding:20px 26px;text-align:center;color:#fff;width:290px;}
+.overlay{display:none;position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);align-items:center;justify-content:center;z-index:20;border-radius:16px;}
+.obox{background:linear-gradient(180deg,#23391f,#142214);border:3px solid #4caf50;border-radius:16px;padding:20px 26px;text-align:center;color:#fff;width:290px;box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 30px rgba(76,175,80,.25);}
 .obox h2{font-size:24px;margin-bottom:6px;}
 .obox p{font-size:13px;color:#ffe082;margin-bottom:12px;line-height:1.5;}
-.obtn{padding:9px 20px;font-size:13px;font-weight:700;border-radius:20px;border:none;background:#ffe234;color:#6d2900;cursor:pointer;margin:3px;transition:filter .15s;-webkit-tap-highlight-color:transparent;}
+.obtn{padding:9px 20px;font-size:13px;font-weight:700;border-radius:20px;border:none;background:#ffe234;color:#6d2900;cursor:pointer;margin:3px;transition:filter .15s,transform .1s;-webkit-tap-highlight-color:transparent;}
 .obtn:hover{filter:brightness(1.1);}
+.obtn:active{transform:scale(.95);}
 .obtn.sec{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);}
 .obtn.sec:hover{background:rgba(255,255,255,.25);}
 .obtn.blue{background:linear-gradient(180deg,#42a5f5,#1565c0);color:#fff;}
 /* toast must be inside #gp for position:absolute to work */
-.toast{position:absolute;top:60px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.88);color:#fff;padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;pointer-events:none;opacity:0;transition:opacity .3s;white-space:nowrap;z-index:30;}
-.toast.show{opacity:1;}
+.toast{position:absolute;top:60px;left:50%;transform:translateX(-50%) translateY(-12px);background:rgba(0,0,0,.88);color:#fff;padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;pointer-events:none;opacity:0;transition:opacity .25s,transform .25s;white-space:nowrap;z-index:30;box-shadow:0 4px 14px rgba(0,0,0,.4);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);animation:toastBounce .35s ease;}
+@keyframes toastBounce{0%{transform:translateX(-50%) translateY(-12px) scale(.9)}60%{transform:translateX(-50%) translateY(3px) scale(1.03)}100%{transform:translateX(-50%) translateY(0) scale(1)}}
 .pausescreen{display:none;position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;z-index:18;border-radius:16px;}
-.pausescreen .obox{border-color:#ff9800;}
+.pausescreen .obox{border-color:#ff9800;box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 30px rgba(255,152,0,.25);}
 .star-row{font-size:28px;letter-spacing:4px;margin:6px 0 12px;}
 .unlock-banner{background:rgba(255,224,130,.12);border:1px solid rgba(255,224,130,.35);border-radius:10px;padding:9px 12px;margin-bottom:10px;font-size:11px;color:#ffe082;line-height:1.5;}
 .unlock-banner strong{font-size:13px;display:block;margin-bottom:3px;}
@@ -262,20 +268,22 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .menu-action-btn:hover{background:rgba(76,175,80,.18);border-color:rgba(76,175,80,.4);}
 .menu-action-label{font-size:11px;color:#ffe082;font-weight:700;margin-top:4px;}
 /* sell tooltip */
-.sell-tooltip{position:absolute;background:rgba(20,10,10,.92);border:2px solid #f44336;border-radius:10px;padding:8px 12px;color:#fff;font-size:12px;font-weight:700;pointer-events:none;z-index:15;white-space:nowrap;transform:translate(-50%,-110%);display:none;}
+.sell-tooltip{position:absolute;background:rgba(20,10,10,.92);border:2px solid #f44336;border-radius:10px;padding:8px 12px;color:#fff;font-size:12px;font-weight:700;pointer-events:none;z-index:15;white-space:nowrap;transform:translate(-50%,-110%);display:none;box-shadow:0 4px 14px rgba(0,0,0,.4);animation:tipPopIn .15s ease;}
+@keyframes tipPopIn{from{opacity:0}to{opacity:1}}
 .sell-tooltip .sell-title{color:#f44336;font-size:13px;margin-bottom:4px;}
 .sell-tooltip .sell-price{color:#4caf50;font-size:12px;}
 /* wave preview popup */
-.wave-preview{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:rgba(10,20,10,.95);border:2px solid #4caf50;border-radius:12px;padding:10px 14px;color:#fff;font-size:12px;font-weight:700;white-space:nowrap;z-index:25;display:none;margin-bottom:6px;}
+.wave-preview{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:rgba(10,20,10,.95);border:2px solid #4caf50;border-radius:12px;padding:10px 14px;color:#fff;font-size:12px;font-weight:700;white-space:nowrap;z-index:25;display:none;margin-bottom:6px;box-shadow:0 4px 16px rgba(0,0,0,.4),0 0 14px rgba(76,175,80,.2);animation:tipPopIn .15s ease;}
 .wave-preview-title{color:#8bc34a;font-size:10px;margin-bottom:6px;letter-spacing:.5px;}
 .wave-preview-enemies{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
 .wave-preview-enemy{text-align:center;font-size:11px;}
 .wave-preview-enemy .ei{font-size:18px;display:block;}
 /* auto wave btn */
 .autobtn{background:rgba(255,255,255,.1);color:#aaa;border:1px solid #555;border-radius:20px;padding:6px 12px;font-weight:700;font-size:12px;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;}
+.autobtn:active{transform:scale(.95);}
 .autobtn.on{background:rgba(76,175,80,.25);color:#69f0ae;border-color:#4caf50;box-shadow:0 0 8px rgba(76,175,80,.3);}
 /* range ring overlay */
-.range-info{position:absolute;background:rgba(0,0,0,.8);border:1px solid #555;border-radius:8px;padding:5px 10px;color:#fff;font-size:11px;pointer-events:none;z-index:15;display:none;white-space:nowrap;}
+.range-info{position:absolute;background:rgba(0,0,0,.8);border:1px solid #555;border-radius:8px;padding:5px 10px;color:#fff;font-size:11px;pointer-events:none;z-index:15;display:none;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.35);animation:tipPopIn .15s ease;}
 /* ── WEATHER SYSTEM ── */
 .weather-overlay{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:4;transition:opacity .8s;}
 #weatherBanner{position:absolute;top:0;left:0;right:0;z-index:20;display:none;
