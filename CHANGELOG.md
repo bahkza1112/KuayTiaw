@@ -2,6 +2,23 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.9.12 — Main Menu Liveliness Pass
+
+### Added
+- **Story Mode button shine sweep**: a diagonal light streak periodically
+  sweeps across `.bbattle` (`btnShine` keyframes) for a premium "glint"
+  effect.
+- **Custom energy icons**: the topbar energy/lightning indicators are now
+  inline SVG lightning bolts (`.energy-ico`, `currentColor`-based, with a
+  `.dim` state for unfilled energy) instead of the ⚡ emoji.
+- **Staggered entrance animation**: on entering the main menu, the logo,
+  title, subtitle, version button, action buttons, stats card, and bottom
+  nav fade/slide in with increasing delays (`menuFadeIn`/`menuFadeInUp`
+  keyframes) for a more polished page-load feel.
+- **Floating embers**: a handful of small glowing ember particles
+  (`.ember`, `emberRise` keyframes) drift slowly upward in the main menu
+  background for extra atmosphere.
+
 ## v1.9.11 — Custom Bottom-Nav Icons
 
 ### Changed
