@@ -2,6 +2,18 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.10.1 — Remove Hold-to-Sell
+
+### Removed
+- **Hold-to-sell on the grid** (`js/game.js`, `js/ui.js`, `Tower Quest 🏰.html`,
+  `css/main.css`): removed `onCanvasHoldStart`/`onCanvasHoldEnd`, the
+  `holdTimer`/`holdTower` state, the `#sellTooltip` element, and its
+  `.sell-tooltip` CSS. Holding a pointer down on a placed tower no longer
+  sells it after 600ms — this was prone to accidental sells. Selling a
+  tower is still available via the 🗑 Sell button in the tower info popup
+  (click a tower to open it). `pointerleave` on the canvas now uses a
+  minimal `onCanvasLeave` that only hides `#rangeInfo`.
+
 ## v1.10.0 — Tower Placement UX + Settings Menu
 
 ### Added

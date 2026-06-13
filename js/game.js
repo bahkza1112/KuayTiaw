@@ -161,8 +161,6 @@ const EG_PATH=[ /* ใช้ path ด่าน 2 */
   [9,7],[10,7],[11,7],[11,8],[10,8],[9,8],[8,8],[7,8],
   [6,8],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8]
 ];
-let holdTimer=null;
-let holdTower=null;
 let selectedTowersForStage=[];
 let pendingStageIndex=-1;
 let stageMaxTowers=6;
@@ -1940,49 +1938,8 @@ function onCanvasMove(e){
     }
   }
 }
-function onCanvasHoldStart(e){
-  if(!G||G.over||G.win||paused||G.selTwr>=0) return;
-  const rect=cv.getBoundingClientRect();
-  const col=Math.floor((e.clientX-rect.left)*cv.width/rect.width/CS);
-  const row=Math.floor((e.clientY-rect.top)*cv.height/rect.height/CS);
-  const tw=G.towers.find(t=>t.col===col&&t.row===row);
-  if(!tw) return;
-  holdTower=tw;
-  // show sell tooltip
-  const tooltip=document.getElementById('sellTooltip');
-  const refund=Math.floor(CFG.t_cost[tw.type]*tw.lv*.6);
-  document.getElementById('sellTowerInfo').textContent=TICONS[tw.type]+' '+TNAMES[tw.type]+' Lv'+tw.lv;
-  document.getElementById('sellPrice').textContent=refund;
-  tooltip.style.display='block';
-  tooltip.style.left=(tw.col*CS+CS/2)+'px';
-  tooltip.style.top=(tw.row*CS)+'px';
-  // hold 600ms → sell
-  holdTimer=setTimeout(()=>{
-    if(!G||!holdTower) return;
-    const refund2=Math.floor(CFG.t_cost[holdTower.type]*holdTower.lv*.6);
-    const sellKey=holdTower.col+'_'+holdTower.row;
-    if(G.gmTimers) delete G.gmTimers[sellKey];
-    G.towers=G.towers.filter(t=>t!==holdTower);
-    G.gold+=refund2; updateHUD();
-    // sell FX
-    const sx=holdTower.col*CS+CS/2, sy=holdTower.row*CS+CS/2;
-    G.fxRings.push({x:sx,y:sy,r:4,maxR:CS*1.2,life:.8,lw:3,col:'#f44336',delay:0});
-    for(let k=0;k<6;k++){
-      const ang=k/6*Math.PI*2;
-      G.particles.push({x:sx,y:sy,txt:'💰',col:'#ffe082',
-        life:.9,vy:Math.sin(ang)*1.5,vx:Math.cos(ang)*1.5,decay:2});
-    }
-    addParticle(sx,sy-16,'+'+refund2+' ทอง','#4caf50');
-    showToast('🗑 ขายป้อมได้ +'+refund2+' ทอง');
-    tooltip.style.display='none';
-    holdTower=null;
-  },600);
-}
-function onCanvasHoldEnd(e){
-  if(holdTimer){clearTimeout(holdTimer);holdTimer=null;}
-  holdTower=null;
-  document.getElementById('sellTooltip').style.display='none';
-  if(e&&e.type==='pointerleave'){const info=document.getElementById('rangeInfo');if(info)info.style.display='none';}
+function onCanvasLeave(e){
+  const info=document.getElementById('rangeInfo');if(info)info.style.display='none';
 }
 
 /* ══ DRAG-TO-PLACE ══ */
@@ -2088,9 +2045,7 @@ function startEndgame(){
   _init3D(); _layoutGl3D();
   cv.removeEventListener('click',onCanvasClick); cv.addEventListener('click',onCanvasClick);
   cv.removeEventListener('mousemove',onCanvasMove); cv.addEventListener('mousemove',onCanvasMove);
-  cv.removeEventListener('pointerdown',onCanvasHoldStart); cv.addEventListener('pointerdown',onCanvasHoldStart);
-  cv.removeEventListener('pointerup',onCanvasHoldEnd); cv.addEventListener('pointerup',onCanvasHoldEnd);
-  cv.removeEventListener('pointerleave',onCanvasHoldEnd); cv.addEventListener('pointerleave',onCanvasHoldEnd);
+  cv.removeEventListener('pointerleave',onCanvasLeave); cv.addEventListener('pointerleave',onCanvasLeave);
   cv.removeEventListener('touchstart',_onCvTouchStart); cv.addEventListener('touchstart',_onCvTouchStart,{passive:false});
   document.getElementById('surrenderBtn').style.display='inline-block';
   document.getElementById('backBtn').style.display='none';

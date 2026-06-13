@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='1.10.0';
+const GAME_VERSION='1.10.1';
 const PATCH_NOTES=[
+  {ver:'1.10.1',date:'2026-06-13',title:'🗑 ปรับระบบขายป้อม',notes:[
+    'เอาระบบ "กดค้างเพื่อขายป้อม" บนกริดออก เพื่อลดการขายป้อมโดยไม่ตั้งใจ',
+    'ขายป้อมได้จากปุ่ม 🗑 Sell ในหน้าต่างข้อมูลป้อม (กดที่ป้อมเพื่อเปิด) เหมือนเดิม'
+  ]},
   {ver:'1.10.0',date:'2026-06-13',title:'🎮 ปรับปรุง UX การวางป้อม + เมนูตั้งค่า',notes:[
     'ตอนเลือกป้อมเพื่อวาง จะเห็นวงแหวนระยะยิงชัดเจนขึ้น พร้อมป้ายแสดงระยะ/ดาเมจ/ราคา',
     'ลากไอคอนป้อมจากแถบด้านล่างไปวางบนกริดได้โดยตรง (drag-to-place)',
@@ -317,12 +321,8 @@ function _doStartStage(si){
   cv.addEventListener('click',onCanvasClick);
   cv.removeEventListener('mousemove',onCanvasMove);
   cv.addEventListener('mousemove',onCanvasMove);
-  cv.removeEventListener('pointerdown',onCanvasHoldStart);
-  cv.addEventListener('pointerdown',onCanvasHoldStart);
-  cv.removeEventListener('pointerup',onCanvasHoldEnd);
-  cv.addEventListener('pointerup',onCanvasHoldEnd);
-  cv.removeEventListener('pointerleave',onCanvasHoldEnd);
-  cv.addEventListener('pointerleave',onCanvasHoldEnd);
+  cv.removeEventListener('pointerleave',onCanvasLeave);
+  cv.addEventListener('pointerleave',onCanvasLeave);
   // Mobile: ป้องกัน scroll เมื่อ touch บน canvas
   cv.removeEventListener('touchstart',_onCvTouchStart);
   cv.addEventListener('touchstart',_onCvTouchStart,{passive:false});
