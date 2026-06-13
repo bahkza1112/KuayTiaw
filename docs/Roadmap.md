@@ -49,20 +49,15 @@ mentioning Goblin (no longer in its roster) → Bat. File: `js/game.js`
 > See [BalanceSheet.md](BalanceSheet.md) for full current numbers and
 > derivations.
 
-🟡 **Endless Mode reward/HP decay** — `getEgEnemyHP()` scales HP
-multiplicatively (`roundBonus` up to ×5.0 for normal enemies / ×3.5 for
-boss types, on top of `(1+wave*waveMult)`), but `spawnEgEnemy()` only adds
-a flat `+egRound*2` to `m_rew`. At the point each cap is reached
-(`egRound≈14`), reward/HP for a normal enemy (e.g. Goblin) drops from
-0.182 → ~0.065 (-64%), and for Demon Lord (incl. shield) from 0.087 →
-~0.017 (-80%). Net effect: late-Endless enemies are several times tankier
-per gold of reward than early-Endless, even though `enemyPerWave` only
-grows by `×(1+egRound*0.2)`. Players' gold income per unit of required DPS
-shrinks sharply in late rounds. Proposed fix direction: scale `m_rew` by a
-capped multiplier similar to `roundBonus` (e.g. `m_rew[ti]*(1+egRound*0.15)`
-capped ~×3) instead of the flat `+2`, re-balanced against
-[balance-designer](../agents/balance-designer.md) review before
-implementation. File: `js/game.js` (`spawnEgEnemy`, `getEgEnemyHP`).
+✅ **Endless Mode reward/HP decay fix** (v1.9.18) — `spawnEgEnemy()`'s
+reward now scales via `getEgRewardBonus()`, a capped multiplier
+(`min(1+egRound*0.15, 3.0)`) instead of the old flat `+egRound*2`. At
+`egRound≈14` (where the HP `roundBonus` caps), reward/HP recovers from
+0.065 → 0.109 for normal enemies (e.g. Goblin, baseline 0.182) and from
+0.017 → 0.075 for Demon Lord (baseline 0.087, incl. shield). Late-Endless
+enemies are still tankier per gold than early rounds (by design), but the
+gap is now ~40% instead of ~65-80%. File: `js/game.js` (`spawnEgEnemy`,
+new `getEgRewardBonus`).
 
 ---
 

@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.9.18 — Endless Mode Reward Rebalance
+
+### Changed
+- **Endless Mode reward scaling** (`js/game.js`): `spawnEgEnemy()` now
+  computes reward via a new `getEgRewardBonus()` (capped multiplier,
+  `min(1+egRound*0.15, 3.0)`) instead of the old flat `+egRound*2`. This
+  fixes reward/HP dropping 64-80% by `egRound≈14`; it now drops only
+  ~14-40%, matching the late-game difficulty curve more fairly. See
+  [docs/BalanceSheet.md](docs/BalanceSheet.md#5-endless-mode-round-scaling)
+  and [docs/Roadmap.md](docs/Roadmap.md) for the analysis and numbers.
+
 ## v1.9.17 — Cutscene Glow Pass
 
 ### Changed

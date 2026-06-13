@@ -138,3 +138,27 @@ Goblin (intentional exception).
 
 `EG_DIFF_NAMES`: ง่าย (Easy ×0.7) / ปกติ (Normal ×1.0) / ยาก (Hard ×1.5)
 — applied to enemy HP via `EG_DIFF_MULT` in `getEgStats()`.
+
+## 5. Endless Mode Round Scaling
+
+| Bonus | Formula | Cap |
+|---|---|---|
+| HP (normal enemy) | `1 + egRound*0.30` | ×5.0 |
+| HP (boss type: Boss, Demon Lord) | `1 + egRound*0.18` | ×3.5 |
+| Speed | `1 + egRound*0.05` | (also `spdCap`=2.0 overall) |
+| Shield HP | `1 + egRound*0.30` | – |
+| Reward | `1 + egRound*0.15` (`getEgRewardBonus()`) | ×3.0 |
+
+### Reward/HP recovery (v1.9.18)
+
+At `egRound=14` (where HP `roundBonus` caps), reward/HP vs. the Stage-0
+baseline:
+
+| Enemy | Baseline | Old (`+egRound*2`) | New (`getEgRewardBonus`) |
+|---|---:|---:|---:|
+| Goblin (normal) | 0.182 | 0.065 (-64%) | 0.109 (-40%) |
+| Demon Lord (incl. shield, boss) | 0.087 | 0.017 (-80%) | 0.075 (-14%) |
+
+Late-Endless enemies remain tankier per gold than early rounds by design,
+but the drop-off is now much shallower. See
+[Roadmap.md](Roadmap.md) for the original finding and fix.

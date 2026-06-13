@@ -2044,6 +2044,11 @@ function getEgEnemySpd(ti){
   const roundBonus=1+egRound*0.05;
   return Math.min(CFG.m_spd[ti]*roundBonus*EG_DIFF_MULT[egDiff],CFG.spdCap);
 }
+function getEgRewardBonus(){
+  // ก่อนหน้านี้ reward เพิ่มแบบ flat (+2/round) ทำให้ reward/HP ร่วงหนักในรอบหลังๆ
+  // ตอนนี้สเกลแบบ capped multiplier ให้ตามทันการสเกล HP (×5/×3.5) ได้บางส่วน
+  return Math.min(1+egRound*0.15, 3.0);
+}
 
 function spawnEgEnemy(ti){
   const hp=getEgEnemyHP(ti,G.wave);
@@ -2052,7 +2057,7 @@ function spawnEgEnemy(ti){
   G.enemies.push({
     ti,pi:0,prog:0,
     x:EG_PATH[0][0]*CS+CS/2,y:EG_PATH[0][1]*CS+CS/2,
-    hp,mhp:hp,spd:getEgEnemySpd(ti),reward:CFG.m_rew[ti]+(egRound*2),
+    hp,mhp:hp,spd:getEgEnemySpd(ti),reward:Math.round(CFG.m_rew[ti]*getEgRewardBonus()),
     slow:1,slowT:0,alive:true,hitFlash:0,
     isAir:MISAIR[ti]||false,
     shieldHp:sh,maxShieldHp:sh,
