@@ -101,6 +101,22 @@ Confirm understanding before proceeding.
 * Design progression
 * Design balance
 
+## Enemy Designer
+
+* Design enemy archetypes and abilities
+* Maintain docs/EnemyDesign.md
+* Ensure each enemy has clear counterplay
+
+## Balance Designer
+
+* Analyze Tower DPS / Cost Efficiency
+* Analyze Enemy HP Scaling / Gold Economy
+* Analyze Endless Mode Scaling
+
+## LiveOps Manager
+
+* Design daily quests, events, login rewards (proposal-stage)
+
 ## System Architect
 
 * Review architecture

@@ -16,6 +16,9 @@ pattern in this project so far (see `CHANGELOG.md` v1.6.2–v1.6.5).
 |---|---|---|
 | Project Manager | [project-manager.md](project-manager.md) | Plans, coordinates, no direct code edits |
 | Game Designer | [game-designer.md](game-designer.md) | `docs/GDD.md`, `docs/Roadmap.md`, design proposals |
+| Enemy Designer | [enemy-designer.md](enemy-designer.md) | `docs/EnemyDesign.md`, enemy data in `js/enemy.js` |
+| Balance Designer | [balance-designer.md](balance-designer.md) | `docs/BalanceSheet.md`, `DEFAULT_CFG` numeric tuning |
+| LiveOps Manager | [liveops-manager.md](liveops-manager.md) | Daily quests/events/login rewards (proposal-stage) |
 | System Architect | [system-architect.md](system-architect.md) | `js/`, `css/`, file structure, `PROJECT_MASTER.md` |
 | Lead Programmer | [lead-programmer.md](lead-programmer.md) | `js/*.js`, `css/main.css`, the HTML shell |
 | QA Tester | [qa-tester.md](qa-tester.md) | Live browser verification, save compatibility |
@@ -40,3 +43,6 @@ pattern in this project so far (see `CHANGELOG.md` v1.6.2–v1.6.5).
   [docs/BalanceSheet.md](../docs/BalanceSheet.md), and
   [docs/Roadmap.md](../docs/Roadmap.md) before proposing design/balance
   changes.
+- [docs/MetaProgression.md](../docs/MetaProgression.md) — 🟡 proposal-stage
+  design for account-level systems (Player Level, Talent Tree, Prestige,
+  Relics, Daily Quest). Read before proposing anything in this space.

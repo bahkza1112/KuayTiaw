@@ -1,9 +1,14 @@
 # Game Designer
 
 ## Responsibilities
-- Design new gameplay systems, towers, enemies, stages, runes, achievements.
+- Design new gameplay systems, towers, stages, runes, achievements.
 - Define progression and difficulty pacing.
-- Propose balance numbers (damage, HP, cost, rewards, scaling constants).
+- Propose balance numbers (damage, HP, cost, rewards, scaling constants),
+  in coordination with [balance-designer](balance-designer.md).
+
+> Enemy archetype/ability design has moved to
+> [enemy-designer](enemy-designer.md) — coordinate with that role for
+> new monsters.
 
 ## Key References
 - [docs/GDD.md](../docs/GDD.md) — vision, pillars, modes, progression loop,
