@@ -21,6 +21,15 @@ All notable changes to Tower Quest 🏰 will be documented in this file.
     background depth.
   - `.curr` (currency pills), `.topbar`, and `.bottom-nav` now use a
     frosted-glass `backdrop-filter: blur(...)` effect.
+  - Added a CSS-only parallax backdrop: `.bg-clouds` (drifting cloud
+    blobs near the top) and `.bg-mtn-far`/`.bg-mtn-near` (soft blurred
+    hazy mountain/hill silhouettes behind the stats card), each with
+    its own slow drift animation, plus three new `<div>`s in `#mm`.
+  - `.gtitle` switched to a bolder display font (`'Arial Black'`
+    fallback stack) at a larger size; `.bbattle`/`#egMenuBtn` enlarged
+    and given matching font for a more premium look.
+  - `#menuProgress` (stats card) restyled with frosted-glass background,
+    a soft border/glow, and more padding.
 
 ## v1.9.9 — Rankings & Stats Improvements
 
