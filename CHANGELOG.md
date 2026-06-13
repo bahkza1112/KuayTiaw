@@ -2,6 +2,26 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.9.16 — Remaining Menu Pages Glow Pass
+
+### Changed
+- **Stage Select, Tower Select, Endgame Mode** (`.ss-header`,
+  `.ts-header`, `.eg-hd`): headers now match the gradient + glow
+  treatment used on Codex/Rankings/HUD (green for Stage/Tower Select,
+  red for Endgame); titles gained a matching text glow.
+- **Tower Select cards** (`.ts-card`): hover now lifts the card with
+  a green glow; the selected card's glow is stronger; `Deploy!`
+  button (`.ts-start-btn`) glows on hover.
+- **Endgame difficulty buttons** (`.eg-diff-btn`): hover lift added;
+  the selected difficulty's glow is stronger; stat cards
+  (`.eg-stat-card`) get a subtle red glow.
+- **What's New** (`.news-item`): the most recent entry gets a gold
+  glow border to stand out from older entries.
+
+### Skipped
+- Dev Panel (`#devpanel`) intentionally left unstyled — internal
+  developer tool, not part of the player-facing visual pass.
+
 ## v1.9.15 — Codex & Rankings Visual Polish
 
 ### Changed
