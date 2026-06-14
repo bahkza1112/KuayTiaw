@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.12.6 — Workshop hero card shows required materials
+
+### Added
+- New `#wsHeroReqs` column on the right side of the `.ws-hero` card lists
+  the Void Tower's craft requirements (Soul Gems + 3 materials) as compact
+  badges (`.ws-hero-req-item`), turning green (`.met`) when the player has
+  enough of that resource — a quick at-a-glance summary alongside the
+  detailed recipe grid below.
+
 ## v1.12.5 — Workshop recipe always visible
 
 ### Changed

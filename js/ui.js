@@ -1,6 +1,9 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='1.12.5';
+const GAME_VERSION='1.12.6';
 const PATCH_NOTES=[
+  {ver:'1.12.6',date:'2026-06-14',title:'🌑 เวิร์กชอป: แสดงของที่ต้องใช้บนการ์ดป้อม',notes:[
+    'เพิ่มรายการวัตถุดิบที่ต้องใช้คราฟ (มณีวิญญาณและวัสดุ) ไว้มุมขวาของการ์ดป้อมมนตราโมฆะ พร้อมไฮไลต์สีเขียวเมื่อมีครบ'
+  ]},
   {ver:'1.12.5',date:'2026-06-14',title:'🛠️ เวิร์กชอป: โชว์สูตรแม้ยังไม่ปลดล็อก',notes:[
     'หน้าเวิร์กชอปจะแสดงสูตรปลดล็อก (มณีวิญญาณและวัสดุที่ต้องใช้) ให้เห็นเสมอ แม้ยังไม่ผ่านด่านสุดท้าย จะได้รู้ว่าต้องเก็บอะไรไว้รอ'
   ]},
@@ -280,14 +283,14 @@ function renderWorkshop(){
   document.getElementById('wsRecipeBox').style.display=unlocked?'none':'';
   const craftBtn=document.getElementById('wsCraftBtn');
   craftBtn.style.display=(unlocked||!finalCleared)?'none':'';
-  if(unlocked) return;
+  if(unlocked){ document.getElementById('wsHeroReqs').innerHTML=''; return; }
   const reqs=[
     {icon:'💎',name:'มณีวิญญาณ',have:gems,need:VOID_RECIPE.gems},
     {icon:MAT_ICONS[0],name:MAT_NAMES[0],have:mats[0]||0,need:VOID_RECIPE.mats[0]},
     {icon:MAT_ICONS[1],name:MAT_NAMES[1],have:mats[1]||0,need:VOID_RECIPE.mats[1]},
     {icon:MAT_ICONS[2],name:MAT_NAMES[2],have:mats[2]||0,need:VOID_RECIPE.mats[2]},
   ];
-  let html='',allMet=true;
+  let html='',reqHtml='',allMet=true;
   reqs.forEach(r=>{
     const met=r.have>=r.need;
     if(!met) allMet=false;
@@ -301,8 +304,10 @@ function renderWorkshop(){
       </div>
       ${met?'<div class="ws-recipe-check">✔</div>':''}
     </div>`;
+    reqHtml+=`<div class="ws-hero-req-item${met?' met':''}">${r.icon} ${r.need.toLocaleString()}</div>`;
   });
   document.getElementById('wsRecipeGrid').innerHTML=html;
+  document.getElementById('wsHeroReqs').innerHTML=reqHtml;
   craftBtn.disabled=!allMet;
 }
 function craftVoidTower(){
