@@ -1372,7 +1372,7 @@ function render(){
     ctx.beginPath(); ctx.ellipse(cx2,cy2+CS*.35,CS*.46,CS*.13,0,0,Math.PI*2); ctx.fill();
     ctx.globalAlpha=1;
     // 2.5D sprite (Cannon..Void)
-    const _tws=1.4;
+    const _tws=1.15;
     ctx.save();
     ctx.translate(cx2, cy2-CS*.18);
     ctx.scale(_tws,_tws);

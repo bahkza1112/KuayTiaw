@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.13.1 — Reduce tower sprite size
+
+### Changed
+- `js/game.js` `render()`: the 2.5D tower sprite scale factor (`_tws`) was
+  reduced from `1.4` to `1.15`, so placed towers no longer overflow heavily
+  into neighboring grid cells.
+
 ## v1.13.0 — Soul Gems / Void Tower achievements
 
 ### Added
