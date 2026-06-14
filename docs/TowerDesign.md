@@ -62,7 +62,7 @@ dmg/level), `rngLv` (+15% range/level), `rateLv` (+10% rate/level).
 Path-exclusive perks (pierce shield, rapid fire) unlock at certain
 range/rate levels. "Awaken" is an end-tier upgrade currently granting a
 flat power boost (+15% effective damage, +13% rune effect) plus a
-distinct 3D visual aura (per-type colored as of v1.6.8).
+distinct visual aura glow (per-type colored as of v1.6.8).
 
 ## Built-in Skills & Awaken Effects (Design Target)
 
@@ -82,7 +82,7 @@ per-type Awaken effect:
 
 > **Implementation status**: as of v1.6.9, the Awaken upgrade grants both the
 > generic bonus (flat +15% effective damage, +13% rune bonus, per-type-colored
-> 3D aura — see [`_buildAwakenAura3D`](../js/tower.js)) **and** the per-type
+> aura glow — see [`_twAura`](../js/tower.js)) **and** the per-type
 > effects in the table above (Cannon splash ×1.5, Ice freeze 3s/6s, Magic
 > 20%→40% extra-shot chance, Sniper pierce-line, Support doubles nearby
 > Awaken bonuses, Gold Mine output ×2, Thunder chain 2→4). See

@@ -22,8 +22,7 @@ defense (TD) game. Since the v1.6.1 refactor it is delivered as
 `Tower Quest 🏰.html` (~500 lines: head/body markup + `<link>`/`<script src>`
 refs only) plus `css/main.css` (~590 lines) and five JS modules totaling
 ~6,700 lines (`js/save.js`, `js/enemy.js`, `js/tower.js`, `js/game.js`,
-`js/ui.js`), with Three.js loaded via CDN for an optional 3D tower-rendering
-layer. `index.html` is a redirect entry point for GitHub Pages.
+`js/ui.js`). `index.html` is a redirect entry point for GitHub Pages.
 
 Key high-level elements:
 
@@ -49,7 +48,7 @@ Key high-level elements:
   including a dedicated Story tab (`openLeaderboard`, `js/ui.js` line 1239).
 
 The game targets desktop browsers with mouse/touch input on an HTML5
-`<canvas>` (`#cv`, plus an overlay `#gl3d` canvas for the Three.js layer).
+`<canvas>` (`#cv`).
 
 ---
 
@@ -73,8 +72,7 @@ The game targets desktop browsers with mouse/touch input on an HTML5
   skills, monster mechanics), runs tower targeting/firing, advances
   projectiles, resolves hits/kills, and updates particles/FX.
 - `render()` (line 1112) draws the grid/terrain, path, towers, enemies,
-  projectiles, and effects to the 2D canvas; `_render3D()` (`js/tower.js`
-  line 633) syncs the optional Three.js tower meshes.
+  projectiles, and effects to the 2D canvas.
 - `togglePause()`, `pausedRestart()`, `restartGame()`, `toggleAutoWave()`
   control run-level flow.
 
@@ -186,17 +184,15 @@ pierce). Flavor text, tags, and strengths/weaknesses for the Codex are in
   action popup: upgrade (dmg/range/rate paths via `upgradeTowerFromPopup`),
   sell (`sellTowerFromPopup`, with partial gold refund), and "Awaken"
   (`awakenTowerFromPopup`, `js/tower.js`) — a late-game power-up (350 gold
-  flat, raised from 300 in v1.7.3) with a 3D aura effect
-  (`_buildAwakenAura3D`, line 541). The popup also shows an effective
+  flat, raised from 300 in v1.7.3). The popup also shows an effective
   **DPS** stat and an inline `(+X% synergy)` badge when synergy is boosting
   damage (v1.6.4).
 
 ### Awaken System (v1.6.8 / v1.6.9, generic bonus removed v1.11.0)
 - Awaken no longer grants a generic damage bonus (the +15% effective
-  damage bonus was removed in v1.11.0 alongside the Rune system). Awakening
-  still applies a per-type 3D aura (halo rings, orbiting motes, energy beam)
-  tinted with the tower's own `TACCENT` color (v1.6.8, previously
-  gold-only).
+  damage bonus was removed in v1.11.0 alongside the Rune system). Awakened
+  towers are visually highlighted via the 2.5D sprite's aura glow
+  (`_twAura`, tinted with the tower's own `TACCENT` color, v1.12.8).
 - **Per-type unique effects**:
   - 💣 **Cannon**: splash radius ×1.5.
   - ❄️ **Ice**: on-hit freeze (full stop) for 3s instead of 45% slow for 2s
@@ -214,19 +210,18 @@ pierce). Flavor text, tags, and strengths/weaknesses for the Codex are in
   consistently (mirrored code paths).
 
 ### Visual Rendering
-- 2D: `drawTowerIcon`, `_twStatic`, `_twDecal`, `_twWeapon` procedurally draw
-  each tower type's canvas sprite, including animated weapon parts. Every
-  tower type now has an idle animation (v1.6.8 added the last 5 — Cannon
-  muzzle heat-glow, Ice crystal sparkles, Sniper scope-lens glow, Archer
-  bowstring vibration, Gold Mine ore glow; Magic/Support/Thunder already
-  pulsed).
-- 3D (optional): `_init3D`, `_buildTowerMesh3D` (line 375), `_sync3DTowerMesh`
-  (line 578), `_render3D` build and animate Three.js meshes per tower type on
-  an orthographic camera overlay. **v1.9.6**: all towers idle-bob
-  (`Math.sin`-based, phase offset by `col`/`row`) and spin decorative parts
-  independently of the aiming turret (Ice shards, Magic ring, Support halo,
-  Gold Mine pile, Lightning coils) — previously only Awakened towers had any
-  3D motion.
+- 2.5D sprites (`js/tower.js`): `drawTowerIcon` composites a per-type aura
+  glow (`_twAura`), the cached static body sprite (`_bldSC`/`_twStatic`,
+  with AO contact shadow and shaded body gradient), a level-progress ring
+  (`_twLevelRing`, shown at Lv.2/Lv.3), and the rotating weapon/decal layer
+  (`_twDecal`, `_twWeapon`) with drop shadows for depth. Every tower type has
+  an idle animation (v1.6.8 added the last 5 — Cannon muzzle heat-glow, Ice
+  crystal sparkles, Sniper scope-lens glow, Archer bowstring vibration, Gold
+  Mine ore glow; Magic/Support/Thunder already pulsed).
+- The optional Three.js 3D tower overlay (`#gl3d`, `_init3D`/
+  `_buildTowerMesh3D`/`_sync3DTowerMesh`/`_render3D`) was removed in
+  v1.12.10 — gameplay now renders exclusively via the 2.5D sprite system
+  above (disabled in v1.12.8, code removed in v1.12.10).
 
 ---
 
@@ -501,7 +496,7 @@ Notes:
 - Path-exclusive perks (e.g., pierce shield, rapid fire) are unlocked at
   certain levels along the range/rate trees (per recent commit history).
 - "Awaken" (`awakenTowerFromPopup`, 4617) is an end-tier upgrade granting a
-  significant power boost and a distinct 3D visual aura.
+  significant power boost and a distinct sprite aura glow.
 
 ### Achievements
 - `ACHIEVEMENTS` (1196) and `ACH_CATS` (1223) define ~category-grouped
@@ -567,7 +562,6 @@ changed without re-checking dependencies. `index.html` is a thin redirect to
 │  <body> ... DOM containers for every screen/overlay,          │
 │             referenced by ID from the scripts                 │
 │                                                                │
-│  <script src="three.min.js">  ── CDN dependency for 3D layer  │
 │  <script src="js/save.js">    (~300 lines) ── load order ↓    │
 │  <script src="js/enemy.js">   (~610 lines)                    │
 │  <script src="js/tower.js">   (~810 lines)                    │
@@ -597,8 +591,8 @@ unstyled (internal tool only). No gameplay/save changes from any of these.
   `applyDmg`, `spawnEnemy`, `killEnemy`, `drawEnemySprite` and helpers.
 - **`js/tower.js`** — tower static data (`TNAMES`, `TICONS`, per-type stat
   arrays), `getTowerDmg/Range/Rate`, synergy system, sprite drawing
-  (`drawTowerIcon`/`_tw*`), the 3D Three.js tower overlay, and the tower
-  popup/upgrade/awaken/sell functions.
+  (`drawTowerIcon`/`_tw*`), and the tower popup/upgrade/awaken/sell
+  functions.
 - **`js/game.js`** — `STAGES`/`DEFAULT_CFG`/`CFG`, grid/state setup
   (`mkState`, `setStage`), weather system, game lifecycle (`initGame`/`loop`,
   `restartGame`, `goNextStage`, etc.), sound system, `startWave`, `endGame`,
@@ -611,8 +605,8 @@ unstyled (internal tool only). No gameplay/save changes from any of these.
   patches functions defined in `game.js` — this is why `ui.js` loads last).
 
 **Design characteristics:**
-- **No build tooling**: pure HTML/CSS/JS, runs by opening the file in a
-  browser. Three.js is the only external dependency (CDN `<script>` tag).
+- **No build tooling**: pure HTML/CSS/JS with zero external dependencies,
+  runs by opening the file in a browser.
 - **No framework**: direct DOM manipulation (`document.getElementById`,
   `innerHTML`) and a hand-rolled `requestAnimationFrame` game loop.
 - **Procedural art**: tower and enemy sprites are drawn programmatically on

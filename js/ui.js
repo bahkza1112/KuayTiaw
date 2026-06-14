@@ -1,6 +1,12 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='1.12.8';
+const GAME_VERSION='1.12.10';
 const PATCH_NOTES=[
+  {ver:'1.12.10',date:'2026-06-14',title:'🧹 ปรับปรุงประสิทธิภาพการแสดงผล',notes:[
+    'ลบโค้ดระบบแสดงผลป้อม 3D ที่เลิกใช้แล้ว (แทนที่ด้วยสไปรท์ 2.5D ตั้งแต่ v1.12.8) ทำให้เกมโหลดเร็วขึ้นและไม่ต้องพึ่งไลบรารีภายนอกอีกต่อไป'
+  ]},
+  {ver:'1.12.9',date:'2026-06-14',title:'🎨 ปรับภาพศัตรูให้มีมิติขึ้น',notes:[
+    'เพิ่มเงาตกใต้ตัวศัตรูทุกชนิด ให้ดูมีมิติและแยกจากพื้นด้านหลังชัดเจนขึ้น สอดคล้องกับการปรับภาพป้อมใน v1.12.8'
+  ]},
   {ver:'1.12.8',date:'2026-06-14',title:'🎨 ปรับภาพป้อมใหม่ทั้งหมด',notes:[
     'ปิดโหมดแสดงผลป้อม 3D แล้วใช้สไปรท์ 2.5D ที่ปรับปรุงใหม่แทน — แสงเงาคมชัดขึ้น มีออร่าเรืองแสงใต้ฐานตามธาตุของป้อม',
     'เพิ่มวงแหวนเรืองแสงรอบฐานป้อมเมื่ออัปเกรดถึง Lv.2/Lv.3 ให้เห็นความก้าวหน้าชัดเจนขึ้น'
@@ -403,7 +409,6 @@ function _doStartStage(si){
   cv=document.getElementById('cv');
   ctx=cv.getContext('2d');
   cv.width=COLS*CS; cv.height=ROWS*CS;
-  _init3D(); _layoutGl3D();
   // BUG FIX: remove before adding to prevent duplicate listeners
   cv.removeEventListener('click',onCanvasClick);
   cv.addEventListener('click',onCanvasClick);

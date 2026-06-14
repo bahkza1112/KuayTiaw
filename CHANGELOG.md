@@ -2,6 +2,30 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.12.10 — Remove dead 3D tower overlay code
+
+### Removed
+- Deleted the entire disabled Three.js 3D tower overlay system from
+  `js/tower.js` (`_gl3D`, `_twMeshes`, `_BC3D`, `_gridToWorld3D`, `_init3D`,
+  `_layoutGl3D`, `_buildTowerMesh3D`, `_buildAwakenAura3D`,
+  `_sync3DTowerMesh`, `_cleanup3DTowers`, `_render3D` — ~325 lines), disabled
+  since v1.12.8 in favor of the 2.5D sprite renderer.
+- Removed `<canvas id="gl3d">` and the Three.js CDN `<script>` tag from
+  `Tower Quest 🏰.html`, and the `#gl3d` rule from `css/main.css`. The game
+  no longer has any external dependencies.
+- Updated stale 3D references in `PROJECT_MASTER.md` and
+  `docs/TowerDesign.md` to describe the current 2.5D aura/level-ring
+  rendering (`_twAura`, `_twLevelRing`) instead.
+
+## v1.12.9 — Enemy visual polish
+
+### Changed
+- `js/game.js` enemy-draw block: each enemy is now drawn twice per frame —
+  once with `ctx.shadowColor/shadowBlur/shadowOffsetY` set (soft blurred
+  silhouette shadow) and once normally on top — matching the drop-shadow
+  technique introduced for towers in v1.12.8, giving enemies more depth and
+  contrast against the ground tiles.
+
 ## v1.12.8 — Tower visual overhaul (2.5D)
 
 ### Changed

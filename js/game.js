@@ -1367,21 +1367,16 @@ function render(){
     ctx.globalAlpha=.32; ctx.fillStyle='#000';
     ctx.beginPath(); ctx.ellipse(cx2,cy2+CS*.35,CS*.46,CS*.13,0,0,Math.PI*2); ctx.fill();
     ctx.globalAlpha=1;
-    // 3D tower mesh (replaces 2D sprite icon — Three.js overlay draws the tower body+turret)
-    if(_gl3D){
-      _sync3DTowerMesh(tw,cx2,cy2,bounce);
-    }else{
-      // 2.5D sprite (Cannon..Void)
-      const _tws=1.4;
-      ctx.save();
-      ctx.translate(cx2, cy2-CS*.18);
-      ctx.scale(_tws,_tws);
-      ctx.shadowColor='rgba(0,0,0,.95)';ctx.shadowBlur=7;ctx.shadowOffsetX=0;ctx.shadowOffsetY=3;
-      drawTowerIcon(ctx,tw.type,CS-2,tw.angle,tw.lv);
-      ctx.shadowBlur=0;ctx.shadowOffsetY=0;
-      drawTowerIcon(ctx,tw.type,CS-2,tw.angle,tw.lv);
-      ctx.restore();
-    }
+    // 2.5D sprite (Cannon..Void)
+    const _tws=1.4;
+    ctx.save();
+    ctx.translate(cx2, cy2-CS*.18);
+    ctx.scale(_tws,_tws);
+    ctx.shadowColor='rgba(0,0,0,.95)';ctx.shadowBlur=7;ctx.shadowOffsetX=0;ctx.shadowOffsetY=3;
+    drawTowerIcon(ctx,tw.type,CS-2,tw.angle,tw.lv);
+    ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+    drawTowerIcon(ctx,tw.type,CS-2,tw.angle,tw.lv);
+    ctx.restore();
     // level badge
     if(tw.lv>1){
       ctx.fillStyle='rgba(0,0,0,.75)';
@@ -1503,7 +1498,12 @@ function render(){
       const _p0=currentPath[Math.min(e.pi,currentPath.length-1)],_p1=currentPath[Math.min(e.pi+1,currentPath.length-1)];
       const _dir=Math.atan2(_p1[1]-_p0[1],_p1[0]-_p0[0]);
       const _moveSpd=e.spd*e.slow*((e._enrageT>0)?(e._enrageMult||1):1)*((e._diveT>0)?1.5:1);
-      drawEnemySprite(ctx,e.ti,e.x,e.y,sz,{dir:_dir,spd:_moveSpd});
+      const _mv={dir:_dir,spd:_moveSpd};
+      // soft silhouette shadow pass for extra depth/contrast (matches v1.12.8 tower polish)
+      ctx.shadowColor='rgba(0,0,0,.55)';ctx.shadowBlur=sz*.18;ctx.shadowOffsetY=sz*.1;
+      drawEnemySprite(ctx,e.ti,e.x,e.y,sz,_mv);
+      ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+      drawEnemySprite(ctx,e.ti,e.x,e.y,sz,_mv);
     }
     // HP bar (taller, more visible)
     const bw=sz*2+4, bh=6, bx=e.x-sz-2, by=e.y-sz-13;
@@ -1780,7 +1780,6 @@ function render(){
     ctx.fillText(G.waveBanner.text,cv.width/2+slideX,by2+bh2/2);
     ctx.shadowBlur=0;ctx.restore();
   }
-  _render3D();
 }
 
 /* ══ CANVAS EVENTS ══ */
@@ -1984,7 +1983,6 @@ function _doStartEndgame(){
   showScreen('gp',true);
   cv=document.getElementById('cv'); ctx=cv.getContext('2d');
   cv.width=COLS*CS; cv.height=ROWS*CS;
-  _init3D(); _layoutGl3D();
   cv.removeEventListener('click',onCanvasClick); cv.addEventListener('click',onCanvasClick);
   cv.removeEventListener('mousemove',onCanvasMove); cv.addEventListener('mousemove',onCanvasMove);
   cv.removeEventListener('pointerleave',onCanvasLeave); cv.addEventListener('pointerleave',onCanvasLeave);
