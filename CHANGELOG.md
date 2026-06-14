@@ -2,6 +2,34 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.12.1 — Thai UI localization & touch target fixes
+
+### Changed
+- **Full Thai localization of the UI shell**: translated remaining
+  English chrome to Thai across `Tower Quest 🏰.html`, `js/ui.js`,
+  `js/game.js`, and `js/tower.js` for language consistency with the
+  Thai-language game content (STAGES/CUTSCENES/ENAMES/TNAMES were already
+  Thai). Covers: main menu buttons (Story Mode/Endgame/Workshop), bottom
+  nav labels, HUD (Surrender, Send Wave, Auto, wave preview, back button,
+  tower tray names), Save/Pause/Settings/End overlays, Codex header/tabs
+  + unlock counters, Endgame Menu, Workshop header/craft button,
+  Leaderboard header/tabs/stat labels/empty states, Cutscene
+  skip/next/unlocked/chapter label, What's New header, Achievement
+  notification, stage-select "Stage N"/"Waves"/"Towers" labels, and
+  "Fire Rate" → "อัตรายิง" in tower flavor text and popups.
+- **`WEATHERS` array** (`js/game.js`): translated all 8 weather event
+  names and descriptions to Thai (FOG→หมอกหนา, BLIZZARD→พายุหิมะ, etc.),
+  matching the weather banner UI.
+- **Touch target sizes** (`css/main.css`): increased `.pausebtn`,
+  `.speedbtn`, `.devbtn`, and `.bback` to ~34-38px min width/height
+  (mobile media query bumped to 38px) for easier tapping on touch
+  devices, per UI/UX audit.
+- **Speed toggle relocated** (`Tower Quest 🏰.html`): `#speedBtn` moved
+  from the crowded HUD top bar into the wave-control row next to
+  `#autoBtn`/`#waveBtn`, so it's reachable alongside the controls players
+  use most during a wave. `#settSpeedBtn` in the Settings overlay still
+  syncs with it.
+
 ## v1.12.0 — Soul Gems, Workshop & Void Tower
 
 ### Added

@@ -2,7 +2,7 @@
 <html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Tower Quest 🏰 v1.12.0</title>
+<title>Tower Quest 🏰 v1.12.1</title>
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -42,37 +42,37 @@
   <!-- logo -->
   <div class="island">🏰</div>
   <div class="gtitle">TOWER QUEST</div>
-  <div class="gsub">⚔️ Defend Your Kingdom!</div>
-  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v1.12.0 — What's New<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
+  <div class="gsub">⚔️ ปกป้องอาณาจักรของคุณ!</div>
+  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v1.12.1 — มีอะไรใหม่<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
 
   <!-- battle buttons -->
-  <button class="bbattle" id="startBtn">⚔️ Story Mode</button>
-  <button id="egMenuBtn" style="margin-top:12px;font-family:'Arial Black','Segoe UI',Arial,sans-serif;background:linear-gradient(180deg,rgba(255,80,80,.35),rgba(180,20,20,.45));color:#ff8a80;font-size:17px;font-weight:800;border:2px solid rgba(255,50,50,.5);border-radius:50px;padding:13px 54px;cursor:pointer;letter-spacing:1px;transition:all .2s;box-shadow:0 0 20px rgba(255,50,50,.4);" onmouseover="this.style.background=&#39;linear-gradient(180deg,rgba(255,80,80,.5),rgba(180,20,20,.6))&#39;;this.style.boxShadow=&#39;0 0 32px rgba(255,50,50,.65)&#39;" onmouseout="this.style.background=&#39;linear-gradient(180deg,rgba(255,80,80,.35),rgba(180,20,20,.45))&#39;;this.style.boxShadow=&#39;0 0 20px rgba(255,50,50,.4)&#39;">🔥 ENDGAME</button>
-  <button id="workshopBtn" style="margin-top:12px;font-family:'Arial Black','Segoe UI',Arial,sans-serif;background:linear-gradient(180deg,rgba(126,87,194,.35),rgba(49,27,146,.45));color:#d1c4e9;font-size:15px;font-weight:800;border:2px solid rgba(126,87,194,.5);border-radius:50px;padding:11px 46px;cursor:pointer;letter-spacing:1px;transition:all .2s;box-shadow:0 0 18px rgba(126,87,194,.4);" onmouseover="this.style.background=&#39;linear-gradient(180deg,rgba(126,87,194,.5),rgba(49,27,146,.6))&#39;;this.style.boxShadow=&#39;0 0 28px rgba(126,87,194,.65)&#39;" onmouseout="this.style.background=&#39;linear-gradient(180deg,rgba(126,87,194,.35),rgba(49,27,146,.45))&#39;;this.style.boxShadow=&#39;0 0 18px rgba(126,87,194,.4)&#39;">🛠️ Workshop</button>
+  <button class="bbattle" id="startBtn">⚔️ โหมดเนื้อเรื่อง</button>
+  <button id="egMenuBtn" style="margin-top:12px;font-family:'Arial Black','Segoe UI',Arial,sans-serif;background:linear-gradient(180deg,rgba(255,80,80,.35),rgba(180,20,20,.45));color:#ff8a80;font-size:17px;font-weight:800;border:2px solid rgba(255,50,50,.5);border-radius:50px;padding:13px 54px;cursor:pointer;letter-spacing:1px;transition:all .2s;box-shadow:0 0 20px rgba(255,50,50,.4);" onmouseover="this.style.background=&#39;linear-gradient(180deg,rgba(255,80,80,.5),rgba(180,20,20,.6))&#39;;this.style.boxShadow=&#39;0 0 32px rgba(255,50,50,.65)&#39;" onmouseout="this.style.background=&#39;linear-gradient(180deg,rgba(255,80,80,.35),rgba(180,20,20,.45))&#39;;this.style.boxShadow=&#39;0 0 20px rgba(255,50,50,.4)&#39;">🔥 เอนด์เกม</button>
+  <button id="workshopBtn" style="margin-top:12px;font-family:'Arial Black','Segoe UI',Arial,sans-serif;background:linear-gradient(180deg,rgba(126,87,194,.35),rgba(49,27,146,.45));color:#d1c4e9;font-size:15px;font-weight:800;border:2px solid rgba(126,87,194,.5);border-radius:50px;padding:11px 46px;cursor:pointer;letter-spacing:1px;transition:all .2s;box-shadow:0 0 18px rgba(126,87,194,.4);" onmouseover="this.style.background=&#39;linear-gradient(180deg,rgba(126,87,194,.5),rgba(49,27,146,.6))&#39;;this.style.boxShadow=&#39;0 0 28px rgba(126,87,194,.65)&#39;" onmouseout="this.style.background=&#39;linear-gradient(180deg,rgba(126,87,194,.35),rgba(49,27,146,.45))&#39;;this.style.boxShadow=&#39;0 0 18px rgba(126,87,194,.4)&#39;">🛠️ เวิร์กชอป</button>
 
   <!-- progress bar -->
   <div id="menuProgress" style="width:84%;margin-top:22px;background:rgba(0,0,0,.32);backdrop-filter:blur(6px);border:1px solid rgba(255,224,130,.18);box-shadow:0 0 18px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.04);border-radius:16px;padding:14px 16px;display:flex;justify-content:space-around;align-items:center;">
     <div style="text-align:center;">
-      <div style="font-size:9px;color:#8bc34a;letter-spacing:.5px;margin-bottom:4px;">Best Stage</div>
+      <div style="font-size:9px;color:#8bc34a;letter-spacing:.5px;margin-bottom:4px;">ด่านล่าสุด</div>
       <div id="menuBestStage" style="font-size:20px;font-weight:900;color:#ffe082;">—</div>
     </div>
     <div style="width:1px;height:32px;background:rgba(255,255,255,.12)"></div>
     <div style="text-align:center;">
-      <div style="font-size:9px;color:#8bc34a;letter-spacing:.5px;margin-bottom:4px;">Total Stars</div>
+      <div style="font-size:9px;color:#8bc34a;letter-spacing:.5px;margin-bottom:4px;">ดาวรวม</div>
       <div id="menuTotalStars" style="font-size:16px;color:#ffe234;font-weight:700;">⭐ 0 / 27</div>
     </div>
     <div style="width:1px;height:32px;background:rgba(255,255,255,.12)"></div>
     <div style="text-align:center;">
-      <div style="font-size:9px;color:#8bc34a;letter-spacing:.5px;margin-bottom:4px;">Cleared</div>
+      <div style="font-size:9px;color:#8bc34a;letter-spacing:.5px;margin-bottom:4px;">ผ่านแล้ว</div>
       <div id="menuStageIcons" style="font-size:16px;letter-spacing:2px;">🔒🔒🔒🔒🔒🔒🔒🔒🔒🔒</div>
     </div>
   </div>
 
   <div class="bottom-nav">
-    <div class="bnav" id="egNavBtn"><span class="bnav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c2 3-1 4-1 7a3 3 0 1 0 6 0c0-1-.5-2-1-3 2 1.5 3 4 3 6.5A6.5 6.5 0 0 1 12 19a6.5 6.5 0 0 1-6.5-6.5C5.5 8 8 5 12 2Z"/></svg></span>Endgame</div>
-    <div class="bnav active" id="battleNavBtn"><span class="bnav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="21" x2="17" y2="7"/><line x1="13" y1="3" x2="17" y2="7"/><line x1="17" y1="3" x2="13" y2="7"/><line x1="21" y1="21" x2="7" y2="7"/><line x1="11" y1="3" x2="7" y2="7"/><line x1="7" y1="3" x2="11" y2="7"/></svg></span>Story</div>
-    <div class="bnav" id="codexNavBtn"><span class="bnav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5c-2-1.3-5-1.7-9-1.3v15c4-.4 7 0 9 1.3 2-1.3 5-1.7 9-1.3v-15c-4-.4-7 0-9 1.3Z"/><line x1="12" y1="4.5" x2="12" y2="19.5"/></svg></span>Codex<span id="achBadge" style="display:none;background:#ffe082;color:#6d2900;font-size:8px;font-weight:900;border-radius:8px;padding:1px 5px;margin-left:2px;vertical-align:middle;"></span></div>
-    <div class="bnav" id="lbNavBtn"><span class="bnav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v4a4 4 0 0 1-8 0V4Z"/><path d="M8 5H5a3 3 0 0 0 3 3"/><path d="M16 5h3a3 3 0 0 1-3 3"/><line x1="12" y1="12" x2="12" y2="16"/><path d="M9 20h6"/><path d="M10 16h4l1 4H9l1-4Z"/></svg></span>Rankings</div>
+    <div class="bnav" id="egNavBtn"><span class="bnav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c2 3-1 4-1 7a3 3 0 1 0 6 0c0-1-.5-2-1-3 2 1.5 3 4 3 6.5A6.5 6.5 0 0 1 12 19a6.5 6.5 0 0 1-6.5-6.5C5.5 8 8 5 12 2Z"/></svg></span>เอนด์เกม</div>
+    <div class="bnav active" id="battleNavBtn"><span class="bnav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="21" x2="17" y2="7"/><line x1="13" y1="3" x2="17" y2="7"/><line x1="17" y1="3" x2="13" y2="7"/><line x1="21" y1="21" x2="7" y2="7"/><line x1="11" y1="3" x2="7" y2="7"/><line x1="7" y1="3" x2="11" y2="7"/></svg></span>เนื้อเรื่อง</div>
+    <div class="bnav" id="codexNavBtn"><span class="bnav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5c-2-1.3-5-1.7-9-1.3v15c4-.4 7 0 9 1.3 2-1.3 5-1.7 9-1.3v-15c-4-.4-7 0-9 1.3Z"/><line x1="12" y1="4.5" x2="12" y2="19.5"/></svg></span>สารานุกรม<span id="achBadge" style="display:none;background:#ffe082;color:#6d2900;font-size:8px;font-weight:900;border-radius:8px;padding:1px 5px;margin-left:2px;vertical-align:middle;"></span></div>
+    <div class="bnav" id="lbNavBtn"><span class="bnav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v4a4 4 0 0 1-8 0V4Z"/><path d="M8 5H5a3 3 0 0 0 3 3"/><path d="M16 5h3a3 3 0 0 1-3 3"/><line x1="12" y1="12" x2="12" y2="16"/><path d="M9 20h6"/><path d="M10 16h4l1 4H9l1-4Z"/></svg></span>อันดับ</div>
     <div class="bnav" id="devNavBtn"><span class="bnav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 1 0-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 0 0 5.4-5.4l-2.1 2.1-2-2 2.1-2.1Z"/></svg></span>Dev</div>
   </div>
 </div>
@@ -83,7 +83,7 @@
     <div class="cs-bg" id="csBg"></div>
     <div class="cs-overlay"></div>
     <div class="cs-dots" id="csDots"></div>
-    <button class="cs-skip" id="csSkip">Skip ▶▶</button>
+    <button class="cs-skip" id="csSkip">ข้าม ▶▶</button>
     <div class="cs-content">
       <div class="cs-stage-label" id="csStageLabel"></div>
       <div class="cs-icon-wrap" id="csIcon"></div>
@@ -93,10 +93,10 @@
         <div class="cs-text" id="csText"></div>
       </div>
       <div class="cs-unlock" id="csUnlock">
-        <div class="cs-unlock-title">🔓 UNLOCKED</div>
+        <div class="cs-unlock-title">🔓 ปลดล็อก</div>
         <div class="cs-unlock-items" id="csUnlockItems"></div>
       </div>
-      <button class="cs-next" id="csNext">▶ Next</button>
+      <button class="cs-next" id="csNext">▶ ต่อไป</button>
     </div>
   </div>
 </div>
@@ -106,26 +106,26 @@
 <!-- TOWER SELECTION SCREEN -->
 <div id="towersel">
   <div class="ts-header">
-    <button class="bback" id="tsBackBtn">← Back</button>
-    <div class="ts-title">🏰 Select Towers</div>
+    <button class="bback" id="tsBackBtn">← กลับ</button>
+    <div class="ts-title">🏰 เลือกป้อม</div>
     <div class="ts-slots" id="tsSlotCount">0/6</div>
   </div>
   <div class="ts-body">
-    <div class="ts-info" id="tsInfo">เลือก <strong>ป้อมสูงสุด 6 แบบ</strong> สำหรับด่านนี้ Tap card to select / deselect</div>
+    <div class="ts-info" id="tsInfo">เลือก <strong>ป้อมสูงสุด 6 แบบ</strong> สำหรับด่านนี้ แตะการ์ดเพื่อเลือก/ยกเลิก</div>
     <div class="ts-selected-strip">
-      <div class="ts-strip-title">Selected — tap to remove</div>
+      <div class="ts-strip-title">เลือกแล้ว — แตะเพื่อเอาออก</div>
       <div class="ts-strip-slots" id="tsStrip"></div>
     </div>
     <div class="ts-grid" id="tsGrid"></div>
-    <button class="ts-start-btn" id="tsStartBtn" disabled="" onclick="confirmTowerSelection()">⚔️ Deploy!</button>
+    <button class="ts-start-btn" id="tsStartBtn" disabled="" onclick="confirmTowerSelection()">⚔️ เริ่มรบ!</button>
   </div>
 </div>
 
 <!-- STAGE SELECT -->
 <div id="stagesel" style="display: none; flex-direction: column;">
   <div class="ss-header">
-    <button class="bback" id="ssBackBtn">← Back</button>
-    <div class="ss-title">🗺️ Select Stage</div>
+    <button class="bback" id="ssBackBtn">← กลับ</button>
+    <div class="ss-title">🗺️ เลือกด่าน</div>
   </div>
   <div class="ss-body" id="ssBody"><div class="stage-card" onclick="startStage(0)">
       <div class="stage-icon">🌿</div>
@@ -254,58 +254,60 @@
 <!-- GAMEPLAY -->
 <div id="gp" style="display: none;">
   <div class="hud">
-    <button class="bback" id="backBtn">← Stages</button>
+    <button class="bback" id="backBtn">← ด่าน</button>
     <div class="huditem">❤️<div class="hpwrap"><div class="hpbar" id="hpBar" style="width:100%"></div></div><span id="hpTxt">20</span></div>
     <div class="huditem">💰<span id="goldTxt">150</span></div>
     <div class="huditem">🌊<span id="waveTxt">0</span>/<span id="maxWaveTxt">6</span></div>
     <div class="huditem"><span class="stage-badge" id="stageBadge">S1</span></div>
     <div class="weather-hud" id="weatherHud"></div>
     <button class="pausebtn" id="pauseBtn">⏸</button>
-    <button class="speedbtn" id="speedBtn" style="display:none;">1×</button>
     <button class="speedbtn" id="sfxBtn" onclick="toggleSfx()" style="display:none;" title="เปิด/ปิดเสียง">🔊</button>
     <button class="pausebtn" id="settingsBtn" title="ตั้งค่า">⚙</button>
     <button class="devbtn" id="devIngameBtn">🔧</button>
-    <button class="surrender-btn" id="surrenderBtn" style="display:none" onclick="surrender()">🏳 Surrender</button>
+    <button class="surrender-btn" id="surrenderBtn" style="display:none" onclick="surrender()">🏳 ยอมแพ้</button>
   </div>
   <canvas id="cv"></canvas>
   <canvas id="gl3d"></canvas>
   <div class="tpanel-wrap">
     <div class="wave-preview" id="wavePreview">
-      <div class="wave-preview-title">⚠️ Next Wave...</div>
+      <div class="wave-preview-title">⚠️ คลื่นต่อไป...</div>
       <div class="wave-preview-enemies" id="wavePreviewEnemies"></div>
     </div>
     <div class="range-info" id="rangeInfo"></div>
     <div id="dragGhost"></div>
     <div class="tpanel">
       <div style="display:flex;gap:5px;flex:1;flex-wrap:wrap;">
-        <div class="tbtn" id="tb0" onclick="selTower(0)"><div class="ticon">💣</div><div>Cannon</div><div class="tcost" id="tc0">💰50</div></div>
-        <div class="tbtn" id="tb1" onclick="selTower(1)"><div class="ticon">❄️</div><div>Ice</div><div class="tcost" id="tc1">💰60</div></div>
-        <div class="tbtn" id="tb2" onclick="selTower(2)"><div class="ticon">✨</div><div>Magic</div><div class="tcost" id="tc2">💰80</div></div>
-        <div class="tbtn" id="tb3" onclick="selTower(3)"><div class="ticon">🎯</div><div>Sniper</div><div class="tcost" id="tc3">💰70</div></div>
-        <div class="tbtn" id="tb4" onclick="selTower(4)"><div class="ticon">💚</div><div>Support</div><div class="tcost" id="tc4">💰40</div></div>
-        <div class="tbtn" id="tb5" onclick="selTower(5)"><div class="ticon">🏹</div><div>Archer</div><div class="tcost" id="tc5">💰65</div></div>
-        <div class="tbtn" id="tb6" onclick="selTower(6)"><div class="ticon">💰</div><div>Gold Mine</div><div class="tcost" id="tc6">💰80</div></div>
-        <div class="tbtn" id="tb7" onclick="selTower(7)" style="display:none;"><div class="ticon">⚡</div><div>Thunder</div><div class="tcost" id="tc7">💰85</div></div>
-        <div class="tbtn" id="tb8" onclick="selTower(8)" style="display:none;"><div class="ticon">🌑</div><div>Void</div><div class="tcost" id="tc8">💰90</div></div>
+        <div class="tbtn" id="tb0" onclick="selTower(0)"><div class="ticon">💣</div><div>ปืนใหญ่</div><div class="tcost" id="tc0">💰50</div></div>
+        <div class="tbtn" id="tb1" onclick="selTower(1)"><div class="ticon">❄️</div><div>น้ำแข็ง</div><div class="tcost" id="tc1">💰60</div></div>
+        <div class="tbtn" id="tb2" onclick="selTower(2)"><div class="ticon">✨</div><div>เวทมนตร์</div><div class="tcost" id="tc2">💰80</div></div>
+        <div class="tbtn" id="tb3" onclick="selTower(3)"><div class="ticon">🎯</div><div>สไนเปอร์</div><div class="tcost" id="tc3">💰70</div></div>
+        <div class="tbtn" id="tb4" onclick="selTower(4)"><div class="ticon">💚</div><div>ซัพพอร์ต</div><div class="tcost" id="tc4">💰40</div></div>
+        <div class="tbtn" id="tb5" onclick="selTower(5)"><div class="ticon">🏹</div><div>ธนู</div><div class="tcost" id="tc5">💰65</div></div>
+        <div class="tbtn" id="tb6" onclick="selTower(6)"><div class="ticon">💰</div><div>เหมืองทอง</div><div class="tcost" id="tc6">💰80</div></div>
+        <div class="tbtn" id="tb7" onclick="selTower(7)" style="display:none;"><div class="ticon">⚡</div><div>สายฟ้า</div><div class="tcost" id="tc7">💰85</div></div>
+        <div class="tbtn" id="tb8" onclick="selTower(8)" style="display:none;"><div class="ticon">🌑</div><div>มนตราโมฆะ</div><div class="tcost" id="tc8">💰90</div></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0;margin-left:auto;">
         <div style="position:relative;">
-          <button class="wavebtn" id="waveBtn" onclick="startWave()" onmouseenter="showWavePreview()" onmouseleave="hideWavePreview()">▶ Send Wave</button>
+          <button class="wavebtn" id="waveBtn" onclick="startWave()" onmouseenter="showWavePreview()" onmouseleave="hideWavePreview()">▶ ส่งคลื่น</button>
         </div>
-        <button class="autobtn" id="autoBtn" onclick="toggleAutoWave()">🔁 Auto</button>
+        <div style="display:flex;gap:4px;align-items:center;">
+          <button class="autobtn" id="autoBtn" onclick="toggleAutoWave()">🔁 อัตโนมัติ</button>
+          <button class="speedbtn" id="speedBtn">1×</button>
+        </div>
       </div>
     </div>
   </div>
   <!-- save name overlay -->
   <div class="save-overlay" id="saveOverlay">
     <div class="save-box" id="saveBox">
-      <h2 id="saveTitle" style="font-size:18px;margin-bottom:4px;">💾 Save Score</h2>
+      <h2 id="saveTitle" style="font-size:18px;margin-bottom:4px;">💾 บันทึกคะแนน</h2>
       <p id="saveTopMsg" style="font-size:11px;color:#8bc34a;margin-bottom:8px;"></p>
       <div class="save-result-grid" id="saveResultGrid"></div>
-      <input class="save-input" id="saveNameInput" placeholder="Enter name..." maxlength="16">
+      <input class="save-input" id="saveNameInput" placeholder="ใส่ชื่อ..." maxlength="16">
       <div class="save-btn-row">
-        <button class="obtn sec" onclick="skipSave()" style="font-size:12px;padding:8px;">Skip</button>
-        <button class="obtn" id="saveConfirmBtn" onclick="confirmSave()" style="font-size:12px;padding:8px;">💾 Save</button>
+        <button class="obtn sec" onclick="skipSave()" style="font-size:12px;padding:8px;">ข้าม</button>
+        <button class="obtn" id="saveConfirmBtn" onclick="confirmSave()" style="font-size:12px;padding:8px;">💾 บันทึก</button>
       </div>
     </div>
   </div>
@@ -314,39 +316,39 @@
   <div id="weatherBanner">
     <div class="wb-warning">
       <div class="wb-icon" id="wbIcon">🌫️</div>
-      <div class="wb-name" id="wbName">FOG</div>
-      <div class="wb-desc" id="wbDesc">Tower range reduced 50%</div>
+      <div class="wb-name" id="wbName">หมอกหนา</div>
+      <div class="wb-desc" id="wbDesc">ระยะป้อมลด 50%</div>
     </div>
   </div>
   <!-- overlays inside #gp so position:absolute works -->
   <div class="overlay" id="endOverlay">
     <div class="obox">
-      <h2 id="endTitle">🏆 Victory!</h2>
+      <h2 id="endTitle">🏆 ชนะ!</h2>
       <div class="star-row" id="starRow"></div>
       <p id="endScore"></p>
       <div class="unlock-banner" id="unlockBanner" style="display:none"></div>
-      <button class="obtn blue" id="nextStageBtn" style="display:none" onclick="goNextStage()">▶ Next Stage</button>
-      <button class="obtn" onclick="restartGame()">🔄 Retry</button>
-      <button class="obtn sec" onclick="goStageSelect()">🗺️ Select Stage</button>
+      <button class="obtn blue" id="nextStageBtn" style="display:none" onclick="goNextStage()">▶ ด่านต่อไป</button>
+      <button class="obtn" onclick="restartGame()">🔄 เล่นใหม่</button>
+      <button class="obtn sec" onclick="goStageSelect()">🗺️ เลือกด่าน</button>
     </div>
   </div>
   <div class="pausescreen" id="pauseScreen">
     <div class="obox">
-      <h2>⏸ Paused</h2>
-      <p style="color:#ccc;font-size:12px;margin-bottom:12px;">Game Paused</p>
-      <button class="obtn" onclick="togglePause()">▶ Resume</button>
-      <button class="obtn" style="background:linear-gradient(180deg,#66bb6a,#2e7d32);color:#fff;" onclick="pausedRestart()">🔄 Restart</button>
-      <button class="obtn sec" onclick="goStageSelect()">🗺️ Select Stage</button>
+      <h2>⏸ หยุดชั่วคราว</h2>
+      <p style="color:#ccc;font-size:12px;margin-bottom:12px;">เกมหยุดชั่วคราว</p>
+      <button class="obtn" onclick="togglePause()">▶ เล่นต่อ</button>
+      <button class="obtn" style="background:linear-gradient(180deg,#66bb6a,#2e7d32);color:#fff;" onclick="pausedRestart()">🔄 เริ่มใหม่</button>
+      <button class="obtn sec" onclick="goStageSelect()">🗺️ เลือกด่าน</button>
     </div>
   </div>
   <div class="pausescreen" id="settingsScreen">
     <div class="obox">
-      <h2>⚙ Settings</h2>
-      <div class="settings-row"><span>⚡ Speed</span><button class="speedbtn" id="settSpeedBtn">1×</button></div>
+      <h2>⚙ ตั้งค่า</h2>
+      <div class="settings-row"><span>⚡ ความเร็ว</span><button class="speedbtn" id="settSpeedBtn">1×</button></div>
       <div class="settings-row"><span>🔊 เสียง</span><button class="speedbtn" id="settSfxBtn">🔊</button></div>
       <div class="settings-row"><span>🔉 ระดับเสียง</span><input type="range" id="settVolSlider" min="0" max="100" value="35"></div>
-      <div class="settings-row"><span>🔁 Auto Wave</span><button class="autobtn" id="settAutoBtn">🔁 Auto</button></div>
-      <button class="obtn" onclick="closeSettings()">✔ Close</button>
+      <div class="settings-row"><span>🔁 ส่งคลื่นอัตโนมัติ</span><button class="autobtn" id="settAutoBtn">🔁 อัตโนมัติ</button></div>
+      <button class="obtn" onclick="closeSettings()">✔ ปิด</button>
     </div>
   </div>
   <div class="toast" id="toast"></div>
@@ -357,15 +359,15 @@
 <!-- CODEX -->
 <div id="codex" style="display: none;">
   <div class="cdx-header">
-    <button class="bback" id="codexBackBtn">← Back</button>
-    <div class="cdx-title">📖 Codex</div>
+    <button class="bback" id="codexBackBtn">← กลับ</button>
+    <div class="cdx-title">📖 สารานุกรม</div>
     <div id="cdxProg" style="font-size:12px;color:#8bc34a;font-weight:700;"></div>
   </div>
   <div class="cdx-tabs">
-    <div class="cdx-tab active" id="tabMonster" onclick="switchCdxTab(&#39;monster&#39;)">👹 Monsters</div>
-    <div class="cdx-tab" id="tabBoss" onclick="switchCdxTab(&#39;boss&#39;)">💀 Boss</div>
-    <div class="cdx-tab" id="tabTower" onclick="switchCdxTab(&#39;tower&#39;)">🏰 Towers</div>
-    <div class="cdx-tab" id="tabAchiev" onclick="switchCdxTab(&#39;achiev&#39;)">🎖️ Achiev</div>
+    <div class="cdx-tab active" id="tabMonster" onclick="switchCdxTab(&#39;monster&#39;)">👹 มอนสเตอร์</div>
+    <div class="cdx-tab" id="tabBoss" onclick="switchCdxTab(&#39;boss&#39;)">💀 บอส</div>
+    <div class="cdx-tab" id="tabTower" onclick="switchCdxTab(&#39;tower&#39;)">🏰 ป้อม</div>
+    <div class="cdx-tab" id="tabAchiev" onclick="switchCdxTab(&#39;achiev&#39;)">🎖️ รางวัล</div>
   </div>
   <div class="cdx-body" id="cdxBody"></div>
 </div>
@@ -373,37 +375,37 @@
 <!-- ENDGAME MENU -->
 <div id="egmenu" style="display: none;">
   <div class="eg-hd">
-    <button class="bback" id="egBackBtn">← Back</button>
-    <div class="eg-hd-title">🔥 ENDGAME MODE</div>
+    <button class="bback" id="egBackBtn">← กลับ</button>
+    <div class="eg-hd-title">🔥 โหมดเอนด์เกม</div>
     <div class="eg-badge-inf">∞</div>
   </div>
   <div class="eg-body">
     <div class="eg-info-box">
-      <div class="eg-info-title">🔥 Endless Mode</div>
-      <div class="eg-info-txt">Enemies get stronger every wave. No win condition — survive as long as you can.<br>Your best wave and score will be saved to the leaderboard.</div>
+      <div class="eg-info-title">🔥 โหมดไม่จำกัด</div>
+      <div class="eg-info-txt">ศัตรูจะแข็งแกร่งขึ้นทุกคลื่น ไม่มีเงื่อนไขชนะ — เอาชีวิตรอดให้นานที่สุด<br>เวฟและคะแนนสูงสุดของคุณจะถูกบันทึกลงกระดานผู้นำ</div>
     </div>
     <div>
-      <div class="eg-diff-title">Difficulty</div>
+      <div class="eg-diff-title">ความยาก</div>
       <div class="eg-diff-grid">
-        <div class="eg-diff-btn sel" id="diff0" onclick="selectDiff(0)"><div class="eg-diff-ico">🌿</div><div class="eg-diff-name">Easy</div><div class="eg-diff-desc">Enemy ×0.7</div></div>
-        <div class="eg-diff-btn" id="diff1" onclick="selectDiff(1)"><div class="eg-diff-ico">⚔️</div><div class="eg-diff-name">Normal</div><div class="eg-diff-desc">Standard</div></div>
-        <div class="eg-diff-btn" id="diff2" onclick="selectDiff(2)"><div class="eg-diff-ico">💀</div><div class="eg-diff-name">Hard</div><div class="eg-diff-desc">Enemy ×1.5</div></div>
+        <div class="eg-diff-btn sel" id="diff0" onclick="selectDiff(0)"><div class="eg-diff-ico">🌿</div><div class="eg-diff-name">ง่าย</div><div class="eg-diff-desc">ศัตรู ×0.7</div></div>
+        <div class="eg-diff-btn" id="diff1" onclick="selectDiff(1)"><div class="eg-diff-ico">⚔️</div><div class="eg-diff-name">ปกติ</div><div class="eg-diff-desc">มาตรฐาน</div></div>
+        <div class="eg-diff-btn" id="diff2" onclick="selectDiff(2)"><div class="eg-diff-ico">💀</div><div class="eg-diff-name">ยาก</div><div class="eg-diff-desc">ศัตรู ×1.5</div></div>
       </div>
     </div>
     <div class="eg-stat-row">
-      <div class="eg-stat-card"><div class="eg-stat-val" id="egBestWave">—</div><div class="eg-stat-lbl">🌊 Best Wave</div></div>
-      <div class="eg-stat-card"><div class="eg-stat-val" id="egBestScore">—</div><div class="eg-stat-lbl">⭐ Best Score</div></div>
+      <div class="eg-stat-card"><div class="eg-stat-val" id="egBestWave">—</div><div class="eg-stat-lbl">🌊 เวฟสูงสุด</div></div>
+      <div class="eg-stat-card"><div class="eg-stat-val" id="egBestScore">—</div><div class="eg-stat-lbl">⭐ คะแนนสูงสุด</div></div>
     </div>
-    <div class="eg-locked-note" id="egLockedNote" style="display:none">🔒 Complete at least 1 Story stage first</div>
-    <button class="eg-start-btn" id="egStartBtn" onclick="startEndgame()">🔥 Start ENDGAME</button>
+    <div class="eg-locked-note" id="egLockedNote" style="display:none">🔒 ต้องผ่านด่านเนื้อเรื่องอย่างน้อย 1 ด่านก่อน</div>
+    <button class="eg-start-btn" id="egStartBtn" onclick="startEndgame()">🔥 เริ่มเอนด์เกม</button>
   </div>
 </div>
 
 <!-- WORKSHOP -->
 <div id="workshop" style="display: none;">
   <div class="eg-hd">
-    <button class="bback" id="workshopBackBtn">← Back</button>
-    <div class="eg-hd-title">🛠️ WORKSHOP</div>
+    <button class="bback" id="workshopBackBtn">← กลับ</button>
+    <div class="eg-hd-title">🛠️ เวิร์กชอป</div>
   </div>
   <div class="eg-body">
     <div class="eg-info-box">
@@ -431,21 +433,21 @@
       </div>
     </div>
     <div class="eg-locked-note" id="wsAlreadyUnlocked" style="display:none;color:#b388ff;">🌑 ปลดล็อกแล้ว — สามารถเลือกใช้ในโหมด Endgame ได้</div>
-    <button class="eg-start-btn" id="wsCraftBtn" style="background:linear-gradient(180deg,#7e57c2,#311b92);">🛠️ Craft</button>
+    <button class="eg-start-btn" id="wsCraftBtn" style="background:linear-gradient(180deg,#7e57c2,#311b92);">🛠️ สร้าง</button>
   </div>
 </div>
 
 <!-- LEADERBOARD -->
 <div id="leaderboard" style="display: none;">
   <div class="lb-hd">
-    <button class="bback" id="lbBackBtn">← Back</button>
-    <div class="lb-hd-title">🏆 Rankings &amp; Stats</div>
+    <button class="bback" id="lbBackBtn">← กลับ</button>
+    <div class="lb-hd-title">🏆 อันดับ &amp; สถิติ</div>
   </div>
   <div class="lb-tabs">
-    <div class="lb-tab active" id="lbt0" onclick="switchLbTab(0)">📊 My Stats</div>
-    <div class="lb-tab" id="lbt1" onclick="switchLbTab(1)">🌍 All</div>
-    <div class="lb-tab" id="lbt2" onclick="switchLbTab(2)">🔥 Endgame</div>
-    <div class="lb-tab" id="lbt3" onclick="switchLbTab(3)">⚔️ Story</div>
+    <div class="lb-tab active" id="lbt0" onclick="switchLbTab(0)">📊 สถิติของฉัน</div>
+    <div class="lb-tab" id="lbt1" onclick="switchLbTab(1)">🌍 ทั้งหมด</div>
+    <div class="lb-tab" id="lbt2" onclick="switchLbTab(2)">🔥 เอนด์เกม</div>
+    <div class="lb-tab" id="lbt3" onclick="switchLbTab(3)">⚔️ เนื้อเรื่อง</div>
   </div>
   <div class="lb-body" id="lbBody"></div>
 </div>
@@ -453,8 +455,8 @@
 <!-- WHAT'S NEW -->
 <div id="whatsnew" style="display: none;">
   <div class="lb-hd">
-    <button class="bback" id="whatsnewBackBtn">← Back</button>
-    <div class="lb-hd-title">📰 What's New</div>
+    <button class="bback" id="whatsnewBackBtn">← กลับ</button>
+    <div class="lb-hd-title">📰 มีอะไรใหม่</div>
   </div>
   <div class="lb-body" id="whatsnewBody"></div>
 </div>
@@ -463,7 +465,7 @@
 <div id="achNotif">
   <div class="ach-notif-ico" id="achNotifIco">🎖️</div>
   <div class="ach-notif-text">
-    <div class="ach-notif-label">🎖️ ACHIEVEMENT UNLOCKED!</div>
+    <div class="ach-notif-label">🎖️ ปลดล็อกความสำเร็จ!</div>
     <div class="ach-notif-name" id="achNotifName">—</div>
     <div class="ach-notif-desc" id="achNotifDesc">—</div>
   </div>

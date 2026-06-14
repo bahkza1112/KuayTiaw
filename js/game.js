@@ -204,28 +204,28 @@ function mkWeatherState(){
   };
 }
 const WEATHERS=[
-  {id:'fog',icon:'🌫️',name:'FOG',desc:'Tower range -50%',color:'rgba(180,180,200,.18)',
+  {id:'fog',icon:'🌫️',name:'หมอกหนา',desc:'ระยะป้อมลด 50%',color:'rgba(180,180,200,.18)',
    apply:(G)=>{if(G.weather)G.weather.rangeMult=0.5;},
    unapply:(G)=>{if(G.weather)G.weather.rangeMult=1;}},
-  {id:'blizzard',icon:'🧊',name:'BLIZZARD',desc:'Enemy speed +50%, Ice immune',color:'rgba(100,200,255,.15)',
+  {id:'blizzard',icon:'🧊',name:'พายุหิมะ',desc:'ศัตรูเร็วขึ้น 50%, ต้านทานน้ำแข็ง',color:'rgba(100,200,255,.15)',
    apply:(G)=>{if(G.weather){G.weather.spdMult=1.5;G.weather.iceImmune=true;}},
    unapply:(G)=>{if(G.weather){G.weather.spdMult=1;G.weather.iceImmune=false;}}},
-  {id:'lightning',icon:'⚡',name:'LIGHTNING',desc:'40% towers disabled, reshuffles every 10s',color:'rgba(255,240,100,.1)',
+  {id:'lightning',icon:'⚡',name:'พายุฟ้าผ่า',desc:'ป้อม 40% ใช้งานไม่ได้ สุ่มใหม่ทุก 10 วินาที',color:'rgba(255,240,100,.1)',
    apply:(G)=>{if(G.weather)G.weather.lightningTimer=0;applyLightningStrike();},
    unapply:(G)=>{if(G.weather){G.weather.struckTowers=[];G.weather.lightningTimer=0;}}},
-  {id:'darknight',icon:'🌑',name:'DARK NIGHT',desc:'Enemy HP +50%, speed +40%',color:'rgba(20,0,40,.55)',
+  {id:'darknight',icon:'🌑',name:'ราตรีมืดมิด',desc:'ศัตรู HP +50%, เร็วขึ้น +40%',color:'rgba(20,0,40,.55)',
    apply:(G)=>{if(G.weather){G.weather.hpMult=1.5;G.weather.spdMult=1.4;}},
    unapply:(G)=>{if(G.weather){G.weather.hpMult=1;G.weather.spdMult=1;}}},
-  {id:'heatwave',icon:'🔥',name:'HEAT WAVE',desc:'Ice tower rate -70%',color:'rgba(255,120,0,.12)',
+  {id:'heatwave',icon:'🔥',name:'คลื่นความร้อน',desc:'ป้อมน้ำแข็งยิงช้าลง 70%',color:'rgba(255,120,0,.12)',
    apply:(G)=>{if(G.weather)G.weather.iceRateMult=0.3;},
    unapply:(G)=>{if(G.weather)G.weather.iceRateMult=1;}},
-  {id:'rain',icon:'🌧️',name:'HEAVY RAIN',desc:'Cannon & Magic splash -40%',color:'rgba(50,100,200,.15)',
+  {id:'rain',icon:'🌧️',name:'ฝนตกหนัก',desc:'พื้นที่กระเด็นปืนใหญ่ & เวทมนตร์ลด 40%',color:'rgba(50,100,200,.15)',
    apply:(G)=>{if(G.weather)G.weather.splashMult=0.6;},
    unapply:(G)=>{if(G.weather)G.weather.splashMult=1;}},
-  {id:'tornado',icon:'🌪️',name:'TORNADO',desc:'Enemies dodge 25% of projectiles',color:'rgba(150,150,150,.2)',
+  {id:'tornado',icon:'🌪️',name:'พายุทอร์นาโด',desc:'ศัตรูหลบกระสุนได้ 25%',color:'rgba(150,150,150,.2)',
    apply:(G)=>{if(G.weather)G.weather.dodgeChance=0.25;},
    unapply:(G)=>{if(G.weather)G.weather.dodgeChance=0;}},
-  {id:'sun',icon:'☀️',name:'SCORCHING SUN',desc:'Gold Mine 50% less gold',color:'rgba(255,220,0,.1)',
+  {id:'sun',icon:'☀️',name:'แดดแผดเผา',desc:'เหมืองทองได้ทองลด 50%',color:'rgba(255,220,0,.1)',
    apply:(G)=>{if(G.weather)G.weather.goldMineMult=0.5;},
    unapply:(G)=>{if(G.weather)G.weather.goldMineMult=1;}},
 ];
@@ -323,7 +323,7 @@ function initGame(){
   document.getElementById('speedBtn').textContent='1×';
   document.getElementById('pauseBtn').textContent='⏸';
   document.getElementById('settingsScreen').style.display='none';
-  const ab=document.getElementById('autoBtn');if(ab){ab.classList.remove('on');ab.textContent='🔁 Auto';}
+  const ab=document.getElementById('autoBtn');if(ab){ab.classList.remove('on');ab.textContent='🔁 อัตโนมัติ';}
   updateTowerPanel();
   updateHUD();
   updateMenuStats();
@@ -366,8 +366,8 @@ function toggleAutoWave(){
   autoWave=!autoWave;
   const btn=document.getElementById('autoBtn');
   btn.classList.toggle('on',autoWave);
-  btn.textContent=autoWave?'🔁 Auto ON':'🔁 Auto';
-  showToast(autoWave?'🔁 Auto ON — ส่งคลื่นอัตโนมัติ':'⏹ ออโต้ OFF');
+  btn.textContent=autoWave?'🔁 อัตโนมัติ ON':'🔁 อัตโนมัติ';
+  showToast(autoWave?'🔁 อัตโนมัติ ON — ส่งคลื่นอัตโนมัติ':'⏹ อัตโนมัติ OFF');
 }
 
 function togglePause(){
@@ -389,7 +389,7 @@ function openSettings(){
   document.getElementById('settSfxBtn').textContent=_sfxOn?'🔊':'🔇';
   document.getElementById('settVolSlider').value=Math.round(_sfxVol*100);
   document.getElementById('settAutoBtn').classList.toggle('on',autoWave);
-  document.getElementById('settAutoBtn').textContent=autoWave?'🔁 Auto ON':'🔁 Auto';
+  document.getElementById('settAutoBtn').textContent=autoWave?'🔁 อัตโนมัติ ON':'🔁 อัตโนมัติ';
   document.getElementById('settingsScreen').style.display='flex';
 }
 function closeSettings(){
@@ -2015,7 +2015,7 @@ function initEgGame(){
   document.getElementById('speedBtn').textContent='1×';
   document.getElementById('pauseBtn').textContent='⏸';
   document.getElementById('settingsScreen').style.display='none';
-  const ab=document.getElementById('autoBtn');if(ab){ab.classList.remove('on');ab.textContent='🔁 Auto';}
+  const ab=document.getElementById('autoBtn');if(ab){ab.classList.remove('on');ab.textContent='🔁 อัตโนมัติ';}
   updateTowerPanel();
   updateHUD();
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}

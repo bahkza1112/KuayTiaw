@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='1.12.0';
+const GAME_VERSION='1.12.1';
 const PATCH_NOTES=[
+  {ver:'1.12.1',date:'2026-06-14',title:'🇹🇭 ปรับ UI เป็นภาษาไทยทั้งหมด + ปุ่มกดง่ายขึ้น',notes:[
+    'แปลข้อความ UI ที่เหลือเป็นภาษาไทยทั้งหมด (เมนู, ปุ่มต่างๆ, Codex, Endgame, Workshop, อันดับ, สภาพอากาศ ฯลฯ) ให้สอดคล้องกับเนื้อเรื่องที่เป็นไทยอยู่แล้ว',
+    'ขยายขนาดปุ่มไอคอนใน HUD (หยุดชั่วคราว, ความเร็ว, ตั้งค่า, Dev) ให้กดง่ายขึ้นบนมือถือ (ขั้นต่ำ ~38x38px)',
+    'ย้ายปุ่มความเร็ว (1×/2×/3×) จาก HUD บนไปอยู่แถวเดียวกับปุ่มส่งคลื่น/อัตโนมัติ ให้กดง่ายขึ้นระหว่างเล่น'
+  ]},
   {ver:'1.12.0',date:'2026-06-14',title:'💎 Soul Gems, Workshop และป้อมมนตราโมฆะ!',notes:[
     'เพิ่มสกุลเงินใหม่ 💎 มณีวิญญาณ (Soul Gems) — ได้รับเมื่อทำดาวในด่านเนื้อเรื่องเพิ่มขึ้นเป็นครั้งแรก และเมื่อจบเกม Endgame',
     'Endgame: เคลียร์เวฟจะมีโอกาสดรอปวัสดุพิเศษ 🪨 เศษหินมืด, 🔘 แกนเวทอสูร, 🌟 ผงดาวตก (โอกาสคงที่ตามความยาก)',
@@ -322,12 +327,12 @@ function renderStageSelect(){
     html+=`<div class="stage-card${unlocked?'':' locked'}${stars>0?' completed':''}" onclick="${unlocked?'startStage('+si+')':'void(0)'}">
       <div class="stage-icon">${s.icon}</div>
       <div class="stage-info">
-        <div class="stage-name">Stage ${si+1}: ${s.name}</div>
+        <div class="stage-name">ด่าน ${si+1}: ${s.name}</div>
         <div class="stage-desc">${s.desc}</div>
         <div class="stage-meta">
-          <span class="stage-pill pill-wave">🌊 ${s.waves} Waves</span>
+          <span class="stage-pill pill-wave">🌊 ${s.waves} คลื่น</span>
           <span class="stage-pill pill-enemy">${enemyIcons} ${cleared?'ศัตรู':'???'}</span>
-          <span class="stage-pill pill-unlock">🏰 ${s.unlockedTowers.length} Towers</span>
+          <span class="stage-pill pill-unlock">🏰 ${s.unlockedTowers.length} ป้อม</span>
         </div>
       </div>
       ${unlocked&&starStr?`<div class="stage-stars" style="color:${starColor}">${starStr}</div>`:''}
@@ -336,7 +341,7 @@ function renderStageSelect(){
   });
   for(let si=1;si<STAGES.length;si++){
     if(!isStageUnlocked(si)){
-      html+=`<div class="ss-unlock-note">🔒 Clear Stage ${si} to unlock <strong>${STAGES[si].name}</strong></div>`;
+      html+=`<div class="ss-unlock-note">🔒 ผ่านด่าน ${si} เพื่อปลดล็อก <strong>${STAGES[si].name}</strong></div>`;
     }
   }
   document.getElementById('ssBody').innerHTML=html;
@@ -480,7 +485,7 @@ function renderCsSlide(){
 
   // stage label
   const lbl=document.getElementById('csStageLabel');
-  lbl.textContent='Chapter 1  —  Stage '+(csState.stageIdx+1);
+  lbl.textContent='บทที่ 1  —  ด่าน '+(csState.stageIdx+1);
   setTimeout(()=>lbl.classList.add('show'),50);
 
   // icon
@@ -511,7 +516,7 @@ function renderCsSlide(){
     slide.unlock.towers.forEach(ti=>{
       items+=`<div class="cs-unlock-item">
         <div class="ui-icon">${TICONS[ti]}</div>
-        <div class="ui-info"><div class="ui-name">${TNAMES[ti]}</div><div class="ui-type">Defense Tower</div></div>
+        <div class="ui-info"><div class="ui-name">${TNAMES[ti]}</div><div class="ui-type">ป้อมป้องกัน</div></div>
       </div>`;
     });
     document.getElementById('csUnlockItems').innerHTML=items;
@@ -522,7 +527,7 @@ function renderCsSlide(){
   // next button
   const nxt=document.getElementById('csNext');
   nxt.classList.remove('show');
-  nxt.textContent=isLast?'⚔️ Begin Stage':'▶ Next';
+  nxt.textContent=isLast?'⚔️ เริ่มด่าน':'▶ ต่อไป';
   setTimeout(()=>nxt.classList.add('show'),400);
 }
 
@@ -810,12 +815,12 @@ function renderCodex(){
   const normalSeen2=ENAMES.map((_,i)=>i).filter(i=>MTYPE[i]===0&&seenMonsters.has(String(i))).length;
   const bossSeen2=ENAMES.map((_,i)=>i).filter(i=>MTYPE[i]===1&&seenMonsters.has(String(i))).length;
   if(cdxTab==='monster')
-    document.getElementById('cdxProg').textContent=normalSeen2+'/'+totalMonster+' unlocked';
+    document.getElementById('cdxProg').textContent=normalSeen2+'/'+totalMonster+' ปลดล็อก';
   else if(cdxTab==='boss')
-    document.getElementById('cdxProg').textContent=bossSeen2+'/'+totalBoss+' unlocked';
+    document.getElementById('cdxProg').textContent=bossSeen2+'/'+totalBoss+' ปลดล็อก';
   else {
     const unlockedTCount=getUnlockedTowers().size;
-    document.getElementById('cdxProg').textContent=unlockedTCount+'/'+TNAMES.length+' unlocked';
+    document.getElementById('cdxProg').textContent=unlockedTCount+'/'+TNAMES.length+' ปลดล็อก';
   }
 
   let html='<div class="cdx-grid">';
@@ -1335,35 +1340,35 @@ function renderLb(){
     const bestStoryScore=stRuns.length?Math.max(...stRuns.map(r=>r.score||0)):0;
     const achCount=loadAchievements().size;
     let html=`<div class="my-stat-grid">
-      <div class="my-stat-card eg"><div class="my-stat-val">${bestWave||'—'}</div><div class="my-stat-lbl">🌊 Best Wave</div></div>
-      <div class="my-stat-card eg"><div class="my-stat-val">${bestScore?bestScore.toLocaleString():'—'}</div><div class="my-stat-lbl">⭐ Best Score</div></div>
-      <div class="my-stat-card eg"><div class="my-stat-val">${bestKills||'—'}</div><div class="my-stat-lbl">💀 Best Kills/Run</div></div>
-      <div class="my-stat-card eg"><div class="my-stat-val">×${bestCombo}</div><div class="my-stat-lbl">⚡ Best Combo</div></div>
-      <div class="my-stat-card"><div class="my-stat-val">${Object.keys(p).filter(k=>(p[k]||0)>=1).length}/${STAGES.filter(s=>!s.comingSoon).length}</div><div class="my-stat-lbl">🗺️ Stages Cleared</div></div>
-      <div class="my-stat-card"><div class="my-stat-val">${totalStars}★</div><div class="my-stat-lbl">⭐ Total Stars</div></div>
-      <div class="my-stat-card"><div class="my-stat-val">${bestStoryScore?bestStoryScore.toLocaleString():'—'}</div><div class="my-stat-lbl">📜 Best Story Score</div></div>
-      <div class="my-stat-card"><div class="my-stat-val">${totalEgKills.toLocaleString()}</div><div class="my-stat-lbl">💀 Total Kills (EG)</div></div>
-      <div class="my-stat-card"><div class="my-stat-val">${egRuns.length}</div><div class="my-stat-lbl">🔥 EG Runs</div></div>
-      <div class="my-stat-card"><div class="my-stat-val">${achCount}/${ACHIEVEMENTS.length}</div><div class="my-stat-lbl">🏅 Achievements</div></div>
+      <div class="my-stat-card eg"><div class="my-stat-val">${bestWave||'—'}</div><div class="my-stat-lbl">🌊 เวฟสูงสุด</div></div>
+      <div class="my-stat-card eg"><div class="my-stat-val">${bestScore?bestScore.toLocaleString():'—'}</div><div class="my-stat-lbl">⭐ คะแนนสูงสุด</div></div>
+      <div class="my-stat-card eg"><div class="my-stat-val">${bestKills||'—'}</div><div class="my-stat-lbl">💀 ฆ่าสูงสุด/รอบ</div></div>
+      <div class="my-stat-card eg"><div class="my-stat-val">×${bestCombo}</div><div class="my-stat-lbl">⚡ คอมโบสูงสุด</div></div>
+      <div class="my-stat-card"><div class="my-stat-val">${Object.keys(p).filter(k=>(p[k]||0)>=1).length}/${STAGES.filter(s=>!s.comingSoon).length}</div><div class="my-stat-lbl">🗺️ ด่านที่ผ่าน</div></div>
+      <div class="my-stat-card"><div class="my-stat-val">${totalStars}★</div><div class="my-stat-lbl">⭐ ดาวรวม</div></div>
+      <div class="my-stat-card"><div class="my-stat-val">${bestStoryScore?bestStoryScore.toLocaleString():'—'}</div><div class="my-stat-lbl">📜 คะแนนเนื้อเรื่องสูงสุด</div></div>
+      <div class="my-stat-card"><div class="my-stat-val">${totalEgKills.toLocaleString()}</div><div class="my-stat-lbl">💀 ฆ่ารวม (เอนด์เกม)</div></div>
+      <div class="my-stat-card"><div class="my-stat-val">${egRuns.length}</div><div class="my-stat-lbl">🔥 รอบเอนด์เกม</div></div>
+      <div class="my-stat-card"><div class="my-stat-val">${achCount}/${ACHIEVEMENTS.length}</div><div class="my-stat-lbl">🏅 รางวัล</div></div>
     </div>`;
     if(myRuns.length){
-      html+='<div class="run-hdr">⏱ Recent Runs</div>';
+      html+='<div class="run-hdr">⏱ ประวัติล่าสุด</div>';
       myRuns.slice(0,8).forEach(r=>{
         html+=`<div class="run-row">
           <div class="run-mode-icon">${r.mode==='endgame'?'🔥':'⚔️'}</div>
           <div class="run-info"><div class="run-name">${r.name}</div>
-          <div class="run-meta">${r.mode==='endgame'?'Endgame · '+r.diff:'Story · '+r.stage} · ${r.date}</div></div>
-          <div class="run-val"><div class="run-score">${r.score}</div><div class="run-wave">${r.mode==='endgame'?'Wave '+r.wave:r.stage}</div></div>
+          <div class="run-meta">${r.mode==='endgame'?'เอนด์เกม · '+r.diff:'เนื้อเรื่อง · '+r.stage} · ${r.date}</div></div>
+          <div class="run-val"><div class="run-score">${r.score}</div><div class="run-wave">${r.mode==='endgame'?'เวฟ '+r.wave:r.stage}</div></div>
         </div>`;
       });
     } else {
-      html+='<div class="lb-empty">No records yet<br><span style="font-size:11px;color:#333;">Play a game and save your name</span></div>';
+      html+='<div class="lb-empty">ยังไม่มีข้อมูล<br><span style="font-size:11px;color:#333;">เล่นเกมแล้วบันทึกชื่อ</span></div>';
     }
     body.innerHTML=html;
   } else if(lbTab===1){
     // All runs leaderboard (mixed modes — score scales differ, see tab icons)
     const allRuns=[...runs].sort((a,b)=>b.score-a.score);
-    if(!allRuns.length){ body.innerHTML='<div class="lb-empty">No records yet<br><span style="font-size:11px;color:#333;">Play and save your name first</span></div>'; return; }
+    if(!allRuns.length){ body.innerHTML='<div class="lb-empty">ยังไม่มีข้อมูล<br><span style="font-size:11px;color:#333;">เล่นเกมแล้วบันทึกชื่อก่อน</span></div>'; return; }
     let myRank=-1;
     const myName=lastName;
     let html='<div class="lb-note">🔥 Endgame และ ⚔️ Story ใช้สเกลคะแนนต่างกัน — ดูแยกในแท็บของตัวเอง</div>';
@@ -1375,16 +1380,16 @@ function renderLb(){
         <div class="lb-rank ${rankClass}">${i+1}</div>
         <div class="lb-avatar">${r.mode==='endgame'?'🔥':'⚔️'}</div>
         <div class="lb-info"><div class="lb-name">${r.name}${isMe?' (ฉัน)':''}</div>
-        <div class="lb-detail">${r.mode==='endgame'?'Endgame · '+r.diff:'Story · '+r.stage} · ${r.date}</div></div>
+        <div class="lb-detail">${r.mode==='endgame'?'เอนด์เกม · '+r.diff:'เนื้อเรื่อง · '+r.stage} · ${r.date}</div></div>
         <div class="lb-score-wrap"><div class="lb-score-val">${r.score}</div>
-        <div class="lb-score-sub">${r.mode==='endgame'?'Wave '+r.wave:r.stage}</div></div>
+        <div class="lb-score-sub">${r.mode==='endgame'?'เวฟ '+r.wave:r.stage}</div></div>
       </div>`;
     });
     body.innerHTML=html;
   } else if(lbTab===2){
     // Endgame only
     const egOnly=[...runs].filter(r=>r.mode==='endgame').sort((a,b)=>b.wave-a.wave||b.score-a.score);
-    if(!egOnly.length){ body.innerHTML='<div class="lb-empty">No records yet Endgame<br><span style="font-size:11px;color:#333;">Play Endgame and save your name</span></div>'; return; }
+    if(!egOnly.length){ body.innerHTML='<div class="lb-empty">ยังไม่มีข้อมูลเอนด์เกม<br><span style="font-size:11px;color:#333;">เล่นเอนด์เกมแล้วบันทึกชื่อ</span></div>'; return; }
     const myName=lastName;
     let html='';
     egOnly.slice(0,20).forEach((r,i)=>{
@@ -1394,16 +1399,16 @@ function renderLb(){
         <div class="lb-rank ${rankClass}">${i+1}</div>
         <div class="lb-avatar">${['💀','👹','🔥','⚔️','🌋'][i%5]}</div>
         <div class="lb-info"><div class="lb-name">${r.name}${isMe?' (ฉัน)':''}</div>
-        <div class="lb-detail">Endgame · ${r.diff} · ${r.date}</div></div>
+        <div class="lb-detail">เอนด์เกม · ${r.diff} · ${r.date}</div></div>
         <div class="lb-score-wrap"><div class="lb-score-val">${r.score.toLocaleString()}</div>
-        <div class="lb-score-sub">🌊 Wave ${r.wave} · 💀 ${r.kills||0} kills</div></div>
+        <div class="lb-score-sub">🌊 เวฟ ${r.wave} · 💀 ฆ่า ${r.kills||0}</div></div>
       </div>`;
     });
     body.innerHTML=html;
   } else {
     // Story only
     const stOnly=[...runs].filter(r=>r.mode==='story').sort((a,b)=>b.score-a.score);
-    if(!stOnly.length){ body.innerHTML='<div class="lb-empty">No records yet Story<br><span style="font-size:11px;color:#333;">เล่นโหมดเนื้อเรื่องแล้วบันทึกชื่อ</span></div>'; return; }
+    if(!stOnly.length){ body.innerHTML='<div class="lb-empty">ยังไม่มีข้อมูลเนื้อเรื่อง<br><span style="font-size:11px;color:#333;">เล่นโหมดเนื้อเรื่องแล้วบันทึกชื่อ</span></div>'; return; }
     const myName=lastName;
     let html='';
     stOnly.slice(0,20).forEach((r,i)=>{
@@ -1413,7 +1418,7 @@ function renderLb(){
         <div class="lb-rank ${rankClass}">${i+1}</div>
         <div class="lb-avatar">⚔️</div>
         <div class="lb-info"><div class="lb-name">${r.name}${isMe?' (ฉัน)':''}</div>
-        <div class="lb-detail">Story · ${r.stage} · ${r.date}</div></div>
+        <div class="lb-detail">เนื้อเรื่อง · ${r.stage} · ${r.date}</div></div>
         <div class="lb-score-wrap"><div class="lb-score-val">${r.score.toLocaleString()}</div>
         <div class="lb-score-sub">${r.stage}</div></div>
       </div>`;
@@ -1482,7 +1487,7 @@ document.getElementById('settVolSlider').addEventListener('input',function(){
 document.getElementById('settAutoBtn').addEventListener('click',function(){
   toggleAutoWave();
   this.classList.toggle('on',autoWave);
-  this.textContent=autoWave?'🔁 Auto ON':'🔁 Auto';
+  this.textContent=autoWave?'🔁 อัตโนมัติ ON':'🔁 อัตโนมัติ';
 });
 for(let _i=0;_i<9;_i++){
   const _tb=document.getElementById('tb'+_i);

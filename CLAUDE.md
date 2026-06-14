@@ -4,11 +4,17 @@ Guidance for Claude Code (and other AI assistants) working in this repository.
 
 ## Project Summary
 
-**Tower Quest 🏰** is a single-page, browser-based tower defense game written in
-Thai, currently at **v1.6.0** (working/development base). The entire game —
-markup, styles, and logic — lives in one self-contained HTML file:
+**Tower Quest 🏰** is a browser-based tower defense game written in
+Thai, currently at **v1.12.0**. Since the v1.6.1 refactor, the game is split
+across:
 
-- [`Tower Quest 🏰 v1.6.0.html`](Tower%20Quest%20%F0%9F%8F%B0%20v1.6.0.html)
+- [`Tower Quest 🏰.html`](Tower%20Quest%20%F0%9F%8F%B0.html) — head/body
+  markup and `<link>`/`<script src>` references only
+- `css/main.css` — all game styles
+- `js/save.js`, `js/enemy.js`, `js/tower.js`, `js/game.js`, `js/ui.js` —
+  game logic, loaded in this order (load order matters; `js/ui.js` must load
+  last)
+- `index.html` — a thin redirect to `Tower Quest 🏰.html` for GitHub Pages
 
 It uses vanilla JavaScript, the HTML5 Canvas 2D API for the main game
 rendering, and Three.js (loaded from a CDN) for an optional 3D tower-rendering
@@ -27,7 +33,8 @@ with project-specific file pointers.
 ## Repository Layout
 
 ```
-Tower Quest 🏰 v1.6.0.html   # The game itself (HTML markup + script/link refs)
+Tower Quest 🏰.html           # Head/body markup + <link>/<script src> refs
+index.html                     # GitHub Pages redirect to the above
 CLAUDE.md                     # This file
 PROJECT_MASTER.md             # Detailed system-by-system reference
 CHANGELOG.md                  # Version history
@@ -41,35 +48,24 @@ assets/
   effects/                     # Reserved for VFX-related assets (currently empty)
 ```
 
-The `css/`, `js/`, and `assets/*` folders currently exist as scaffolding only.
-**No game code has been moved into them yet** — all CSS and JS still live
-inline inside the v1.6.0 HTML file. Any future extraction/refactor must be
-explicitly requested and planned before being carried out.
+The `assets/*` folders currently exist as scaffolding only — no image/audio
+assets are used yet (all art is procedural canvas drawing).
 
 ## Working Conventions
 
-- **Do not modify game code** unless explicitly asked to. This includes the
-  `<style>` block, the `<script>` block, and game markup inside the HTML file.
+- **Do not modify game code** unless explicitly asked to. This includes
+  `css/main.css`, the `js/*.js` modules, and game markup inside
+  `Tower Quest 🏰.html`.
 - The game is in Thai — strings, monster/tower names, and story text
   (`STAGES`, `CUTSCENES`, `ENAMES`, `TNAMES`, etc.) are in Thai. Preserve
   language and tone when editing text content.
 - The codebase uses dense, minified-style JS (short variable names, no
   semicolined-out comments, heavy one-liners). Match existing style if editing
   this file — do not reformat or "clean up" unrelated code.
-- Versioned snapshots of the game were historically committed as separate
-  files (e.g. `Tower Quest 🏰 v1.5.0.html`). As of the latest history, those
-  snapshots were removed and v1.6.0 is the single active working file.
 - Save data is stored entirely in browser `localStorage` under `tq_*` keys
   (see PROJECT_MASTER.md → Save Systems). There is no backend/server.
-- No automated tests exist. Manual verification = open the HTML file in a
-  browser and play through the relevant flow.
-
-## Before Refactoring
-
-This documentation pass was created as a foundation for a future refactor
-(splitting the monolithic HTML into `css/`, `js/`, and `assets/`). **Wait for
-explicit user approval before performing any such refactor** — do not move,
-split, or extract code on your own initiative.
+- No automated tests exist. Manual verification = open
+  `Tower Quest 🏰.html` in a browser and play through the relevant flow.
 
 
 

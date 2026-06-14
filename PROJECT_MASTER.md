@@ -3,7 +3,7 @@
 This document is a system-by-system map of the game as implemented in
 [`Tower Quest 🏰.html`](Tower%20Quest%20%F0%9F%8F%B0.html) plus its
 `css/main.css` and `js/{save,enemy,tower,game,ui}.js` modules (current
-version **v1.9.20**, per `dc7efb0`). Line numbers refer to these files and
+version **v1.12.0**). Line numbers refer to these files and
 may drift as they change — use them as a starting point for searches, not as
 permanent anchors.
 
@@ -19,9 +19,9 @@ For game design rationale, see [docs/GDD.md](docs/GDD.md),
 
 **Tower Quest** is a Thai-language, single-player, browser-based tower
 defense (TD) game. Since the v1.6.1 refactor it is delivered as
-`Tower Quest 🏰.html` (~450 lines: head/body markup + `<link>`/`<script src>`
-refs only) plus `css/main.css` (~600 lines) and five JS modules totaling
-~5,600 lines (`js/save.js`, `js/enemy.js`, `js/tower.js`, `js/game.js`,
+`Tower Quest 🏰.html` (~500 lines: head/body markup + `<link>`/`<script src>`
+refs only) plus `css/main.css` (~590 lines) and five JS modules totaling
+~6,700 lines (`js/save.js`, `js/enemy.js`, `js/tower.js`, `js/game.js`,
 `js/ui.js`), with Three.js loaded via CDN for an optional 3D tower-rendering
 layer. `index.html` is a redirect entry point for GitHub Pages.
 
@@ -110,7 +110,7 @@ The game targets desktop browsers with mouse/touch input on an HTML5
 
 ## 3. Tower Systems
 
-### Tower Roster (8 types, indices 0–7)
+### Tower Roster (9 types, indices 0–8)
 Defined via parallel arrays in `js/tower.js`:
 
 | # | Name (TH) | Icon | Role |
@@ -123,6 +123,7 @@ Defined via parallel arrays in `js/tower.js`:
 | 5 | ธนู (Archer) | 🏹 | Hits air targets |
 | 6 | เหมืองทอง (Gold Mine) | 💰 | Generates gold over time, no combat |
 | 7 | สายฟ้า (Thunder) | ⚡ | Chain lightning (2 targets), pierces shields |
+| 8 | ป้อมมนตราโมฆะ (Void Tower) | 🌑 | Single-target, ground-only; projectiles apply **Void Mark** (v1.12.0) |
 
 Per-type properties are defined via arrays: `TCOLORS`, `TPROJ` (projectile
 colors), `TACCENT`, `TSPLASH` (splash radius), `TSLOW` (slow %), `TBUFF`
@@ -130,6 +131,20 @@ colors), `TACCENT`, `TSPLASH` (splash radius), `TSLOW` (slow %), `TBUFF`
 generation), `TCHAIN` (chain-lightning target count), `TPIERCE` (shield
 pierce). Flavor text, tags, and strengths/weaknesses for the Codex are in
 `TFLAVOR` (`js/tower.js` line 13), `TTAGS`, `TSTRENGTH`, `TWEAKNESS`.
+
+### Void Tower (v1.12.0)
+- 🌑 **ป้อมมนตราโมฆะ** (index 8): dmg 38, range 3.0, rate 0.6, cost 90,
+  single-target, ground-only (not in `TCANAIR`). Stats live in
+  `CFG.t_dmg`/`t_rng`/`t_rate`/`t_cost` (`js/game.js`) and the per-tower
+  parallel arrays in `js/tower.js` alongside the other 8 types.
+- **Void Mark**: its projectiles have a 30% chance (50% if Awakened) to mark
+  the target, increasing damage taken from ALL towers by 25% (40% if
+  Awakened) for 4s. Marks refresh on re-proc but do not stack (capped via
+  `Math.max`). Implemented via `_voidMarkT`/`_voidMarkBonus` per-enemy fields
+  — proc/refresh in the projectile hit-handling block, per-frame decay in the
+  enemy update loop, and the multiplier applied in `applyDmg()`
+  (`js/enemy.js`).
+- **Unlock**: gated behind `tq_voidUnlocked` (see Workshop, §7).
 
 ### Stats & Scaling
 - `getTowerDmg(t, lv)`, `getTowerRange(t, lv)`, `getTowerRate(t, lv)`
@@ -342,6 +357,9 @@ There is no server/backend or file-based save.
 | `tq_last_name` | Last-used player name (for leaderboard entries) | `showSavePrompt`/`confirmSave` (`js/ui.js`) |
 | `tq_tut_done` | Whether the first-run tutorial has been completed/skipped | `initTutorial()`, `skipTutorial()` |
 | `tq_lastSeenVer` | Last `GAME_VERSION` the player has seen in "What's New" (drives unread badge on `#verBtn`) | `openWhatsNew()`, `_updateNewsBadge()` (`js/ui.js`) |
+| `tq_gems` | Soul Gems currency (v1.12.0) | `loadGems()`/`saveGems()`/`addGems()` (`js/save.js`) |
+| `tq_materials` | Craftable materials `{0,1,2}` = 🪨 เศษหินมืด / 🔘 แกนเวทอสูร / 🌟 ผงดาวตก (v1.12.0) | `loadMaterials()`/`saveMaterials()`/`addMaterial()` (`js/save.js`) |
+| `tq_voidUnlocked` | Whether the Void Tower (index 8) has been crafted/unlocked (v1.12.0) | `isVoidUnlocked()`/`setVoidUnlocked()` (`js/save.js`) |
 
 Notes:
 - `isStageUnlocked(si)` (`js/save.js` line 12) gates story progression based
@@ -418,6 +436,35 @@ Notes:
   Endgame, and **⚔️ Story** (`lbTab===3`, top 20 story runs by score). "My
   Stats" also shows "Best Story Score" and "Achievements" (unlocked/total).
 
+### Settings Overlay (v1.10.0)
+- ⚙ button opens `#settingsScreen`, consolidating game speed (1x/2x/3x),
+  SFX on/off + volume slider, and Auto Wave toggle into one menu
+  (`openSettings`/`closeSettings`). Opening it auto-pauses gameplay
+  (`_settingsPausedGame`) if not already paused. Replaces the old standalone
+  `#speedBtn`/`#sfxBtn` HUD buttons (now hidden but still state-synced).
+
+### Tower Placement (v1.10.0 / v1.10.1)
+- **Drag-to-place**: dragging a `.tbtn` tower button onto the canvas places
+  the tower at drop via the shared `tryPlaceTower(type,col,row)` helper
+  (extracted from `onCanvasClick`), with a floating `#dragGhost` icon
+  following the cursor. Click-select-then-click-place still works as an
+  alternative flow.
+- **Hold-to-sell removed** (v1.10.1): holding a pointer on a placed tower no
+  longer auto-sells it after 600ms (`onCanvasHoldStart/End`, `holdTimer`,
+  `#sellTooltip` all removed — too easy to trigger by accident). Selling is
+  only via the 🗑 Sell button in the tower info popup.
+
+### Workshop (v1.12.0)
+- New `#workshop` screen + `#workshopBtn` on the main menu
+  (`openWorkshop()`/`renderWorkshop()`). Shows current Soul Gems and
+  materials, and a craft button for the Void Tower via `VOID_RECIPE`
+  (`js/ui.js`: 💎800 + 🪨×30 + 🔘×15 + 🌟×8).
+- `craftVoidTower()` deducts the recipe cost and calls `setVoidUnlocked()`
+  (`tq_voidUnlocked=1`), permanently adding the Void Tower (index 8) to the
+  endgame tower-selection pool.
+- `#mmGemsDisplay` on the main menu shows the live Soul Gems balance
+  (`updateMenuStats()`).
+
 ### What's New / Patch Notes (v1.7.1)
 - `GAME_VERSION` and `PATCH_NOTES` (`js/ui.js` lines 2-3) — array of
   `{ver,date,title,notes}` entries, newest first, player-facing Thai text.
@@ -476,6 +523,28 @@ Notes:
   path (`EG_PATH`, based on stage 2's layout), and tracks best
   wave/score per difficulty for the leaderboard (`tq_runs`,
   `getEgStats()`).
+- **Endgame tower selection** (v1.12.0): `startEndgame()` is now a thin
+  wrapper calling `openEgTowerSelection()` (`js/ui.js`), which sets the
+  shared `towerSelMode='endgame'` and reuses the `#towersel` screen. Selects
+  up to 7/6/5 towers for ง่าย/ปกติ/ยาก (`egDiff` 0/1/2) from the pool
+  `[0-7]` plus `8` (Void Tower) if `tq_voidUnlocked`. Selections persist per
+  difficulty via `tq_sel_endgame_<egDiff>`. After confirming, `_doStartEndgame()`
+  (holding the original `startEndgame` body) runs using
+  `selectedTowersForStage` for `currentStage.unlockedTowers`.
+
+### Soul Gems & Materials (v1.12.0)
+- **Soul Gems** (`tq_gems`): awarded on first-time story star improvements
+  per `GEM_STAR_TABLE=[0,10,20,30]` (cumulative — 1★/2★/3★ → 10/20/30 gems,
+  `saveProgress()`), and on endgame run end via
+  `awardEndgameGems(finalWave,diff)` =
+  `floor(floor(finalWave/2)*(1+egDiff*0.5))`, called from `endEgGame()` and
+  the Endgame branch of `surrender()`.
+- **Materials** (`tq_materials`, `{0,1,2}` = 🪨 เศษหินมืด / 🔘 แกนเวทอสูร /
+  🌟 ผงดาวตก): dropped only at end-of-wave in Endgame via
+  `rollEndgameMaterialDrops()`, using fixed per-`egDiff` rates in
+  `MAT_DROP_RATES` (not wave-scaled).
+- Both currencies feed the Workshop (see §6) and ultimately unlock the Void
+  Tower.
 
 ---
 
@@ -490,20 +559,20 @@ changed without re-checking dependencies. `index.html` is a thin redirect to
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  Tower Quest 🏰.html      (~450 lines: head + body markup)   │
+│  Tower Quest 🏰.html      (~500 lines: head + body markup)   │
 │  index.html               (GitHub Pages redirect)             │
 │                                                                │
-│  <link rel="stylesheet" href="css/main.css">  (~600 lines)    │
+│  <link rel="stylesheet" href="css/main.css">  (~590 lines)    │
 │                                                                │
 │  <body> ... DOM containers for every screen/overlay,          │
 │             referenced by ID from the scripts                 │
 │                                                                │
 │  <script src="three.min.js">  ── CDN dependency for 3D layer  │
-│  <script src="js/save.js">    (~270 lines) ── load order ↓    │
+│  <script src="js/save.js">    (~300 lines) ── load order ↓    │
 │  <script src="js/enemy.js">   (~610 lines)                    │
-│  <script src="js/tower.js">   (~865 lines)                    │
-│  <script src="js/game.js">    (~2430 lines)                   │
-│  <script src="js/ui.js">      (~1420 lines) ── must load last │
+│  <script src="js/tower.js">   (~810 lines)                    │
+│  <script src="js/game.js">    (~2400 lines)                   │
+│  <script src="js/ui.js">      (~1520 lines) ── must load last │
 └─────────────────────────────────────────────────────────────┘
 ```
 

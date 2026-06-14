@@ -104,11 +104,11 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .wavebtn:active:not(:disabled){transform:scale(.96);}
 .wavebtn:disabled{opacity:.45;cursor:not-allowed;filter:none;animation:none;}
 @keyframes wavePulse{0%,100%{box-shadow:0 0 0 rgba(102,187,106,0)}50%{box-shadow:0 0 14px rgba(102,187,106,.8)}}
-.bback{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:4px 8px;cursor:pointer;font-size:11px;-webkit-tap-highlight-color:transparent;}
+.bback{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:4px 8px;cursor:pointer;font-size:11px;-webkit-tap-highlight-color:transparent;min-height:34px;display:inline-flex;align-items:center;box-sizing:border-box;}
 .bback:hover{background:rgba(255,255,255,.27);}
-.speedbtn{background:rgba(255,255,255,.1);color:#ffe234;border:1px solid #ffe234;border-radius:8px;padding:3px 8px;cursor:pointer;font-size:11px;font-weight:700;-webkit-tap-highlight-color:transparent;}
-.pausebtn{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:8px;padding:3px 8px;cursor:pointer;font-size:11px;-webkit-tap-highlight-color:transparent;}
-.devbtn{background:rgba(255,100,0,.2);color:#ff9800;border:1px solid #ff9800;border-radius:8px;padding:3px 8px;cursor:pointer;font-size:11px;font-weight:700;-webkit-tap-highlight-color:transparent;}
+.speedbtn{background:rgba(255,255,255,.1);color:#ffe234;border:1px solid #ffe234;border-radius:8px;padding:3px 8px;cursor:pointer;font-size:11px;font-weight:700;-webkit-tap-highlight-color:transparent;min-width:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;}
+.pausebtn{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:8px;padding:3px 8px;cursor:pointer;font-size:11px;-webkit-tap-highlight-color:transparent;min-width:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;}
+.devbtn{background:rgba(255,100,0,.2);color:#ff9800;border:1px solid #ff9800;border-radius:8px;padding:3px 8px;cursor:pointer;font-size:11px;font-weight:700;-webkit-tap-highlight-color:transparent;min-width:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;}
 /* OVERLAYS — position:relative on #gp makes these work */
 .overlay{display:none;position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);align-items:center;justify-content:center;z-index:20;border-radius:16px;}
 .obox{background:linear-gradient(180deg,#23391f,#142214);border:3px solid #4caf50;border-radius:16px;padding:20px 26px;text-align:center;color:#fff;width:290px;box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 30px rgba(76,175,80,.25);}
@@ -490,9 +490,10 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
   .tcost{font-size:8px;}
   .wavebtn{padding:8px 10px;font-size:11px;border-radius:16px;}
   .autobtn{padding:7px 8px;font-size:11px;border-radius:16px;}
-  .speedbtn{padding:4px 7px;font-size:10px;}
-  .pausebtn{padding:4px 7px;font-size:10px;}
-  .bback{padding:5px 7px;font-size:10px;}
+  .speedbtn{padding:4px 7px;font-size:10px;min-width:38px;min-height:38px;}
+  .pausebtn{padding:4px 7px;font-size:10px;min-width:38px;min-height:38px;}
+  .devbtn{min-width:38px;min-height:38px;}
+  .bback{padding:5px 7px;font-size:10px;min-height:38px;}
 
   /* ปรับ tower popup ให้ไม่หลุดจอ */
   #towerPopup{min-width:170px;max-width:220px;}

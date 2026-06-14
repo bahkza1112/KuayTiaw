@@ -24,7 +24,7 @@ const TTAGS=[[{t:'กระจาย',c:'tag-orange'},{t:'ความเสี�
   [{t:'กระจายกว้าง',c:'tag-purple'},{t:'ความเสียหายสูง',c:'tag-red'}],
   [{t:'ระยะไกลมาก',c:'tag-blue'},{t:'ความเสียหายสูงสุด',c:'tag-red'}],
   [{t:'ออร่าเสริมกำลัง',c:'tag-green'},{t:'ไม่โจมตี',c:'tag-purple'}],
-  [{t:'ยิง Air',c:'tag-blue'},{t:'Fire Rate เร็ว',c:'tag-orange'}],
+  [{t:'ยิง Air',c:'tag-blue'},{t:'อัตรายิงเร็ว',c:'tag-orange'}],
   [{t:'ผลิตทอง',c:'tag-green'},{t:'ไม่โจมตี',c:'tag-purple'}],
   [{t:'Chain Lightning',c:'tag-orange'},{t:'ยิง Air',c:'tag-blue'}],
   [{t:'Void Mark',c:'tag-purple'},{t:'เฉพาะ Endgame',c:'tag-red'}]];
@@ -35,7 +35,7 @@ const TSTRENGTH=[
   ['Splash กว้างที่สุด','ดาเมจสูง'],
   ['ระยะไกลสุดในเกม','ดาเมจต่อตัวสูงสุด'],
   ['เพิ่มพลังป้อมรอบข้าง','ไม่ต้องการเป้าหมาย'],
-  ['ยิงได้ทั้ง ground และ air','Fire Rate สูง'],
+  ['ยิงได้ทั้ง ground และ air','อัตรายิงสูง'],
   ['รายได้ต่อเนื่อง','ไม่ต้องการเป้าหมาย'],
   ['Chain ศัตรู 2 ตัวในหนึ่งยิง','ยิง Air ได้'],
   ['เพิ่มดาเมจให้ทุกป้อมที่ยิงเป้าติดมาร์ก','ระยะยิงไกล'],
@@ -43,8 +43,8 @@ const TSTRENGTH=[
 const TWEAKNESS=[
   ['ยิงช้าถ้าศัตรูกระจาย','ระยะสั้นกว่าสไนเปอร์'],
   ['ดาเมจต่ำ','ไม่มีผลกับบอส'],
-  ['Fire Rate ช้ามาก','ราคาแพงที่สุด'],
-  ['ยิงได้ทีละตัวเท่านั้น','Fire Rate ช้า'],
+  ['อัตรายิงช้ามาก','ราคาแพงที่สุด'],
+  ['ยิงได้ทีละตัวเท่านั้น','อัตรายิงช้า'],
   ['ไม่โจมตีโดยตรง','ต้องวางใกล้ป้อมอื่น'],
   ['ดาเมจต่ำกว่า Sniper','ระยะสั้นกว่า'],
   ['ไม่โจมตีเลย','ถ้าถูกทำลายเสียทอง'],
@@ -680,7 +680,7 @@ function showTowerPopup(tw,px,py){
   <div class="tp-stats">
     <div class="tp-stat">⚔️ ดาเมจ <small style="opacity:.5">Lv.${tw.dmgLv}</small><span>${dmgVal}${synMult>1?` <span style="color:#80deea;font-size:9px;">(+${Math.round((synMult-1)*100)}% synergy)</span>`:''}</span></div>
     <div class="tp-stat">📡 ระยะ <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${rngVal} ช่อง${tw.rngLv>=4?' <span style="color:#90caf9;font-size:9px;" title="กระสุนเจาะโล่ศัตรู ดาเมจเข้า HP ตรงๆ">🛡️✨เจาะโล่</span>':''}</span></div>
-    <div class="tp-stat">⚡ Fire Rate <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${rateVal}${tw.rateLv>=4?' <span style="color:#ffe234;font-size:9px;" title="มีโอกาสคูลดาวน์สั้นลงทันทีหลังยิง">⚡ยิงรัว</span>':''}</span></div>
+    <div class="tp-stat">⚡ อัตรายิง <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${rateVal}${tw.rateLv>=4?' <span style="color:#ffe234;font-size:9px;" title="มีโอกาสคูลดาวน์สั้นลงทันทีหลังยิง">⚡ยิงรัว</span>':''}</span></div>
     ${dpsVal?`<div class="tp-stat">📊 DPS<span>${dpsVal}</span></div>`:''}
     ${tw.lv<5?`<div class="tp-stat">💰 ค่าอัพต่อไป<span>${cost} ทอง</span></div>`:''}
   </div>
