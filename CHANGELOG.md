@@ -2,6 +2,29 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.12.2 — Workshop UI redesign + Void Tower unlock gate
+
+### Changed
+- **Workshop screen redesign**: replaced the plain resource-counter layout
+  with a `.ws-hero` showcase card for the Void Tower (icon, name, tag, and
+  key stats — damage/range/fire rate/cost), an `.eg-info-box` describing
+  the Void Mark mechanic, and a recipe section (`#wsRecipeGrid`) showing
+  each required resource as a progress bar (reusing the
+  `.ach-progress-bar`/`.ach-progress-fill` styles, turning green with a
+  checkmark when the requirement is met).
+- **Void Tower unlock gate**: crafting the Void Tower now requires clearing
+  the final story stage (`STAGES[STAGES.length-1]`) at least once, checked
+  via new `isFinalStageCleared()`. If not cleared, the Workshop shows
+  `#wsStageLockNote` (a lock message) and hides the recipe/craft section
+  entirely. `craftVoidTower()` now also guards against crafting before the
+  final stage is cleared. Players who already unlocked the Void Tower are
+  unaffected.
+- New CSS in `css/main.css`: `.ws-hero`, `.ws-hero-icon` (with glow
+  animations `wsIconGlow`/`wsHeroGlow`), `.ws-hero-name`, `.ws-hero-tag`,
+  `.ws-hero-stats`/`.ws-stat`, `.ws-recipe-grid`/`.ws-recipe-item`/
+  `.ws-recipe-ico`/`.ws-recipe-info`/`.ws-recipe-name`/`.ws-recipe-count`/
+  `.ws-recipe-check`, `.ws-lock-icon`.
+
 ## v1.12.1 — Thai UI localization & touch target fixes
 
 ### Changed

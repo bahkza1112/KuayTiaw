@@ -2,7 +2,7 @@
 <html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Tower Quest 🏰 v1.12.1</title>
+<title>Tower Quest 🏰 v1.12.2</title>
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -43,7 +43,7 @@
   <div class="island">🏰</div>
   <div class="gtitle">TOWER QUEST</div>
   <div class="gsub">⚔️ ปกป้องอาณาจักรของคุณ!</div>
-  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v1.12.1 — มีอะไรใหม่<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
+  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v1.12.2 — มีอะไรใหม่<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
 
   <!-- battle buttons -->
   <button class="bbattle" id="startBtn">⚔️ โหมดเนื้อเรื่อง</button>
@@ -408,32 +408,39 @@
     <div class="eg-hd-title">🛠️ เวิร์กชอป</div>
   </div>
   <div class="eg-body">
-    <div class="eg-info-box">
-      <div class="eg-info-title">💎 ทรัพยากรของคุณ</div>
-      <div class="eg-info-txt" style="display:flex;gap:18px;flex-wrap:wrap;font-size:14px;font-weight:700;">
-        <span>💎 <span id="wsGems">0</span></span>
-        <span>🪨 <span id="wsMat0">0</span></span>
-        <span>🔘 <span id="wsMat1">0</span></span>
-        <span>🌟 <span id="wsMat2">0</span></span>
+    <div class="ws-hero">
+      <div class="ws-hero-icon">🌑</div>
+      <div>
+        <div class="ws-hero-name">ป้อมมนตราโมฆะ</div>
+        <div class="ws-hero-tag">✦ ป้อมลับที่ 9 — ปลดล็อกได้ที่เวิร์กชอปเท่านั้น</div>
+        <div class="ws-hero-stats">
+          <span class="ws-stat">⚔️ ดาเมจ 38</span>
+          <span class="ws-stat">📡 ระยะ 3.0</span>
+          <span class="ws-stat">⚡ 0.6 วิ/นัด</span>
+          <span class="ws-stat">💰 ราคา 90</span>
+        </div>
       </div>
     </div>
     <div class="eg-info-box">
-      <div class="eg-info-title">🌑 ป้อมมนตราโมฆะ</div>
+      <div class="eg-info-title">✨ พลังมนตราโมฆะ</div>
       <div class="eg-info-txt">
-        ป้อมมนตราต้องห้ามที่ปล่อยพลังโมฆะ มีโอกาสติด <strong>Void Mark</strong> ให้ศัตรู ทำให้รับดาเมจเพิ่มจากป้อมทุกชนิด<br>
-        ดาเมจ 38 | ระยะ 3.0 | ยิงเร็ว 0.6 วินาที/นัด | ราคา 💰90<br>
-        Awaken: โอกาสติดมาร์กเพิ่มเป็น 50% และเพิ่มดาเมจที่รับเป็น +40%<br>
-        ใช้ได้เฉพาะ Endgame เท่านั้น
+        ปล่อยพลังโมฆะใส่ศัตรู มีโอกาสติด <strong>Void Mark</strong> ทำให้ศัตรูตัวนั้นรับดาเมจเพิ่มจากป้อมทุกชนิด<br>
+        🌙 Awaken: โอกาสติดมาร์กเพิ่มเป็น 50% และเพิ่มดาเมจที่รับเป็น +40%<br>
+        🔥 ใช้ได้เฉพาะโหมด Endgame เท่านั้น
       </div>
     </div>
-    <div class="eg-info-box">
-      <div class="eg-info-title">📜 สูตรปลดล็อก</div>
-      <div class="eg-info-txt" style="font-size:14px;font-weight:700;">
-        💎 800 + 🪨 ×30 + 🔘 ×15 + 🌟 ×8
-      </div>
+    <div class="eg-locked-note" id="wsStageLockNote" style="display:none;">
+      <div class="ws-lock-icon">🔒</div>
+      ผ่านด่านสุดท้ายของโหมดเนื้อเรื่องให้ครบก่อน จึงจะเริ่มคราฟป้อมมนตราโมฆะได้
     </div>
-    <div class="eg-locked-note" id="wsAlreadyUnlocked" style="display:none;color:#b388ff;">🌑 ปลดล็อกแล้ว — สามารถเลือกใช้ในโหมด Endgame ได้</div>
-    <button class="eg-start-btn" id="wsCraftBtn" style="background:linear-gradient(180deg,#7e57c2,#311b92);">🛠️ สร้าง</button>
+    <div id="wsCraftSection">
+      <div class="eg-info-box" id="wsRecipeBox">
+        <div class="eg-info-title">📜 สูตรปลดล็อก</div>
+        <div class="ws-recipe-grid" id="wsRecipeGrid"></div>
+      </div>
+      <div class="eg-locked-note" id="wsAlreadyUnlocked" style="display:none;color:#b388ff;margin-top:10px;">🌑 ปลดล็อกแล้ว — สามารถเลือกใช้ในโหมด Endgame ได้</div>
+      <button class="eg-start-btn" id="wsCraftBtn" style="background:linear-gradient(180deg,#7e57c2,#311b92);margin-top:10px;">🛠️ สร้าง</button>
+    </div>
   </div>
 </div>
 

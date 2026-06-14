@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='1.12.1';
+const GAME_VERSION='1.12.2';
 const PATCH_NOTES=[
+  {ver:'1.12.2',date:'2026-06-14',title:'🌑 ปรับหน้าเวิร์กชอปใหม่',notes:[
+    'ออกแบบหน้า 🛠️ เวิร์กชอปใหม่ทั้งหมด — เพิ่มการ์ดแนะนำป้อมมนตราโมฆะพร้อมไอคอนและสเปก, กล่องอธิบายพลัง Void Mark',
+    'สูตรปลดล็อกแสดงเป็นแถบความคืบหน้าต่อวัสดุ พร้อมเครื่องหมายถูกเมื่อครบ',
+    'ป้อมมนตราโมฆะจะปลดล็อกให้คราฟได้ก็ต่อเมื่อผ่านด่านสุดท้ายของโหมดเนื้อเรื่องแล้วเท่านั้น'
+  ]},
   {ver:'1.12.1',date:'2026-06-14',title:'🇹🇭 ปรับ UI เป็นภาษาไทยทั้งหมด + ปุ่มกดง่ายขึ้น',notes:[
     'แปลข้อความ UI ที่เหลือเป็นภาษาไทยทั้งหมด (เมนู, ปุ่มต่างๆ, Codex, Endgame, Workshop, อันดับ, สภาพอากาศ ฯลฯ) ให้สอดคล้องกับเนื้อเรื่องที่เป็นไทยอยู่แล้ว',
     'ขยายขนาดปุ่มไอคอนใน HUD (หยุดชั่วคราว, ความเร็ว, ตั้งค่า, Dev) ให้กดง่ายขึ้นบนมือถือ (ขั้นต่ำ ~38x38px)',
@@ -266,22 +271,47 @@ const VOID_RECIPE={gems:800,mats:{0:30,1:15,2:8}};
 const MAT_ICONS=['🪨','🔘','🌟'];
 const MAT_NAMES=['เศษหินมืด','แกนเวทอสูร','ผงดาวตก'];
 function openWorkshop(){ showScreen('workshop',true); renderWorkshop(); }
+function isFinalStageCleared(){
+  return (loadProgress()[STAGES.length-1]||0)>=1;
+}
 function renderWorkshop(){
   const gems=loadGems(), mats=loadMaterials();
-  document.getElementById('wsGems').textContent=gems.toLocaleString();
-  document.getElementById('wsMat0').textContent=mats[0]||0;
-  document.getElementById('wsMat1').textContent=mats[1]||0;
-  document.getElementById('wsMat2').textContent=mats[2]||0;
   const unlocked=isVoidUnlocked();
+  const finalCleared=isFinalStageCleared();
+  document.getElementById('wsStageLockNote').style.display=(!unlocked&&!finalCleared)?'flex':'none';
+  document.getElementById('wsCraftSection').style.display=(unlocked||finalCleared)?'':'none';
+  if(!unlocked&&!finalCleared) return;
   document.getElementById('wsAlreadyUnlocked').style.display=unlocked?'block':'none';
+  document.getElementById('wsRecipeBox').style.display=unlocked?'none':'';
   const craftBtn=document.getElementById('wsCraftBtn');
   craftBtn.style.display=unlocked?'none':'';
   if(unlocked) return;
-  craftBtn.disabled=!(gems>=VOID_RECIPE.gems&&(mats[0]||0)>=VOID_RECIPE.mats[0]
-    &&(mats[1]||0)>=VOID_RECIPE.mats[1]&&(mats[2]||0)>=VOID_RECIPE.mats[2]);
+  const reqs=[
+    {icon:'💎',name:'มณีวิญญาณ',have:gems,need:VOID_RECIPE.gems},
+    {icon:MAT_ICONS[0],name:MAT_NAMES[0],have:mats[0]||0,need:VOID_RECIPE.mats[0]},
+    {icon:MAT_ICONS[1],name:MAT_NAMES[1],have:mats[1]||0,need:VOID_RECIPE.mats[1]},
+    {icon:MAT_ICONS[2],name:MAT_NAMES[2],have:mats[2]||0,need:VOID_RECIPE.mats[2]},
+  ];
+  let html='',allMet=true;
+  reqs.forEach(r=>{
+    const met=r.have>=r.need;
+    if(!met) allMet=false;
+    const pct=Math.min(100,Math.round(r.have/r.need*100));
+    html+=`<div class="ws-recipe-item${met?' met':''}">
+      <div class="ws-recipe-ico">${r.icon}</div>
+      <div class="ws-recipe-info">
+        <div class="ws-recipe-name">${r.name}</div>
+        <div class="ach-progress-bar"><div class="ach-progress-fill" style="width:${pct}%;${met?'background:linear-gradient(90deg,#69f0ae,#4caf50);':''}"></div></div>
+        <div class="ws-recipe-count">${r.have.toLocaleString()} / ${r.need.toLocaleString()}</div>
+      </div>
+      ${met?'<div class="ws-recipe-check">✔</div>':''}
+    </div>`;
+  });
+  document.getElementById('wsRecipeGrid').innerHTML=html;
+  craftBtn.disabled=!allMet;
 }
 function craftVoidTower(){
-  if(isVoidUnlocked())return;
+  if(isVoidUnlocked()||!isFinalStageCleared())return;
   const gems=loadGems(), mats=loadMaterials();
   const ok=gems>=VOID_RECIPE.gems&&(mats[0]||0)>=VOID_RECIPE.mats[0]
     &&(mats[1]||0)>=VOID_RECIPE.mats[1]&&(mats[2]||0)>=VOID_RECIPE.mats[2];
