@@ -2,6 +2,27 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.12.8 — Tower visual overhaul (2.5D)
+
+### Changed
+- Disabled the Three.js 3D tower overlay (`_init3D()` now no-ops, `_gl3D`
+  stays `null`) — gameplay now always renders the 2D sprite path in
+  `js/game.js`'s tower-draw block (`drawTowerIcon`).
+- `js/tower.js` `_twStatic`: reworked the body-cylinder gradient to add a
+  bright rim-light highlight stop and a darker shadow stop (via
+  `shadeColor`), plus a soft contact-shadow (AO) ellipse where the body
+  meets the stone base.
+- `_twDecal` is now drawn with a soft drop shadow (`ctx.shadowColor/
+  shadowBlur/shadowOffsetY`) for stronger contrast against the body.
+- `drawTowerIcon(ctx,type,sz,angle,lv)` gained an `lv` parameter and now
+  draws:
+  - `_twAura(ctx,type,r)` — a pulsing radial glow under the base, tinted
+    per tower via `TACCENT[type]`.
+  - `_twLevelRing(ctx,type,r,lv)` — one extra glowing ring around the base
+    per level above 1 (gold/orange/red for Lv.2/3/4).
+  - `_twWeapon` now also gets a drop shadow for more depth.
+- `js/game.js` tower-draw block passes `tw.lv` to both `drawTowerIcon` calls.
+
 ## v1.12.7 — Endgame weather fix + Hard difficulty buff
 
 ### Fixed

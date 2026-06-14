@@ -127,13 +127,43 @@ function _bldSC(){
     _SC[t]={c:oc,tx,ty};
   }
 }
-function drawTowerIcon(ctx,type,sz,angle){
+function drawTowerIcon(ctx,type,sz,angle,lv){
   if(!_SC)_bldSC();
   const r=sz/2,s=_SC[type];
   ctx.save();
+  _twAura(ctx,type,r);
   if(s)ctx.drawImage(s.c,-s.tx,-s.ty);else _twStatic(ctx,type,r);
-  ctx.save();ctx.rotate((angle||0)+Math.PI/2);_twWeapon(ctx,type,r);ctx.restore();
+  _twLevelRing(ctx,type,r,lv);
+  ctx.save();ctx.rotate((angle||0)+Math.PI/2);
+  ctx.shadowColor='rgba(0,0,0,.5)';ctx.shadowBlur=r*.12;ctx.shadowOffsetY=r*.05;
+  _twWeapon(ctx,type,r);
   ctx.restore();
+  ctx.restore();
+}
+// soft colored glow on the ground beneath the tower, tinted per tower type
+function _twAura(ctx,type,r){
+  const c=TACCENT[type]||'#ffffff';
+  const pulse=.30+.12*Math.sin(Date.now()*.0025);
+  ctx.save();
+  ctx.globalAlpha=pulse;
+  const g=ctx.createRadialGradient(0,r*.55,0,0,r*.55,r*1.15);
+  g.addColorStop(0,c);g.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=g;
+  ctx.beginPath();ctx.ellipse(0,r*.55,r*1.05,r*.34,0,0,Math.PI*2);ctx.fill();
+  ctx.restore();
+}
+// rings of light around the base — one extra ring per level above 1
+function _twLevelRing(ctx,type,r,lv){
+  if(!lv||lv<2) return;
+  const cols=['#ffd740','#ff9100','#ff5252'];
+  const n=Math.min(lv-1,3);
+  for(let i=0;i<n;i++){
+    ctx.save();
+    ctx.globalAlpha=.5+.25*Math.sin(Date.now()*.004+i*1.7);
+    ctx.strokeStyle=cols[i];ctx.lineWidth=r*.045;
+    ctx.beginPath();ctx.ellipse(0,r*.68,r*(.92+i*.13),r*(.22+i*.035),0,0,Math.PI*2);ctx.stroke();
+    ctx.restore();
+  }
 }
 function _twStatic(ctx,type,r){
   // body colors per type: [dark, mid, shade]
@@ -164,11 +194,15 @@ function _twStatic(ctx,type,r){
   ctx.fillStyle='rgba(255,255,255,.13)';ctx.beginPath();ctx.ellipse(-r*.08,r*.21,r*.52,r*.13,0,0,Math.PI*2);ctx.fill();
   // body side cylinder
   const bg=ctx.createLinearGradient(-r*.72,0,r*.72,0);
-  bg.addColorStop(0,bd);bg.addColorStop(.28,bm);bg.addColorStop(.65,bd);bg.addColorStop(1,shadeColor(bd,-30));
+  bg.addColorStop(0,shadeColor(bd,12));bg.addColorStop(.16,shadeColor(bm,50));
+  bg.addColorStop(.34,bm);bg.addColorStop(.65,bd);bg.addColorStop(1,shadeColor(bd,-40));
   ctx.fillStyle=bg;
   ctx.beginPath();ctx.ellipse(0,-r*.2,r*.72,r*.17,0,Math.PI,0,true);
   ctx.lineTo(r*.72,r*.24);ctx.ellipse(0,r*.24,r*.72,r*.17,0,0,Math.PI,true);
   ctx.lineTo(-r*.72,-r*.2);ctx.closePath();ctx.fill();
+  // contact shadow (AO) where the body meets the stone base
+  ctx.globalAlpha=.18;ctx.fillStyle='#000';
+  ctx.beginPath();ctx.ellipse(0,r*.22,r*.76,r*.1,0,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
   // gold trim — bottom
   ctx.fillStyle='#9a7010';
   ctx.beginPath();ctx.ellipse(0,r*.18,r*.74,r*.18,0,Math.PI,0,true);
@@ -184,8 +218,11 @@ function _twStatic(ctx,type,r){
   // gold studs
   ctx.fillStyle='#ffd740';
   for(let k=0;k<4;k++){const a=(k/3-.5)*Math.PI*.7,sx=Math.sin(a)*r*.65,sy=-Math.cos(a)*r*.17-r*.03;ctx.beginPath();ctx.arc(sx,sy,r*.055,0,Math.PI*2);ctx.fill();}
-  // emblem / decal
+  // emblem / decal — drawn with a soft drop shadow for extra contrast
+  ctx.save();
+  ctx.shadowColor='rgba(0,0,0,.45)';ctx.shadowBlur=r*.1;ctx.shadowOffsetY=r*.025;
   _twDecal(ctx,type,r);
+  ctx.restore();
 }
 function _twDecal(ctx,type,r){
   if(type===0){// shield+star
@@ -331,6 +368,7 @@ function _gridToWorld3D(col,row){
 }
 
 function _init3D(){
+  return; // 3D overlay disabled — using upgraded 2.5D sprites instead
   if(_gl3D||typeof THREE==='undefined') return;
   const glCv=document.getElementById('gl3d');
   if(!glCv) return;

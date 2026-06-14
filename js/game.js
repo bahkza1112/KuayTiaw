@@ -1371,15 +1371,15 @@ function render(){
     if(_gl3D){
       _sync3DTowerMesh(tw,cx2,cy2,bounce);
     }else{
-      // fallback: 2D sprite if WebGL unavailable
+      // 2.5D sprite (Cannon..Void)
       const _tws=1.4;
       ctx.save();
       ctx.translate(cx2, cy2-CS*.18);
       ctx.scale(_tws,_tws);
       ctx.shadowColor='rgba(0,0,0,.95)';ctx.shadowBlur=7;ctx.shadowOffsetX=0;ctx.shadowOffsetY=3;
-      drawTowerIcon(ctx,tw.type,CS-2,tw.angle);
+      drawTowerIcon(ctx,tw.type,CS-2,tw.angle,tw.lv);
       ctx.shadowBlur=0;ctx.shadowOffsetY=0;
-      drawTowerIcon(ctx,tw.type,CS-2,tw.angle);
+      drawTowerIcon(ctx,tw.type,CS-2,tw.angle,tw.lv);
       ctx.restore();
     }
     // level badge
