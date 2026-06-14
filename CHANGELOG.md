@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.12.3 — Main menu cleanup
+
+### Removed
+- Removed the `#menuProgress` stats bar (best stage / total stars / cleared
+  stages) from the main menu — it visually overlapped the bottom nav, and
+  the same info is already available on the Rankings/stats screen. Dropped
+  the now-unused `updateMenuStats()` computation for it and the
+  `#menuProgress` CSS animation rule.
+
 ## v1.12.2 — Workshop UI redesign + Void Tower unlock gate
 
 ### Changed

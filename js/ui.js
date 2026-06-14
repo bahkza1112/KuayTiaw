@@ -1,6 +1,9 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='1.12.2';
+const GAME_VERSION='1.12.3';
 const PATCH_NOTES=[
+  {ver:'1.12.3',date:'2026-06-14',title:'🧹 จัดหน้าเมนูหลักให้สะอาดขึ้น',notes:[
+    'นำแถบสถิติ (ด่านล่าสุด/ดาวรวม/ผ่านแล้ว) ที่ทับกับเมนูล่างออกจากหน้าเมนูหลัก — ดูข้อมูลเดียวกันได้ในหน้า อันดับ/สถิติ'
+  ]},
   {ver:'1.12.2',date:'2026-06-14',title:'🌑 ปรับหน้าเวิร์กชอปใหม่',notes:[
     'ออกแบบหน้า 🛠️ เวิร์กชอปใหม่ทั้งหมด — เพิ่มการ์ดแนะนำป้อมมนตราโมฆะพร้อมไอคอนและสเปก, กล่องอธิบายพลัง Void Mark',
     'สูตรปลดล็อกแสดงเป็นแถบความคืบหน้าต่อวัสดุ พร้อมเครื่องหมายถูกเมื่อครบ',
@@ -245,21 +248,6 @@ function showScreen(id,flex){
 
 /* ══ MENU STATS ══ */
 function updateMenuStats(){
-  const p=loadProgress();
-  let best='—',totalStars=0,icons='';
-  STAGES.forEach((s,i)=>{
-    const stars=p[i]||0;
-    totalStars+=stars;
-    if(stars>0){best='ด่าน '+(i+1)+' '+s.icon;icons+=s.icon;}
-    else icons+='🔒';
-  });
-  const bs=document.getElementById('menuBestStage');
-  const ts=document.getElementById('menuTotalStars');
-  const si2=document.getElementById('menuStageIcons');
-  if(bs) bs.textContent=best;
-  const maxStar=STAGES.filter(s=>!s.comingSoon).length*3;
-  if(ts) ts.textContent='⭐ '+totalStars+' / '+maxStar;
-  if(si2) si2.textContent=icons||'🔒🔒🔒';
   const gd=document.getElementById('mmGemsDisplay');
   if(gd) gd.textContent=loadGems().toLocaleString();
   _updateAchBadge(); // อัปเดต badge ทุกครั้งที่ menu render

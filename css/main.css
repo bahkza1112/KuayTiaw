@@ -34,7 +34,6 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .bbattle{position:relative;overflow:hidden;font-family:'Arial Black','Segoe UI',Arial,sans-serif;background:linear-gradient(180deg,#ffe234 0%,#ff9800 100%);color:#6d2900;font-size:24px;font-weight:800;border:4px solid #e65100;border-radius:50px;padding:16px 70px;cursor:pointer;box-shadow:0 6px 0 #bf360c,0 0 24px rgba(255,193,7,.5);transition:transform .1s,box-shadow .1s;letter-spacing:1px;animation:menuFadeInUp .5s ease .28s both;}
 #verBtn{animation:menuFadeInUp .5s ease .22s both;}
 #egMenuBtn{animation:menuFadeInUp .5s ease .34s both;}
-#menuProgress{animation:menuFadeInUp .5s ease .4s both;}
 .bottom-nav{animation:menuFadeInUp .5s ease .46s both;}
 .bbattle:hover{transform:translateY(-2px);box-shadow:0 8px 0 #bf360c,0 0 36px rgba(255,193,7,.75);}
 .bbattle:active{transform:translateY(3px);box-shadow:0 3px 0 #bf360c,0 0 18px rgba(255,193,7,.4);}
