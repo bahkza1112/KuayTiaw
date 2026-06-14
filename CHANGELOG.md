@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.12.5 — Workshop recipe always visible
+
+### Changed
+- The Workshop's recipe progress grid (`#wsRecipeGrid`) is now shown even
+  before the final story stage is cleared, alongside the lock note —
+  players can see what to stockpile (Soul Gems + materials) ahead of time.
+  Only the craft button (`#wsCraftBtn`) stays hidden until the final stage
+  is cleared and the Void Tower isn't already unlocked.
+
 ## v1.12.4 — Removed score tracking from Story Mode
 
 ### Removed

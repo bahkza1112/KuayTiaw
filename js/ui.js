@@ -1,6 +1,9 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='1.12.4';
+const GAME_VERSION='1.12.5';
 const PATCH_NOTES=[
+  {ver:'1.12.5',date:'2026-06-14',title:'🛠️ เวิร์กชอป: โชว์สูตรแม้ยังไม่ปลดล็อก',notes:[
+    'หน้าเวิร์กชอปจะแสดงสูตรปลดล็อก (มณีวิญญาณและวัสดุที่ต้องใช้) ให้เห็นเสมอ แม้ยังไม่ผ่านด่านสุดท้าย จะได้รู้ว่าต้องเก็บอะไรไว้รอ'
+  ]},
   {ver:'1.12.4',date:'2026-06-14',title:'⚔️ ตัดระบบคะแนนในโหมดเนื้อเรื่อง',notes:[
     'หน้าจบด่านในโหมดเนื้อเรื่องไม่แสดงคะแนนอีกต่อไป — เน้นแค่ผ่าน/ไม่ผ่านและดาวที่ได้',
     'เมื่อแพ้ในโหมดเนื้อเรื่อง จะไม่มีหน้าต่างให้บันทึกคะแนนอีกต่อไป (เหลือเฉพาะโหมดเอนด์เกม)',
@@ -272,12 +275,11 @@ function renderWorkshop(){
   const unlocked=isVoidUnlocked();
   const finalCleared=isFinalStageCleared();
   document.getElementById('wsStageLockNote').style.display=(!unlocked&&!finalCleared)?'flex':'none';
-  document.getElementById('wsCraftSection').style.display=(unlocked||finalCleared)?'':'none';
-  if(!unlocked&&!finalCleared) return;
+  document.getElementById('wsCraftSection').style.display='';
   document.getElementById('wsAlreadyUnlocked').style.display=unlocked?'block':'none';
   document.getElementById('wsRecipeBox').style.display=unlocked?'none':'';
   const craftBtn=document.getElementById('wsCraftBtn');
-  craftBtn.style.display=unlocked?'none':'';
+  craftBtn.style.display=(unlocked||!finalCleared)?'none':'';
   if(unlocked) return;
   const reqs=[
     {icon:'💎',name:'มณีวิญญาณ',have:gems,need:VOID_RECIPE.gems},
