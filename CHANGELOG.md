@@ -2,6 +2,25 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.12.7 — Endgame weather fix + Hard difficulty buff
+
+### Fixed
+- Weather system (`rollWeather`/`clearWeather`, `WEATHERS`/`STAGE_WEATHER`)
+  was never invoked in Endgame Mode — `startWave()` (Story Mode) called
+  `rollWeather(currentStage.id)` but `startEgWave()` did not, so `G.weather`
+  stayed at its neutral default for the entire Endgame run. Added
+  `rollWeather(currentStage.id)` to `startEgWave()` (uses the last
+  `STAGE_WEATHER` pool since `currentStage.id=99` clamps to
+  `STAGE_WEATHER.length-1`), `clearWeather()` to the Endgame wave-clear
+  branch in `updateEg()`, and `clearWeather()` to `endEgGame()` and the
+  Endgame branch of `surrender()`.
+
+### Changed
+- `EG_DIFF_MULT` Hard raised from `×1.5` → `×1.8` (applied to enemy HP and
+  speed via `getEgEnemyHP`/`getEgEnemySpd`). Reward scaling
+  (`getEgRewardBonus`) does not vary by difficulty, so Hard was barely
+  distinguishable from Normal once round-scaling caps flattened HP growth.
+
 ## v1.12.6 — Workshop hero card shows required materials
 
 ### Added

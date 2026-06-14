@@ -152,7 +152,7 @@ let autoWave=false;
 let isEndgame=false;
 let egDiff=1; // 0=easy,1=normal,2=hard
 let egRound=0;
-const EG_DIFF_MULT=[0.7,1.0,1.5];
+const EG_DIFF_MULT=[0.7,1.0,1.8];
 const EG_DIFF_NAMES=['ง่าย','ปกติ','ยาก'];
 const MAT_DROP_RATES=[
   [0.10,0.14,0.20], // 0: 🪨 เศษหินมืด
@@ -2068,6 +2068,7 @@ function startEgWave(){
   document.getElementById('waveTxt').textContent=G.wave;
   document.getElementById('waveBtn').disabled=true;
   G.waveActive=true; G.queue=[]; G.spawnT=0;
+  rollWeather(currentStage.id); // 🌦 roll random weather for this Endgame wave
   const n=Math.floor(CFG.enemyPerWaveBase+G.wave*CFG.enemyPerWaveInc*(1+egRound*.2));
   const avail=_getEgEnemyPool();
   const bChance=0.08+egRound*.015;
@@ -2364,6 +2365,7 @@ function updateEg(dt){
   // wave clear → next wave (no limit)
   if(G.waveActive&&G.queue.length===0&&G.enemies.length===0){
     G.waveActive=false;
+    clearWeather(); // 🌦 clear weather when Endgame wave ends
     const bonus=30+G.wave*8+egRound*15; G.gold+=bonus; updateHUD();
     // heal 1 HP per wave clear
     if(G.hp<G.maxHp){G.hp=Math.min(G.maxHp,G.hp+1);updateHUD();}
@@ -2380,6 +2382,7 @@ function updateEg(dt){
 
 function endEgGame(){
   if(!G) return;
+  clearWeather(); // 🌦 stop weather when Endgame run ends
   G.over=true;
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
   awardEndgameGems(G.wave,egDiff);
@@ -2389,6 +2392,7 @@ function endEgGame(){
 function surrender(){
   if(!G||G.over) return;
   if(isEndgame){
+    clearWeather(); // 🌦 stop weather when Endgame run ends
     if(rafId){cancelAnimationFrame(rafId);rafId=null;}
     G.over=true;
     awardEndgameGems(G.wave,egDiff);

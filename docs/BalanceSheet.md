@@ -136,8 +136,11 @@ Goblin (intentional exception).
 
 ## 4. Endgame Difficulty Multipliers
 
-`EG_DIFF_NAMES`: ง่าย (Easy ×0.7) / ปกติ (Normal ×1.0) / ยาก (Hard ×1.5)
-— applied to enemy HP via `EG_DIFF_MULT` in `getEgStats()`.
+`EG_DIFF_NAMES`: ง่าย (Easy ×0.7) / ปกติ (Normal ×1.0) / ยาก (Hard ×1.8)
+— applied to enemy HP and speed via `EG_DIFF_MULT` in `getEgEnemyHP`/`getEgEnemySpd`.
+(v1.12.7: Hard raised from ×1.5 → ×1.8 — reward scaling (`getEgRewardBonus`)
+is unaffected by difficulty, so Hard was previously not meaningfully harder
+than Normal once round-scaling caps flattened HP growth.)
 
 ## 5. Endless Mode Round Scaling
 
