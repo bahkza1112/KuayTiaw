@@ -1226,19 +1226,23 @@ function render(){
   // muzzle flashes
   G.fxFlash.forEach(f=>{
     const fa=Math.max(0,f.life/.18);
+    ctx.save();
     ctx.globalAlpha=fa*.7;
+    ctx.shadowColor=f.col;ctx.shadowBlur=f.r*.9;
     const fg=ctx.createRadialGradient(f.x,f.y,0,f.x,f.y,f.r);
     fg.addColorStop(0,'rgba(255,255,255,.95)');fg.addColorStop(.4,f.col);fg.addColorStop(1,'rgba(0,0,0,0)');
     ctx.fillStyle=fg; ctx.beginPath(); ctx.arc(f.x,f.y,f.r,0,Math.PI*2); ctx.fill();
-    ctx.globalAlpha=1;
+    ctx.restore();
   });
-  // FX rings
+  // FX rings — soft glow matching ring color for extra impact punch
   G.fxRings.forEach(r=>{
     if(r.delay>0) return;
+    ctx.save();
+    ctx.shadowColor=r.col;ctx.shadowBlur=r.lw*2.2;
     ctx.globalAlpha=Math.max(0,r.life)*.7;
     ctx.strokeStyle=r.col; ctx.lineWidth=r.lw;
     ctx.beginPath(); ctx.arc(r.x,r.y,r.r,0,Math.PI*2); ctx.stroke();
-    ctx.globalAlpha=1;
+    ctx.restore();
   });
 
   // FX trails — V3: styled per projectile type
@@ -1545,11 +1549,15 @@ function render(){
   // projectiles (styled per tower type)
   G.projs.forEach(p=>{
     const pc=TPROJ[p.type];
-    // outer glow
-    ctx.globalAlpha=.3;
-    ctx.fillStyle=pc;
+    // outer glow halo — soft radial gradient + ambient shadow bloom
+    ctx.save();
+    ctx.shadowColor=pc;ctx.shadowBlur=8;
+    ctx.globalAlpha=.35;
+    const _pg=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,8);
+    _pg.addColorStop(0,pc);_pg.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=_pg;
     ctx.beginPath();ctx.arc(p.x,p.y,8,0,Math.PI*2);ctx.fill();
-    ctx.globalAlpha=1;
+    ctx.restore();
     const _pang=Math.atan2(p.ty-p.y,p.tx-p.x)||0;
     if(p.type===3){
       // Sniper: elongated laser dot with bright tracer line

@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.12.11 — Projectile/impact FX glow polish
+
+### Changed
+- `js/game.js` `render()`: projectiles now draw with a soft radial-gradient
+  glow halo plus `shadowColor`/`shadowBlur` bloom matching their
+  `TPROJ` color, instead of a flat semi-transparent circle.
+- Impact FX rings (`fxRings`) and muzzle flashes (`fxFlash`) now also use
+  `shadowColor`/`shadowBlur` for a glowing punch, completing the visual
+  consistency pass started with towers (v1.12.8) and enemies (v1.12.9).
+
 ## v1.12.10 — Remove dead 3D tower overlay code
 
 ### Removed
