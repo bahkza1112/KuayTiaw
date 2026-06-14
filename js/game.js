@@ -561,7 +561,7 @@ function endGame(win){
   updateMenuStats();
   document.getElementById('endTitle').textContent=win?'🏆 ชัยชนะ!':'💀 เกมจบ';
   document.getElementById('starRow').textContent=win?'★'.repeat(stars)+'☆'.repeat(3-stars):'☆☆☆';
-  document.getElementById('endScore').textContent='Score: '+G.score+(win?' — '+currentStage.name+' cleared!':' — Try again!');
+  document.getElementById('endScore').textContent=win?currentStage.name+' cleared!':'Try again!';
   const banner=document.getElementById('unlockBanner');
   if(win&&currentStage.unlocks){
     banner.style.display='block';
@@ -578,7 +578,7 @@ function endGame(win){
   /* ══ FINAL STAGE VICTORY ══ */
   if(win&&currentStage.isFinalStage){
     document.getElementById('endTitle').textContent='👑 ยุติความมืดแล้ว!';
-    document.getElementById('endScore').textContent='🏆 คุณเอาชนะจอมมารและยุติความมืดตลอดกาล! Score: '+G.score;
+    document.getElementById('endScore').textContent='🏆 คุณเอาชนะจอมมารและยุติความมืดตลอดกาล!';
     banner.style.display='block';
     banner.innerHTML=`<strong>🎉 YOU WIN!</strong> ยินดีด้วย — คุณผ่านทุกด่านแล้ว! จอมมารพ่ายแพ้ไปตลอดกาล 👁️💥`;
     banner.style.background='linear-gradient(135deg,rgba(100,0,180,.4),rgba(200,0,100,.3))';
@@ -2383,7 +2383,7 @@ function endEgGame(){
   G.over=true;
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
   awardEndgameGems(G.wave,egDiff);
-  showSavePrompt(false);
+  showSavePrompt();
 }
 
 function surrender(){
@@ -2392,7 +2392,7 @@ function surrender(){
     if(rafId){cancelAnimationFrame(rafId);rafId=null;}
     G.over=true;
     awardEndgameGems(G.wave,egDiff);
-    showSavePrompt(false);
+    showSavePrompt();
   } else {
     // story mode surrender = go to stage select
     goStageSelect();

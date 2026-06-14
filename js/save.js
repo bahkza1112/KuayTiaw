@@ -217,49 +217,35 @@ function unlockMonster(ti){
   }
 }
 
-/* ══ SAVE PROMPT ══ */
-function showSavePrompt(isStoryWin){
+/* ══ SAVE PROMPT (Endgame only — Story mode ไม่มีคะแนนสะสม) ══ */
+function showSavePrompt(){
   const box=document.getElementById('saveBox');
   const overlay=document.getElementById('saveOverlay');
   const inp=document.getElementById('saveNameInput');
   // try load last used name
   const lastName=localStorage.getItem('tq_last_name')||'';
   inp.value=lastName;
-  if(isEndgame){
-    box.classList.add('eg'); box.classList.remove('save-box');
-    document.getElementById('saveTitle').textContent='🔥 Save Endgame Score';
-    inp.classList.add('eg');
-    document.getElementById('saveConfirmBtn').style.background='linear-gradient(180deg,#ff5252,#b71c1c)';
-  } else {
-    box.classList.remove('eg');
-    document.getElementById('saveTitle').textContent='💾 Save Score';
-    inp.classList.remove('eg');
-    document.getElementById('saveConfirmBtn').style.background='';
-  }
+  box.classList.add('eg'); box.classList.remove('save-box');
+  document.getElementById('saveTitle').textContent='🔥 Save Endgame Score';
+  inp.classList.add('eg');
+  document.getElementById('saveConfirmBtn').style.background='linear-gradient(180deg,#ff5252,#b71c1c)';
   const runs=JSON.parse(localStorage.getItem('tq_runs')||'[]');
-  const isTop=runs.length<10||(isEndgame?G.score>Math.min(...runs.filter(r=>r.mode==='endgame').map(r=>r.score||0))
-    :G.score>Math.min(...runs.filter(r=>r.mode==='story').map(r=>r.score||0)));
+  const isTop=runs.length<10||G.score>Math.min(...runs.filter(r=>r.mode==='endgame').map(r=>r.score||0));
   document.getElementById('saveTopMsg').textContent=isTop&&runs.length>=3?'🏆 Top 10!':'';
-  document.getElementById('saveResultGrid').innerHTML=isEndgame
-    ?`<div class="save-res-item"><div class="save-res-lbl">🌊 Wave สูงสุด</div><div class="save-res-val">${G.wave}</div></div>
+  document.getElementById('saveResultGrid').innerHTML=
+    `<div class="save-res-item"><div class="save-res-lbl">🌊 Wave สูงสุด</div><div class="save-res-val">${G.wave}</div></div>
       <div class="save-res-item"><div class="save-res-lbl">⭐ Score</div><div class="save-res-val">${G.score.toLocaleString()}</div></div>
       <div class="save-res-item"><div class="save-res-lbl">💀 Total Kills</div><div class="save-res-val">${G.kills||0}</div></div>
       <div class="save-res-item"><div class="save-res-lbl">⚡ Max Combo</div><div class="save-res-val">×${G.maxCombo||1}</div></div>
       <div class="save-res-item"><div class="save-res-lbl">🔥 Round</div><div class="save-res-val">${egRound+1}</div></div>
-      <div class="save-res-item"><div class="save-res-lbl">⚙️ Difficulty</div><div class="save-res-val">${EG_DIFF_NAMES[egDiff]}</div></div>`
-    :`<div class="save-res-item"><div class="save-res-lbl">⭐ Score</div><div class="save-res-val">${G.score}</div></div>
-      <div class="save-res-item"><div class="save-res-lbl">🗺️ Stage</div><div class="save-res-val">${currentStage.name}</div></div>`;
+      <div class="save-res-item"><div class="save-res-lbl">⚙️ Difficulty</div><div class="save-res-val">${EG_DIFF_NAMES[egDiff]}</div></div>`;
   overlay.style.display='flex';
   setTimeout(()=>inp.focus(),100);
 }
 
 function skipSave(){
   document.getElementById('saveOverlay').style.display='none';
-  if(isEndgame){
-    showEgResult();
-  } else {
-    document.getElementById('endOverlay').style.display='flex';
-  }
+  showEgResult();
 }
 
 function confirmSave(){
@@ -267,12 +253,12 @@ function confirmSave(){
   localStorage.setItem('tq_last_name',name);
   const run={
     name, score:G.score, wave:G.wave,
-    mode:isEndgame?'endgame':'story',
-    diff:isEndgame?EG_DIFF_NAMES[egDiff]:null,
-    stage:isEndgame?null:currentStage.name,
-    round:isEndgame?egRound+1:null,
-    kills:isEndgame?(G.kills||0):null,
-    maxCombo:isEndgame?(G.maxCombo||1):null,
+    mode:'endgame',
+    diff:EG_DIFF_NAMES[egDiff],
+    stage:null,
+    round:egRound+1,
+    kills:G.kills||0,
+    maxCombo:G.maxCombo||1,
     date:new Date().toLocaleDateString('th-TH'),
     ts:Date.now()
   };
@@ -283,8 +269,7 @@ function confirmSave(){
   checkAchievements(); // check eg3/eg7 achievements after saving run
   showToast('💾 Save Scoreของ '+name+' แล้ว!');
   document.getElementById('saveOverlay').style.display='none';
-  if(isEndgame) showEgResult();
-  else document.getElementById('endOverlay').style.display='flex';
+  showEgResult();
 }
 
 function showEgResult(){

@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='1.12.3';
+const GAME_VERSION='1.12.4';
 const PATCH_NOTES=[
+  {ver:'1.12.4',date:'2026-06-14',title:'⚔️ ตัดระบบคะแนนในโหมดเนื้อเรื่อง',notes:[
+    'หน้าจบด่านในโหมดเนื้อเรื่องไม่แสดงคะแนนอีกต่อไป — เน้นแค่ผ่าน/ไม่ผ่านและดาวที่ได้',
+    'เมื่อแพ้ในโหมดเนื้อเรื่อง จะไม่มีหน้าต่างให้บันทึกคะแนนอีกต่อไป (เหลือเฉพาะโหมดเอนด์เกม)',
+    'หน้าอันดับ: นำแท็บ "⚔️ เนื้อเรื่อง" และสถิติ "คะแนนเนื้อเรื่องสูงสุด" ออก เพราะโหมดเนื้อเรื่องไม่ใช้คะแนนแล้ว'
+  ]},
   {ver:'1.12.3',date:'2026-06-14',title:'🧹 จัดหน้าเมนูหลักให้สะอาดขึ้น',notes:[
     'นำแถบสถิติ (ด่านล่าสุด/ดาวรวม/ผ่านแล้ว) ที่ทับกับเมนูล่างออกจากหน้าเมนูหลัก — ดูข้อมูลเดียวกันได้ในหน้า อันดับ/สถิติ'
   ]},
@@ -1336,7 +1341,7 @@ function openLeaderboard(){
 }
 function switchLbTab(i){
   lbTab=i;
-  for(let j=0;j<4;j++) document.getElementById('lbt'+j).classList.toggle('active',j===i);
+  for(let j=0;j<3;j++) document.getElementById('lbt'+j).classList.toggle('active',j===i);
   renderLb();
 }
 function renderLb(){
@@ -1347,7 +1352,6 @@ function renderLb(){
     // My Stats
     const myRuns=lastName?runs.filter(r=>r.name===lastName):runs.slice(0,10);
     const egRuns=myRuns.filter(r=>r.mode==='endgame');
-    const stRuns=myRuns.filter(r=>r.mode==='story');
     const p=loadProgress();
     const totalStars=Object.values(p).reduce((a,b)=>a+b,0);
     const bestWave=egRuns.length?Math.max(...egRuns.map(r=>r.wave)):0;
@@ -1355,7 +1359,6 @@ function renderLb(){
     const bestKills=egRuns.length?Math.max(...egRuns.map(r=>r.kills||0)):0;
     const bestCombo=egRuns.length?Math.max(...egRuns.map(r=>r.maxCombo||1)):1;
     const totalEgKills=egRuns.reduce((a,r)=>a+(r.kills||0),0);
-    const bestStoryScore=stRuns.length?Math.max(...stRuns.map(r=>r.score||0)):0;
     const achCount=loadAchievements().size;
     let html=`<div class="my-stat-grid">
       <div class="my-stat-card eg"><div class="my-stat-val">${bestWave||'—'}</div><div class="my-stat-lbl">🌊 เวฟสูงสุด</div></div>
@@ -1364,7 +1367,6 @@ function renderLb(){
       <div class="my-stat-card eg"><div class="my-stat-val">×${bestCombo}</div><div class="my-stat-lbl">⚡ คอมโบสูงสุด</div></div>
       <div class="my-stat-card"><div class="my-stat-val">${Object.keys(p).filter(k=>(p[k]||0)>=1).length}/${STAGES.filter(s=>!s.comingSoon).length}</div><div class="my-stat-lbl">🗺️ ด่านที่ผ่าน</div></div>
       <div class="my-stat-card"><div class="my-stat-val">${totalStars}★</div><div class="my-stat-lbl">⭐ ดาวรวม</div></div>
-      <div class="my-stat-card"><div class="my-stat-val">${bestStoryScore?bestStoryScore.toLocaleString():'—'}</div><div class="my-stat-lbl">📜 คะแนนเนื้อเรื่องสูงสุด</div></div>
       <div class="my-stat-card"><div class="my-stat-val">${totalEgKills.toLocaleString()}</div><div class="my-stat-lbl">💀 ฆ่ารวม (เอนด์เกม)</div></div>
       <div class="my-stat-card"><div class="my-stat-val">${egRuns.length}</div><div class="my-stat-lbl">🔥 รอบเอนด์เกม</div></div>
       <div class="my-stat-card"><div class="my-stat-val">${achCount}/${ACHIEVEMENTS.length}</div><div class="my-stat-lbl">🏅 รางวัล</div></div>
@@ -1376,7 +1378,7 @@ function renderLb(){
           <div class="run-mode-icon">${r.mode==='endgame'?'🔥':'⚔️'}</div>
           <div class="run-info"><div class="run-name">${r.name}</div>
           <div class="run-meta">${r.mode==='endgame'?'เอนด์เกม · '+r.diff:'เนื้อเรื่อง · '+r.stage} · ${r.date}</div></div>
-          <div class="run-val"><div class="run-score">${r.score}</div><div class="run-wave">${r.mode==='endgame'?'เวฟ '+r.wave:r.stage}</div></div>
+          <div class="run-val"><div class="run-score">${r.mode==='endgame'?r.score:''}</div><div class="run-wave">${r.mode==='endgame'?'เวฟ '+r.wave:r.stage}</div></div>
         </div>`;
       });
     } else {
@@ -1389,7 +1391,7 @@ function renderLb(){
     if(!allRuns.length){ body.innerHTML='<div class="lb-empty">ยังไม่มีข้อมูล<br><span style="font-size:11px;color:#333;">เล่นเกมแล้วบันทึกชื่อก่อน</span></div>'; return; }
     let myRank=-1;
     const myName=lastName;
-    let html='<div class="lb-note">🔥 Endgame และ ⚔️ Story ใช้สเกลคะแนนต่างกัน — ดูแยกในแท็บของตัวเอง</div>';
+    let html='<div class="lb-note">🔥 อันดับคะแนนนี้ใช้ได้เฉพาะโหมดเอนด์เกม — ดูแยกในแท็บ "เอนด์เกม"</div>';
     allRuns.slice(0,20).forEach((r,i)=>{
       const isMe=r.name===myName;
       if(isMe&&myRank<0) myRank=i+1;
@@ -1423,25 +1425,6 @@ function renderLb(){
       </div>`;
     });
     body.innerHTML=html;
-  } else {
-    // Story only
-    const stOnly=[...runs].filter(r=>r.mode==='story').sort((a,b)=>b.score-a.score);
-    if(!stOnly.length){ body.innerHTML='<div class="lb-empty">ยังไม่มีข้อมูลเนื้อเรื่อง<br><span style="font-size:11px;color:#333;">เล่นโหมดเนื้อเรื่องแล้วบันทึกชื่อ</span></div>'; return; }
-    const myName=lastName;
-    let html='';
-    stOnly.slice(0,20).forEach((r,i)=>{
-      const isMe=r.name===myName;
-      const rankClass=i===0?'g':i===1?'s':i===2?'b':'n';
-      html+=`<div class="lb-item${isMe?' me':''}">
-        <div class="lb-rank ${rankClass}">${i+1}</div>
-        <div class="lb-avatar">⚔️</div>
-        <div class="lb-info"><div class="lb-name">${r.name}${isMe?' (ฉัน)':''}</div>
-        <div class="lb-detail">เนื้อเรื่อง · ${r.stage} · ${r.date}</div></div>
-        <div class="lb-score-wrap"><div class="lb-score-val">${r.score.toLocaleString()}</div>
-        <div class="lb-score-sub">${r.stage}</div></div>
-      </div>`;
-    });
-    body.innerHTML=html;
   }
 }
 
@@ -1450,17 +1433,6 @@ const _origStartWave=startWave;
 window.startWave=function(){
   if(isEndgame){if(!G||G.waveActive||G.over||paused)return;startEgWave();return;}
   _origStartWave();
-};
-
-/* ══ OVERRIDE endGame to show save prompt ══ */
-const _origEndGame=endGame;
-window.endGame=function(win){
-  _origEndGame(win);
-  if(!win&&!isEndgame){
-    // story mode lose → show save prompt before overlay
-    document.getElementById('endOverlay').style.display='none';
-    showSavePrompt(false);
-  }
 };
 
 /* ══ OVERRIDE goStageSelect / goMenu to reset EG flag ══ */

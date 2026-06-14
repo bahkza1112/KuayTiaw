@@ -2,6 +2,22 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.12.4 — Removed score tracking from Story Mode
+
+### Removed
+- **Story Mode no longer tracks/displays score.** The end-of-stage overlay
+  now shows only "Stage cleared!" / "Try again!" instead of "Score: N".
+- **Story Mode loss no longer shows the Save Score overlay** — that prompt
+  is now Endgame-only. `showSavePrompt()`/`confirmSave()`/`skipSave()` in
+  `js/save.js` dropped their story-mode branches (`isStoryWin` param,
+  ternaries for mode/diff/stage/etc — always Endgame now). Removed the
+  no-op `endGame` override in `js/ui.js` that used to trigger this prompt.
+- **Removed the "⚔️ เนื้อเรื่อง" (Story) leaderboard tab** and the
+  "📜 คะแนนเนื้อเรื่องสูงสุด" (Best Story Score) stat card from
+  "📊 สถิติของฉัน" — Story Mode progress is tracked via stars/stages, not
+  score. The "🌍 ทั้งหมด" tab note was reworded to reflect that ranked
+  scores are Endgame-only.
+
 ## v1.12.3 — Main menu cleanup
 
 ### Removed
