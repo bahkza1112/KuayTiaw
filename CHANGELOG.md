@@ -2,6 +2,20 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.12.12 — Endgame/Workshop background polish
+
+### Changed
+- `css/main.css`: `#egmenu` and `#workshop` now have themed layered gradient
+  backgrounds plus radial glow overlays (`::before`/`::after`), matching the
+  depth/atmosphere of the main menu (`#mm`) instead of a flat `#0a0a1a` panel.
+  `#egmenu` uses a fiery red/black gradient, `#workshop` a void-purple/black
+  gradient.
+- Added ambient floating particles: reused `.ember` (fire embers) in
+  `#egmenu`, and added a new `.void-mote` class + `voidDrift` keyframe
+  (drifting purple motes) in `#workshop`.
+- `.eg-hd`/`.eg-body` raised to `z-index:1` so content renders above the new
+  background glow overlays.
+
 ## v1.12.11 — Projectile/impact FX glow polish
 
 ### Changed
