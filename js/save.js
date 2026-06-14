@@ -23,6 +23,7 @@ function addGems(n){
   if(n<=0)return;
   saveGems(loadGems()+Math.floor(n));
   if(typeof updateMenuStats==='function') updateMenuStats();
+  if(typeof checkAchievements==='function') checkAchievements();
 }
 function loadMaterials(){
   try{return Object.assign({0:0,1:0,2:0},JSON.parse(localStorage.getItem('tq_materials')||'{}'));}
@@ -76,6 +77,8 @@ const ACHIEVEMENTS=[
   // Collection
   {id:'cdx_m',icon:'📖',cat:'collect',name:'นักวิชาการ',    desc:'พบ Monster ทุกตัวใน Codex'},
   {id:'cdx_t',icon:'🏗️',cat:'collect',name:'สถาปนิก',       desc:'ปลดล็อก Tower ทุกแบบ'},
+  {id:'gem1k',icon:'💎',cat:'collect',name:'นักสะสมมณีวิญญาณ',desc:'สะสม Soul Gems รวม 1,000'},
+  {id:'void1',icon:'🌑',cat:'collect',name:'ผู้เชี่ยวชาญโมฆะ', desc:'ปลดล็อกป้อมมนตราโมฆะที่เวิร์กชอป'},
 ];
 const ACH_CATS={story:'📜 เนื้อเรื่อง',combat:'⚔️ การต่อสู้',skill:'🎯 ทักษะ',endgame:'🔥 Endgame',collect:'📚 สะสม'};
 
@@ -153,9 +156,11 @@ function checkAchievements(){
   // Collection
   const allM=ENAMES.length;
   if(seenMonsters.size>=allM) unlockAchievement('cdx_m');
-  const tProg=loadProgress();
   const unlTowers=getUnlockedTowers();
-  if(unlTowers.length>=TNAMES.length) unlockAchievement('cdx_t');
+  if(isVoidUnlocked()) unlTowers.add(8);
+  if(unlTowers.size>=TNAMES.length) unlockAchievement('cdx_t');
+  if(loadGems()>=1000) unlockAchievement('gem1k');
+  if(isVoidUnlocked()) unlockAchievement('void1');
   // Endgame
   try{
     const runs=JSON.parse(localStorage.getItem('tq_runs')||'[]');

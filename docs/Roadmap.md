@@ -199,7 +199,6 @@ tower/monster mechanics, so Codex is unchanged.
 These are larger and need a dedicated design pass before scoping:
 
 - New tower type(s) / monster type(s) (MINOR)
-- Additional rune types
 - New achievements (beyond the Shadow Remnant ones added in v1.9.0)
 
 ✅ **Demon Lord shield cap fix in Endless** (v1.9.20) — `MSHIELD[9]*(1+

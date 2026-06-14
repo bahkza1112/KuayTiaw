@@ -2,6 +2,26 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.13.0 — Soul Gems / Void Tower achievements
+
+### Added
+- `js/save.js` `ACHIEVEMENTS`: two new "collect" achievements —
+  `gem1k` (💎 นักสะสมมณีวิญญาณ, accumulate 1,000 Soul Gems) and `void1`
+  (🌑 ผู้เชี่ยวชาญโมฆะ, unlock the Void Tower at the Workshop).
+- `checkAchievements()`: checks `loadGems()>=1000` and `isVoidUnlocked()`
+  for the two new achievements.
+- `addGems()` now also calls `checkAchievements()` so `gem1k` can unlock
+  immediately when gems are awarded.
+
+### Fixed
+- `checkAchievements()`'s `cdx_t` ("สถาปนิก" — unlock every tower) was
+  unreachable: it compared `getUnlockedTowers().length` (a `Set` has no
+  `.length`, always `undefined`) against `TNAMES.length`, and the Void
+  Tower (index 8, added in v1.12.0) was never included in
+  `getUnlockedTowers()`'s result since it's unlocked via the Workshop, not
+  story stages. Now uses `.size`, and adds index 8 to the set when
+  `isVoidUnlocked()`.
+
 ## v1.12.12 — Endgame/Workshop background polish
 
 ### Changed
