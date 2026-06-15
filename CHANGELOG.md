@@ -2,6 +2,20 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v2.0.3 — Star Merge drag UX polish
+
+### Added
+- Drag-to-merge cell highlight (`js/game.js`, `render()`): while dragging a
+  tower over the board, the hovered cell is tinted green if
+  `canMergeTowers(src, target)` is true (same type/★, neither Awakened,
+  `src.star<4`) or red otherwise. New shared helper `canMergeTowers(src,
+  target)` factors out the merge-eligibility check used by both the
+  highlight and `tryMergeTowers`.
+- Toolbar tower-info tooltip (`onCanvasMove`, `js/game.js`) now appends the
+  escalating-cost breakdown, e.g. `💰80 (+15×2)`, when at least one tower of
+  that type is already placed — surfaces the per-type cost mechanic
+  (v2.0.2) outside the Codex.
+
 ## v2.0.2 — Per-type escalating tower cost
 
 ### Fixed

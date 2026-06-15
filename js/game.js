@@ -1206,6 +1206,19 @@ function render(){
     ctx.beginPath();ctx.arc(sx,sy,rang,0,Math.PI*2);ctx.stroke();
     ctx.setLineDash([]);ctx.globalAlpha=1;
   }
+  // ไฮไลต์ช่องที่ลากป้อมไปทับ — เขียว=รวมได้ แดง=รวมไม่ได้
+  if(_twrDragging&&_twrDragHoverCol>=0&&_twrDragHoverRow>=0&&_twrDragHoverCol<COLS&&_twrDragHoverRow<ROWS){
+    const hc=_twrDragHoverCol,hr=_twrDragHoverRow;
+    const hoverTw=G.towers.find(t=>t.col===hc&&t.row===hr);
+    if(hoverTw){
+      const ok=canMergeTowers(_twrDragTw,hoverTw);
+      ctx.globalAlpha=.35;ctx.fillStyle=ok?'#4caf50':'#f44336';
+      ctx.fillRect(hc*CS,hr*CS,CS,CS);
+      ctx.globalAlpha=.8;ctx.strokeStyle=ok?'#81c784':'#ef9a9a';ctx.lineWidth=2;
+      ctx.strokeRect(hc*CS+1,hr*CS+1,CS-2,CS-2);
+      ctx.globalAlpha=1;
+    }
+  }
   // tower ghost
   if(G.selTwr>=0&&G.mx>=0&&G.my>=0&&G.mx<COLS&&G.my<ROWS){
     const mc=G.mx,mr=G.my;
@@ -1882,7 +1895,9 @@ function onCanvasMove(e){
   if(info){
     if(G.selTwr>=0&&!G.over&&!G.win&&!paused){
       const t=G.selTwr;
-      info.innerHTML=TICONS[t]+' '+TNAMES[t]+'<br>🎯 ระยะ '+getTowerRange(t,1).toFixed(1)+' | ⚔️ '+Math.round(getTowerDmg(t,1))+' | 💰 '+getTowerCost(t);
+      const placedN=G.towers.filter(tw=>tw.type===t).length;
+      const costStr='💰 '+getTowerCost(t)+(placedN>0?` <span style="opacity:.6;">(+15×${placedN})</span>`:'');
+      info.innerHTML=TICONS[t]+' '+TNAMES[t]+'<br>🎯 ระยะ '+getTowerRange(t,1).toFixed(1)+' | ⚔️ '+Math.round(getTowerDmg(t,1))+' | '+costStr;
       const gpRect=document.getElementById('gp').getBoundingClientRect();
       info.style.left=(e.clientX-gpRect.left+14)+'px';
       info.style.top=(e.clientY-gpRect.top-10)+'px';
@@ -1952,6 +1967,7 @@ function _onDragUp(e){
 
 /* ══ DRAG-TO-MERGE — ลากป้อมบนกระดานทับป้อมชนิด/ดาวเดียวกันเพื่อรวมดาว ══ */
 let _twrDragTw=null,_twrDragging=false,_twrDragSX=0,_twrDragSY=0,_suppressNextClick=false;
+let _twrDragHoverCol=-1,_twrDragHoverRow=-1;
 function onCanvasPointerDown(e){
   if(!G||G.over||G.win||paused) return;
   if(G.selTwr>=0) return; // กำลังวางป้อมใหม่จาก toolbar อยู่ — ไม่เกี่ยวกับการลากรวม
@@ -1965,6 +1981,10 @@ function onCanvasPointerDown(e){
   document.addEventListener('pointermove',_onTwrDragMove);
   document.addEventListener('pointerup',_onTwrDragUp);
 }
+function canMergeTowers(src,target){
+  return !!target&&target!==src&&target.type===src.type&&(target.star||1)===(src.star||1)
+    &&!src.awakened&&!target.awakened&&(src.star||1)<4;
+}
 function _onTwrDragMove(e){
   if(!_twrDragTw) return;
   if(!_twrDragging&&Math.hypot(e.clientX-_twrDragSX,e.clientY-_twrDragSY)>10){
@@ -1977,6 +1997,16 @@ function _onTwrDragMove(e){
   e.preventDefault();
   const ghost=document.getElementById('dragGhost');
   ghost.style.left=e.clientX+'px'; ghost.style.top=e.clientY+'px';
+  // อัพเดทช่องที่ชี้อยู่ เพื่อไฮไลต์ว่ารวมได้หรือไม่บนกระดาน
+  if(cv&&G){
+    const rect=cv.getBoundingClientRect();
+    if(e.clientX>=rect.left&&e.clientX<=rect.right&&e.clientY>=rect.top&&e.clientY<=rect.bottom){
+      _twrDragHoverCol=Math.floor((e.clientX-rect.left)*cv.width/rect.width/CS);
+      _twrDragHoverRow=Math.floor((e.clientY-rect.top)*cv.height/rect.height/CS);
+    }else{
+      _twrDragHoverCol=-1; _twrDragHoverRow=-1;
+    }
+  }
 }
 function _onTwrDragUp(e){
   document.removeEventListener('pointermove',_onTwrDragMove);
@@ -1994,7 +2024,7 @@ function _onTwrDragUp(e){
     }
     document.getElementById('dragGhost').style.display='none';
   }
-  _twrDragTw=null; _twrDragging=false;
+  _twrDragTw=null; _twrDragging=false; _twrDragHoverCol=-1; _twrDragHoverRow=-1;
 }
 /* รวมป้อมชนิด/ดาวเดียวกัน 2 ตัว → ป้อมเดียว ดาว+1 รีเซ็ตแต้มสกิลเป็นของดาวใหม่ */
 function tryMergeTowers(src,target){
