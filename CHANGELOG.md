@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v2.1.1 — Rebalance Star Merge damage bonus
+
+### Changed
+- `getTowerDmg(t, lv, star)` (`js/tower.js`) now uses a lookup table
+  `STAR_DMG_BONUS=[0,.15,.3,.5]` for the per-★ base-damage bonus instead of
+  a flat +10%/★: ★1=+0%, ★2=+15%, ★3=+30%, ★4=+50%. Codex explainer text
+  updated to match.
+
 ## v2.1.0 — Star Merge grants base damage too
 
 ### Changed

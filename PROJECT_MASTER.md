@@ -149,9 +149,10 @@ pierce). Flavor text, tags, and strengths/weaknesses for the Codex are in
   (`js/tower.js` lines 60-62) compute per-level stats from
   `CFG.t_dmg/t_rng/t_rate` with linear growth per level (+25% dmg, +15%
   range, +10% rate per level above 1). `getTowerDmg` also applies a
-  **+10% base-damage bonus per ★** gained via Star Merge (v2.1.0),
-  independent of `dmgLv` — e.g. a ★4 tower's base damage is +30% before
-  any skill points are spent on the damage track.
+  **base-damage bonus per ★** gained via Star Merge, via the
+  `STAR_DMG_BONUS=[0,.15,.3,.5]` lookup table (v2.1.1): ★1=+0%, ★2=+15%,
+  ★3=+30%, ★4=+50%, independent of `dmgLv` — e.g. a ★4 tower's base damage
+  is +50% before any skill points are spent on the damage track.
 - Each placed tower (`G.towers[i]`) tracks independent `dmgLv`, `rngLv`,
   `rateLv` (free skill points spent via Star Merge — see Progression) plus
   `lv` (derived: `(dmgLv-1)+(rngLv-1)+(rateLv-1)+1`, max `star+1`, capped at

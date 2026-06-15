@@ -51,7 +51,8 @@ const TWEAKNESS=[
   ['ดาเมจต่อตัวต่ำกว่าป้อมอื่น','Chain ต้องการหลายศัตรู'],
   ['ยิงได้ทีละตัว ไม่มี splash','ใช้ได้แค่ Endgame'],
 ];
-function getTowerDmg(t,lv,star){return CFG.t_dmg[t]*(1+((star||1)-1)*.1)*(1+(lv-1)*.25);}
+const STAR_DMG_BONUS=[0,.15,.3,.5];// โบนัสดาเมจพื้นฐานตาม★ (★1=+0%, ★2=+15%, ★3=+30%, ★4=+50%)
+function getTowerDmg(t,lv,star){return CFG.t_dmg[t]*(1+STAR_DMG_BONUS[(star||1)-1])*(1+(lv-1)*.25);}
 function getTowerRange(t,lv){return CFG.t_rng[t]*(1+(lv-1)*.15);}
 function getTowerRate(t,lv){return CFG.t_rate[t]*(1+(lv-1)*.1);}
 // 📈 ราคาป้อมชนิดนี้ถัดไปแพงขึ้นตามจำนวนป้อมชนิดนี้ที่วางอยู่บนกระดาน (+15 ทอง/ป้อม)
