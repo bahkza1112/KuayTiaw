@@ -2371,6 +2371,7 @@ function updateEg(dt){
   // wave clear → next wave (no limit)
   if(G.waveActive&&G.queue.length===0&&G.enemies.length===0){
     G.waveActive=false;
+    if(egDiff===2&&G.weather&&G.weather.active) unlockAchievement('eghw'); // 🌩️ Hard + weather wave clear
     clearWeather(); // 🌦 clear weather when Endgame wave ends
     const bonus=30+G.wave*8+egRound*15; G.gold+=bonus; updateHUD();
     // heal 1 HP per wave clear

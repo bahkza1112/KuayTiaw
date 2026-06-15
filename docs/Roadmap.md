@@ -194,12 +194,17 @@ players meet). Net ~+2% economy shift. See
 final stage — it now leads into Shadow Remnant for the true ending. No new
 tower/monster mechanics, so Codex is unchanged.
 
+✅ **Storm Survivor achievement** (v1.13.2) — new `eghw` 🌩️ achievement,
+unlocked by clearing an Endgame wave on Hard difficulty while a weather
+effect is active. Builds on the v1.12.7 Endgame-weather fix. File:
+`js/save.js` (`ACHIEVEMENTS`), `js/game.js` (`updateEg`).
+
 ## Future / Unscoped Ideas
 
 These are larger and need a dedicated design pass before scoping:
 
 - New tower type(s) / monster type(s) (MINOR)
-- New achievements (beyond the Shadow Remnant ones added in v1.9.0)
+- More achievement ideas (beyond Shadow Remnant v1.9.0 and Storm Survivor v1.13.2)
 
 ✅ **Demon Lord shield cap fix in Endless** (v1.9.20) — `MSHIELD[9]*(1+
 egRound*0.3)` is now capped at the same ×3.5 `roundBonus` cap used for HP

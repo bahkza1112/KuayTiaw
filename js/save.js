@@ -74,6 +74,7 @@ const ACHIEVEMENTS=[
   // Endgame
   {id:'eg3',icon:'🔥',cat:'endgame',name:'ผู้รอดชีวิต',     desc:'ผ่าน Endgame Round 3+'},
   {id:'eg7',icon:'☠️',cat:'endgame',name:'ไม่มีวันตาย',     desc:'ผ่าน Endgame Round 7+'},
+  {id:'eghw',icon:'🌩️',cat:'endgame',name:'ผู้ฝ่าวิกฤต',   desc:'ผ่าน Wave ใน Endgame ระดับยาก ขณะมีสภาพอากาศแปรปรวน'},
   // Collection
   {id:'cdx_m',icon:'📖',cat:'collect',name:'นักวิชาการ',    desc:'พบ Monster ทุกตัวใน Codex'},
   {id:'cdx_t',icon:'🏗️',cat:'collect',name:'สถาปนิก',       desc:'ปลดล็อก Tower ทุกแบบ'},

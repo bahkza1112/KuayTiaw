@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.13.2 — New achievement: Storm Survivor (Endgame Hard + weather)
+
+### Added
+- New "endgame" category achievement `eghw` (🌩️ "ผู้ฝ่าวิกฤต") — clear a wave
+  in Endgame Mode on Hard difficulty (`egDiff===2`) while a weather effect is
+  active (`G.weather.active`). Checked in `updateEg()`'s wave-clear branch,
+  right before `clearWeather()` runs — builds on the v1.12.7 fix that made
+  weather actually roll in Endgame Mode.
+
 ## v1.13.1 — Reduce tower sprite size
 
 ### Changed
