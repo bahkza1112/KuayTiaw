@@ -2,6 +2,43 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.0.0 — Tower skill-point system redesign (2 tracks per tower)
+
+### Changed
+- **Skill points reduced from 3 tracks to 2 tracks per tower** (`js/tower.js`).
+  `dmgLv` is frozen at its current value (kept as a permanent legacy bonus,
+  no longer upgradeable). Only `rngLv`/`rateLv` remain spendable, capped at
+  `used=(rngLv-1)+(rateLv-1) <= tw.star`, max per track = `star+1`. These two
+  fields are **repurposed per tower type** via new `trackDefs(t)`:
+  - Cannon/Ice/Magic/Archer/Lightning/Void: Range (shield pierce unlock) /
+    Attack Speed (rapid-fire unlock) — unchanged from before.
+  - **Sniper**: `rngLv` repurposed as **Crit** track (`getSniperCrit`:
+    +10% crit chance/lvl, capped 40%, crit = x2 damage via
+    `SNIPER_CRIT_MULT`). Range is now constant (`getTowerRange` special-cases
+    `t===3`, no longer scales with level). `rateLv` = Attack Speed.
+  - **Gold Mine**: `rateLv` = Cooldown reduction (`getGoldMineInterval`,
+    -10%/lvl), `rngLv` = Gold quantity (`getGoldMineAmt`, +2/lvl, Awaken x2).
+  - **Support**: `rngLv` = Range, `rateLv` = new anti-stun aura strength
+    (`getSupportResist`, +5%/lvl on top of the ★-based base).
+- **Support tower range reduced**: `CFG.t_rng[4]` 2.8 → 1.5 (`js/game.js`).
+- **New Support anti-stun aura**: any `type===4` Support tower within range
+  of a tower grants it a chance to resist the Wyvern's stun-on-dive
+  ability. Base resist scales with ★ via `STAR_RESIST=[.2,.4,.6,.8]`
+  (★1-4 = 20/40/60/80%, Awakened = 100%), plus `+5%/lvl` from the Support's
+  "anti-stun" track. Rolled against `Math.random()` in both story and
+  endgame Wyvern dive logic (`js/game.js`).
+- Tower popup (`showTowerPopup`) and skill-point spend handler
+  (`upgradeTowerFromPopup`) rewritten to render the 2 per-type tracks
+  dynamically from `trackDefs(t)`, including type-specific stat rows
+  (crit %, gold-mine interval/amount, support resist %).
+- Codex tower detail (`js/ui.js`) level table and header are now per-type:
+  Sniper shows attack-speed/crit columns, Gold Mine shows production
+  interval/amount, Support shows range/anti-stun-bonus, others unchanged
+  (damage/range/attack-speed). `TSPECIAL`/`TWEAKNESS` entries updated for
+  Sniper, Gold Mine, and Support to describe the new mechanics. Star Merge
+  explainer box gains a Support anti-stun aura note.
+- `.tp-pick-row` CSS grid changed from 3 columns to 2 (`css/main.css`).
+
 ## v2.1.1 — Rebalance Star Merge damage bonus
 
 ### Changed

@@ -1,6 +1,15 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='2.1.1';
+const GAME_VERSION='3.0.0';
 const PATCH_NOTES=[
+  {ver:'3.0.0',date:'2026-06-15',title:'🔄 ปรับระบบสกิลป้อมใหม่ทั้งหมด!',notes:[
+    'ทุกป้อมเหลือ 2 สายสกิลให้อัพ (จากเดิม 3 สาย) — ดาเมจพื้นฐานคงที่ ไม่ผูกกับแต้มสกิลแล้ว',
+    'ปืนใหญ่/น้ำแข็ง/เวทมนตร์/ธนู/สายฟ้า/ป้อมมนตราโมฆะ: สาย "ระยะ" (เจาะโล่) + "ความเร็ว" (ยิงรัว)',
+    'สไนเปอร์: ระยะยิงคงที่ 4.5 ช่อง — สายใหม่ "ความเร็ว" + "คริติคอล" (โอกาส +10%/เลเวล ดาเมจ x2)',
+    'เหมืองทอง: สาย "คูลดาวน์" (ลดเวลาผลิต -10%/เลเวล) + "จำนวนทอง" (+2/เลเวล)',
+    'ซัพพอร์ต: ลดระยะลงมาก (2.8→1.5 ช่อง) — สาย "ระยะ" + "กันหยุดป้อม" ใหม่',
+    'ซัพพอร์ต: ออร่ากันป้อมหยุดทำงานจากสกิลมอนสเตอร์ ★1-4 = 20/40/60/80% (อเวค = 100%)',
+    'แต้มสกิลเก่าจะถูกจัดสรรใหม่อัตโนมัติตามดาว — ดาเมจที่เคยลงไปจะกลายเป็นโบนัสคงที่'
+  ]},
   {ver:'2.1.1',date:'2026-06-15',title:'⚔️ ปรับโบนัสดาเมจจากการรวมป้อม',notes:[
     'โบนัสดาเมจพื้นฐานจากการรวมป้อมปรับใหม่: ★2=+15%, ★3=+30%, ★4=+50% (เดิม +10% ต่อ★)',
     'ป้อม★4 ตอนนี้แรงขึ้นชัดเจน คุ้มค่ากับการลงทุนรวมป้อมจนสุด'
@@ -1006,13 +1015,42 @@ function renderCodex(){
     if(isM){
       html+=renderMonsterDetail(cdxSel);
     } else {
-      let rows='';
-      for(let lv=1;lv<=5;lv++){
-        rows+=`<tr><td><span class="lv-badge">Lv${lv}</span></td>
-          <td>${CFG.t_dmg[cdxSel]===0?'—':Math.round(getTowerDmg(cdxSel,lv))}</td>
-          <td>${getTowerRange(cdxSel,lv).toFixed(1)}</td>
-          <td>${CFG.t_rate[cdxSel]===0?'—':getTowerRate(cdxSel,lv).toFixed(1)+'ครั้ง/วิ'}</td>
-          <td>${lv===1?'พื้นฐาน':'★'+(lv-1)+' ขึ้นไป'}</td></tr>`;
+      let rows='',lvHead;
+      if(cdxSel===3){ // 🎯 สไนเปอร์: อัตรายิง / คริติคอล
+        lvHead='<th>ระดับ</th><th>อัตรายิง</th><th>คริติคอล</th><th>ต้องการ</th>';
+        for(let lv=1;lv<=5;lv++){
+          const crit=getSniperCrit(lv);
+          rows+=`<tr><td><span class="lv-badge">Lv${lv}</span></td>
+            <td>${getTowerRate(3,lv).toFixed(1)}ครั้ง/วิ</td>
+            <td>${Math.round(crit.chance*100)}% x${crit.mult}</td>
+            <td>${lv===1?'พื้นฐาน':'★'+(lv-1)+' ขึ้นไป'}</td></tr>`;
+        }
+      } else if(cdxSel===6){ // 💰 เหมืองทอง: ผลิตทุก / ทองต่อครั้ง
+        lvHead='<th>ระดับ</th><th>ผลิตทุก</th><th>ทองต่อครั้ง</th><th>ต้องการ</th>';
+        for(let lv=1;lv<=5;lv++){
+          rows+=`<tr><td><span class="lv-badge">Lv${lv}</span></td>
+            <td>${getGoldMineInterval(lv).toFixed(1)}วิ</td>
+            <td>${getGoldMineAmt(lv)} ทอง</td>
+            <td>${lv===1?'พื้นฐาน':'★'+(lv-1)+' ขึ้นไป'}</td></tr>`;
+        }
+      } else if(cdxSel===4){ // 💚 ซัพพอร์ต: ระยะ / กันหยุดป้อม (สาย)
+        lvHead='<th>ระดับ</th><th>ระยะ</th><th>กันหยุดป้อม(สาย)</th><th>ต้องการ</th>';
+        for(let lv=1;lv<=5;lv++){
+          const bonus=Math.min(1,(lv-1)*.05);
+          rows+=`<tr><td><span class="lv-badge">Lv${lv}</span></td>
+            <td>${getTowerRange(4,lv).toFixed(1)}</td>
+            <td>+${Math.round(bonus*100)}%</td>
+            <td>${lv===1?'พื้นฐาน':'★'+(lv-1)+' ขึ้นไป'}</td></tr>`;
+        }
+      } else {
+        lvHead='<th>ระดับ</th><th>ดาเมจ</th><th>ระยะ</th><th>อัตรายิง</th><th>ต้องการ</th>';
+        for(let lv=1;lv<=5;lv++){
+          rows+=`<tr><td><span class="lv-badge">Lv${lv}</span></td>
+            <td>${CFG.t_dmg[cdxSel]===0?'—':Math.round(getTowerDmg(cdxSel,lv))}</td>
+            <td>${getTowerRange(cdxSel,lv).toFixed(1)}</td>
+            <td>${CFG.t_rate[cdxSel]===0?'—':getTowerRate(cdxSel,lv).toFixed(1)+'ครั้ง/วิ'}</td>
+            <td>${lv===1?'พื้นฐาน':'★'+(lv-1)+' ขึ้นไป'}</td></tr>`;
+        }
       }
       html+=`<div class="cdx-detail">
         <div class="cdx-detail-head">
@@ -1038,10 +1076,11 @@ function renderCodex(){
           </div>
         </div>
         <div style="margin-top:8px;font-size:11px;color:#80cbc4;background:rgba(0,150,136,.1);border-left:3px solid #26a69a;padding:7px 10px;border-radius:0 8px 8px 0;">${TSPECIAL[cdxSel]}</div>
-        <table class="lv-table"><tr><th>ระดับ</th><th>ดาเมจ</th><th>ระยะ</th><th>อัตรายิง</th><th>ต้องการ</th></tr>${rows}</table>
+        <table class="lv-table"><tr>${lvHead}</tr>${rows}</table>
         <div style="margin-top:6px;font-size:10px;color:#90caf9;background:rgba(144,202,249,.08);border-left:3px solid #42a5f5;padding:6px 10px;border-radius:0 8px 8px 0;">
           ✨ <b>ระบบรวมป้อม (Star Merge):</b> ลากป้อมชนิด/★เดียวกันทับกันเพื่อรวมเป็นป้อมเดียว ★สูงขึ้น (สูงสุด ★4) แต้มสกิลที่ได้ฟรีจะรีเซ็ตและจัดสรรใหม่ตามดาว — ★3 ขึ้นไปจะ Awaken ได้ (💰350) แต่ป้อมจะ "ล็อกดาว" รวมต่อไม่ได้อีก
           <br>⚔️ <b>ดาเมจพื้นฐาน</b> ของป้อมยังเพิ่มขึ้นตาม★ที่ได้จากการรวม (★2=+15%, ★3=+30%, ★4=+50%) แยกจากแต้มสกิลที่จัดสรรเอง
+          ${cdxSel===4?'<br>🛡️ <b>ออร่ากันหยุดป้อม:</b> ป้อม Support ทุกตัวในระยะมีโอกาสต้านสกิลหยุดป้อมของมอนสเตอร์ — ★1-4 = 20/40/60/80% (Awaken = 100%) บวกเพิ่มจากสาย "กันหยุดป้อม" ของป้อม Support ตัวนั้น':''}
         </div>
       </div>`;
     }

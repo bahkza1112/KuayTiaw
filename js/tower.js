@@ -28,7 +28,7 @@ const TTAGS=[[{t:'กระจาย',c:'tag-orange'},{t:'ความเสี�
   [{t:'ผลิตทอง',c:'tag-green'},{t:'ไม่โจมตี',c:'tag-purple'}],
   [{t:'Chain Lightning',c:'tag-orange'},{t:'ยิง Air',c:'tag-blue'}],
   [{t:'Void Mark',c:'tag-purple'},{t:'เฉพาะ Endgame',c:'tag-red'}]];
-const TSPECIAL=['กระจาย: 0.8 ช่อง','ชะลอเหลือ 45% นาน 2 วินาที','กระจาย: 1.2 ช่อง','ระยะยิง 4.5 ช่อง','+10% ความเสียหาย/ระดับ ให้ป้อมใกล้เคียง','ยิง Air ได้ — ยิงค้างคาวและวิเวิร์นได้ (ร่วมกับ Sniper และ Thunder)','ผลิต 2/4/6/8 ทอง ทุก 5 วินาที ตาม Level','Chain Lightning ถึง 2 ตัว — ดาเมจลด 40% ต่อ chain — ยิง Air ได้','Void Mark: 30% โอกาสติดมาร์ก (อเวค 50%) ทำให้ศัตรูรับดาเมจเพิ่ม +25% จากป้อมทุกชนิด (อเวค +40%) นาน 4 วินาที รีเฟรชเวลาได้แต่ไม่บวกซ้ำ'];
+const TSPECIAL=['กระจาย: 0.8 ช่อง','ชะลอเหลือ 45% นาน 2 วินาที','กระจาย: 1.2 ช่อง','ระยะยิง 4.5 ช่อง (คงที่ไม่ต้องอัพ) — สายคริติคอล: โอกาสคริติคอล +10%/เลเวล (สูงสุด 40%) ดาเมจ x2','+10% ความเสียหาย/ระดับ ให้ป้อมใกล้เคียง | 🛡️ ออร่ากันหยุดป้อม: ★1-4 = 20/40/60/80% (อเวค 100%) +5%/เลเวลจากสาย "กันหยุดป้อม"','ยิง Air ได้ — ยิงค้างคาวและวิเวิร์นได้ (ร่วมกับ Sniper และ Thunder)','ผลิตทองทุกรอบ (ลดเวลาได้ -10%/เลเวลจากสายคูลดาวน์) เริ่ม 2 ทอง/รอบ (+2/เลเวลจากสายจำนวน) — อเวคได้ทอง x2','Chain Lightning ถึง 2 ตัว — ดาเมจลด 40% ต่อ chain — ยิง Air ได้','Void Mark: 30% โอกาสติดมาร์ก (อเวค 50%) ทำให้ศัตรูรับดาเมจเพิ่ม +25% จากป้อมทุกชนิด (อเวค +40%) นาน 4 วินาที รีเฟรชเวลาได้แต่ไม่บวกซ้ำ'];
 const TSTRENGTH=[
   ['ทำลายหมู่ศัตรูได้ดี','ระยะใกล้-กลาง'],
   ['ชะลอความเร็วศัตรู','เพิ่มเวลาให้ป้อมอื่น'],
@@ -45,7 +45,7 @@ const TWEAKNESS=[
   ['ดาเมจต่ำ','ไม่มีผลกับบอส'],
   ['อัตรายิงช้ามาก','ราคาแพงที่สุด'],
   ['ยิงได้ทีละตัวเท่านั้น','อัตรายิงช้า'],
-  ['ไม่โจมตีโดยตรง','ต้องวางใกล้ป้อมอื่น'],
+  ['ไม่โจมตีโดยตรง','ระยะสั้นมาก ต้องวางใกล้ป้อมอื่น'],
   ['ดาเมจต่ำกว่า Sniper','ระยะสั้นกว่า'],
   ['ไม่โจมตีเลย','ถ้าถูกทำลายเสียทอง'],
   ['ดาเมจต่อตัวต่ำกว่าป้อมอื่น','Chain ต้องการหลายศัตรู'],
@@ -53,8 +53,29 @@ const TWEAKNESS=[
 ];
 const STAR_DMG_BONUS=[0,.15,.3,.5];// โบนัสดาเมจพื้นฐานตาม★ (★1=+0%, ★2=+15%, ★3=+30%, ★4=+50%)
 function getTowerDmg(t,lv,star){return CFG.t_dmg[t]*(1+STAR_DMG_BONUS[(star||1)-1])*(1+(lv-1)*.25);}
-function getTowerRange(t,lv){return CFG.t_rng[t]*(1+(lv-1)*.15);}
+// 🎯 สไนเปอร์: สายที่ 2 (เดิมระยะ) ถูกเปลี่ยนเป็นคริติคอล — ระยะคงที่ไม่ต้องอัพ
+function getTowerRange(t,lv){return t===3?CFG.t_rng[t]:CFG.t_rng[t]*(1+(lv-1)*.15);}
 function getTowerRate(t,lv){return CFG.t_rate[t]*(1+(lv-1)*.1);}
+// 🎯 สไนเปอร์: โอกาสคริติคอล +10%/lv (สูงสุด +40% ที่ Lv.5), คริติคอล x2 ดาเมจ
+const SNIPER_CRIT_MULT=2;
+function getSniperCrit(critLv){return {chance:Math.min(1,((critLv||1)-1)*.1),mult:SNIPER_CRIT_MULT};}
+// 💰 เหมืองทอง: สาย rateLv ลดคูลดาวน์ผลิตทอง -10%/lv, สาย rngLv เพิ่มจำนวนทอง +2/lv
+function getGoldMineInterval(rateLv){return CFG.t_goldrate*(1-((rateLv||1)-1)*.1);}
+function getGoldMineAmt(rngLv){return CFG.t_goldamt[0]+((rngLv||1)-1)*2;}
+// 💚 ซัพพอร์ต: กันป้อมหยุดทำงานจากสกิลมอน — base ตาม★/Awaken + บวกเพิ่มจากสาย rateLv (+5%/lv)
+const STAR_RESIST=[.2,.4,.6,.8];// ★1-4 → 20/40/60/80% (Awaken = 100%)
+function getSupportResist(col,row){
+  if(!G) return 0;
+  let resist=0;
+  G.towers.forEach(t=>{
+    if(t.type!==4) return;
+    if(Math.hypot(t.col-col,t.row-row)>getTowerRange(t.type,t.rngLv||1)) return;
+    const base=t.awakened?1:STAR_RESIST[(t.star||1)-1];
+    const bonus=((t.rateLv||1)-1)*.05;
+    resist=Math.max(resist,Math.min(1,base+bonus));
+  });
+  return resist;
+}
 // 📈 ราคาป้อมชนิดนี้ถัดไปแพงขึ้นตามจำนวนป้อมชนิดนี้ที่วางอยู่บนกระดาน (+15 ทอง/ป้อม)
 function getTowerCost(t){return CFG.t_cost[t]+(G?G.towers.filter(tw=>tw.type===t).length:0)*15;}
 function getBuffMult(col,row){
@@ -321,6 +342,25 @@ function _twWeapon(ctx,type,r){
 
 /* ══ TOWER POPUP (G1) ══ */
 let _popupTw=null;
+// 🎛️ สายสกิลของป้อมแต่ละชนิด (2 สายเสมอ) — key ในข้อมูลป้อม + ป้ายกำกับ + ปลดล็อกพิเศษ
+function trackDefs(t){
+  if(t===3) return [ // 🎯 สไนเปอร์
+    {key:'rateLv',icon:'⚡',name:'ความเร็ว',col:'#ffe234',unlockLv:3,unlockText:'ยิงรัว (โอกาสคูลดาวน์สั้นลงทันทีหลังยิง)'},
+    {key:'rngLv',icon:'🎯',name:'คริติคอล',col:'#ff5252',unlockLv:0,unlockText:''}
+  ];
+  if(t===4) return [ // 💚 ซัพพอร์ต
+    {key:'rngLv',icon:'📡',name:'ระยะ',col:'#4fc3f7',unlockLv:0,unlockText:''},
+    {key:'rateLv',icon:'🛡️',name:'กันหยุดป้อม',col:'#80cbc4',unlockLv:0,unlockText:''}
+  ];
+  if(t===6) return [ // 💰 เหมืองทอง
+    {key:'rateLv',icon:'⏱️',name:'คูลดาวน์',col:'#80deea',unlockLv:0,unlockText:''},
+    {key:'rngLv',icon:'💰',name:'จำนวนทอง',col:'#ffd54f',unlockLv:0,unlockText:''}
+  ];
+  return [ // ปืนใหญ่/น้ำแข็ง/เวทมนตร์/ธนู/สายฟ้า/ป้อมมนตราโมฆะ
+    {key:'rngLv',icon:'📡',name:'ระยะ',col:'#4fc3f7',unlockLv:3,unlockText:'เจาะโล่ศัตรู (ดาเมจเข้า HP ตรง ไม่โดนโล่ดูดซับ)'},
+    {key:'rateLv',icon:'⚡',name:'ความเร็ว',col:'#ffe234',unlockLv:3,unlockText:'ยิงรัว (โอกาสคูลดาวน์สั้นลงทันทีหลังยิง)'}
+  ];
+}
 function showTowerPopup(tw,px,py){
   _popupTw=tw;
   const pop=document.getElementById('towerPopup');
@@ -328,31 +368,56 @@ function showTowerPopup(tw,px,py){
   // ป้อมเก่า (ก่อนระบบดาว) อาจไม่มี dmgLv/rngLv/rateLv/star — ตั้งค่าเริ่มต้นให้
   if(tw.dmgLv===undefined){tw.dmgLv=tw.lv||1;tw.rngLv=tw.lv||1;tw.rateLv=tw.lv||1;}
   if(tw.star===undefined) tw.star=1;
-  const used=(tw.dmgLv-1)+(tw.rngLv-1)+(tw.rateLv-1);
+  const tracks=trackDefs(tw.type);
+  // ⬆ แต้มสกิล 2 สาย — สาย "ดาเมจ" เดิมถูกตัดออก ค่า dmgLv ที่ลงไปแล้วแช่แข็งไว้เป็นโบนัส
+  const used=(tw.rngLv-1)+(tw.rateLv-1);
   const remain=tw.star-used;
   const refund=Math.floor(CFG.t_cost[tw.type]*tw.lv*.6);
-  const dmgVal=CFG.t_dmg[tw.type]===0?'—':Math.round(getTowerDmg(tw.type,tw.dmgLv,tw.star));
-  const rngVal=getTowerRange(tw.type,tw.rngLv).toFixed(1);
-  const rateVal=CFG.t_rate[tw.type]===0?'—':getTowerRate(tw.type,tw.rateLv).toFixed(1);
-  const dpsVal=(CFG.t_dmg[tw.type]!==0&&CFG.t_rate[tw.type]!==0)?(dmgVal*parseFloat(rateVal)).toFixed(1):null;
   const canAwaken=tw.star>=3&&!tw.awakened&&G.gold>=350;
   const showAwakenBtn=tw.star>=3&&!tw.awakened;
   const starStr='★'.repeat(tw.star);
   const synHtml=(tw._drainT>0)?
     `<div class="tp-syn-row"><div class="tp-syn-label">🌑 สถานะ</div><div class="tp-syn-item" style="background:rgba(126,87,194,.15);border-color:rgba(126,87,194,.4);"><div class="tp-syn-name" style="color:#b39ddb;">🌑 ถูกดูดพลัง!</div><div class="tp-syn-desc">บัฟ/Awaken ของป้อมนี้ถูกระงับชั่วคราวโดยเงามืด</div></div></div>`
     : '';
+  // ── สถิติ ตามชนิดป้อม ──
+  const dmgVal=CFG.t_dmg[tw.type]===0?null:Math.round(getTowerDmg(tw.type,tw.dmgLv,tw.star));
+  let statsHtml='';
+  if(dmgVal!==null) statsHtml+=`<div class="tp-stat">⚔️ ดาเมจ <small style="opacity:.5">Lv.${tw.dmgLv}</small><span>${dmgVal}</span></div>`;
+  if(tw.type===3){ // 🎯 สไนเปอร์ — ระยะคงที่, สาย 2 = คริติคอล
+    const rngVal=getTowerRange(3,1).toFixed(1);
+    const rateVal=getTowerRate(3,tw.rateLv).toFixed(1);
+    const crit=getSniperCrit(tw.rngLv);
+    const dpsVal=(dmgVal*parseFloat(rateVal)*(1+crit.chance*(crit.mult-1))).toFixed(1);
+    statsHtml+=`<div class="tp-stat">📡 ระยะ <span>${rngVal} ช่อง</span></div>`;
+    statsHtml+=`<div class="tp-stat">⚡ อัตรายิง <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${rateVal}${tw.rateLv>=4?' <span style="color:#ffe234;font-size:9px;" title="มีโอกาสคูลดาวน์สั้นลงทันทีหลังยิง">⚡ยิงรัว</span>':''}</span></div>`;
+    statsHtml+=`<div class="tp-stat">🎯 คริติคอล <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${Math.round(crit.chance*100)}% x${crit.mult}</span></div>`;
+    statsHtml+=`<div class="tp-stat">📊 DPS<span>${dpsVal}</span></div>`;
+  } else if(tw.type===6){ // 💰 เหมืองทอง — คูลดาวน์/จำนวนทอง
+    const interval=getGoldMineInterval(tw.rateLv).toFixed(1);
+    const amt=Math.round(getGoldMineAmt(tw.rngLv)*(tw.awakened?2:1));
+    statsHtml+=`<div class="tp-stat">⏱️ ผลิตทุก <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${interval} วิ</span></div>`;
+    statsHtml+=`<div class="tp-stat">💰 ทองต่อครั้ง <small style="opacity:.5">Lv.${tw.rngLv}</small><span>+${amt}${tw.awakened?' (x2 อเวค)':''}</span></div>`;
+  } else if(tw.type===4){ // 💚 ซัพพอร์ต — ระยะ/กันหยุดป้อม
+    const rngVal=getTowerRange(4,tw.rngLv).toFixed(1);
+    const resist=Math.round(getSupportResist(tw.col,tw.row)*100);
+    statsHtml+=`<div class="tp-stat">📡 ระยะ <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${rngVal} ช่อง</span></div>`;
+    statsHtml+=`<div class="tp-stat">🛡️ กันหยุดป้อม <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${resist}%${tw.awakened?' (อเวค)':''}</span></div>`;
+  } else { // ปืนใหญ่/น้ำแข็ง/เวทมนตร์/ธนู/สายฟ้า/ป้อมมนตราโมฆะ — ระยะ/ความเร็ว
+    const rngVal=getTowerRange(tw.type,tw.rngLv).toFixed(1);
+    const rateVal=getTowerRate(tw.type,tw.rateLv).toFixed(1);
+    const dpsVal=(dmgVal*parseFloat(rateVal)).toFixed(1);
+    statsHtml+=`<div class="tp-stat">📡 ระยะ <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${rngVal} ช่อง${tw.rngLv>=4?' <span style="color:#90caf9;font-size:9px;" title="กระสุนเจาะโล่ศัตรู ดาเมจเข้า HP ตรงๆ">🛡️✨เจาะโล่</span>':''}</span></div>`;
+    statsHtml+=`<div class="tp-stat">⚡ อัตรายิง <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${rateVal}${tw.rateLv>=4?' <span style="color:#ffe234;font-size:9px;" title="มีโอกาสคูลดาวน์สั้นลงทันทีหลังยิง">⚡ยิงรัว</span>':''}</span></div>`;
+    statsHtml+=`<div class="tp-stat">📊 DPS<span>${dpsVal}</span></div>`;
+  }
   // ⬆ แต้มสกิลติดตัว — ได้มาฟรีตามดาว (1★=1, 2★=2, 3★=3, 4★=4) จัดสรรได้ฟรี (ถาวร)
-  const pickRowHtml=remain>0?`<div class="tp-pick-row">
-          <button class="tp-pickbtn" onclick="upgradeTowerFromPopup('dmg')" title="${CFG.t_dmg[tw.type]===0?'ป้อมนี้ไม่มีดาเมจ':'ดาเมจ Lv.'+tw.dmgLv+' → Lv.'+(tw.dmgLv+1)+' (ฟรี)'}">
-            <span class="pi">⚔️</span>ดาเมจ<br><small>Lv.${tw.dmgLv}→${tw.dmgLv+1}</small>
-          </button>
-          <button class="tp-pickbtn" onclick="upgradeTowerFromPopup('rng')" title="ระยะ Lv.${tw.rngLv} → Lv.${tw.rngLv+1} (ฟรี)${tw.rngLv===3?'  🔓 ปลดล็อก: เจาะโล่ศัตรู (ดาเมจเข้า HP ตรง ไม่โดนโล่ดูดซับ)':''}">
-            <span class="pi">📡</span>ระยะ<br><small>Lv.${tw.rngLv}→${tw.rngLv+1}${tw.rngLv===3?' 🔓':''}</small>
-          </button>
-          <button class="tp-pickbtn" onclick="upgradeTowerFromPopup('rate')" title="${CFG.t_rate[tw.type]===0?'ป้อมนี้ไม่มี Fire Rate':'ความเร็ว Lv.'+tw.rateLv+' → Lv.'+(tw.rateLv+1)+' (ฟรี)'+(tw.rateLv===3?'  🔓 ปลดล็อก: ยิงรัว (โอกาสคูลดาวน์สั้นลงทันทีหลังยิง)':'')}">
-            <span class="pi">⚡</span>ความเร็ว<br><small>Lv.${tw.rateLv}→${tw.rateLv+1}${tw.rateLv===3?' 🔓':''}</small>
-          </button>
-        </div>`:'';
+  const pickRowHtml=remain>0?`<div class="tp-pick-row">`+tracks.map(tr=>{
+    const cur=tw[tr.key]||1;
+    const unlock=tr.unlockLv&&cur===tr.unlockLv;
+    return `<button class="tp-pickbtn" onclick="upgradeTowerFromPopup('${tr.key}')" title="${tr.name} Lv.${cur} → Lv.${cur+1} (ฟรี)${unlock?'  🔓 ปลดล็อก: '+tr.unlockText:''}">
+            <span class="pi">${tr.icon}</span>${tr.name}<br><small>Lv.${cur}→${cur+1}${unlock?' 🔓':''}</small>
+          </button>`;
+  }).join('')+`</div>`:'';
   const leftCellHtml=tw.awakened?
     `<button class="tp-upbtn" disabled style="background:linear-gradient(180deg,#ffe234,#ff9800);color:#6d2900;">⚡ AWAKENED<br><small>ล็อก ${starStr}</small></button>`
     :
@@ -372,14 +437,11 @@ function showTowerPopup(tw,px,py){
     <canvas id="_tpIco" width="42" height="42" style="flex-shrink:0;border-radius:6px;"></canvas>
     <div>
       <div class="tp-name">${TNAMES[tw.type]} <span style="color:#ffd54f;">${starStr}</span>${tw.awakened?' <span style="color:#ffe082;font-size:10px;">⚡ AWAKENED</span>':''}</div>
-      <div class="tp-lv">แต้มสกิล ${used}/${tw.star} <span style="opacity:.55;font-size:9px;">(⚔️${tw.dmgLv} 📡${tw.rngLv} ⚡${tw.rateLv})</span></div>
+      <div class="tp-lv">แต้มสกิล ${used}/${tw.star} <span style="opacity:.55;font-size:9px;">(${tracks.map(tr=>tr.icon+tw[tr.key]).join(' ')})</span></div>
     </div>
   </div>
   <div class="tp-stats">
-    <div class="tp-stat">⚔️ ดาเมจ <small style="opacity:.5">Lv.${tw.dmgLv}</small><span>${dmgVal}</span></div>
-    <div class="tp-stat">📡 ระยะ <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${rngVal} ช่อง${tw.rngLv>=4?' <span style="color:#90caf9;font-size:9px;" title="กระสุนเจาะโล่ศัตรู ดาเมจเข้า HP ตรงๆ">🛡️✨เจาะโล่</span>':''}</span></div>
-    <div class="tp-stat">⚡ อัตรายิง <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${rateVal}${tw.rateLv>=4?' <span style="color:#ffe234;font-size:9px;" title="มีโอกาสคูลดาวน์สั้นลงทันทีหลังยิง">⚡ยิงรัว</span>':''}</span></div>
-    ${dpsVal?`<div class="tp-stat">📊 DPS<span>${dpsVal}</span></div>`:''}
+    ${statsHtml}
   </div>
   ${synHtml}
   <div class="tp-btns">
@@ -447,17 +509,17 @@ function upgradeTowerFromPopup(stat){
   if(tw.dmgLv===undefined){tw.dmgLv=tw.lv||1;tw.rngLv=tw.lv||1;tw.rateLv=tw.lv||1;}
   if(tw.star===undefined) tw.star=1;
   if(tw.awakened){showToast('⚡ อเวคแล้ว ปรับแต้มไม่ได้!');return;}
-  const used=(tw.dmgLv-1)+(tw.rngLv-1)+(tw.rateLv-1);
+  const used=(tw.rngLv-1)+(tw.rateLv-1);
   if(used>=tw.star){showToast('⚠️ แต้มเต็มแล้ว! รวมป้อมเพื่อรับแต้มเพิ่ม');return;}
-  if(stat!=='dmg'&&stat!=='rng'&&stat!=='rate'){showToast('⚠️ กรุณาเลือกสายที่จะอัพ');return;}
-  const _statInfo={dmg:{key:'dmgLv',icon:'⚔️',name:'ดาเมจ',col:'#ff7043'},rng:{key:'rngLv',icon:'📡',name:'ระยะ',col:'#4fc3f7'},rate:{key:'rateLv',icon:'⚡',name:'ความเร็ว',col:'#ffe234'}}[stat];
-  tw[_statInfo.key]=(tw[_statInfo.key]||1)+1;
-  tw.lv=(tw.dmgLv-1)+(tw.rngLv-1)+(tw.rateLv-1)+1; // lv รวม = 1 + แต้มที่ใช้ไปทั้งหมด (max = star+1)
+  const tr=trackDefs(tw.type).find(t=>t.key===stat);
+  if(!tr){showToast('⚠️ กรุณาเลือกสายที่จะอัพ');return;}
+  tw[tr.key]=(tw[tr.key]||1)+1;
+  tw.lv=(tw.rngLv-1)+(tw.rateLv-1)+1; // lv รวม = 1 + แต้มที่ใช้ไปทั้งหมด (max = star+1)
   tw.spawnAnim=0.6;
   const ux=tw.col*CS+CS/2,uy=tw.row*CS+CS/2;
-  G.fxRings.push({x:ux,y:uy,r:0,maxR:CS*1.4,life:1,col:_statInfo.col,lw:2.5});
-  for(let k=0;k<6;k++){const a=k/6*Math.PI*2;G.particles.push({x:ux,y:uy,txt:_statInfo.icon,col:_statInfo.col,life:.9,vy:Math.sin(a)*1.8,vx:Math.cos(a)*1.8,decay:2});}
-  addParticle(ux,uy,'⬆ '+_statInfo.icon+' '+_statInfo.name+' Lv.'+tw[_statInfo.key],_statInfo.col);
+  G.fxRings.push({x:ux,y:uy,r:0,maxR:CS*1.4,life:1,col:tr.col,lw:2.5});
+  for(let k=0;k<6;k++){const a=k/6*Math.PI*2;G.particles.push({x:ux,y:uy,txt:tr.icon,col:tr.col,life:.9,vy:Math.sin(a)*1.8,vx:Math.cos(a)*1.8,decay:2});}
+  addParticle(ux,uy,'⬆ '+tr.icon+' '+tr.name+' Lv.'+tw[tr.key],tr.col);
   updateHUD();
   // reopen popup with updated stats
   hideTowerPopup();

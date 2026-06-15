@@ -153,11 +153,25 @@ pierce). Flavor text, tags, and strengths/weaknesses for the Codex are in
   `STAR_DMG_BONUS=[0,.15,.3,.5]` lookup table (v2.1.1): ★1=+0%, ★2=+15%,
   ★3=+30%, ★4=+50%, independent of `dmgLv` — e.g. a ★4 tower's base damage
   is +50% before any skill points are spent on the damage track.
-- Each placed tower (`G.towers[i]`) tracks independent `dmgLv`, `rngLv`,
-  `rateLv` (free skill points spent via Star Merge — see Progression) plus
-  `lv` (derived: `(dmgLv-1)+(rngLv-1)+(rateLv-1)+1`, max `star+1`, capped at
-  5), `star` (1-4, see Progression), position (`col`, `row`), and turret
-  `angle`.
+- Each placed tower (`G.towers[i]`) tracks `dmgLv` (frozen legacy
+  base-damage bonus, no longer upgradeable, v3.0.0), `rngLv`/`rateLv` (the
+  two spendable skill tracks — **repurposed per tower type**, see
+  Progression → Star Merge) plus `lv` (derived:
+  `(rngLv-1)+(rateLv-1)+1`, max `star+1`, capped at 5), `star` (1-4, see
+  Progression), position (`col`, `row`), and turret `angle`.
+- `trackDefs(t)` (`js/tower.js`) defines the 2 skill tracks per tower type:
+  - Cannon/Ice/Magic/Archer/Lightning/Void: `rngLv`=Range (shield-pierce
+    unlock at lv3), `rateLv`=Attack Speed (rapid-fire unlock at lv3).
+  - **Sniper** (type 3): `rngLv`=**Crit** (`getSniperCrit`: +10% crit
+    chance/lvl up to 40%, crit = `SNIPER_CRIT_MULT`=x2 damage),
+    `rateLv`=Attack Speed. Range is **constant** — `getTowerRange` no
+    longer scales Sniper range with level.
+  - **Gold Mine** (type 6): `rateLv`=Cooldown reduction
+    (`getGoldMineInterval`, -10%/lvl), `rngLv`=Gold quantity
+    (`getGoldMineAmt`, +2/lvl, doubled if Awakened).
+  - **Support** (type 4): `rngLv`=Range, `rateLv`=anti-stun aura bonus
+    (`getSupportResist`, +5%/lvl on top of the ★-based base — see Awaken
+    System → Support).
 
 ### Targeting, Firing & Projectiles
 - During `update(dt)`, each tower scans `G.enemies` within
@@ -182,8 +196,8 @@ pierce). Flavor text, tags, and strengths/weaknesses for the Codex are in
 - `onCanvasClick`, `onCanvasHoldStart/End` handle placement and long-press
   interactions on the grid.
 - `showTowerPopup` / `hideTowerPopup` render the per-tower action popup:
-  free, permanent skill-point allocation across dmg/range/rate
-  (`upgradeTowerFromPopup`, see Progression → Star Merge), sell
+  free, permanent skill-point allocation across the tower's 2 type-specific
+  tracks (`upgradeTowerFromPopup`, see Progression → Star Merge), sell
   (`sellTowerFromPopup`, with partial gold refund), and "Awaken"
   (`awakenTowerFromPopup`, `js/tower.js`) — a late-game power-up (350 gold
   flat, raised from 300 in v1.7.3). The popup also shows an effective
@@ -205,12 +219,27 @@ pierce). Flavor text, tags, and strengths/weaknesses for the Codex are in
   - 🎯 **Sniper**: shots pierce in a straight line, damaging enemies behind
     the target (narrow corridor, respects flying/shield rules).
   - 💚 **Support**: doubles nearby awakened towers' Awaken bonuses (Ice
-    freeze 3s→6s) via `getSupportAwakenBoost()` (line 112).
+    freeze 3s→6s) via `getSupportAwakenBoost()` (line 112). Awakened Support
+    also raises its anti-stun aura base resist (see below) to 100%.
   - 💰 **Gold Mine**: gold production ×2.
   - ⚡ **Thunder**: chain target count 2→4.
   - 🏹 **Archer**: no Awaken-specific effect.
 - Story-mode and endgame combat loops apply these per-type effects
   consistently (mirrored code paths).
+
+### Support Anti-Stun Aura (v3.0.0)
+- Every 💚 Support tower projects an aura (`getSupportResist(col,row)`,
+  `js/tower.js`) that gives any tower within its range a chance to resist
+  the Wyvern's dive-stun (`tw._stunT=3.0`). Base resist scales with the
+  Support's `star`: `STAR_RESIST=[.2,.4,.6,.8]` → ★1=20%, ★2=40%, ★3=60%,
+  ★4=80%; Awakened Support = 100%. Plus `+5%/lvl` from the Support's
+  `rateLv` (anti-stun) skill track, capped at 100% overall.
+- If multiple Supports cover the same tower, the **highest** resist applies
+  (`Math.max` across all in-range Supports).
+- Rolled against `Math.random()` at the moment the Wyvern applies its stun,
+  in both story (~line 705) and endgame (~line 2272) combat loops
+  (`js/game.js`). On success, shows a "🛡️ ต้านสำเร็จ!" particle instead of
+  "💫 หยุดทำงาน!" and the tower is not stunned.
 
 ### Visual Rendering
 - 2.5D sprites (`js/tower.js`): `drawTowerIcon` composites a per-type aura
@@ -492,7 +521,7 @@ Notes:
 - Star rating (0–3) per stage is computed in `endGame()` (2385) based on
   performance (e.g., remaining HP) and saved via `saveProgress()`.
 
-### Tower Upgrade Paths — Star Merge System (v2.0.0)
+### Tower Upgrade Paths — Star Merge System (v2.0.0, 2-track redesign v3.0.0)
 - Replaces the old gold-cost per-level upgrade system entirely. Each placed
   tower has a `star` rating (1-4, default 1 on placement). Dragging one
   tower onto another tower of the **same type and star** (neither
@@ -500,17 +529,20 @@ Notes:
   `star+1` spawns at the target's position with `dmgLv/rngLv/rateLv` reset
   to 1 (`tryMergeTowers`, `js/game.js`).
 - Each tower gets a free skill-point pool equal to its `star` rating
-  (1★=1pt ... 4★=4pt), spent across the three independent stat tracks —
-  damage (`dmgLv`), range (`rngLv`), rate (`rateLv`) — via
-  `upgradeTowerFromPopup(stat)` (`js/tower.js`), at **no gold cost**. Once
+  (1★=1pt ... 4★=4pt), spent across **2 type-specific stat tracks** (see
+  `trackDefs(t)` in Stats & Scaling) via `upgradeTowerFromPopup(stat)`
+  (`js/tower.js`), at **no gold cost**. `dmgLv` is frozen (v3.0.0) and no
+  longer spendable — towers that had points in the old damage track before
+  v3.0.0 keep that value as a permanent legacy base-damage bonus. Once
   allocated, points are **permanent** (no reset/reallocation) — the only
   way to get a fresh point pool is to Star Merge into a higher ★, which
   resets `dmgLv/rngLv/rateLv` to 1 (v2.0.1, removed the earlier
   `resetTowerPointsFromPopup`).
-- Path-exclusive perks (e.g., pierce shield, rapid fire) are unlocked at
-  certain `dmgLv/rngLv/rateLv` levels along the range/rate trees (per
-  recent commit history) — unchanged, since the underlying level formulas
-  and caps (`lv` max 5) are reused as-is.
+- Path-exclusive perks (pierce shield / rapid fire for the default 6 types)
+  are unlocked at `rngLv`/`rateLv` level 3 — unchanged, since the underlying
+  level formulas and caps (`lv` max 5) are reused as-is. Sniper/Gold
+  Mine/Support tracks have no unlock-perk thresholds; both levels scale
+  their stat linearly per point (see `trackDefs(t)`).
 - "Awaken" (`awakenTowerFromPopup`, `js/tower.js`) requires `star>=3` and is
   an end-tier upgrade granting a significant power boost, a distinct sprite
   aura glow, and **permanently locks the tower's star level** — Awakened

@@ -131,7 +131,7 @@ const DEFAULT_CFG={
   m_rew:[10,10,15,20,60,30,5,20,30,100,10], // v1.7.2: ปัดเศษ reward เป็นเลขลงท้าย 0/5 เพื่อความชัดเจนในเกม
   // Tower — เพิ่ม DPS นิดหน่อยให้ผู้เล่นรู้สึกว่าป้อมมีพลัง
   t_dmg:[24,12,44,65,0,20,0,20,38],   // [cannon,ice,magic,sniper,support,archer,goldmine,thunder,void] — cannon 28→24, magic 38→44
-  t_rng:[2.2,2.0,2.5,4.5,2.8,2.8,0,2.4,3.0],
+  t_rng:[2.2,2.0,2.5,4.5,1.5,2.8,0,2.4,3.0], // support: 2.8→1.5 (v3.0.0 ลดระยะเยอะ)
   t_rate:[1.2,1.5,.8,.4,0,2.0,0,1.8,0.6],
   t_cost:[50,55,75,65,35,60,75,85,90], // thunder: 85 gold, void: 90 gold
   t_goldrate:5,t_goldamt:[2,4,6,8],
@@ -704,9 +704,15 @@ function update(dt){
     wv._diveT=1.2;
     if(G.towers.length){
       const tw=G.towers[Math.floor(Math.random()*G.towers.length)];
-      tw._stunT=3.0; // หยุดทำงานป้อม 3 วินาที
-      G.particles.push({x:tw.col*CS+CS/2,y:tw.row*CS,txt:'💫 หยุดทำงาน!',col:'#ff8a65',
-        life:1.1,vy:-1.0,vx:0,decay:1.2,scale:.9});
+      // 💚 ออร่ากันหยุดป้อมจาก Support — มีโอกาสต้านสกิลหยุดป้อมของวิเวิร์น
+      if(Math.random()<getSupportResist(tw.col,tw.row)){
+        G.particles.push({x:tw.col*CS+CS/2,y:tw.row*CS,txt:'🛡️ ต้านสำเร็จ!',col:'#80cbc4',
+          life:1.1,vy:-1.0,vx:0,decay:1.2,scale:.9});
+      } else {
+        tw._stunT=3.0; // หยุดทำงานป้อม 3 วินาที
+        G.particles.push({x:tw.col*CS+CS/2,y:tw.row*CS,txt:'💫 หยุดทำงาน!',col:'#ff8a65',
+          life:1.1,vy:-1.0,vx:0,decay:1.2,scale:.9});
+      }
     }
     G.particles.push({x:wv.x,y:wv.y-ESIZES[7]-14,txt:'🐉 โฉบ!',col:'#ff8a65',
       life:1.0,vy:-1.4,vx:0,decay:1.2,scale:1});
@@ -803,6 +809,12 @@ function update(dt){
       const fx=tw.col*CS+CS/2, fy=tw.row*CS+CS/2;
       const _aw=tw.awakened&&!(tw._drainT>0); // ⚡ ป้อมตื่นแล้วและไม่ได้ถูกดูดพลัง
       let _rdmg=getTowerDmg(tw.type,tw.dmgLv||tw.lv,tw.star)*getBuffMult(tw.col,tw.row);
+      // 🎯 สไนเปอร์: โอกาสคริติคอล x2 ดาเมจ
+      let _rIsCrit=false;
+      if(tw.type===3){
+        const _crit=getSniperCrit(tw.rngLv);
+        if(Math.random()<_crit.chance){_rdmg*=_crit.mult;_rIsCrit=true;}
+      }
       let _rSlow=(TSLOW[tw.type]||0);
       const _wSplashMult=((tw.type===0||tw.type===2)&&G.weather&&G.weather.splashMult)?G.weather.splashMult:1;
       // ⚡ Awaken เฉพาะป้อม: Cannon=splash ใหญ่ขึ้น, Thunder=chain เพิ่ม
@@ -832,6 +844,7 @@ function update(dt){
       // sniper: laser line flash
       if(tw.type===3){
         G.fxRings.push({x:fx,y:fy,r:1,maxR:CS*.3,life:.35,lw:3,col:'#fffde7',delay:0});
+        if(_rIsCrit) G.particles.push({x:fx,y:fy-CS*.5,txt:'💥 CRIT!',col:'#ff5252',life:.6,vy:-1.4,vx:0,decay:2,scale:1});
       }
       // magic: extra sparkle burst
       if(tw.type===2){
@@ -881,10 +894,10 @@ function update(dt){
     if(!G.gmTimers) G.gmTimers={};
     const key=tw.col+'_'+tw.row;
     G.gmTimers[key]=(G.gmTimers[key]||0)+dt;
-    if(G.gmTimers[key]>=CFG.t_goldrate){
+    if(G.gmTimers[key]>=getGoldMineInterval(tw.rateLv)){
       G.gmTimers[key]=0;
       // 💰 Gold Mine Awaken: ผลผลิตทอง x2
-      const goldAmt=Math.round(CFG.t_goldamt[Math.min(tw.lv-1,3)]*((G.weather&&G.weather.goldMineMult)?G.weather.goldMineMult:1)*(tw.awakened?2:1));
+      const goldAmt=Math.round(getGoldMineAmt(tw.rngLv)*((G.weather&&G.weather.goldMineMult)?G.weather.goldMineMult:1)*(tw.awakened?2:1));
       G.gold+=goldAmt; updateHUD();
       addParticle(tw.col*CS+CS/2,tw.row*CS+CS/2,'+'+goldAmt+'💰','#ffd54f');
       // V6: flying coin particles
@@ -1411,7 +1424,7 @@ function render(){
     }
     // gold mine timer bar
     if(TGOLDMINE[tw.type]&&G.gmTimers){
-      const key=tw.col+'_'+tw.row;const t2=G.gmTimers[key]||0;const pct=t2/CFG.t_goldrate;
+      const key=tw.col+'_'+tw.row;const t2=G.gmTimers[key]||0;const pct=t2/getGoldMineInterval(tw.rateLv);
       ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(x+4,y+CS-7,CS-8,4);
       ctx.fillStyle='#ffd54f';ctx.fillRect(x+4,y+CS-7,(CS-8)*pct,4);
     }
@@ -2264,8 +2277,13 @@ function updateEg(dt){
     wv._diveT=1.2;
     if(G.towers.length){
       const tw=G.towers[Math.floor(Math.random()*G.towers.length)];
-      tw._stunT=3.0;
-      G.particles.push({x:tw.col*CS+CS/2,y:tw.row*CS,txt:'💫 หยุดทำงาน!',col:'#ff8a65',life:1.1,vy:-1.0,vx:0,decay:1.2,scale:.9});
+      // 💚 ออร่ากันหยุดป้อมจาก Support — มีโอกาสต้านสกิลหยุดป้อมของวิเวิร์น
+      if(Math.random()<getSupportResist(tw.col,tw.row)){
+        G.particles.push({x:tw.col*CS+CS/2,y:tw.row*CS,txt:'🛡️ ต้านสำเร็จ!',col:'#80cbc4',life:1.1,vy:-1.0,vx:0,decay:1.2,scale:.9});
+      } else {
+        tw._stunT=3.0;
+        G.particles.push({x:tw.col*CS+CS/2,y:tw.row*CS,txt:'💫 หยุดทำงาน!',col:'#ff8a65',life:1.1,vy:-1.0,vx:0,decay:1.2,scale:.9});
+      }
     }
     G.particles.push({x:wv.x,y:wv.y-ESIZES[7]-14,txt:'🐉 โฉบ!',col:'#ff8a65',life:1.0,vy:-1.4,vx:0,decay:1.2,scale:1});
   });
@@ -2293,10 +2311,10 @@ function updateEg(dt){
     if(!G.gmTimers) G.gmTimers={};
     const key=tw.col+'_'+tw.row;
     G.gmTimers[key]=(G.gmTimers[key]||0)+dt;
-    if(G.gmTimers[key]>=CFG.t_goldrate){
+    if(G.gmTimers[key]>=getGoldMineInterval(tw.rateLv)){
       G.gmTimers[key]=0;
       // 💰 Gold Mine Awaken: ผลผลิตทอง x2
-      const goldAmt=Math.round(CFG.t_goldamt[Math.min(tw.lv-1,3)]*((G.weather&&G.weather.goldMineMult)?G.weather.goldMineMult:1)*(tw.awakened?2:1));
+      const goldAmt=Math.round(getGoldMineAmt(tw.rngLv)*((G.weather&&G.weather.goldMineMult)?G.weather.goldMineMult:1)*(tw.awakened?2:1));
       G.gold+=goldAmt; updateHUD();
       addParticle(tw.col*CS+CS/2,tw.row*CS+CS/2,'+'+goldAmt+'💰','#ffd54f');
     }
@@ -2328,6 +2346,12 @@ function updateEg(dt){
       const fx=tw.col*CS+CS/2,fy=tw.row*CS+CS/2;
       const _aw2=tw.awakened&&!(tw._drainT>0);
       let _rdmg2=getTowerDmg(tw.type,tw.dmgLv||tw.lv,tw.star)*getBuffMult(tw.col,tw.row);
+      // 🎯 สไนเปอร์: โอกาสคริติคอล x2 ดาเมจ
+      let _rIsCrit2=false;
+      if(tw.type===3){
+        const _crit2=getSniperCrit(tw.rngLv);
+        if(Math.random()<_crit2.chance){_rdmg2*=_crit2.mult;_rIsCrit2=true;}
+      }
       let _rSlow2=(TSLOW[tw.type]||0);
       const _wSplashMult2=((tw.type===0||tw.type===2)&&G.weather&&G.weather.splashMult)?G.weather.splashMult:1;
       // ⚡ Awaken เฉพาะป้อม: Cannon=splash ใหญ่ขึ้น, Thunder=chain เพิ่ม
@@ -2350,6 +2374,7 @@ function updateEg(dt){
         for(let _m=0;_m<_extra2;_m++) G.projs.push(Object.assign({},_rp2));
       }
       G.fxRings.push({x:fx,y:fy,r:2,maxR:tw.type===3?CS*.8:CS*.4,life:.5,lw:1.5,col:TPROJ[tw.type],delay:0});
+      if(tw.type===3&&_rIsCrit2) G.particles.push({x:fx,y:fy-CS*.5,txt:'💥 CRIT!',col:'#ff5252',life:.6,vy:-1.4,vx:0,decay:2,scale:1});
       if(tw.type===7){
         for(let k=0;k<6;k++){const ang=k/6*Math.PI*2;G.particles.push({x:fx,y:fy,txt:'·',col:'#ffe57f',life:.35,vy:Math.sin(ang)*1.4,vx:Math.cos(ang)*1.4,decay:4,scale:.9});}
         G.fxRings.push({x:fx,y:fy,r:2,maxR:CS*.5,life:.3,lw:1.5,col:'#ffe57f',delay:0});
