@@ -2,6 +2,33 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.1.0 — Tower rarity frames + Archer/Endless balance
+
+### Added
+- `js/tower.js` `RARITY_COLORS={2:'#42a5f5',3:'#ab47bc',4:'#ff8f00'}` — shared
+  color map for ★2/★3/★4 ("Rare"/"Epic"/"Legendary"), used by both the
+  in-game canvas and the tower popup. Awakened towers keep their existing
+  gold pulsing aura (no rarity frame, to avoid double-glow).
+- `js/game.js` `render()`: placed towers with `star>1` (and not Awakened)
+  now draw a colored glowing rounded-rect frame, and the ★N badge
+  background is tinted with the matching rarity color (was flat
+  `rgba(0,0,0,.75)` with gold text for all stars).
+- `js/tower.js` `showTowerPopup`: the `_tpIco` preview canvas (42x42) now
+  draws a matching rarity-colored background/border behind the tower icon
+  (gold `#ffb300` if Awakened) before `drawTowerIcon`.
+
+### Changed
+- `js/game.js` `DEFAULT_CFG.t_rate[5]` (Archer) 2.0 → 1.8 shots/s — Archer
+  was the highest DPS/Cost tower at both ★1lv1 (0.667) and ★4lv5 (2.800),
+  noticeably ahead of every other tower with no offsetting downside (cheap,
+  fast, hits air, no special mechanic). New ★4lv5 DPS/Cost ≈ 2.52.
+- `js/game.js` `getEgEnemyHP`/`spawnEgEnemy`/`getEgRewardBonus`: Endless
+  Mode round-scaling caps raised (normal HP/shield ×5.0→×7.0, boss-type
+  HP/shield ×3.5→×4.6, reward ×3.0→×4.0), all chosen so every curve now
+  flattens at `egRound≈20` instead of `egRound≈14`. Reward/HP ratio
+  behavior at the (now later) flattening point is unchanged from v1.9.20 —
+  this just extends the ramp-up window by ~6 rounds before plateauing.
+
 ## v3.0.1 — Balance pass on v3.0.0 skill tracks
 
 ### Changed

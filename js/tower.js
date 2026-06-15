@@ -10,6 +10,7 @@ const TCANAIR=[false,false,false,true,false,true,false,true,false]; /* ยิง
 const TGOLDMINE=[false,false,false,false,false,false,true,false,false]; /* สร้างทอง */
 const TCHAIN=[0,0,0,0,0,0,0,2,0]; /* chain lightning targets (Thunder=2) */
 const TPIERCE=[false,false,false,true,false,false,false,true,false]; /* ทะลุโล่ได้ (Sniper, Thunder) */
+const RARITY_COLORS={2:'#42a5f5',3:'#ab47bc',4:'#ff8f00'}; /* กรอบสีตาม★ — 2=น้ำเงิน(Rare) 3=ม่วง(Epic) 4=ส้มทอง(Legendary), Awaken มีออร่าทองของตัวเอง */
 const TFLAVOR=['ปืนใหญ่หนักที่ยิงกระสุนระเบิด ความเสียหายแบบกระจายทำลายล้างศัตรูที่อยู่รวมกัน',
   'ยิงน้ำแข็งที่ทำให้ศัตรูเยือกแข็ง วางไว้ก่อนทางยาวจะได้ผลดีที่สุด',
   'รวมพลังเวทมนตร์เป็นการโจมตีที่รุนแรง กระจายในวงกว้าง แต่ยิงช้า',
@@ -452,7 +453,22 @@ function showTowerPopup(tw,px,py){
   // draw sprite on canvas
   requestAnimationFrame(()=>{
     const ic=document.getElementById('_tpIco');
-    if(ic){const ix=ic.getContext('2d');ix.translate(21,23);drawTowerIcon(ix,tw.type,40,0);}
+    if(ic){
+      const ix=ic.getContext('2d');
+      // 🌟 พื้นหลังกรอบสีตาม Rarity (★/Awaken) ก่อนวาดไอคอนป้อม
+      const _rc=tw.awakened?'#ffb300':RARITY_COLORS[tw.star||1];
+      if(_rc){
+        ix.save();
+        ix.fillStyle=_rc; ix.globalAlpha=.22;
+        ix.beginPath();ix.roundRect?ix.roundRect(0,0,42,42,6):ix.rect(0,0,42,42);
+        ix.fill();
+        ix.globalAlpha=1; ix.strokeStyle=_rc; ix.lineWidth=2;
+        ix.beginPath();ix.roundRect?ix.roundRect(1,1,40,40,6):ix.rect(1,1,40,40);
+        ix.stroke();
+        ix.restore();
+      }
+      ix.translate(21,23);drawTowerIcon(ix,tw.type,40,0);
+    }
   });
   // position near tower but inside #gp
   const gp=document.getElementById('gp');

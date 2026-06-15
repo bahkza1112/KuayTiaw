@@ -132,7 +132,7 @@ const DEFAULT_CFG={
   // Tower — เพิ่ม DPS นิดหน่อยให้ผู้เล่นรู้สึกว่าป้อมมีพลัง
   t_dmg:[24,12,44,65,0,20,0,20,42],   // [cannon,ice,magic,sniper,support,archer,goldmine,thunder,void] — cannon 28→24, magic 38→44, void 38→42 (v3.0.1)
   t_rng:[2.2,2.0,2.5,4.5,1.5,2.8,0,2.4,3.0], // support: 2.8→1.5 (v3.0.0 ลดระยะเยอะ)
-  t_rate:[1.2,1.5,.8,.4,0,2.0,0,1.8,0.6],
+  t_rate:[1.2,1.5,.8,.4,0,1.8,0,1.8,0.6], // archer 2.0→1.8 (v3.1.0 — DPS/Cost สูงสุดในเกมที่ ★4lv5)
   t_cost:[50,55,75,65,35,60,75,85,90], // thunder: 85 gold, void: 90 gold
   t_goldrate:5,t_goldamt:[2,4,6,8],
   // Game settings
@@ -1413,12 +1413,23 @@ function render(){
       ctx.textAlign='center';ctx.textBaseline='middle';
       ctx.fillText('Lv'+tw.lv,x+CS-13,y+9);
     }
-    // star badge — ระดับดาวจากการรวมป้อม
+    // 🌟 Rarity frame — กรอบสีรอบป้อมตามดาว (ไม่แสดงถ้า Awakened เพราะมีออร่าทองของตัวเองแล้ว)
+    if(!tw.awakened&&tw.star>1){
+      const _rc=RARITY_COLORS[tw.star];
+      ctx.save();
+      ctx.shadowBlur=8;ctx.shadowColor=_rc;
+      ctx.strokeStyle=_rc;ctx.lineWidth=2;
+      ctx.beginPath();ctx.roundRect?ctx.roundRect(x+2,y+2,CS-4,CS-4,8):ctx.rect(x+2,y+2,CS-4,CS-4);
+      ctx.stroke();
+      ctx.shadowBlur=0;
+      ctx.restore();
+    }
+    // star badge — ระดับดาวจากการรวมป้อม (สีพื้นตาม Rarity)
     if(tw.star>1){
-      ctx.fillStyle='rgba(0,0,0,.75)';
+      ctx.fillStyle=RARITY_COLORS[tw.star]||'rgba(0,0,0,.75)';
       ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x+2,y+2,22,13,3);else ctx.rect(x+2,y+2,22,13);
       ctx.fill();
-      ctx.fillStyle='#ffd54f';ctx.font='bold 9px Arial';
+      ctx.fillStyle='#fff';ctx.font='bold 9px Arial';
       ctx.textAlign='center';ctx.textBaseline='middle';
       ctx.fillText('★'+tw.star,x+13,y+9);
     }
@@ -2164,7 +2175,8 @@ function getEgEnemyHP(ti,wave){
   // boss types (4=บอส, 9=จอมมาร) scale ช้ากว่า เพื่อไม่ให้ unkillable เร็วเกิน
   const isBossType=MTYPE[ti]===1;
   const roundScale=isBossType?0.18:0.30;
-  const roundBonus=Math.min(1+egRound*roundScale, isBossType?3.5:5.0); // cap
+  // v3.1.0: ขยาย cap 3.5/5.0→4.6/7.0 ให้ความท้าทายเพิ่มต่อจนถึง round ~20 (เดิมแบนราบที่ ~14)
+  const roundBonus=Math.min(1+egRound*roundScale, isBossType?4.6:7.0); // cap
   return CFG.m_hp[ti]*(1+wave*CFG.waveMult)*roundBonus*EG_DIFF_MULT[egDiff];
 }
 function getEgEnemySpd(ti){
@@ -2173,14 +2185,15 @@ function getEgEnemySpd(ti){
 }
 function getEgRewardBonus(){
   // ก่อนหน้านี้ reward เพิ่มแบบ flat (+2/round) ทำให้ reward/HP ร่วงหนักในรอบหลังๆ
-  // ตอนนี้สเกลแบบ capped multiplier ให้ตามทันการสเกล HP (×5/×3.5) ได้บางส่วน
-  return Math.min(1+egRound*0.15, 3.0);
+  // ตอนนี้สเกลแบบ capped multiplier ให้ตามทันการสเกล HP ได้บางส่วน
+  // v3.1.0: ขยาย cap 3.0→4.0 ให้สอดคล้องกับ HP cap ที่ขยายเป็น 7.0/4.6 (แบนราบที่ round ~20 แทน ~14)
+  return Math.min(1+egRound*0.15, 4.0);
 }
 
 function spawnEgEnemy(ti){
   const hp=getEgEnemyHP(ti,G.wave);
   const shBase=MSHIELD[ti]||0;
-  const shieldCap=MTYPE[ti]===1?3.5:5.0; // same cap as HP roundBonus, so reward/HP flattens too
+  const shieldCap=MTYPE[ti]===1?4.6:7.0; // same cap as HP roundBonus, so reward/HP flattens too
   const sh=shBase>0?Math.round(shBase*Math.min(1+egRound*.3,shieldCap)):0;
   G.enemies.push({
     ti,pi:0,prog:0,
