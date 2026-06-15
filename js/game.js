@@ -557,11 +557,36 @@ function endGame(win){
     stars=G.hp>=Math.ceil(G.maxHp*.75)?3:G.hp>=Math.ceil(G.maxHp*.4)?2:1;
   }
   /* บันทึกเสมอทั้ง win และ lose (lose = 0 ดาว แต่ยังบันทึก attempt ไว้) */
-  saveProgress(si, stars);
+  const gemGain=saveProgress(si, stars);
   updateMenuStats();
   document.getElementById('endTitle').textContent=win?'🏆 ชัยชนะ!':'💀 เกมจบ';
-  document.getElementById('starRow').textContent=win?'★'.repeat(stars)+'☆'.repeat(3-stars):'☆☆☆';
+  /* 🌟 สร้างดาวเป็น span ทีละดวงเพื่อ stagger animation pop-in */
+  const starRow=document.getElementById('starRow');
+  starRow.innerHTML='';
+  for(let i=0;i<3;i++){
+    const sp=document.createElement('span');
+    sp.className='star-ico'+(i<stars?' filled':'');
+    sp.textContent=i<stars?'★':'☆';
+    sp.style.animationDelay=(i*0.12)+'s';
+    starRow.appendChild(sp);
+  }
   document.getElementById('endScore').textContent=win?currentStage.name+' cleared!':'Try again!';
+  /* 🎁 กรอบเรืองแสง + ไอคอนกล่องรางวัลตามระดับดาว (สไตล์ Clash Royale) */
+  const obox=document.getElementById('endOverlay').querySelector('.obox');
+  obox.classList.remove('tier-gold','tier-silver','tier-bronze','tier-lose');
+  const chest=document.getElementById('endChestIcon');
+  if(!win){ chest.textContent='💀'; obox.classList.add('tier-lose'); }
+  else if(stars>=3){ chest.textContent='👑'; obox.classList.add('tier-gold'); }
+  else if(stars===2){ chest.textContent='🎁'; obox.classList.add('tier-silver'); }
+  else { chest.textContent='📦'; obox.classList.add('tier-bronze'); }
+  /* 💎 แสดง Soul Gems ที่ได้รับ (เฉพาะตอนทำลายสถิติดาวใหม่) */
+  const rewardRow=document.getElementById('endRewardRow');
+  if(gemGain>0){
+    document.getElementById('endGemGain').textContent='+'+gemGain;
+    rewardRow.style.display='inline-flex';
+  } else {
+    rewardRow.style.display='none';
+  }
   const banner=document.getElementById('unlockBanner');
   if(win&&currentStage.unlocks){
     banner.style.display='block';

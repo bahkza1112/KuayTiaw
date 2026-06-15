@@ -2,6 +2,39 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.2.0 — Stage-clear reward popup polish
+
+### Added
+- `Tower Quest 🏰.html` `#endOverlay`: new `#endChestIcon` (chest/crown emoji
+  above the title) and `#endRewardRow` (💎 Soul Gems gained display, hidden
+  when 0).
+- `css/main.css`: `.chest-icon` pop-in animation; `.obox.tier-gold/-silver/
+  -bronze/-lose` border-color + glow variants selected by stage result;
+  `.star-row .star-ico` staggered pop-in animation with gold glow on filled
+  stars; `.reward-row` pill styling with pop-in animation.
+- `js/game.js` `endGame()`: builds the star row as individual `<span>`
+  elements with per-star animation delays, picks the chest icon/tier class
+  from the result (👑 3★ / 🎁 2★ / 📦 1★ / 💀 loss), and shows
+  `#endRewardRow` with the Soul Gems gained.
+- `css/main.css` `.cdx-tico`/`.cdx-tico-lg`: glowing colored-border frame for
+  tower icons in the Codex tower tab (grid cards and detail header), using
+  each tower's `TACCENT` color from `js/tower.js`.
+- `js/ui.js` `renderStageSelect()` / `css/main.css`: stage cards with
+  stars>0 now get a chest-tier glow (`.tier-gold`/`.tier-silver`/
+  `.tier-bronze` for 3★/2★/1★, replacing the flat `.completed` style) and a
+  `.stage-chest-badge` (👑/🎁/📦) in the top-left corner, matching the
+  v3.2.0 end-of-stage chest icons.
+- `css/main.css` `#achNotif`: achievement notification now pops in with a
+  scale+slide animation (was slide-only) and its border/glow color is set
+  per achievement category (`cat-story`/`cat-combat`/`cat-skill`/
+  `cat-endgame`/`cat-collect`) via a new class set in
+  `js/save.js` `_showNextAchNotif()`.
+
+### Changed
+- `js/save.js` `saveProgress(si,stars)` now returns the Soul Gems gained
+  (0 if no new star record), so `endGame()` can display it without
+  duplicating the gain calculation.
+
 ## v3.1.0 — Tower rarity frames + Archer/Endless balance
 
 ### Added

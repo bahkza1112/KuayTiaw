@@ -5,15 +5,17 @@ const GEM_STAR_TABLE=[0,10,20,30]; // เพชรสะสมตามดาว
 function saveProgress(si,stars){
   const p=loadProgress();
   const prevStars=p[si]||0;
+  let gain=0;
   /* บันทึกเสมอถ้า stars ใหม่มากกว่าของเดิม หรือยังไม่เคยบันทึกด่านนี้เลย */
   if(p[si]===undefined||(stars>0&&stars>(p[si]||0))){
     p[si]=stars; localStorage.setItem('tq_progress',JSON.stringify(p));
     if(stars>prevStars){
-      const gain=GEM_STAR_TABLE[stars]-GEM_STAR_TABLE[prevStars];
+      gain=GEM_STAR_TABLE[stars]-GEM_STAR_TABLE[prevStars];
       if(gain>0){ addGems(gain); showToast('💎 +'+gain+' Soul Gems!'); }
     }
   }
   checkAchievements(); // ตรวจ achievement ทุกครั้งที่ clear ด่าน
+  return gain;
 }
 
 /* ══ SOUL GEMS / MATERIALS / WORKSHOP ══ */
@@ -106,6 +108,7 @@ function _showNextAchNotif(){
   document.getElementById('achNotifIco').textContent=ach.icon;
   document.getElementById('achNotifName').textContent=ach.name;
   document.getElementById('achNotifDesc').textContent=ach.desc;
+  el.className='cat-'+ach.cat; // 🎖️ รีเซ็ตคลาสกรอบเรืองแสงตามหมวดของ achievement นี้
   el.classList.add('show');
   setTimeout(()=>{
     el.classList.remove('show');

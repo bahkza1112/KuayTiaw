@@ -1,6 +1,14 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.1.0';
+const GAME_VERSION='3.2.0';
 const PATCH_NOTES=[
+  {ver:'3.2.0',date:'2026-06-16',title:'🎁 หน้าจอจบด่านสไตล์กล่องรางวัล',notes:[
+    'หน้าจอจบด่านปรับใหม่: ไอคอนกล่องรางวัล (👑/🎁/📦/💀) และกรอบเรืองแสงเปลี่ยนสีตามจำนวนดาวที่ได้',
+    'ดาวที่ได้จะค่อย ๆ เด้งขึ้นทีละดวงพร้อมแสงเรืองสีทอง',
+    'แสดงจำนวน 💎 Soul Gems ที่ได้รับทันทีในหน้าจอจบด่าน เมื่อทำลายสถิติดาวเดิมได้',
+    'หน้า Codex แท็บป้อม: ไอคอนป้อมมีกรอบเรืองแสงสีตามชนิดป้อม ทั้งในกริดและหน้ารายละเอียด',
+    'หน้าเลือกด่าน: การ์ดด่านที่เคลียร์แล้วมีกรอบเรืองแสง + ป้ายกล่องรางวัล (👑/🎁/📦) ตามจำนวนดาวที่ทำได้',
+    'แจ้งเตือนปลดล็อกความสำเร็จ: เด้งเข้าแบบยุบ-ขยาย และกรอบเรืองแสงเปลี่ยนสีตามหมวดความสำเร็จ'
+  ]},
   {ver:'3.1.0',date:'2026-06-16',title:'🌟 กรอบ Rarity ป้อม + ปรับบาลานซ์เพิ่ม',notes:[
     'ป้อมที่รวมดาวแล้ว (★2 ขึ้นไป) จะมีกรอบเรืองแสงสีตามระดับ — ★2 น้ำเงิน (Rare), ★3 ม่วง (Epic), ★4 ส้มทอง (Legendary) ทั้งในสนามและหน้าต่างป้อม',
     'ธนู: ลดอัตรายิงจาก 2.0 เป็น 1.8 ครั้ง/วินาที (เคย DPS/Cost สูงสุดในเกมแบบโดดเด่นเกินไป)',
@@ -439,7 +447,11 @@ function renderStageSelect(){
     ).join('');
     const starStr=stars>0?'★'.repeat(stars)+'☆'.repeat(3-stars):(played?'☆☆☆':'');
     const starColor=stars>0?'#ffe234':'#555';
-    html+=`<div class="stage-card${unlocked?'':' locked'}${stars>0?' completed':''}" onclick="${unlocked?'startStage('+si+')':'void(0)'}">
+    /* 🎁 ป้ายกล่องรางวัล + กรอบเรืองแสงตามระดับดาว (สไตล์เดียวกับหน้าจอจบด่าน) */
+    const tierClass=stars>=3?' tier-gold':stars===2?' tier-silver':stars===1?' tier-bronze':'';
+    const chestIcon=stars>=3?'👑':stars===2?'🎁':stars===1?'📦':'';
+    html+=`<div class="stage-card${unlocked?'':' locked'}${tierClass}" onclick="${unlocked?'startStage('+si+')':'void(0)'}">
+      ${chestIcon?`<div class="stage-chest-badge">${chestIcon}</div>`:''}
       <div class="stage-icon">${s.icon}</div>
       <div class="stage-info">
         <div class="stage-name">ด่าน ${si+1}: ${s.name}</div>
@@ -1011,7 +1023,7 @@ function renderCodex(){
     TNAMES.forEach((_,i)=>{
       const u=unlockedT.has(i);
       html+=`<div class="cdx-card${u?'':' locked'}${cdxSel===i&&u?' active':''}" onclick="${u?'selectCodex('+i+')':''}">
-        <div class="ico">${u?`<img src="${getTowerIconURL(i,36)}" width="36" height="36" style="image-rendering:pixelated;">`:'🔒'}</div>
+        <div class="ico">${u?`<img src="${getTowerIconURL(i,36)}" width="36" height="36" class="cdx-tico" style="image-rendering:pixelated;border-color:${TACCENT[i]};box-shadow:0 0 8px ${TACCENT[i]}66,inset 0 0 8px ${TACCENT[i]}22;">`:'🔒'}</div>
         <div class="cname">${u?TNAMES[i]:'???'}</div>
       </div>`;
     });
@@ -1064,7 +1076,7 @@ function renderCodex(){
       }
       html+=`<div class="cdx-detail">
         <div class="cdx-detail-head">
-          <div class="cdx-detail-ico"><img src="${getTowerIconURL(cdxSel,48)}" width="48" height="48" style="image-rendering:pixelated;border-radius:8px;"></div>
+          <div class="cdx-detail-ico"><img src="${getTowerIconURL(cdxSel,48)}" width="48" height="48" class="cdx-tico cdx-tico-lg" style="image-rendering:pixelated;border-color:${TACCENT[cdxSel]};box-shadow:0 0 14px ${TACCENT[cdxSel]}77,inset 0 0 14px ${TACCENT[cdxSel]}22;"></div>
           <div>
             <div class="cdx-detail-name">${TNAMES[cdxSel]}</div>
             <div class="cdx-detail-sub">ป้อมปราการ</div>

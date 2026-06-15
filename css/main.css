@@ -67,8 +67,14 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .stage-card:hover:not(.locked){border-color:#4caf50;background:rgba(76,175,80,.1);transform:translateY(-2px);box-shadow:0 4px 14px rgba(76,175,80,.25);}
 .stage-card:active:not(.locked){transform:scale(.98);}
 .stage-card.locked{opacity:.5;cursor:not-allowed;filter:grayscale(.6);}
-.stage-card.completed{border-color:#ffe234;box-shadow:0 0 10px rgba(255,226,52,.25);}
-.stage-card.completed:hover{box-shadow:0 4px 16px rgba(255,226,52,.35);}
+/* 🎁 กรอบเรืองแสงตามระดับดาวที่ทำได้ (สไตล์ chest tier เดียวกับหน้าจอจบด่าน) */
+.stage-card.tier-gold{border-color:#ffd54f;box-shadow:0 0 14px rgba(255,213,79,.35);}
+.stage-card.tier-gold:hover{box-shadow:0 4px 18px rgba(255,213,79,.45);}
+.stage-card.tier-silver{border-color:#cfd8dc;box-shadow:0 0 12px rgba(207,216,220,.3);}
+.stage-card.tier-silver:hover{box-shadow:0 4px 16px rgba(207,216,220,.4);}
+.stage-card.tier-bronze{border-color:#caa472;box-shadow:0 0 10px rgba(202,164,114,.3);}
+.stage-card.tier-bronze:hover{box-shadow:0 4px 14px rgba(202,164,114,.4);}
+.stage-chest-badge{position:absolute;top:8px;left:10px;font-size:16px;filter:drop-shadow(0 0 4px rgba(0,0,0,.5));}
 .stage-icon{font-size:36px;line-height:1;flex-shrink:0;}
 .stage-info{flex:1;min-width:0;}
 .stage-name{font-size:15px;font-weight:900;color:#fff;margin-bottom:4px;}
@@ -110,7 +116,14 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .devbtn{background:rgba(255,100,0,.2);color:#ff9800;border:1px solid #ff9800;border-radius:8px;padding:3px 8px;cursor:pointer;font-size:11px;font-weight:700;-webkit-tap-highlight-color:transparent;min-width:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;}
 /* OVERLAYS — position:relative on #gp makes these work */
 .overlay{display:none;position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);align-items:center;justify-content:center;z-index:20;border-radius:16px;}
-.obox{background:linear-gradient(180deg,#23391f,#142214);border:3px solid #4caf50;border-radius:16px;padding:20px 26px;text-align:center;color:#fff;width:290px;box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 30px rgba(76,175,80,.25);}
+.obox{background:linear-gradient(180deg,#23391f,#142214);border:3px solid #4caf50;border-radius:16px;padding:20px 26px;text-align:center;color:#fff;width:290px;box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 30px rgba(76,175,80,.25);transition:border-color .3s,box-shadow .3s;}
+/* 🎁 ผลลัพธ์จบด่าน — กรอบเรืองแสงตามระดับรางวัล (สไตล์ Clash Royale chest) */
+.obox.tier-gold{border-color:#ffd54f;box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 36px rgba(255,213,79,.55);}
+.obox.tier-silver{border-color:#cfd8dc;box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 30px rgba(207,216,220,.4);}
+.obox.tier-bronze{border-color:#caa472;box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 28px rgba(202,164,114,.4);}
+.obox.tier-lose{border-color:#757575;box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 22px rgba(0,0,0,.35);}
+.chest-icon{font-size:46px;line-height:1;margin-bottom:2px;animation:chestPopIn .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes chestPopIn{from{transform:scale(.3) translateY(10px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
 .obox h2{font-size:24px;margin-bottom:6px;}
 .obox p{font-size:13px;color:#ffe082;margin-bottom:12px;line-height:1.5;}
 .obtn{padding:9px 20px;font-size:13px;font-weight:700;border-radius:20px;border:none;background:#ffe234;color:#6d2900;cursor:pointer;margin:3px;transition:filter .15s,transform .1s;-webkit-tap-highlight-color:transparent;}
@@ -126,6 +139,11 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .pausescreen{display:none;position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;z-index:18;border-radius:16px;}
 .pausescreen .obox{border-color:#ff9800;box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 30px rgba(255,152,0,.25);}
 .star-row{font-size:28px;letter-spacing:4px;margin:6px 0 12px;}
+.star-row .star-ico{display:inline-block;animation:starPopIn .4s cubic-bezier(.34,1.56,.64,1) backwards;}
+.star-row .star-ico.filled{color:#ffd54f;text-shadow:0 0 10px rgba(255,213,79,.8);}
+@keyframes starPopIn{0%{transform:scale(0) rotate(-90deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+.reward-row{display:inline-flex;align-items:center;gap:6px;background:rgba(126,87,194,.18);border:1px solid rgba(179,136,255,.4);border-radius:20px;padding:5px 14px;font-size:13px;font-weight:700;color:#d1c4e9;margin:0 0 10px;animation:rewardPopIn .35s ease .45s backwards;}
+@keyframes rewardPopIn{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
 .unlock-banner{background:rgba(255,224,130,.12);border:1px solid rgba(255,224,130,.35);border-radius:10px;padding:9px 12px;margin-bottom:10px;font-size:11px;color:#ffe082;line-height:1.5;}
 .unlock-banner strong{font-size:13px;display:block;margin-bottom:3px;}
 /* CODEX */
@@ -147,6 +165,9 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .cdx-detail{background:rgba(0,0,0,.4);border:1px solid #2a4a2a;border-radius:12px;padding:13px;margin-top:4px;}
 .cdx-detail-head{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
 .cdx-detail-ico{font-size:36px;line-height:1;}
+/* 🎴 กรอบเรืองแสงไอคอนป้อมใน Codex — สีตาม TACCENT ของป้อมแต่ละชนิด */
+.cdx-tico{border:2px solid;border-radius:8px;background:rgba(255,255,255,.04);}
+.cdx-tico-lg{border-radius:10px;}
 .cdx-detail-name{font-size:18px;font-weight:900;color:#fff;}
 .cdx-detail-sub{font-size:11px;color:#aaa;margin-top:2px;font-style:italic;}
 .cdx-flavor{font-size:11px;color:#8bc34a;background:rgba(139,195,74,.1);border-left:3px solid #8bc34a;padding:8px 10px;border-radius:0 8px 8px 0;margin-bottom:10px;line-height:1.5;}
@@ -559,12 +580,23 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 
 /* ── ACHIEVEMENT SYSTEM ── */
 /* notification banner */
-#achNotif{position:fixed;top:-90px;left:50%;transform:translateX(-50%);
+#achNotif{position:fixed;top:-90px;left:50%;transform:translateX(-50%) scale(.85);
   width:min(340px,92vw);background:linear-gradient(135deg,#1a2a0a,#2a3a1a);
   border:2px solid #ffe082;border-radius:16px;padding:12px 16px;
   display:flex;align-items:center;gap:12px;z-index:200;
-  box-shadow:0 6px 24px rgba(0,0,0,.7);transition:top .45s cubic-bezier(.34,1.56,.64,1);}
-#achNotif.show{top:16px;box-shadow:0 6px 24px rgba(0,0,0,.7),0 0 28px rgba(255,224,130,.45);}
+  box-shadow:0 6px 24px rgba(0,0,0,.7);transition:top .45s cubic-bezier(.34,1.56,.64,1),transform .45s cubic-bezier(.34,1.56,.64,1),box-shadow .3s,border-color .3s;}
+#achNotif.show{top:16px;transform:translateX(-50%) scale(1);box-shadow:0 6px 24px rgba(0,0,0,.7),0 0 28px rgba(255,224,130,.45);}
+/* 🎖️ กรอบเรืองแสงสีตามหมวดความสำเร็จ */
+#achNotif.cat-story{border-color:#ffd54f;}
+#achNotif.cat-story.show{box-shadow:0 6px 24px rgba(0,0,0,.7),0 0 28px rgba(255,213,79,.5);}
+#achNotif.cat-combat{border-color:#ef5350;}
+#achNotif.cat-combat.show{box-shadow:0 6px 24px rgba(0,0,0,.7),0 0 28px rgba(239,83,80,.5);}
+#achNotif.cat-skill{border-color:#42a5f5;}
+#achNotif.cat-skill.show{box-shadow:0 6px 24px rgba(0,0,0,.7),0 0 28px rgba(66,165,245,.5);}
+#achNotif.cat-endgame{border-color:#ab47bc;}
+#achNotif.cat-endgame.show{box-shadow:0 6px 24px rgba(0,0,0,.7),0 0 28px rgba(171,71,188,.5);}
+#achNotif.cat-collect{border-color:#26a69a;}
+#achNotif.cat-collect.show{box-shadow:0 6px 24px rgba(0,0,0,.7),0 0 28px rgba(38,166,154,.5);}
 .ach-notif-ico{font-size:32px;flex-shrink:0;animation:achIcoPop .5s cubic-bezier(.34,1.56,.64,1);filter:drop-shadow(0 0 10px rgba(255,224,130,.6));}
 @keyframes achIcoPop{from{transform:scale(.4) rotate(-15deg)}to{transform:scale(1) rotate(0)}}
 .ach-notif-text{}
