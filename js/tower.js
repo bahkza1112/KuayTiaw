@@ -324,25 +324,55 @@ function showTowerPopup(tw,px,py){
   _popupTw=tw;
   const pop=document.getElementById('towerPopup');
   if(!pop||!G) return;
-  // ป้อมเก่า (ก่อนระบบอัพแยกสาย) อาจไม่มี dmgLv/rngLv/rateLv — ตั้งค่าเริ่มต้นให้
+  // ป้อมเก่า (ก่อนระบบดาว) อาจไม่มี dmgLv/rngLv/rateLv/star — ตั้งค่าเริ่มต้นให้
   if(tw.dmgLv===undefined){tw.dmgLv=tw.lv||1;tw.rngLv=tw.lv||1;tw.rateLv=tw.lv||1;}
-  const cost=tw.lv>=5?0:CFG.t_cost[tw.type]*tw.lv;
+  if(tw.star===undefined) tw.star=1;
+  const used=(tw.dmgLv-1)+(tw.rngLv-1)+(tw.rateLv-1);
+  const remain=tw.star-used;
   const refund=Math.floor(CFG.t_cost[tw.type]*tw.lv*.6);
-  const canUp=tw.lv<5&&G.gold>=cost;
   const dmgVal=CFG.t_dmg[tw.type]===0?'—':Math.round(getTowerDmg(tw.type,tw.dmgLv));
   const rngVal=getTowerRange(tw.type,tw.rngLv).toFixed(1);
   const rateVal=CFG.t_rate[tw.type]===0?'—':getTowerRate(tw.type,tw.rateLv).toFixed(1);
   const dpsVal=(CFG.t_dmg[tw.type]!==0&&CFG.t_rate[tw.type]!==0)?(dmgVal*parseFloat(rateVal)).toFixed(1):null;
-  const canAwaken=tw.lv>=5&&!tw.awakened&&G.gold>=350;
-  const showAwakenBtn=tw.lv>=5&&!tw.awakened;
+  const canAwaken=tw.star>=3&&!tw.awakened&&G.gold>=350;
+  const showAwakenBtn=tw.star>=3&&!tw.awakened;
+  const starStr='★'.repeat(tw.star);
   const synHtml=(tw._drainT>0)?
     `<div class="tp-syn-row"><div class="tp-syn-label">🌑 สถานะ</div><div class="tp-syn-item" style="background:rgba(126,87,194,.15);border-color:rgba(126,87,194,.4);"><div class="tp-syn-name" style="color:#b39ddb;">🌑 ถูกดูดพลัง!</div><div class="tp-syn-desc">บัฟ/Awaken ของป้อมนี้ถูกระงับชั่วคราวโดยเงามืด</div></div></div>`
+    : '';
+  // ⬆ แต้มสกิลติดตัว — ได้มาฟรีตามดาว (1★=1, 2★=2, 3★=3, 4★=4) จัดสรร/รีเซ็ตได้ฟรีตลอด
+  const resetBtn=(!tw.awakened&&used>0)?`<button class="tp-resetbtn" onclick="resetTowerPointsFromPopup()" title="คืนแต้มทั้งหมดเพื่อจัดสรรใหม่ (ฟรี)">↺ รีเซ็ต</button>`:'';
+  const pickRowHtml=remain>0?`<div class="tp-pick-row">
+          <button class="tp-pickbtn" onclick="upgradeTowerFromPopup('dmg')" title="${CFG.t_dmg[tw.type]===0?'ป้อมนี้ไม่มีดาเมจ':'ดาเมจ Lv.'+tw.dmgLv+' → Lv.'+(tw.dmgLv+1)+' (ฟรี)'}">
+            <span class="pi">⚔️</span>ดาเมจ<br><small>Lv.${tw.dmgLv}→${tw.dmgLv+1}</small>
+          </button>
+          <button class="tp-pickbtn" onclick="upgradeTowerFromPopup('rng')" title="ระยะ Lv.${tw.rngLv} → Lv.${tw.rngLv+1} (ฟรี)${tw.rngLv===3?'  🔓 ปลดล็อก: เจาะโล่ศัตรู (ดาเมจเข้า HP ตรง ไม่โดนโล่ดูดซับ)':''}">
+            <span class="pi">📡</span>ระยะ<br><small>Lv.${tw.rngLv}→${tw.rngLv+1}${tw.rngLv===3?' 🔓':''}</small>
+          </button>
+          <button class="tp-pickbtn" onclick="upgradeTowerFromPopup('rate')" title="${CFG.t_rate[tw.type]===0?'ป้อมนี้ไม่มี Fire Rate':'ความเร็ว Lv.'+tw.rateLv+' → Lv.'+(tw.rateLv+1)+' (ฟรี)'+(tw.rateLv===3?'  🔓 ปลดล็อก: ยิงรัว (โอกาสคูลดาวน์สั้นลงทันทีหลังยิง)':'')}">
+            <span class="pi">⚡</span>ความเร็ว<br><small>Lv.${tw.rateLv}→${tw.rateLv+1}${tw.rateLv===3?' 🔓':''}</small>
+          </button>
+        </div>`:'';
+  const leftCellHtml=tw.awakened?
+    `<button class="tp-upbtn" disabled style="background:linear-gradient(180deg,#ffe234,#ff9800);color:#6d2900;">⚡ AWAKENED<br><small>ล็อก ${starStr}</small></button>`
+    :
+    `<div class="tp-upgrade-pick">
+        <div class="tp-upgrade-label" style="display:flex;justify-content:space-between;align-items:center;">
+          <span>⬆ แต้มสกิล ${remain>0?'เหลือ '+remain+'/'+tw.star+' (ฟรี)':'เต็ม '+used+'/'+tw.star}</span>${resetBtn}
+        </div>
+        ${pickRowHtml}
+        ${remain===0&&!showAwakenBtn?`<div style="font-size:9px;color:#888;text-align:center;margin-top:2px;">รวมป้อม ${starStr} อีกตัวเพื่อเลื่อนดาว</div>`:''}
+      </div>`;
+  const awakenCellHtml=showAwakenBtn?
+    `<button class="tp-upbtn" ${canAwaken?'':'disabled'} onclick="awakenTowerFromPopup()" style="background:${canAwaken?'linear-gradient(180deg,#ffe234,#ff9800)':''};color:${canAwaken?'#6d2900':''};">
+        ⚡ Awaken<br><small>💰350 (ล็อก${starStr})</small>
+      </button>`
     : '';
   pop.innerHTML=`<div class="tp-head">
     <canvas id="_tpIco" width="42" height="42" style="flex-shrink:0;border-radius:6px;"></canvas>
     <div>
-      <div class="tp-name">${TNAMES[tw.type]}${tw.awakened?' <span style="color:#ffe082;font-size:10px;">⚡ AWAKENED</span>':''}</div>
-      <div class="tp-lv">Level ${tw.lv}${tw.lv>=5?' 🔝 MAX':''} <span style="opacity:.55;font-size:9px;">(⚔️${tw.dmgLv} 📡${tw.rngLv} ⚡${tw.rateLv})</span></div>
+      <div class="tp-name">${TNAMES[tw.type]} <span style="color:#ffd54f;">${starStr}</span>${tw.awakened?' <span style="color:#ffe082;font-size:10px;">⚡ AWAKENED</span>':''}</div>
+      <div class="tp-lv">แต้มสกิล ${used}/${tw.star} <span style="opacity:.55;font-size:9px;">(⚔️${tw.dmgLv} 📡${tw.rngLv} ⚡${tw.rateLv})</span></div>
     </div>
   </div>
   <div class="tp-stats">
@@ -350,33 +380,12 @@ function showTowerPopup(tw,px,py){
     <div class="tp-stat">📡 ระยะ <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${rngVal} ช่อง${tw.rngLv>=4?' <span style="color:#90caf9;font-size:9px;" title="กระสุนเจาะโล่ศัตรู ดาเมจเข้า HP ตรงๆ">🛡️✨เจาะโล่</span>':''}</span></div>
     <div class="tp-stat">⚡ อัตรายิง <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${rateVal}${tw.rateLv>=4?' <span style="color:#ffe234;font-size:9px;" title="มีโอกาสคูลดาวน์สั้นลงทันทีหลังยิง">⚡ยิงรัว</span>':''}</span></div>
     ${dpsVal?`<div class="tp-stat">📊 DPS<span>${dpsVal}</span></div>`:''}
-    ${tw.lv<5?`<div class="tp-stat">💰 ค่าอัพต่อไป<span>${cost} ทอง</span></div>`:''}
   </div>
   ${synHtml}
   <div class="tp-btns">
-    ${showAwakenBtn?
-      `<button class="tp-upbtn" ${canAwaken?'':'disabled'} onclick="awakenTowerFromPopup()" style="background:${canAwaken?'linear-gradient(180deg,#ffe234,#ff9800)':''};color:${canAwaken?'#6d2900':''};">
-        ⚡ Awaken<br><small>💰350</small>
-      </button>`
-      : tw.lv>=5 ?
-      `<button class="tp-upbtn" disabled>🔝 MAX</button>`
-      :
-      `<div class="tp-upgrade-pick">
-        <div class="tp-upgrade-label">⬆ เลือกอัพสาย — 💰${cost}</div>
-        <div class="tp-pick-row">
-          <button class="tp-pickbtn" ${canUp?'':'disabled'} onclick="upgradeTowerFromPopup('dmg')" title="${CFG.t_dmg[tw.type]===0?'ป้อมนี้ไม่มีดาเมจ':'ดาเมจ Lv.'+tw.dmgLv+' → Lv.'+(tw.dmgLv+1)}">
-            <span class="pi">⚔️</span>ดาเมจ<br><small>Lv.${tw.dmgLv}→${tw.dmgLv+1}</small>
-          </button>
-          <button class="tp-pickbtn" ${canUp?'':'disabled'} onclick="upgradeTowerFromPopup('rng')" title="ระยะ Lv.${tw.rngLv} → Lv.${tw.rngLv+1}${tw.rngLv===3?'  🔓 ปลดล็อก: เจาะโล่ศัตรู (ดาเมจเข้า HP ตรง ไม่โดนโล่ดูดซับ)':''}">
-            <span class="pi">📡</span>ระยะ<br><small>Lv.${tw.rngLv}→${tw.rngLv+1}${tw.rngLv===3?' 🔓':''}</small>
-          </button>
-          <button class="tp-pickbtn" ${canUp?'':'disabled'} onclick="upgradeTowerFromPopup('rate')" title="${CFG.t_rate[tw.type]===0?'ป้อมนี้ไม่มี Fire Rate':'ความเร็ว Lv.'+tw.rateLv+' → Lv.'+(tw.rateLv+1)+(tw.rateLv===3?'  🔓 ปลดล็อก: ยิงรัว (โอกาสคูลดาวน์สั้นลงทันทีหลังยิง)':'')}">
-            <span class="pi">⚡</span>ความเร็ว<br><small>Lv.${tw.rateLv}→${tw.rateLv+1}${tw.rateLv===3?' 🔓':''}</small>
-          </button>
-        </div>
-      </div>`
-    }
-    <button class="tp-sellbtn" onclick="sellTowerFromPopup()">🗑 Sell<br><small style="color:#aaa">+💰${refund}</small></button>
+    ${leftCellHtml}
+    ${awakenCellHtml}
+    <button class="tp-sellbtn" style="grid-column:1/-1;" onclick="sellTowerFromPopup()">🗑 Sell<br><small style="color:#aaa">+💰${refund}</small></button>
   </div>`;
   // draw sprite on canvas
   requestAnimationFrame(()=>{
@@ -407,7 +416,7 @@ function awakenTowerFromPopup(){
   if(!_popupTw||!G) return;
   const tw=_popupTw;
   if(tw.awakened){showToast('⚡ อเวคแล้ว!');return;}
-  if(tw.lv<5){showToast('⚡ ต้องอัพป้อมเป็น Lv.5 ก่อนถึงจะ Awaken ได้!');return;}
+  if((tw.star||1)<3){showToast('⚡ ต้องรวมป้อมให้ถึง 3★ ก่อนถึงจะ Awaken ได้!');return;}
   if(G.gold<350){showToast('💰 ต้องการ 350 ทอง!');hideTowerPopup();return;}
   G.gold-=350; tw.awakened=true;
   tw.spawnAnim=0.8;
@@ -436,14 +445,14 @@ function upgradeTowerFromPopup(stat){
   if(!_popupTw||!G) return;
   const tw=_popupTw;
   if(tw.dmgLv===undefined){tw.dmgLv=tw.lv||1;tw.rngLv=tw.lv||1;tw.rateLv=tw.lv||1;}
-  if(tw.lv>=5){showToast('🔝 ระดับสูงสุด 5 แล้ว!');return;}
+  if(tw.star===undefined) tw.star=1;
+  if(tw.awakened){showToast('⚡ อเวคแล้ว ปรับแต้มไม่ได้!');return;}
+  const used=(tw.dmgLv-1)+(tw.rngLv-1)+(tw.rateLv-1);
+  if(used>=tw.star){showToast('⚠️ แต้มเต็มแล้ว! รวมป้อมเพื่อรับแต้มเพิ่ม');return;}
   if(stat!=='dmg'&&stat!=='rng'&&stat!=='rate'){showToast('⚠️ กรุณาเลือกสายที่จะอัพ');return;}
-  const cost=CFG.t_cost[tw.type]*tw.lv;
-  if(G.gold<cost){showToast('💰 ต้องการ '+cost+' ทอง!');hideTowerPopup();return;}
-  G.gold-=cost;
   const _statInfo={dmg:{key:'dmgLv',icon:'⚔️',name:'ดาเมจ',col:'#ff7043'},rng:{key:'rngLv',icon:'📡',name:'ระยะ',col:'#4fc3f7'},rate:{key:'rateLv',icon:'⚡',name:'ความเร็ว',col:'#ffe234'}}[stat];
   tw[_statInfo.key]=(tw[_statInfo.key]||1)+1;
-  tw.lv=(tw.dmgLv-1)+(tw.rngLv-1)+(tw.rateLv-1)+1; // lv รวม = 1 + แต้มที่ใช้ไปทั้งหมด (max 5)
+  tw.lv=(tw.dmgLv-1)+(tw.rngLv-1)+(tw.rateLv-1)+1; // lv รวม = 1 + แต้มที่ใช้ไปทั้งหมด (max = star+1)
   tw.spawnAnim=0.6;
   const ux=tw.col*CS+CS/2,uy=tw.row*CS+CS/2;
   G.fxRings.push({x:ux,y:uy,r:0,maxR:CS*1.4,life:1,col:_statInfo.col,lw:2.5});
@@ -451,6 +460,23 @@ function upgradeTowerFromPopup(stat){
   addParticle(ux,uy,'⬆ '+_statInfo.icon+' '+_statInfo.name+' Lv.'+tw[_statInfo.key],_statInfo.col);
   updateHUD();
   // reopen popup with updated stats
+  hideTowerPopup();
+  setTimeout(()=>{
+    if(G&&!G.over&&!G.win&&G.selTowerInfo===tw){
+      const r=cv.getBoundingClientRect();
+      showTowerPopup(tw,(tw.col+.5)*CS*r.width/cv.width+r.left,tw.row*CS*r.height/cv.height+r.top);
+    }
+  },60);
+}
+function resetTowerPointsFromPopup(){
+  if(!_popupTw||!G) return;
+  const tw=_popupTw;
+  if(tw.awakened){showToast('⚡ อเวคแล้ว รีเซ็ตแต้มไม่ได้!');return;}
+  const used=(tw.dmgLv-1)+(tw.rngLv-1)+(tw.rateLv-1);
+  if(used===0){showToast('ยังไม่มีแต้มที่ใช้ไป');return;}
+  tw.dmgLv=1;tw.rngLv=1;tw.rateLv=1;tw.lv=1;
+  showToast('↺ รีเซ็ตแต้มแล้ว จัดสรรใหม่ได้ฟรี');
+  updateHUD();
   hideTowerPopup();
   setTimeout(()=>{
     if(G&&!G.over&&!G.win&&G.selTowerInfo===tw){

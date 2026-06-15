@@ -2,6 +2,59 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v2.0.0 — Star Merge system (replaces gold-based upgrades)
+
+### Major change
+This release replaces the old "pay gold per dmg/rng/rate level" upgrade
+system with a **merge-based star/skill-point system**. The underlying
+`getTowerDmg/Range/Rate(type, lv)` formulas and the `tw.lv` (1-5) cap are
+unchanged — only how `tw.lv` (via `tw.dmgLv/rngLv/rateLv`) is earned and
+spent has changed.
+
+### Added
+- `tw.star` (1-4, default 1) on every placed tower (`tryPlaceTower`,
+  `js/game.js`). Total free skill points for a tower = `tw.star`
+  (1★=1pt … 4★=4pt), spent across `dmgLv/rngLv/rateLv` (each point = +1
+  level, same as before, max combined `tw.lv` = `star+1` ≤ 5).
+- **Drag-to-merge** (`js/game.js`): new `onCanvasPointerDown` /
+  `_onTwrDragMove` / `_onTwrDragUp` handlers let the player drag a placed
+  tower onto another tower of the *same type and same ★* (neither
+  Awakened, neither already 4★). `tryMergeTowers` removes both and spawns
+  one tower at the target's position with `star+1`, resetting
+  `dmgLv/rngLv/rateLv` to 1 (fresh point pool to allocate). Registered in
+  `_doStartStage` (`js/ui.js`) and `_doStartEndgame` (`js/game.js`).
+  `_suppressNextClick` prevents the trailing `click` event from reopening
+  the tower popup right after a merge-drag.
+- Star badge (★N) drawn top-left on towers with `star>1`, alongside the
+  existing `LvN` badge top-right.
+- `resetTowerPointsFromPopup` (`js/tower.js`) + new `.tp-resetbtn`
+  (`css/main.css`): resets `dmgLv/rngLv/rateLv` to 1 for free so points can
+  be reallocated at any time.
+
+### Changed
+- `upgradeTowerFromPopup` (`js/tower.js`) no longer charges gold — it just
+  checks `used < tw.star` (used = sum of spent points) and increments the
+  chosen stat for free.
+- `awakenTowerFromPopup`: Awaken now unlocks at **★3+** (previously
+  `lv>=5`), still costs 💰350. Once Awakened a tower is permanently
+  "star-locked" — `tryMergeTowers` rejects merges involving an Awakened
+  tower, so the player must choose between Awakening at ★3 (locking in a
+  3-point build) or pushing to ★4 first for a stronger Awaken.
+- `showTowerPopup` rebuilt: shows `★N`, "แต้มสกิล used/star", a
+  free-allocation pick row (when points remain), the reset button, and the
+  Awaken button (when ★≥3 and not yet Awakened) instead of the old
+  gold-cost upgrade panel / "🔝 MAX" state.
+- Codex tower detail (`js/ui.js`): the per-level table's last column now
+  shows the ★ requirement ("พื้นฐาน" / "★N ขึ้นไป") instead of a gold cost,
+  plus a new explainer box describing the Star Merge system.
+- Tutorial (stage 1): replaced the old "อัปเกรดป้อมถึง Lv.5 แล้วจ่ายทอง
+  Awaken" step with a new Star Merge step, and updated the Awaken step text
+  to reflect the ★3 requirement and star-lock.
+
+### Removed
+- The old pay-gold-per-level upgrade flow (`CFG.t_cost[type]*tw.lv` cost in
+  `upgradeTowerFromPopup`) is gone entirely.
+
 ## v1.14.1 — Escalating tower placement cost
 
 ### Changed

@@ -1,6 +1,14 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='1.14.1';
+const GAME_VERSION='2.0.0';
 const PATCH_NOTES=[
+  {ver:'2.0.0',date:'2026-06-15',title:'✨ ระบบรวมป้อม (Star Merge) — ปฏิวัติการอัพเกรด!',notes:[
+    'เปลี่ยนระบบอัพเกรดป้อมทั้งหมด! ลากป้อมชนิด/★เดียวกันทับกันบนกระดานเพื่อ "รวม" เป็นป้อมเดียวที่★สูงขึ้น (1★→2★→3★→4★ สูงสุด)',
+    'ทุกครั้งที่รวมดาวสำเร็จ จะได้ "แต้มสกิล" ฟรีตามจำนวนดาว (1★=1, 2★=2, 3★=3, 4★=4) ใช้อัพดาเมจ/ระยะ/อัตรายิงได้ฟรี ไม่เสียทอง',
+    'กดปุ่ม ↺ รีเซ็ตแต้ม เพื่อคืนแต้มทั้งหมดและจัดสรรใหม่ได้ตลอดเวลา ฟรี ไม่มีค่าใช้จ่าย',
+    'Awaken ปลดล็อกตั้งแต่★3 (เดิมต้อง Lv.5) ยังคงราคา 💰350 เหมือนเดิม แต่เมื่อ Awaken แล้วป้อมจะ "ล็อกดาว" รวมต่อไม่ได้อีก — เลือกเอเวคทันทีที่★3 หรือดันไป★4 ก่อนเอเวคเพื่อพลังสูงสุด',
+    'เอาระบบจ่ายทองเพื่ออัพเกรดดาเมจ/ระยะ/อัตรายิงแบบเดิม (CFG.t_cost×Lv) ออกทั้งหมด',
+    'ค่าก่อสร้างป้อมใหม่ (escalating cost) และค่า Awaken ไม่เปลี่ยนแปลง'
+  ]},
   {ver:'1.14.1',date:'2026-06-15',title:'📈 ราคาป้อมเพิ่มขึ้นตามจำนวนป้อม',notes:[
     'ราคาสร้างป้อมใหม่จะเพิ่มขึ้น +15 ทอง ต่อป้อมที่วางอยู่บนกระดานแล้ว (ทุกชนิดป้อม ทุกโหมด) เช่น ป้อมแรก 50 → ป้อมที่สอง 65 → ป้อมที่สาม 80',
     'ขายป้อมออกจะลดราคาป้อมถัดไปกลับลงตามจำนวนป้อมที่เหลือ',
@@ -445,6 +453,8 @@ function _doStartStage(si){
   // Mobile: ป้องกัน scroll เมื่อ touch บน canvas
   cv.removeEventListener('touchstart',_onCvTouchStart);
   cv.addEventListener('touchstart',_onCvTouchStart,{passive:false});
+  cv.removeEventListener('pointerdown',onCanvasPointerDown);
+  cv.addEventListener('pointerdown',onCanvasPointerDown);
   initGame();
   initTutorial();
 }
@@ -482,8 +492,11 @@ const _TUT_STEPS=[
   {stage:1, title:'ผสมป้อมหลายชนิด',
    msg:'แต่ละป้อมมีบทบาทต่างกัน\n(สาด/หน่วง/เป้าเดี่ยว/บัฟ)\nลองผสมกันให้เหมาะกับศัตรู',
    target:null, boxAnchor:'center', arrowIcon:'', click:true},
+  {stage:1, title:'✨ รวมป้อม (Star Merge)',
+   msg:'ลากป้อมชนิด/★เดียวกันทับกัน\nเพื่อรวมเป็น★สูงขึ้น (สูงสุด★4)\nจะได้แต้มสกิลฟรีจัดสรรใหม่ตามดาว',
+   target:null, boxAnchor:'center', arrowIcon:'', click:true},
   {stage:1, title:'ระบบ Awaken ⚡',
-   msg:'อัปเกรดป้อมถึง Lv.5\nแล้วจ่ายทองเพื่อ "ปลุกพลัง"\nรับความสามารถพิเศษเฉพาะป้อม',
+   msg:'รวมป้อมให้ถึง★3\nแล้วจ่ายทองเพื่อ "ปลุกพลัง"\nรับพลังพิเศษ แต่ป้อมจะล็อกดาวตลอดไป',
    target:null, boxAnchor:'center', arrowIcon:'', click:true},
   {stage:1, title:'สภาพอากาศ 🌦️',
    msg:'สภาพอากาศจะเปลี่ยนเป็นระยะ\nและส่งผลต่อป้อม/ศัตรู\nคอยสังเกตไอคอนด้านบนจอ',
@@ -981,7 +994,7 @@ function renderCodex(){
           <td>${CFG.t_dmg[cdxSel]===0?'—':Math.round(getTowerDmg(cdxSel,lv))}</td>
           <td>${getTowerRange(cdxSel,lv).toFixed(1)}</td>
           <td>${CFG.t_rate[cdxSel]===0?'—':getTowerRate(cdxSel,lv).toFixed(1)+'ครั้ง/วิ'}</td>
-          <td>${lv<5?CFG.t_cost[cdxSel]*lv+'g':'สูงสุด'}</td></tr>`;
+          <td>${lv===1?'พื้นฐาน':'★'+(lv-1)+' ขึ้นไป'}</td></tr>`;
       }
       html+=`<div class="cdx-detail">
         <div class="cdx-detail-head">
@@ -1007,7 +1020,10 @@ function renderCodex(){
           </div>
         </div>
         <div style="margin-top:8px;font-size:11px;color:#80cbc4;background:rgba(0,150,136,.1);border-left:3px solid #26a69a;padding:7px 10px;border-radius:0 8px 8px 0;">${TSPECIAL[cdxSel]}</div>
-        <table class="lv-table"><tr><th>ระดับ</th><th>ดาเมจ</th><th>ระยะ</th><th>อัตรายิง</th><th>อัพเกรด</th></tr>${rows}</table>
+        <table class="lv-table"><tr><th>ระดับ</th><th>ดาเมจ</th><th>ระยะ</th><th>อัตรายิง</th><th>ต้องการ</th></tr>${rows}</table>
+        <div style="margin-top:6px;font-size:10px;color:#90caf9;background:rgba(144,202,249,.08);border-left:3px solid #42a5f5;padding:6px 10px;border-radius:0 8px 8px 0;">
+          ✨ <b>ระบบรวมป้อม (Star Merge):</b> ลากป้อมชนิด/★เดียวกันทับกันเพื่อรวมเป็นป้อมเดียว ★สูงขึ้น (สูงสุด ★4) แต้มสกิลที่ได้ฟรีจะรีเซ็ตและจัดสรรใหม่ตามดาว — ★3 ขึ้นไปจะ Awaken ได้ (💰350) แต่ป้อมจะ "ล็อกดาว" รวมต่อไม่ได้อีก
+        </div>
       </div>`;
     }
   }

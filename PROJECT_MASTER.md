@@ -150,8 +150,10 @@ pierce). Flavor text, tags, and strengths/weaknesses for the Codex are in
   `CFG.t_dmg/t_rng/t_rate` with linear growth per level (+25% dmg, +15%
   range, +10% rate per level above 1).
 - Each placed tower (`G.towers[i]`) tracks independent `dmgLv`, `rngLv`,
-  `rateLv` (path-based upgrades — see Progression) plus `lv` for legacy/base
-  level, position (`col`, `row`), and turret `angle`.
+  `rateLv` (free skill points spent via Star Merge — see Progression) plus
+  `lv` (derived: `(dmgLv-1)+(rngLv-1)+(rateLv-1)+1`, max `star+1`, capped at
+  5), `star` (1-4, see Progression), position (`col`, `row`), and turret
+  `angle`.
 
 ### Targeting, Firing & Projectiles
 - During `update(dt)`, each tower scans `G.enemies` within
@@ -175,18 +177,22 @@ pierce). Flavor text, tags, and strengths/weaknesses for the Codex are in
   constrained by `stageMaxTowers` and `STAGES[i].unlockedTowers`.
 - `onCanvasClick`, `onCanvasHoldStart/End` handle placement and long-press
   interactions on the grid.
-- `showTowerPopup` / `hideTowerPopup` render the per-tower
-  action popup: upgrade (dmg/range/rate paths via `upgradeTowerFromPopup`),
-  sell (`sellTowerFromPopup`, with partial gold refund), and "Awaken"
-  (`awakenTowerFromPopup`, `js/tower.js`) — a late-game power-up (350 gold
-  flat, raised from 300 in v1.7.3). The popup also shows an effective
-  **DPS** stat (v1.6.4).
+- `showTowerPopup` / `hideTowerPopup` render the per-tower action popup:
+  free skill-point allocation across dmg/range/rate (`upgradeTowerFromPopup`,
+  see Progression → Star Merge), a "reset points" button
+  (`resetTowerPointsFromPopup`), sell (`sellTowerFromPopup`, with partial
+  gold refund), and "Awaken" (`awakenTowerFromPopup`, `js/tower.js`) — a
+  late-game power-up (350 gold flat, raised from 300 in v1.7.3). The popup
+  also shows an effective **DPS** stat (v1.6.4).
 
-### Awaken System (v1.6.8 / v1.6.9, generic bonus removed v1.11.0)
+### Awaken System (v1.6.8 / v1.6.9, generic bonus removed v1.11.0, gated on ★3+ v2.0.0)
 - Awaken no longer grants a generic damage bonus (the +15% effective
   damage bonus was removed in v1.11.0 alongside the Rune system). Awakened
   towers are visually highlighted via the 2.5D sprite's aura glow
   (`_twAura`, tinted with the tower's own `TACCENT` color, v1.12.8).
+- Since v2.0.0, Awaken requires the tower to be at least 3★ (merged twice)
+  and permanently locks its `star`/skill points — see Progression → Star
+  Merge.
 - **Per-type unique effects**:
   - 💣 **Cannon**: splash radius ×1.5.
   - ❄️ **Ice**: on-hit freeze (full stop) for 3s instead of 45% slow for 2s
@@ -482,14 +488,30 @@ Notes:
 - Star rating (0–3) per stage is computed in `endGame()` (2385) based on
   performance (e.g., remaining HP) and saved via `saveProgress()`.
 
-### Tower Upgrade Paths
-- Each placed tower can be leveled along three independent stat tracks —
+### Tower Upgrade Paths — Star Merge System (v2.0.0)
+- Replaces the old gold-cost per-level upgrade system entirely. Each placed
+  tower has a `star` rating (1-4, default 1 on placement). Dragging one
+  tower onto another tower of the **same type and star** (neither
+  Awakened, `star<4`) merges them: both are removed and a new tower of
+  `star+1` spawns at the target's position with `dmgLv/rngLv/rateLv` reset
+  to 1 (`tryMergeTowers`, `js/game.js`).
+- Each tower gets a free skill-point pool equal to its `star` rating
+  (1★=1pt ... 4★=4pt), spent across the three independent stat tracks —
   damage (`dmgLv`), range (`rngLv`), rate (`rateLv`) — via
-  `upgradeTowerFromPopup(stat)` (4658), each with escalating gold cost.
+  `upgradeTowerFromPopup(stat)` (`js/tower.js`), at **no gold cost**.
+  `resetTowerPointsFromPopup()` refunds all spent points to 1/1/1 for free.
 - Path-exclusive perks (e.g., pierce shield, rapid fire) are unlocked at
-  certain levels along the range/rate trees (per recent commit history).
-- "Awaken" (`awakenTowerFromPopup`, 4617) is an end-tier upgrade granting a
-  significant power boost and a distinct sprite aura glow.
+  certain `dmgLv/rngLv/rateLv` levels along the range/rate trees (per
+  recent commit history) — unchanged, since the underlying level formulas
+  and caps (`lv` max 5) are reused as-is.
+- "Awaken" (`awakenTowerFromPopup`, `js/tower.js`) requires `star>=3` and is
+  an end-tier upgrade granting a significant power boost, a distinct sprite
+  aura glow, and **permanently locks the tower's star level** — Awakened
+  towers can no longer be merged or have skill points reallocated.
+- Drag-to-merge is implemented as a separate `pointerdown`/`pointermove`/
+  `pointerup` layer on the canvas (`onCanvasPointerDown`, `_onTwrDragMove`,
+  `_onTwrDragUp`, `js/game.js`), coexisting with the tower popup `click`
+  handler and toolbar drag-to-place via a `_suppressNextClick` guard.
 
 ### Achievements
 - `ACHIEVEMENTS` (1196) and `ACH_CATS` (1223) define ~category-grouped

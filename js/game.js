@@ -1387,6 +1387,15 @@ function render(){
       ctx.textAlign='center';ctx.textBaseline='middle';
       ctx.fillText('Lv'+tw.lv,x+CS-13,y+9);
     }
+    // star badge — ระดับดาวจากการรวมป้อม
+    if(tw.star>1){
+      ctx.fillStyle='rgba(0,0,0,.75)';
+      ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x+2,y+2,22,13,3);else ctx.rect(x+2,y+2,22,13);
+      ctx.fill();
+      ctx.fillStyle='#ffd54f';ctx.font='bold 9px Arial';
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText('★'+tw.star,x+13,y+9);
+    }
     // gold mine timer bar
     if(TGOLDMINE[tw.type]&&G.gmTimers){
       const key=tw.col+'_'+tw.row;const t2=G.gmTimers[key]||0;const pct=t2/CFG.t_goldrate;
@@ -1828,7 +1837,7 @@ function tryPlaceTower(type,col,row){
   const cost=getTowerCost(type);
   if(G.gold<cost){showToast('💰 ต้องการ '+cost+' ทอง!');return false;}
   G.gold-=cost;
-  G.towers.push({col,row,type,lv:1,dmgLv:1,rngLv:1,rateLv:1,cd:0,angle:0,spawnAnim:1.0,awakened:false});
+  G.towers.push({col,row,type,lv:1,dmgLv:1,rngLv:1,rateLv:1,star:1,cd:0,angle:0,spawnAnim:1.0,awakened:false});
   // FX: ring pulse + burst particles
   const bx=col*CS+CS/2, by=row*CS+CS/2;
   G.fxRings.push({x:bx,y:by,r:0,maxR:CS*1.6,life:1,col:TACCENT[type],lw:3});
@@ -1843,6 +1852,7 @@ function tryPlaceTower(type,col,row){
   return true;
 }
 function onCanvasClick(e){
+  if(_suppressNextClick){_suppressNextClick=false;return;}
   if(!G||G.over||G.win||paused) return;
   const rect=cv.getBoundingClientRect();
   const col=Math.floor((e.clientX-rect.left)*cv.width/rect.width/CS);
@@ -1940,6 +1950,78 @@ function _onDragUp(e){
   _dragTwr=-1; _dragging=false;
 }
 
+/* ══ DRAG-TO-MERGE — ลากป้อมบนกระดานทับป้อมชนิด/ดาวเดียวกันเพื่อรวมดาว ══ */
+let _twrDragTw=null,_twrDragging=false,_twrDragSX=0,_twrDragSY=0,_suppressNextClick=false;
+function onCanvasPointerDown(e){
+  if(!G||G.over||G.win||paused) return;
+  if(G.selTwr>=0) return; // กำลังวางป้อมใหม่จาก toolbar อยู่ — ไม่เกี่ยวกับการลากรวม
+  const rect=cv.getBoundingClientRect();
+  const col=Math.floor((e.clientX-rect.left)*cv.width/rect.width/CS);
+  const row=Math.floor((e.clientY-rect.top)*cv.height/rect.height/CS);
+  const tw=G.towers.find(t=>t.col===col&&t.row===row);
+  if(!tw||tw.awakened||(tw.star||1)>=4) return;
+  _twrDragTw=tw; _twrDragging=false;
+  _twrDragSX=e.clientX; _twrDragSY=e.clientY;
+  document.addEventListener('pointermove',_onTwrDragMove);
+  document.addEventListener('pointerup',_onTwrDragUp);
+}
+function _onTwrDragMove(e){
+  if(!_twrDragTw) return;
+  if(!_twrDragging&&Math.hypot(e.clientX-_twrDragSX,e.clientY-_twrDragSY)>10){
+    _twrDragging=true;
+    hideTowerPopup(); if(G) G.selTowerInfo=null;
+    const ghost=document.getElementById('dragGhost');
+    ghost.textContent=TICONS[_twrDragTw.type]; ghost.style.display='flex';
+  }
+  if(!_twrDragging) return;
+  e.preventDefault();
+  const ghost=document.getElementById('dragGhost');
+  ghost.style.left=e.clientX+'px'; ghost.style.top=e.clientY+'px';
+}
+function _onTwrDragUp(e){
+  document.removeEventListener('pointermove',_onTwrDragMove);
+  document.removeEventListener('pointerup',_onTwrDragUp);
+  if(_twrDragging){
+    _suppressNextClick=true;
+    if(cv&&G){
+      const rect=cv.getBoundingClientRect();
+      if(e.clientX>=rect.left&&e.clientX<=rect.right&&e.clientY>=rect.top&&e.clientY<=rect.bottom){
+        const col=Math.floor((e.clientX-rect.left)*cv.width/rect.width/CS);
+        const row=Math.floor((e.clientY-rect.top)*cv.height/rect.height/CS);
+        const target=G.towers.find(t=>t.col===col&&t.row===row&&t!==_twrDragTw);
+        if(target) tryMergeTowers(_twrDragTw,target);
+      }
+    }
+    document.getElementById('dragGhost').style.display='none';
+  }
+  _twrDragTw=null; _twrDragging=false;
+}
+/* รวมป้อมชนิด/ดาวเดียวกัน 2 ตัว → ป้อมเดียว ดาว+1 รีเซ็ตแต้มสกิลเป็นของดาวใหม่ */
+function tryMergeTowers(src,target){
+  if(!G) return false;
+  if(src.type!==target.type){showToast('❌ รวมได้แค่ป้อมชนิดเดียวกัน!');return false;}
+  if((src.star||1)!==(target.star||1)){showToast('❌ รวมได้แค่ป้อม★เท่ากัน!');return false;}
+  if(src.awakened||target.awakened){showToast('⚡ ป้อม Awaken แล้วรวมต่อไม่ได้!');return false;}
+  const curStar=target.star||1;
+  if(curStar>=4){showToast('🔝 ป้อม 4★ คือขั้นสูงสุดแล้ว!');return false;}
+  const newStar=curStar+1;
+  G.towers=G.towers.filter(t=>t!==src&&t!==target);
+  const merged={col:target.col,row:target.row,type:target.type,star:newStar,lv:1,dmgLv:1,rngLv:1,rateLv:1,cd:0,angle:0,spawnAnim:1.0,awakened:false};
+  if(G.gmTimers) delete G.gmTimers[src.col+'_'+src.row];
+  G.towers.push(merged);
+  const mx=target.col*CS+CS/2,my=target.row*CS+CS/2;
+  G.fxRings.push({x:mx,y:my,r:0,maxR:CS*2,life:1,lw:3,col:'#ffd54f',delay:0});
+  G.fxRings.push({x:mx,y:my,r:0,maxR:CS*1.3,life:.7,lw:5,col:'#fff9c4',delay:.05});
+  for(let k=0;k<10;k++){
+    const ang=k/10*Math.PI*2;
+    G.particles.push({x:mx,y:my,txt:'★',col:'#ffd54f',life:1.1,vy:Math.sin(ang)*2.2,vx:Math.cos(ang)*2.2,decay:1.6,scale:1});
+  }
+  addParticle(mx,my-CS*.4,'✨ รวมเป็น '+'★'.repeat(newStar)+'!','#ffd54f');
+  showToast(`✨ ${TNAMES[target.type]} รวมสำเร็จ! → ${'★'.repeat(newStar)} (รับแต้มสกิลใหม่ ${newStar} แต้ม)`);
+  updateHUD();
+  return true;
+}
+
 /* ══ ENDGAME MENU ══ */
 function openEgMenu(){
   showScreen('egmenu',true);
@@ -1993,6 +2075,7 @@ function _doStartEndgame(){
   cv.removeEventListener('mousemove',onCanvasMove); cv.addEventListener('mousemove',onCanvasMove);
   cv.removeEventListener('pointerleave',onCanvasLeave); cv.addEventListener('pointerleave',onCanvasLeave);
   cv.removeEventListener('touchstart',_onCvTouchStart); cv.addEventListener('touchstart',_onCvTouchStart,{passive:false});
+  cv.removeEventListener('pointerdown',onCanvasPointerDown); cv.addEventListener('pointerdown',onCanvasPointerDown);
   document.getElementById('surrenderBtn').style.display='inline-block';
   document.getElementById('backBtn').style.display='none';
   initEgGame();
