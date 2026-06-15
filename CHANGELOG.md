@@ -2,6 +2,27 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.0.1 — Balance pass on v3.0.0 skill tracks
+
+### Changed
+- `js/tower.js` `SNIPER_CRIT_MULT` 2 → 1.75 — at max crit (40% chance via
+  `getSniperCrit`), Sniper's overall ★4lv5 scaling drops from ×5.88 to
+  ×5.46 relative to ★1lv1, bringing its endgame DPS/Cost down from ~2.35
+  closer to (but still above) other towers, while keeping the crit track
+  meaningfully rewarding.
+- `js/tower.js` `getGoldMineInterval(rateLv)` cooldown reduction -10%/lv →
+  -15%/lv. Max-cooldown build (rateLv5) now produces gold every 2.0s
+  instead of 2.5s (0.4g/s → ~1.0g/s base amount), making the "cooldown"
+  skill track a viable alternative to the "amount" track instead of a
+  near-trap pick.
+- `js/game.js` `DEFAULT_CFG.t_dmg[8]` (Void Tower) 38 → 42 — raises Void
+  Tower's standalone DPS/Cost (★1lv1: 0.253→0.280, ★4lv5: 1.064→1.176),
+  narrowing the gap with other towers while keeping its Void Mark debuff
+  as the primary value proposition.
+- Codex (`js/tower.js` `TSPECIAL[3]`, `TSPECIAL[6]`): updated text to
+  reflect the new x1.75 Sniper crit multiplier and -15%/lvl Gold Mine
+  cooldown reduction.
+
 ## v3.0.0 — Tower skill-point system redesign (2 tracks per tower)
 
 ### Changed

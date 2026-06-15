@@ -130,7 +130,7 @@ const DEFAULT_CFG={
   m_spd:[1.4,1.0,1.15,.85,.5,.55,1.8,1.55,.65,.42,.72],
   m_rew:[10,10,15,20,60,30,5,20,30,100,10], // v1.7.2: ปัดเศษ reward เป็นเลขลงท้าย 0/5 เพื่อความชัดเจนในเกม
   // Tower — เพิ่ม DPS นิดหน่อยให้ผู้เล่นรู้สึกว่าป้อมมีพลัง
-  t_dmg:[24,12,44,65,0,20,0,20,38],   // [cannon,ice,magic,sniper,support,archer,goldmine,thunder,void] — cannon 28→24, magic 38→44
+  t_dmg:[24,12,44,65,0,20,0,20,42],   // [cannon,ice,magic,sniper,support,archer,goldmine,thunder,void] — cannon 28→24, magic 38→44, void 38→42 (v3.0.1)
   t_rng:[2.2,2.0,2.5,4.5,1.5,2.8,0,2.4,3.0], // support: 2.8→1.5 (v3.0.0 ลดระยะเยอะ)
   t_rate:[1.2,1.5,.8,.4,0,2.0,0,1.8,0.6],
   t_cost:[50,55,75,65,35,60,75,85,90], // thunder: 85 gold, void: 90 gold
