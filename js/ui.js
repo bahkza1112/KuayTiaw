@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='1.14.0';
+const GAME_VERSION='1.14.1';
 const PATCH_NOTES=[
+  {ver:'1.14.1',date:'2026-06-15',title:'📈 ราคาป้อมเพิ่มขึ้นตามจำนวนป้อม',notes:[
+    'ราคาสร้างป้อมใหม่จะเพิ่มขึ้น +15 ทอง ต่อป้อมที่วางอยู่บนกระดานแล้ว (ทุกชนิดป้อม ทุกโหมด) เช่น ป้อมแรก 50 → ป้อมที่สอง 65 → ป้อมที่สาม 80',
+    'ขายป้อมออกจะลดราคาป้อมถัดไปกลับลงตามจำนวนป้อมที่เหลือ',
+    'ค่าอัปเกรดและค่า Awaken ของป้อมที่มีอยู่ไม่เปลี่ยนแปลง'
+  ]},
   {ver:'1.14.0',date:'2026-06-15',title:'📖 ปรับทูทอเรียล + เอาระบบลิงค์ป้อมออก',notes:[
     'ทูทอเรียลใหม่! สอนระบบเกมแบบละเอียดต่อเนื่องไปถึงด่าน 1-3 (เลือก/วางป้อม, ดูข้อมูลป้อม, ระบบทอง, Awaken, สภาพอากาศ, วัสดุ/Workshop, Codex)',
     'เอาระบบ "ลิงค์ป้อม" (Tower Synergy) ออกทั้งหมด — ป้อมไม่ได้รับ/ให้โบนัสจากป้อมข้างเคียงอีกต่อไป ค่าดาเมจ/หน่วง/ทองจึงคงที่ตามค่าพื้นฐานของป้อมเอง',
@@ -824,6 +829,8 @@ function updateHUD(){
   document.getElementById('goldTxt').textContent=G.gold;
   document.getElementById('hpTxt').textContent=G.hp;
   document.getElementById('hpBar').style.width=Math.max(0,G.hp/G.maxHp*100)+'%';
+  // 📈 ราคาป้อมเปลี่ยนตามจำนวนป้อมบนกระดาน — รีเฟรชแถบราคาทุกครั้งที่ HUD อัปเดต
+  for(let i=0;i<9;i++){const c=document.getElementById('tc'+i);if(c)c.textContent='💰'+getTowerCost(i);}
 }
 function addParticle(x,y,txt,col){
   if(!G) return;
@@ -982,7 +989,7 @@ function renderCodex(){
           <div>
             <div class="cdx-detail-name">${TNAMES[cdxSel]}</div>
             <div class="cdx-detail-sub">ป้อมปราการ</div>
-            <div style="margin-top:3px;font-size:10px;background:rgba(255,255,255,.08);border-radius:6px;padding:2px 8px;display:inline-block;color:#80cbc4;">💰 ราคา: ${CFG.t_cost[cdxSel]} ทอง</div>
+            <div style="margin-top:3px;font-size:10px;background:rgba(255,255,255,.08);border-radius:6px;padding:2px 8px;display:inline-block;color:#80cbc4;">💰 ราคาเริ่มต้น: ${CFG.t_cost[cdxSel]} ทอง <span style="opacity:.7;">(+15 ทองต่อป้อมที่วางแล้วในด่าน)</span></div>
           </div>
         </div>
         <div class="cdx-flavor">${TFLAVOR[cdxSel]}</div>

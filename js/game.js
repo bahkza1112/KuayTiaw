@@ -405,7 +405,7 @@ function updateTowerPanel(){
     btn.style.display=locked?'none':'flex';
     btn.classList.remove('locked-tower','sel');
     const tc=document.getElementById('tc'+i);
-    if(tc) tc.textContent='💰'+CFG.t_cost[i];
+    if(tc) tc.textContent='💰'+getTowerCost(i);
   }
 }
 
@@ -1825,8 +1825,9 @@ function tryPlaceTower(type,col,row){
   if(col<0||col>=COLS||row<0||row>=ROWS) return false;
   if(currentPset.has(col+','+row)){showToast('❌ สร้างบนเส้นทางไม่ได้!');return false;}
   if(G.towers.find(t=>t.col===col&&t.row===row)){showToast('❌ ช่องนี้มีป้อมอยู่แล้ว!');return false;}
-  if(G.gold<CFG.t_cost[type]){showToast('💰 ต้องการ '+CFG.t_cost[type]+' ทอง!');return false;}
-  G.gold-=CFG.t_cost[type];
+  const cost=getTowerCost(type);
+  if(G.gold<cost){showToast('💰 ต้องการ '+cost+' ทอง!');return false;}
+  G.gold-=cost;
   G.towers.push({col,row,type,lv:1,dmgLv:1,rngLv:1,rateLv:1,cd:0,angle:0,spawnAnim:1.0,awakened:false});
   // FX: ring pulse + burst particles
   const bx=col*CS+CS/2, by=row*CS+CS/2;
@@ -1871,7 +1872,7 @@ function onCanvasMove(e){
   if(info){
     if(G.selTwr>=0&&!G.over&&!G.win&&!paused){
       const t=G.selTwr;
-      info.innerHTML=TICONS[t]+' '+TNAMES[t]+'<br>🎯 ระยะ '+getTowerRange(t,1).toFixed(1)+' | ⚔️ '+Math.round(getTowerDmg(t,1))+' | 💰 '+CFG.t_cost[t];
+      info.innerHTML=TICONS[t]+' '+TNAMES[t]+'<br>🎯 ระยะ '+getTowerRange(t,1).toFixed(1)+' | ⚔️ '+Math.round(getTowerDmg(t,1))+' | 💰 '+getTowerCost(t);
       const gpRect=document.getElementById('gp').getBoundingClientRect();
       info.style.left=(e.clientX-gpRect.left+14)+'px';
       info.style.top=(e.clientY-gpRect.top-10)+'px';
@@ -2013,7 +2014,7 @@ function initEgGame(){
   document.getElementById('maxWaveTxt').textContent='∞';
   document.getElementById('stageBadge').textContent='🔥 Round '+(egRound+1);
   document.getElementById('stageBadge').className='eg-round-badge';
-  for(let i=0;i<9;i++){const b=document.getElementById('tb'+i);if(b){b.classList.remove('sel','locked-tower');const c=document.getElementById('tc'+i);if(c)c.textContent='💰'+CFG.t_cost[i];}}
+  for(let i=0;i<9;i++){const b=document.getElementById('tb'+i);if(b){b.classList.remove('sel','locked-tower');const c=document.getElementById('tc'+i);if(c)c.textContent='💰'+getTowerCost(i);}}
   paused=false; speed=1; autoWave=false; _settingsPausedGame=false;
   document.getElementById('speedBtn').textContent='1×';
   document.getElementById('pauseBtn').textContent='⏸';

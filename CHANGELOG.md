@@ -2,6 +2,25 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.14.1 — Escalating tower placement cost
+
+### Changed
+- New `getTowerCost(type)` (`js/tower.js`) returns `CFG.t_cost[type] +
+  G.towers.length*15` — each placed tower raises the cost of the *next*
+  tower (any type, both story and Endgame) by 15 gold. Selling a tower
+  lowers the next cost back down since it's based on the current board
+  count.
+- `tryPlaceTower` (`js/game.js`) now charges/validates against
+  `getTowerCost`. Toolbar cost labels (`updateTowerPanel`, `updateHUD`,
+  Endgame round-reset) and the canvas drag-preview tooltip
+  (`onCanvasMove`) all refresh from `getTowerCost` so displayed prices stay
+  in sync with the board.
+- Upgrade cost (`upgradeTowerFromPopup`), sell refund
+  (`sellTowerFromPopup`), and Awaken cost are unaffected — only the cost to
+  place a *new* tower escalates.
+- Codex tower detail (`js/ui.js`) now labels the cost row "ราคาเริ่มต้น"
+  and notes the +15/tower scaling.
+
 ## v1.14.0 — Tutorial overhaul + remove Tower Synergy system
 
 ### Added
