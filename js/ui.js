@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='2.0.1';
+const GAME_VERSION='2.0.2';
 const PATCH_NOTES=[
+  {ver:'2.0.2',date:'2026-06-15',title:'🔧 แก้ราคาป้อมขึ้นตามชนิดป้อม',notes:[
+    'แก้บั๊ก: ก่อนหน้านี้การวางป้อมชนิดใดก็ตามจะดันราคาป้อม "ทุกชนิด" ให้แพงขึ้น +15 ทอง',
+    'ตอนนี้ราคา +15 ทอง จะคิดเฉพาะป้อม "ชนิดเดียวกัน" ที่วางไปแล้วเท่านั้น เช่น วางปืนใหญ่ 1 ป้อม (50→65) จะไม่ทำให้ป้อมน้ำแข็งแพงขึ้นถ้ายังไม่ได้วาง'
+  ]},
   {ver:'2.0.1',date:'2026-06-15',title:'🔧 ปรับระบบรวมป้อม — แต้มสกิลที่จัดสรรแล้วเป็นแบบถาวร',notes:[
     'เอาปุ่ม ↺ รีเซ็ตแต้มสกิลออก — เมื่อจัดสรรแต้มดาเมจ/ระยะ/อัตรายิงแล้ว จะไม่สามารถจัดสรรใหม่ได้ (ยกเว้นรวมป้อมเพื่อเลื่อนดาว ซึ่งจะรีเซ็ตแต้มของป้อมใหม่ให้)'
   ]},
@@ -1004,7 +1008,7 @@ function renderCodex(){
           <div>
             <div class="cdx-detail-name">${TNAMES[cdxSel]}</div>
             <div class="cdx-detail-sub">ป้อมปราการ</div>
-            <div style="margin-top:3px;font-size:10px;background:rgba(255,255,255,.08);border-radius:6px;padding:2px 8px;display:inline-block;color:#80cbc4;">💰 ราคาเริ่มต้น: ${CFG.t_cost[cdxSel]} ทอง <span style="opacity:.7;">(+15 ทองต่อป้อมที่วางแล้วในด่าน)</span></div>
+            <div style="margin-top:3px;font-size:10px;background:rgba(255,255,255,.08);border-radius:6px;padding:2px 8px;display:inline-block;color:#80cbc4;">💰 ราคาเริ่มต้น: ${CFG.t_cost[cdxSel]} ทอง <span style="opacity:.7;">(+15 ทองต่อป้อมชนิดนี้ที่วางแล้ว)</span></div>
           </div>
         </div>
         <div class="cdx-flavor">${TFLAVOR[cdxSel]}</div>

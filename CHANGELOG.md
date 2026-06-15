@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v2.0.2 — Per-type escalating tower cost
+
+### Fixed
+- `getTowerCost(t)` (`js/tower.js`) now scales `+15` gold per placed tower
+  of **the same type `t` only**, instead of `G.towers.length` (every tower
+  on the board regardless of type). Previously, placing one Cannon raised
+  the cost of Ice/Support/etc. too even if none were placed. Codex tower
+  detail (`js/ui.js`) and the inline comment in `js/tower.js` updated to
+  match.
+
 ## v2.0.1 — Star Merge skill points are permanent
 
 ### Removed

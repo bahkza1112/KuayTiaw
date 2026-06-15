@@ -54,8 +54,8 @@ const TWEAKNESS=[
 function getTowerDmg(t,lv){return CFG.t_dmg[t]*(1+(lv-1)*.25);}
 function getTowerRange(t,lv){return CFG.t_rng[t]*(1+(lv-1)*.15);}
 function getTowerRate(t,lv){return CFG.t_rate[t]*(1+(lv-1)*.1);}
-// 📈 ราคาป้อมถัดไปแพงขึ้นตามจำนวนป้อมที่วางอยู่บนกระดาน (+15 ทอง/ป้อม)
-function getTowerCost(t){return CFG.t_cost[t]+(G?G.towers.length:0)*15;}
+// 📈 ราคาป้อมชนิดนี้ถัดไปแพงขึ้นตามจำนวนป้อมชนิดนี้ที่วางอยู่บนกระดาน (+15 ทอง/ป้อม)
+function getTowerCost(t){return CFG.t_cost[t]+(G?G.towers.filter(tw=>tw.type===t).length:0)*15;}
 function getBuffMult(col,row){
   if(!G) return 1;
   const self=G.towers.find(t=>t.col===col&&t.row===row);
