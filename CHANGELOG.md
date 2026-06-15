@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v2.0.1 — Star Merge skill points are permanent
+
+### Removed
+- `resetTowerPointsFromPopup` (`js/tower.js`) and `.tp-resetbtn`
+  (`css/main.css`), plus the reset button row in `showTowerPopup`. Once a
+  tower's free skill points (`dmgLv/rngLv/rateLv`) are allocated, they can no
+  longer be reallocated except via a Star Merge (which resets the new,
+  higher-★ tower's points to a fresh pool).
+
 ## v2.0.0 — Star Merge system (replaces gold-based upgrades)
 
 ### Major change
@@ -27,9 +36,6 @@ spent has changed.
   the tower popup right after a merge-drag.
 - Star badge (★N) drawn top-left on towers with `star>1`, alongside the
   existing `LvN` badge top-right.
-- `resetTowerPointsFromPopup` (`js/tower.js`) + new `.tp-resetbtn`
-  (`css/main.css`): resets `dmgLv/rngLv/rateLv` to 1 for free so points can
-  be reallocated at any time.
 
 ### Changed
 - `upgradeTowerFromPopup` (`js/tower.js`) no longer charges gold — it just
@@ -41,9 +47,9 @@ spent has changed.
   tower, so the player must choose between Awakening at ★3 (locking in a
   3-point build) or pushing to ★4 first for a stronger Awaken.
 - `showTowerPopup` rebuilt: shows `★N`, "แต้มสกิล used/star", a
-  free-allocation pick row (when points remain), the reset button, and the
-  Awaken button (when ★≥3 and not yet Awakened) instead of the old
-  gold-cost upgrade panel / "🔝 MAX" state.
+  free-allocation pick row (when points remain), and the Awaken button
+  (when ★≥3 and not yet Awakened) instead of the old gold-cost upgrade
+  panel / "🔝 MAX" state.
 - Codex tower detail (`js/ui.js`): the per-level table's last column now
   shows the ★ requirement ("พื้นฐาน" / "★N ขึ้นไป") instead of a gold cost,
   plus a new explainer box describing the Star Merge system.

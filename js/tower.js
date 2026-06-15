@@ -340,8 +340,7 @@ function showTowerPopup(tw,px,py){
   const synHtml=(tw._drainT>0)?
     `<div class="tp-syn-row"><div class="tp-syn-label">🌑 สถานะ</div><div class="tp-syn-item" style="background:rgba(126,87,194,.15);border-color:rgba(126,87,194,.4);"><div class="tp-syn-name" style="color:#b39ddb;">🌑 ถูกดูดพลัง!</div><div class="tp-syn-desc">บัฟ/Awaken ของป้อมนี้ถูกระงับชั่วคราวโดยเงามืด</div></div></div>`
     : '';
-  // ⬆ แต้มสกิลติดตัว — ได้มาฟรีตามดาว (1★=1, 2★=2, 3★=3, 4★=4) จัดสรร/รีเซ็ตได้ฟรีตลอด
-  const resetBtn=(!tw.awakened&&used>0)?`<button class="tp-resetbtn" onclick="resetTowerPointsFromPopup()" title="คืนแต้มทั้งหมดเพื่อจัดสรรใหม่ (ฟรี)">↺ รีเซ็ต</button>`:'';
+  // ⬆ แต้มสกิลติดตัว — ได้มาฟรีตามดาว (1★=1, 2★=2, 3★=3, 4★=4) จัดสรรได้ฟรี (ถาวร)
   const pickRowHtml=remain>0?`<div class="tp-pick-row">
           <button class="tp-pickbtn" onclick="upgradeTowerFromPopup('dmg')" title="${CFG.t_dmg[tw.type]===0?'ป้อมนี้ไม่มีดาเมจ':'ดาเมจ Lv.'+tw.dmgLv+' → Lv.'+(tw.dmgLv+1)+' (ฟรี)'}">
             <span class="pi">⚔️</span>ดาเมจ<br><small>Lv.${tw.dmgLv}→${tw.dmgLv+1}</small>
@@ -358,7 +357,7 @@ function showTowerPopup(tw,px,py){
     :
     `<div class="tp-upgrade-pick">
         <div class="tp-upgrade-label" style="display:flex;justify-content:space-between;align-items:center;">
-          <span>⬆ แต้มสกิล ${remain>0?'เหลือ '+remain+'/'+tw.star+' (ฟรี)':'เต็ม '+used+'/'+tw.star}</span>${resetBtn}
+          <span>⬆ แต้มสกิล ${remain>0?'เหลือ '+remain+'/'+tw.star+' (ฟรี)':'เต็ม '+used+'/'+tw.star}</span>
         </div>
         ${pickRowHtml}
         ${remain===0&&!showAwakenBtn?`<div style="font-size:9px;color:#888;text-align:center;margin-top:2px;">รวมป้อม ${starStr} อีกตัวเพื่อเลื่อนดาว</div>`:''}
@@ -460,23 +459,6 @@ function upgradeTowerFromPopup(stat){
   addParticle(ux,uy,'⬆ '+_statInfo.icon+' '+_statInfo.name+' Lv.'+tw[_statInfo.key],_statInfo.col);
   updateHUD();
   // reopen popup with updated stats
-  hideTowerPopup();
-  setTimeout(()=>{
-    if(G&&!G.over&&!G.win&&G.selTowerInfo===tw){
-      const r=cv.getBoundingClientRect();
-      showTowerPopup(tw,(tw.col+.5)*CS*r.width/cv.width+r.left,tw.row*CS*r.height/cv.height+r.top);
-    }
-  },60);
-}
-function resetTowerPointsFromPopup(){
-  if(!_popupTw||!G) return;
-  const tw=_popupTw;
-  if(tw.awakened){showToast('⚡ อเวคแล้ว รีเซ็ตแต้มไม่ได้!');return;}
-  const used=(tw.dmgLv-1)+(tw.rngLv-1)+(tw.rateLv-1);
-  if(used===0){showToast('ยังไม่มีแต้มที่ใช้ไป');return;}
-  tw.dmgLv=1;tw.rngLv=1;tw.rateLv=1;tw.lv=1;
-  showToast('↺ รีเซ็ตแต้มแล้ว จัดสรรใหม่ได้ฟรี');
-  updateHUD();
   hideTowerPopup();
   setTimeout(()=>{
     if(G&&!G.over&&!G.win&&G.selTowerInfo===tw){

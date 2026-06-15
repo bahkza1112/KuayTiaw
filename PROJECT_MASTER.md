@@ -178,12 +178,12 @@ pierce). Flavor text, tags, and strengths/weaknesses for the Codex are in
 - `onCanvasClick`, `onCanvasHoldStart/End` handle placement and long-press
   interactions on the grid.
 - `showTowerPopup` / `hideTowerPopup` render the per-tower action popup:
-  free skill-point allocation across dmg/range/rate (`upgradeTowerFromPopup`,
-  see Progression → Star Merge), a "reset points" button
-  (`resetTowerPointsFromPopup`), sell (`sellTowerFromPopup`, with partial
-  gold refund), and "Awaken" (`awakenTowerFromPopup`, `js/tower.js`) — a
-  late-game power-up (350 gold flat, raised from 300 in v1.7.3). The popup
-  also shows an effective **DPS** stat (v1.6.4).
+  free, permanent skill-point allocation across dmg/range/rate
+  (`upgradeTowerFromPopup`, see Progression → Star Merge), sell
+  (`sellTowerFromPopup`, with partial gold refund), and "Awaken"
+  (`awakenTowerFromPopup`, `js/tower.js`) — a late-game power-up (350 gold
+  flat, raised from 300 in v1.7.3). The popup also shows an effective
+  **DPS** stat (v1.6.4).
 
 ### Awaken System (v1.6.8 / v1.6.9, generic bonus removed v1.11.0, gated on ★3+ v2.0.0)
 - Awaken no longer grants a generic damage bonus (the +15% effective
@@ -498,8 +498,11 @@ Notes:
 - Each tower gets a free skill-point pool equal to its `star` rating
   (1★=1pt ... 4★=4pt), spent across the three independent stat tracks —
   damage (`dmgLv`), range (`rngLv`), rate (`rateLv`) — via
-  `upgradeTowerFromPopup(stat)` (`js/tower.js`), at **no gold cost**.
-  `resetTowerPointsFromPopup()` refunds all spent points to 1/1/1 for free.
+  `upgradeTowerFromPopup(stat)` (`js/tower.js`), at **no gold cost**. Once
+  allocated, points are **permanent** (no reset/reallocation) — the only
+  way to get a fresh point pool is to Star Merge into a higher ★, which
+  resets `dmgLv/rngLv/rateLv` to 1 (v2.0.1, removed the earlier
+  `resetTowerPointsFromPopup`).
 - Path-exclusive perks (e.g., pierce shield, rapid fire) are unlocked at
   certain `dmgLv/rngLv/rateLv` levels along the range/rate trees (per
   recent commit history) — unchanged, since the underlying level formulas
