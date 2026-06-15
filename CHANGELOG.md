@@ -29,6 +29,17 @@ All notable changes to Tower Quest 🏰 will be documented in this file.
   per achievement category (`cat-story`/`cat-combat`/`cat-skill`/
   `cat-endgame`/`cat-collect`) via a new class set in
   `js/save.js` `_showNextAchNotif()`.
+- `css/main.css` `.bnav`/`.bnav.active`: bottom main-menu nav tabs now get a
+  card-style background/border and glow on hover/active, matching the
+  Codex/Stage Select polish.
+- `Tower Quest 🏰.html` `#voidCraftOverlay` / `css/main.css` `.obox.tier-void`:
+  new chest-style success popup shown by `craftVoidTower()`
+  (`js/ui.js`) when the Void Tower recipe is completed, replacing the
+  plain toast.
+
+### Fixed
+- `Tower Quest 🏰.html` Workshop hero stat block showed the Void Tower's
+  pre-v3.0.1 base damage (38); updated to the current value (42).
 
 ### Changed
 - `js/save.js` `saveProgress(si,stars)` now returns the Soul Gems gained

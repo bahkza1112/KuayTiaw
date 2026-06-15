@@ -52,8 +52,9 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .mbtn:hover{background:rgba(255,255,255,.28);}
 .mbtn.gold{color:#ffe082;border-color:#ffe082;}
 .bottom-nav{position:absolute;bottom:0;width:100%;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;justify-content:space-around;padding:12px 0;border-top:1px solid rgba(255,255,255,.1);}
-.bnav{color:#aaa;font-size:11px;text-align:center;cursor:pointer;transition:color .2s;}
-.bnav:hover,.bnav.active{color:#ffe082;}
+.bnav{color:#aaa;font-size:11px;text-align:center;cursor:pointer;transition:all .2s;padding:6px 14px;border-radius:12px;border:1px solid transparent;}
+.bnav:hover{color:#ffe082;background:rgba(255,255,255,.06);}
+.bnav.active{color:#ffe082;background:rgba(255,224,130,.12);border-color:rgba(255,224,130,.35);box-shadow:0 0 10px rgba(255,224,130,.25);}
 .bnav span{font-size:22px;display:block;margin-bottom:2px;}
 .bnav span.bnav-ico{display:flex;justify-content:center;align-items:center;margin-bottom:3px;filter:drop-shadow(0 0 4px rgba(0,0,0,.35));}
 .bnav span.bnav-ico svg{width:22px;height:22px;}
@@ -122,6 +123,7 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .obox.tier-silver{border-color:#cfd8dc;box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 30px rgba(207,216,220,.4);}
 .obox.tier-bronze{border-color:#caa472;box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 28px rgba(202,164,114,.4);}
 .obox.tier-lose{border-color:#757575;box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 22px rgba(0,0,0,.35);}
+.obox.tier-void{border-color:#b388ff;box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 36px rgba(179,136,255,.55);}
 .chest-icon{font-size:46px;line-height:1;margin-bottom:2px;animation:chestPopIn .4s cubic-bezier(.34,1.56,.64,1);}
 @keyframes chestPopIn{from{transform:scale(.3) translateY(10px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
 .obox h2{font-size:24px;margin-bottom:6px;}

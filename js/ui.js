@@ -7,7 +7,9 @@ const PATCH_NOTES=[
     'แสดงจำนวน 💎 Soul Gems ที่ได้รับทันทีในหน้าจอจบด่าน เมื่อทำลายสถิติดาวเดิมได้',
     'หน้า Codex แท็บป้อม: ไอคอนป้อมมีกรอบเรืองแสงสีตามชนิดป้อม ทั้งในกริดและหน้ารายละเอียด',
     'หน้าเลือกด่าน: การ์ดด่านที่เคลียร์แล้วมีกรอบเรืองแสง + ป้ายกล่องรางวัล (👑/🎁/📦) ตามจำนวนดาวที่ทำได้',
-    'แจ้งเตือนปลดล็อกความสำเร็จ: เด้งเข้าแบบยุบ-ขยาย และกรอบเรืองแสงเปลี่ยนสีตามหมวดความสำเร็จ'
+    'แจ้งเตือนปลดล็อกความสำเร็จ: เด้งเข้าแบบยุบ-ขยาย และกรอบเรืองแสงเปลี่ยนสีตามหมวดความสำเร็จ',
+    'เมนูหลัก: แท็บเมนูด้านล่าง (เอนด์เกม/เนื้อเรื่อง/สารานุกรม/อันดับ/Dev) มีพื้นหลังและกรอบเรืองแสงตอนเลือก/โฮเวอร์',
+    'เวิร์กชอป: คราฟป้อมมนตราโมฆะสำเร็จจะมีหน้าต่างฉลองแบบกล่องรางวัล พร้อมแก้สเปคดาเมจที่แสดงผิดจาก 38 เป็น 42'
   ]},
   {ver:'3.1.0',date:'2026-06-16',title:'🌟 กรอบ Rarity ป้อม + ปรับบาลานซ์เพิ่ม',notes:[
     'ป้อมที่รวมดาวแล้ว (★2 ขึ้นไป) จะมีกรอบเรืองแสงสีตามระดับ — ★2 น้ำเงิน (Rare), ★3 ม่วง (Epic), ★4 ส้มทอง (Legendary) ทั้งในสนามและหน้าต่างป้อม',
@@ -412,8 +414,9 @@ function craftVoidTower(){
   saveGems(gems-VOID_RECIPE.gems);
   mats[0]-=VOID_RECIPE.mats[0]; mats[1]-=VOID_RECIPE.mats[1]; mats[2]-=VOID_RECIPE.mats[2];
   saveMaterials(mats); setVoidUnlocked();
-  showToast('🌑 ปลดล็อก ป้อมมนตราโมฆะ สำเร็จ!');
   renderWorkshop(); updateMenuStats(); checkAchievements();
+  // 🌑 popup ฉลองคราฟสำเร็จ (สไตล์เดียวกับหน้าจอจบด่าน)
+  document.getElementById('voidCraftOverlay').style.display='flex';
 }
 
 /* ══ STAGE SELECT ══ */
@@ -1696,6 +1699,7 @@ document.getElementById('tsBackBtn').addEventListener('click',()=>{
 document.getElementById('workshopBtn').addEventListener('click',openWorkshop);
 document.getElementById('workshopBackBtn').addEventListener('click',()=>showScreen('mm',true));
 document.getElementById('wsCraftBtn').addEventListener('click',craftVoidTower);
+document.getElementById('voidCraftCloseBtn').addEventListener('click',()=>{document.getElementById('voidCraftOverlay').style.display='none';});
 // update hideAll to include new screens
 const _origHideAll=hideAll;
 window.hideAll=function(){
