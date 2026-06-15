@@ -16,8 +16,7 @@ light story campaign, an endless endgame mode, and long-term progression
 - **Accessible TD fundamentals** — classic grid placement, path-following
   enemies, range/rate/damage upgrades.
 - **Build variety** — 8 tower types with distinct roles (splash, slow,
-  single-target, support, utility, chain) plus a synergy system that
-  rewards mixed compositions.
+  single-target, support, utility, chain).
 - **Readable difficulty curve** — story mode ramps gently across 11 stages;
   endgame provides infinite scaling for players who want a harder challenge.
 - **Replayability hooks** — Codex collection, achievements, runes, local

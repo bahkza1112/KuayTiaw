@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='1.13.2';
+const GAME_VERSION='1.14.0';
 const PATCH_NOTES=[
+  {ver:'1.14.0',date:'2026-06-15',title:'📖 ปรับทูทอเรียล + เอาระบบลิงค์ป้อมออก',notes:[
+    'ทูทอเรียลใหม่! สอนระบบเกมแบบละเอียดต่อเนื่องไปถึงด่าน 1-3 (เลือก/วางป้อม, ดูข้อมูลป้อม, ระบบทอง, Awaken, สภาพอากาศ, วัสดุ/Workshop, Codex)',
+    'เอาระบบ "ลิงค์ป้อม" (Tower Synergy) ออกทั้งหมด — ป้อมไม่ได้รับ/ให้โบนัสจากป้อมข้างเคียงอีกต่อไป ค่าดาเมจ/หน่วง/ทองจึงคงที่ตามค่าพื้นฐานของป้อมเอง',
+    'เงามืด (Shadow) ยังคงระงับบัฟ/Awaken ของป้อมในระยะได้เหมือนเดิม (ปรับข้อความให้ตรงกับระบบใหม่)'
+  ]},
   {ver:'1.13.2',date:'2026-06-15',title:'🌩️ ความสำเร็จใหม่: ผู้ฝ่าวิกฤต',notes:[
     'เพิ่มความสำเร็จ "ผู้ฝ่าวิกฤต" — ผ่าน Wave ในโหมดเอนด์เกมระดับยาก ขณะมีสภาพอากาศแปรปรวนเกิดขึ้น'
   ]},
@@ -446,33 +451,81 @@ let _tutStep=-1,_tutIv=null,_tutResizeBound=false;
    Now positions are computed live from the actual DOM elements' bounding boxes,
    relative to #gp, so it always lines up regardless of screen size. */
 const _TUT_STEPS=[
-  {title:'ขั้นตอน 1 / 3',
+  // === ด่าน 1: Grassland ===
+  {stage:0, title:'ยินดีต้อนรับ! 🏰',
+   msg:'ปกป้องปราสาทจากศัตรู\nที่เดินตามเส้นทางมาเรื่อยๆ\nโดยวางป้อมปราการสกัดไว้',
+   target:null, boxAnchor:'center', arrowIcon:'', click:true},
+  {stage:0, title:'เลือกป้อม',
    msg:'เลือกป้อมจากแถบด้านล่าง\nแตะ 💣 Cannon เพื่อเริ่ม',
-   target:'#tb0', boxAnchor:'above', arrowIcon:'⬇️'},
-  {title:'ขั้นตอน 2 / 3',
+   target:'#tb0', boxAnchor:'above', arrowIcon:'⬇️', cond:G=>G.selTwr>=0},
+  {stage:0, title:'วางป้อม',
    msg:'แตะบนแผนที่\nเพื่อวางป้อม!',
-   target:'#cv', boxAnchor:'top-right', arrowIcon:'👆'},
-  {title:'ขั้นตอน 3 / 3',
+   target:'#cv', boxAnchor:'top-right', arrowIcon:'👆', cond:G=>G.towers.length>0},
+  {stage:0, title:'ดูข้อมูลป้อม',
+   msg:'แตะที่ป้อมที่วางไว้\nเพื่อดูสถานะและอัปเกรด\nดาเมจ/ระยะ/ความเร็วยิง',
+   target:'#cv', boxAnchor:'top-right', arrowIcon:'👆', cond:()=>!!_popupTw},
+  {stage:0, title:'เหรียญทอง 💰',
+   msg:'กำจัดศัตรูเพื่อรับทอง\nใช้ซื้อป้อมใหม่\nหรืออัปเกรดป้อมที่มี',
+   target:null, boxAnchor:'center', arrowIcon:'', click:true},
+  {stage:0, title:'ส่งศัตรูมา!',
    msg:'กด ▶ Send Wave\nเพื่อเริ่มการต่อสู้!',
-   target:'#waveBtn', boxAnchor:'above', arrowIcon:'⬇️'},
-  {title:'🎉 เยี่ยมมาก!',
-   msg:'ปกป้องปราสาท\nอย่าให้ศัตรูผ่าน!',
-   target:null, boxAnchor:'center', arrowIcon:''},
+   target:'#waveBtn', boxAnchor:'above', arrowIcon:'⬇️', cond:G=>G.wave>=1},
+  {stage:0, title:'🎉 เยี่ยมมาก!',
+   msg:'ปกป้องปราสาท\nอย่าให้ศัตรูผ่าน!\nไปกันต่อในด่านถัดไป',
+   target:null, boxAnchor:'center', arrowIcon:'', click:true},
+  // === ด่าน 2: Dark Forest ===
+  {stage:1, title:'ผสมป้อมหลายชนิด',
+   msg:'แต่ละป้อมมีบทบาทต่างกัน\n(สาด/หน่วง/เป้าเดี่ยว/บัฟ)\nลองผสมกันให้เหมาะกับศัตรู',
+   target:null, boxAnchor:'center', arrowIcon:'', click:true},
+  {stage:1, title:'ระบบ Awaken ⚡',
+   msg:'อัปเกรดป้อมถึง Lv.5\nแล้วจ่ายทองเพื่อ "ปลุกพลัง"\nรับความสามารถพิเศษเฉพาะป้อม',
+   target:null, boxAnchor:'center', arrowIcon:'', click:true},
+  {stage:1, title:'สภาพอากาศ 🌦️',
+   msg:'สภาพอากาศจะเปลี่ยนเป็นระยะ\nและส่งผลต่อป้อม/ศัตรู\nคอยสังเกตไอคอนด้านบนจอ',
+   target:null, boxAnchor:'center', arrowIcon:'', click:true},
+  // === ด่าน 3: Volcanic Pass ===
+  {stage:2, title:'วัสดุพิเศษ 🪨',
+   msg:'เคลียร์เวฟมีโอกาสได้วัสดุพิเศษ\nนำไปใช้ใน 🛠️ Workshop\nเพื่อปลดล็อกป้อมใหม่ถาวร',
+   target:null, boxAnchor:'center', arrowIcon:'', click:true},
+  {stage:2, title:'Codex & ความสำเร็จ 📖',
+   msg:'เปิดเมนูหลักเพื่อดู Codex\nข้อมูลป้อม/ศัตรู\nและภารกิจความสำเร็จต่างๆ',
+   target:null, boxAnchor:'center', arrowIcon:'', click:true},
+  {stage:2, title:'พร้อมลุยแล้ว! 🔥',
+   msg:'เมื่อผ่านด่านเนื้อเรื่องครบ\nลองโหมด Endgame\nเพื่อความท้าทายไม่จำกัด!',
+   target:null, boxAnchor:'center', arrowIcon:'', click:true, final:true},
 ];
 function initTutorial(){
   if(localStorage.getItem('tq_tut_done')) return;
-  _tutStep=0; _renderTut();
+  let idx=parseInt(localStorage.getItem('tq_tut_idx')||'0',10);
+  while(idx<_TUT_STEPS.length&&_TUT_STEPS[idx].stage!==currentStage.id) idx++;
+  if(idx>=_TUT_STEPS.length){ localStorage.setItem('tq_tut_done','1'); _tutStep=-1; return; }
+  _tutStep=idx; _renderTut();
   if(_tutIv) clearInterval(_tutIv);
   _tutIv=setInterval(()=>{
     if(!G||_tutStep<0) return;
-    if(_tutStep===0&&G.selTwr>=0){_tutStep=1;_renderTut();}
-    else if(_tutStep===1&&G.towers.length>0){_tutStep=2;_renderTut();}
-    else if(_tutStep===2&&G.wave>=1){_tutStep=3;_renderTut();setTimeout(skipTutorial,2200);}
+    const s=_TUT_STEPS[_tutStep];
+    if(s.cond&&s.cond(G)) _tutAdvanceStep();
   },250);
   if(!_tutResizeBound){
     _tutResizeBound=true;
     window.addEventListener('resize',()=>{ if(_tutStep>=0) _renderTut(); });
   }
+}
+function _tutAdvanceStep(){
+  if(_tutStep<0) return;
+  const s=_TUT_STEPS[_tutStep];
+  if(s.final){ skipTutorial(); return; }
+  const next=_tutStep+1;
+  localStorage.setItem('tq_tut_idx',String(next));
+  if(next>=_TUT_STEPS.length){ localStorage.setItem('tq_tut_done','1'); skipTutorial(); return; }
+  if(_TUT_STEPS[next].stage!==currentStage.id){
+    _tutStep=-1;
+    if(_tutIv){clearInterval(_tutIv);_tutIv=null;}
+    const el=document.getElementById('tutOverlay');
+    if(el) el.style.display='none';
+    return;
+  }
+  _tutStep=next; _renderTut();
 }
 /* get an element's box relative to #gp (the positioned ancestor of #tutOverlay) */
 function _tutRectRel(sel){
@@ -486,7 +539,7 @@ function _renderTut(){
   const el=document.getElementById('tutOverlay'); if(!el) return;
   if(_tutStep<0){el.style.display='none';return;}
   el.style.display='block';
-  const s=_TUT_STEPS[Math.min(_tutStep,3)];
+  const s=_TUT_STEPS[_tutStep];
   let hl='display:none;', arrow='display:none;', box='top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;';
   const rect=s.target?_tutRectRel(s.target):null;
   if(rect){
@@ -506,6 +559,7 @@ function _renderTut(){
     <div class="tut-box" style="${box}">
       <div class="tut-title">${s.title}</div>
       ${s.msg.replace(/\n/g,'<br>')}
+      ${s.click?`<div class="tut-next" onclick="_tutAdvanceStep()">${s.final?'🎮 เริ่มเล่น':'ต่อไป ▶'}</div>`:''}
     </div>
     <div class="tut-skip" onclick="skipTutorial()">ข้าม ✕</div>`;
 }

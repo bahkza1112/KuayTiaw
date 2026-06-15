@@ -64,44 +64,6 @@ function getBuffMult(col,row){
   });
   return m;
 }
-// === Tower Synergy: คู่ป้อมที่เสริมกัน — ป้อม "to" ได้รับโบนัสเมื่อมีป้อม "from" อยู่ในระยะ ===
-// effect: 'dmg'=โบนัสดาเมจ(mult), 'gold'=โบนัสผลผลิตทอง(amount), 'slow'=โบนัสหน่วงเหนี่ยว(amount)
-const SYNERGY=[
-  {from:1,to:2,effect:'dmg',mult:.20,name:'❄️🔮 ความเย็นยะเยือก',desc:'น้ำแข็งทำให้ศัตรูแข็งตัว เวทมนตร์สลายได้แรงขึ้น +20% dmg'},
-  {from:2,to:7,effect:'dmg',mult:.20,name:'🔮⚡ ตัวนำเวทมนตร์',desc:'เวทมนตร์เสริมพลังให้สายฟ้านำกระแสได้แรงขึ้น +20% dmg'},
-  {from:0,to:3,effect:'dmg',mult:.15,name:'💣🎯 ชี้เป้าระดมยิง',desc:'ปืนใหญ่ระดมยิงเปิดจุดอ่อนให้สไนเปอร์ +15% dmg'},
-  {from:5,to:0,effect:'dmg',mult:.15,name:'🏹💣 สอดแนมตำแหน่ง',desc:'ธนูสอดแนมบอกตำแหน่งศัตรูให้ปืนใหญ่ +15% dmg'},
-  {from:1,to:3,effect:'slow',amount:.30,name:'❄️🎯 กระสุนเยือกแข็ง',desc:'น้ำแข็งเสริมหัวกระสุนสไนเปอร์ให้หน่วงเหนี่ยวเป้าหมาย +30%'},
-  {from:4,to:6,effect:'gold',amount:.25,name:'💰🛡️ ขุมทองคุ้มกัน',desc:'ซัพพอร์ตคุ้มกันเหมืองทอง ผลผลิตทองเพิ่ม +25%'},
-];
-function getActiveSynergies(type,col,row){
-  if(!G) return [];
-  const self=G.towers.find(t=>t.col===col&&t.row===row);
-  if(self&&self._drainT>0) return []; // ถูกเงามืดดูดพลัง — synergy ใช้งานไม่ได้ชั่วคราว
-  const out=[];
-  SYNERGY.forEach(s=>{
-    if(s.to===type){
-      const has=G.towers.some(t=>t!==undefined&&t.type===s.from&&Math.hypot(t.col-col,t.row-row)<=getTowerRange(t.type,t.rngLv||t.lv));
-      if(has) out.push(s);
-    }
-  });
-  return out;
-}
-function getSynergyMult(type,col,row){
-  let m=1;
-  getActiveSynergies(type,col,row).forEach(s=>{ if(s.effect==='dmg') m+=s.mult; });
-  return m;
-}
-function getSynergyGoldMult(col,row){
-  let m=1;
-  getActiveSynergies(6,col,row).forEach(s=>{ if(s.effect==='gold') m+=s.amount; });
-  return m;
-}
-function getSynergySlowBonus(type,col,row){
-  let b=0;
-  getActiveSynergies(type,col,row).forEach(s=>{ if(s.effect==='slow') b+=s.amount; });
-  return b;
-}
 // 💚 ป้อม Support ที่ตื่นแล้ว (awakened) จะดับเบิลโบนัส Awaken ของป้อมอื่นที่อยู่ในระยะ
 function getSupportAwakenBoost(col,row){
   if(!G) return 1;
@@ -365,22 +327,15 @@ function showTowerPopup(tw,px,py){
   const cost=tw.lv>=5?0:CFG.t_cost[tw.type]*tw.lv;
   const refund=Math.floor(CFG.t_cost[tw.type]*tw.lv*.6);
   const canUp=tw.lv<5&&G.gold>=cost;
-  const synMult=getSynergyMult(tw.type,tw.col,tw.row);
-  const dmgVal=CFG.t_dmg[tw.type]===0?'—':Math.round(getTowerDmg(tw.type,tw.dmgLv)*synMult);
+  const dmgVal=CFG.t_dmg[tw.type]===0?'—':Math.round(getTowerDmg(tw.type,tw.dmgLv));
   const rngVal=getTowerRange(tw.type,tw.rngLv).toFixed(1);
   const rateVal=CFG.t_rate[tw.type]===0?'—':getTowerRate(tw.type,tw.rateLv).toFixed(1);
   const dpsVal=(CFG.t_dmg[tw.type]!==0&&CFG.t_rate[tw.type]!==0)?(dmgVal*parseFloat(rateVal)).toFixed(1):null;
   const canAwaken=tw.lv>=5&&!tw.awakened&&G.gold>=350;
   const showAwakenBtn=tw.lv>=5&&!tw.awakened;
-  const activeSyn=getActiveSynergies(tw.type,tw.col,tw.row);
-  const _synBonusTxt=s=>s.effect==='dmg'?`+${Math.round(s.mult*100)}% dmg`:s.effect==='gold'?`+${Math.round(s.amount*100)}% ทอง`:s.effect==='slow'?`+${Math.round(s.amount*100)}% หน่วงเหนี่ยว`:'';
   const synHtml=(tw._drainT>0)?
-    `<div class="tp-syn-row"><div class="tp-syn-label">🔗 SYNERGY</div><div class="tp-syn-item" style="background:rgba(126,87,194,.15);border-color:rgba(126,87,194,.4);"><div class="tp-syn-name" style="color:#b39ddb;">🌑 ถูกดูดพลัง!</div><div class="tp-syn-desc">บัฟ/ซินเนอร์จี้/Awaken ของป้อมนี้ถูกระงับชั่วคราวโดยเงามืด</div></div></div>`
-    : activeSyn.length?
-    `<div class="tp-syn-row"><div class="tp-syn-label">🔗 SYNERGY (${activeSyn.length})</div>`+
-    activeSyn.map(s=>`<div class="tp-syn-item"><div class="tp-syn-name">${s.name} <span style="color:#80deea;">${_synBonusTxt(s)}</span></div><div class="tp-syn-desc">${s.desc}</div></div>`).join('')+
-    `</div>`
-    : `<div class="tp-syn-row"><div class="tp-syn-label">🔗 SYNERGY</div><div class="tp-syn-empty" style="color:#555;">วางป้อมชนิดอื่นใกล้ๆ เพื่อปลดล็อกซินเนอร์จี้</div></div>`;
+    `<div class="tp-syn-row"><div class="tp-syn-label">🌑 สถานะ</div><div class="tp-syn-item" style="background:rgba(126,87,194,.15);border-color:rgba(126,87,194,.4);"><div class="tp-syn-name" style="color:#b39ddb;">🌑 ถูกดูดพลัง!</div><div class="tp-syn-desc">บัฟ/Awaken ของป้อมนี้ถูกระงับชั่วคราวโดยเงามืด</div></div></div>`
+    : '';
   pop.innerHTML=`<div class="tp-head">
     <canvas id="_tpIco" width="42" height="42" style="flex-shrink:0;border-radius:6px;"></canvas>
     <div>
@@ -389,7 +344,7 @@ function showTowerPopup(tw,px,py){
     </div>
   </div>
   <div class="tp-stats">
-    <div class="tp-stat">⚔️ ดาเมจ <small style="opacity:.5">Lv.${tw.dmgLv}</small><span>${dmgVal}${synMult>1?` <span style="color:#80deea;font-size:9px;">(+${Math.round((synMult-1)*100)}% synergy)</span>`:''}</span></div>
+    <div class="tp-stat">⚔️ ดาเมจ <small style="opacity:.5">Lv.${tw.dmgLv}</small><span>${dmgVal}</span></div>
     <div class="tp-stat">📡 ระยะ <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${rngVal} ช่อง${tw.rngLv>=4?' <span style="color:#90caf9;font-size:9px;" title="กระสุนเจาะโล่ศัตรู ดาเมจเข้า HP ตรงๆ">🛡️✨เจาะโล่</span>':''}</span></div>
     <div class="tp-stat">⚡ อัตรายิง <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${rateVal}${tw.rateLv>=4?' <span style="color:#ffe234;font-size:9px;" title="มีโอกาสคูลดาวน์สั้นลงทันทีหลังยิง">⚡ยิงรัว</span>':''}</span></div>
     ${dpsVal?`<div class="tp-stat">📊 DPS<span>${dpsVal}</span></div>`:''}

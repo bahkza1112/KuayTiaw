@@ -199,6 +199,13 @@ unlocked by clearing an Endgame wave on Hard difficulty while a weather
 effect is active. Builds on the v1.12.7 Endgame-weather fix. File:
 `js/save.js` (`ACHIEVEMENTS`), `js/game.js` (`updateEg`).
 
+✅ **Tutorial overhaul + remove Tower Synergy** (v1.14.0) — tutorial now
+spans Stages 1-3 (13 steps, condition- and click-driven, persisted via
+`tq_tut_idx`) instead of finishing within Stage 1. The Tower Synergy system
+(`SYNERGY` and related getters in `js/tower.js`) was removed entirely;
+Shadow's Drain ability still suppresses buffs/Awaken. Files: `js/ui.js`
+(tutorial), `js/tower.js`/`js/game.js` (synergy removal), `css/main.css`.
+
 ## Future / Unscoped Ideas
 
 These are larger and need a dedicated design pass before scoping:

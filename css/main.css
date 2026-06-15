@@ -587,7 +587,6 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .ach-progress-fill{height:100%;background:linear-gradient(90deg,#ffe234,#ff9800);border-radius:6px;transition:width .5s;}
 .ach-count{font-size:10px;color:#ffe082;font-weight:700;text-align:center;margin-top:4px;}
 
-.tp-syn-empty{font-size:10px;color:#555;font-style:italic;}
 .tp-syn-row{padding:6px 12px;border-bottom:1px solid rgba(255,255,255,.06);}
 .tp-syn-label{font-size:9px;color:#4fc3f7;letter-spacing:.5px;margin-bottom:4px;}
 .tp-syn-item{display:flex;flex-direction:column;gap:1px;background:rgba(79,195,247,.10);border:1px solid rgba(79,195,247,.3);
@@ -619,4 +618,7 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .tut-skip{position:absolute;bottom:10px;right:12px;font-size:10px;color:#555;cursor:pointer;
   pointer-events:auto;transition:color .2s;}
 .tut-skip:hover{color:#aaa;}
+.tut-next{margin-top:8px;background:#ffe082;color:#1a1a1a;border-radius:8px;padding:6px 10px;
+  font-size:11px;font-weight:800;text-align:center;cursor:pointer;pointer-events:auto;}
+.tut-next:hover{background:#fff3c4;}
 

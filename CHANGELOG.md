@@ -2,6 +2,37 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v1.14.0 — Tutorial overhaul + remove Tower Synergy system
+
+### Added
+- `js/ui.js` tutorial system (`_TUT_STEPS`, `initTutorial`, `_tutAdvanceStep`,
+  `_renderTut`) reworked into a 13-step, multi-stage flow spanning Stages 1-3
+  (Grassland/Dark Forest/Volcanic Pass) instead of finishing within Stage 1.
+  Steps are either condition-driven (auto-advance, e.g. select a tower, place
+  a tower, send a wave) or click-to-advance ("ต่อไป ▶" / "🎮 เริ่มเล่น" via new
+  `.tut-next` button, `css/main.css`). Progress persists across stage
+  transitions via `localStorage.tq_tut_idx`, resuming at the first step
+  matching `currentStage.id` and pausing the overlay between stages.
+  New steps cover: viewing the tower popup, the gold economy, mixed builds,
+  the Awaken system, weather, materials/Workshop, and Codex/Achievements.
+
+### Removed
+- Tower Synergy system (`SYNERGY`, `getActiveSynergies`, `getSynergyMult`,
+  `getSynergyGoldMult`, `getSynergySlowBonus` in `js/tower.js`) removed
+  entirely. Tower damage/slow/Gold Mine output no longer receive cross-tower
+  bonuses from nearby towers (`js/game.js` projectile-spawn and Gold Mine
+  production blocks, both story and Endgame loops).
+- Tower popup (`showTowerPopup`, `js/tower.js`) no longer shows a "🔗 SYNERGY"
+  section; only the Shadow drain "🌑 ถูกดูดพลัง!" status row remains.
+  `.tp-syn-empty` (CSS) removed as dead code; the remaining `.tp-syn-*`
+  classes are kept for the drain-status row.
+- Updated flavor text for Shadow's Drain ability (`_drainT`, `js/game.js`)
+  from "บัฟ/synergy/awaken" to "บัฟ/Awaken", since synergy no longer exists.
+- Docs updated to remove synergy references: `docs/TowerDesign.md` (removed
+  "## Synergies" section and trimmed the Support Awaken effect row),
+  `docs/BalanceSheet.md`, `docs/EnemyDesign.md`, `docs/GDD.md`, and
+  `PROJECT_MASTER.md`.
+
 ## v1.13.2 — New achievement: Storm Survivor (Endgame Hard + weather)
 
 ### Added

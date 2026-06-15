@@ -37,24 +37,6 @@ Design rationale and roles for the 8 tower types. For raw numbers, see
   simultaneously and shield pierce — effective DPS/cost should be evaluated
   per-target-hit, not single-target.
 
-## Synergies
-
-Cross-tower bonuses defined in `SYNERGY` (`js/tower.js`):
-
-| From → To | Effect | Bonus | Flavor |
-|---|---|---|---|
-| Ice → Magic | +dmg | +20% | ความเย็นยะเยือก |
-| Magic → Thunder | +dmg | +20% | ตัวนำเวทมนตร์ |
-| Cannon → Sniper | +dmg | +15% | ชี้เป้าระดมยิง |
-| Archer → Cannon | +dmg | +15% | สอดแนมตำแหน่ง |
-| Ice → Sniper | +slow | +30% | กระสุนเยือกแข็ง |
-| Support → Gold Mine | +gold | +25% | ขุมทองคุ้มกัน |
-
-Synergies are designed to encourage mixed builds rather than mono-tower
-spam — each high-value combo requires placing a "support" type tower
-(Ice, Cannon, Archer, Support) near a "payoff" type (Magic, Thunder,
-Sniper, Gold Mine).
-
 ## Upgrade Paths
 
 Each placed tower levels independently along 3 tracks: `dmgLv` (+25%
@@ -75,7 +57,7 @@ per-type Awaken effect:
 | ❄️ Ice | Single | 45% slow, can hit flying enemies | Freezes (stuns) target for 3s |
 | ✨ Magic | AoE | 20% chance to fire 2 shots | 2→3 shots, chance 20%→40% |
 | 🎯 Sniper | Single | Can hit flying enemies | Shot pierces in a straight line |
-| 💚 Support | Cannot attack | Cleanses monster debuffs/weather effects from towers in range | Doubles the Awaken bonus of nearby awakened towers (e.g. Ice freeze 3s→6s); reduces Gold Mine cooldown when nearby |
+| 💚 Support | Cannot attack | Cleanses monster debuffs/weather effects from towers in range | Doubles the Awaken bonus of nearby awakened towers (e.g. Ice freeze 3s→6s) |
 | 🏹 Archer | Single, anti-air | Fast fire rate | — |
 | 💰 Gold Mine | Cannot attack | Produces 5 gold per tick; upgrades reduce cooldown | Gold output ×2 |
 | ⚡ Thunder | Single + chain | Chains to 1–2 nearby enemies | Chains to 2–4 nearby enemies |

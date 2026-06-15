@@ -9,7 +9,7 @@ Live numeric reference for tower and enemy stats, derived from
 
 ---
 
-## 1. Tower Stats (Level 1, base — before synergy/buff/rune)
+## 1. Tower Stats (Level 1, base — before buff)
 
 Source: `DEFAULT_CFG.t_dmg/t_rng/t_rate/t_cost`, `js/tower.js`
 (`TSPLASH`, `TSLOW`, `TCHAIN`, `TPIERCE`, `TCANAIR`).

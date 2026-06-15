@@ -673,7 +673,7 @@ function update(dt){
       _playSound('heal');
     }
   });
-  // 🌑 เงามืด (ti===2) ปล่อยคลื่นดูดพลัง — ระงับบัฟ/synergy/awaken ของป้อมในระยะชั่วคราว
+  // 🌑 เงามืด (ti===2) ปล่อยคลื่นดูดพลัง — ระงับบัฟ/Awaken ของป้อมในระยะชั่วคราว
   G.enemies.forEach(shadow=>{
     if(!shadow.alive||shadow.ti!==2) return;
     shadow.drainCd=(shadow.drainCd||3+Math.random()*2)-dt;
@@ -802,8 +802,8 @@ function update(dt){
       }
       const fx=tw.col*CS+CS/2, fy=tw.row*CS+CS/2;
       const _aw=tw.awakened&&!(tw._drainT>0); // ⚡ ป้อมตื่นแล้วและไม่ได้ถูกดูดพลัง
-      let _rdmg=getTowerDmg(tw.type,tw.dmgLv||tw.lv)*getBuffMult(tw.col,tw.row)*getSynergyMult(tw.type,tw.col,tw.row);
-      let _rSlow=(TSLOW[tw.type]||0)+getSynergySlowBonus(tw.type,tw.col,tw.row);
+      let _rdmg=getTowerDmg(tw.type,tw.dmgLv||tw.lv)*getBuffMult(tw.col,tw.row);
+      let _rSlow=(TSLOW[tw.type]||0);
       const _wSplashMult=((tw.type===0||tw.type===2)&&G.weather&&G.weather.splashMult)?G.weather.splashMult:1;
       // ⚡ Awaken เฉพาะป้อม: Cannon=splash ใหญ่ขึ้น, Thunder=chain เพิ่ม
       const _awSplashMult=(_aw&&tw.type===0)?1.5:1;
@@ -883,11 +883,8 @@ function update(dt){
     G.gmTimers[key]=(G.gmTimers[key]||0)+dt;
     if(G.gmTimers[key]>=CFG.t_goldrate){
       G.gmTimers[key]=0;
-      // 💚 Support Awaken: ดับเบิลโบนัส synergy ทองที่ได้รับ (+25% → +50%)
-      let _gmSynMult=getSynergyGoldMult(tw.col,tw.row);
-      if(_gmSynMult>1) _gmSynMult=1+(_gmSynMult-1)*getSupportAwakenBoost(tw.col,tw.row);
       // 💰 Gold Mine Awaken: ผลผลิตทอง x2
-      const goldAmt=Math.round(CFG.t_goldamt[Math.min(tw.lv-1,3)]*((G.weather&&G.weather.goldMineMult)?G.weather.goldMineMult:1)*_gmSynMult*(tw.awakened?2:1));
+      const goldAmt=Math.round(CFG.t_goldamt[Math.min(tw.lv-1,3)]*((G.weather&&G.weather.goldMineMult)?G.weather.goldMineMult:1)*(tw.awakened?2:1));
       G.gold+=goldAmt; updateHUD();
       addParticle(tw.col*CS+CS/2,tw.row*CS+CS/2,'+'+goldAmt+'💰','#ffd54f');
       // V6: flying coin particles
@@ -1327,7 +1324,7 @@ function render(){
           txt:'✦',col:'#ffe082',life:.9,vy:-1.3,vx:(Math.random()-.5)*.4,decay:1.4,scale:.55+Math.random()*.3});
       }
     }
-    // 🌑 ถูกเงามืดดูดพลัง — overlay มืดสั่นไหวแสดงว่าบัฟ/synergy/awaken ใช้งานไม่ได้ชั่วคราว
+    // 🌑 ถูกเงามืดดูดพลัง — overlay มืดสั่นไหวแสดงว่าบัฟ/Awaken ใช้งานไม่ได้ชั่วคราว
     if(tw._drainT>0){
       const _dt2=Date.now()*.0035;
       ctx.save();
@@ -2184,11 +2181,8 @@ function updateEg(dt){
     G.gmTimers[key]=(G.gmTimers[key]||0)+dt;
     if(G.gmTimers[key]>=CFG.t_goldrate){
       G.gmTimers[key]=0;
-      // 💚 Support Awaken: ดับเบิลโบนัส synergy ทองที่ได้รับ (+25% → +50%)
-      let _gmSynMult=getSynergyGoldMult(tw.col,tw.row);
-      if(_gmSynMult>1) _gmSynMult=1+(_gmSynMult-1)*getSupportAwakenBoost(tw.col,tw.row);
       // 💰 Gold Mine Awaken: ผลผลิตทอง x2
-      const goldAmt=Math.round(CFG.t_goldamt[Math.min(tw.lv-1,3)]*((G.weather&&G.weather.goldMineMult)?G.weather.goldMineMult:1)*_gmSynMult*(tw.awakened?2:1));
+      const goldAmt=Math.round(CFG.t_goldamt[Math.min(tw.lv-1,3)]*((G.weather&&G.weather.goldMineMult)?G.weather.goldMineMult:1)*(tw.awakened?2:1));
       G.gold+=goldAmt; updateHUD();
       addParticle(tw.col*CS+CS/2,tw.row*CS+CS/2,'+'+goldAmt+'💰','#ffd54f');
     }
@@ -2219,8 +2213,8 @@ function updateEg(dt){
       }
       const fx=tw.col*CS+CS/2,fy=tw.row*CS+CS/2;
       const _aw2=tw.awakened&&!(tw._drainT>0);
-      let _rdmg2=getTowerDmg(tw.type,tw.dmgLv||tw.lv)*getBuffMult(tw.col,tw.row)*getSynergyMult(tw.type,tw.col,tw.row);
-      let _rSlow2=(TSLOW[tw.type]||0)+getSynergySlowBonus(tw.type,tw.col,tw.row);
+      let _rdmg2=getTowerDmg(tw.type,tw.dmgLv||tw.lv)*getBuffMult(tw.col,tw.row);
+      let _rSlow2=(TSLOW[tw.type]||0);
       const _wSplashMult2=((tw.type===0||tw.type===2)&&G.weather&&G.weather.splashMult)?G.weather.splashMult:1;
       // ⚡ Awaken เฉพาะป้อม: Cannon=splash ใหญ่ขึ้น, Thunder=chain เพิ่ม
       const _awSplashMult2=(_aw2&&tw.type===0)?1.5:1;

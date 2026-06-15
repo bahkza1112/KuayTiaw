@@ -62,8 +62,9 @@ Design rationale for the 11 monster types. For raw numbers, see
   to allies within 2.5 cells) can stall a wave indefinitely if ignored.
   Reward should be tuned so it's *worth* prioritizing but not so high that
   farming it trivializes the gold economy (see Roadmap).
-- **Drain (Shadow)**: disables synergies on nearby towers for a duration —
-  a soft "tower denial" mechanic, distinct from raw HP/speed pressure.
+- **Drain (Shadow)**: suppresses buff/Awaken bonuses on nearby towers for a
+  duration — a soft "tower denial" mechanic, distinct from raw HP/speed
+  pressure.
 - **Disruptor (Wyvern)**: every ~5s (with initial random offset), dives —
   moves at 1.5× speed for 1.2s and stuns 1 random placed tower for 3s
   (stunned tower cannot acquire targets or fire, shown with an orange

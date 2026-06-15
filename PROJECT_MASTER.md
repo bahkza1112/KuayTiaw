@@ -161,17 +161,12 @@ pierce). Flavor text, tags, and strengths/weaknesses for the Codex are in
   `getTowerRate()`.
 - Projectiles are pushed into `G.projs` with damage, splash radius, slow,
   crit chance, pierce, and chain-lightning data computed per shot
-  (`getBuffMult`, `getSynergyMult`, `getSynergySlowBonus`, etc., `js/game.js`
-  story ~line 790 / endgame ~line 2231).
+  (`getBuffMult`, etc., `js/game.js` story ~line 790 / endgame ~line 2231).
 - `applyDmg(e, dmg, towerType, forcePierce)` (`js/enemy.js` line 81) applies
   damage to an enemy, handling shields (`MSHIELD`) and per-monster special
   mechanics (dodge, flare resist, armor crack) before pierce-through logic.
 
-### Synergies & Buffs
-- `SYNERGY` (`js/tower.js` line 75) defines cross-tower-type bonuses (e.g.,
-  one tower type boosts another's damage/slow/gold output when in range).
-- `getActiveSynergies` (line 83), `getSynergyMult`, `getSynergyGoldMult`,
-  `getSynergySlowBonus` compute these bonuses live.
+### Buffs
 - `getBuffMult(col, row)` (line 63) applies Support tower buff auras.
 
 ### Tower Selection, Placement & Popup UI
@@ -185,8 +180,7 @@ pierce). Flavor text, tags, and strengths/weaknesses for the Codex are in
   sell (`sellTowerFromPopup`, with partial gold refund), and "Awaken"
   (`awakenTowerFromPopup`, `js/tower.js`) — a late-game power-up (350 gold
   flat, raised from 300 in v1.7.3). The popup also shows an effective
-  **DPS** stat and an inline `(+X% synergy)` badge when synergy is boosting
-  damage (v1.6.4).
+  **DPS** stat (v1.6.4).
 
 ### Awaken System (v1.6.8 / v1.6.9, generic bonus removed v1.11.0)
 - Awaken no longer grants a generic damage bonus (the +15% effective
@@ -201,8 +195,7 @@ pierce). Flavor text, tags, and strengths/weaknesses for the Codex are in
   - 🎯 **Sniper**: shots pierce in a straight line, damaging enemies behind
     the target (narrow corridor, respects flying/shield rules).
   - 💚 **Support**: doubles nearby awakened towers' Awaken bonuses (Ice
-    freeze 3s→6s, Support→Gold Mine synergy gold bonus +25%→+50%) via
-    `getSupportAwakenBoost()` (line 112).
+    freeze 3s→6s) via `getSupportAwakenBoost()` (line 112).
   - 💰 **Gold Mine**: gold production ×2.
   - ⚡ **Thunder**: chain target count 2→4.
   - 🏹 **Archer**: no Awaken-specific effect.
@@ -590,7 +583,7 @@ unstyled (internal tool only). No gameplay/save changes from any of these.
   `MFLAVOR`/`MTAGS`/etc.), `getEnemyHP`/`getEnemySpd`, damage-number FX,
   `applyDmg`, `spawnEnemy`, `killEnemy`, `drawEnemySprite` and helpers.
 - **`js/tower.js`** — tower static data (`TNAMES`, `TICONS`, per-type stat
-  arrays), `getTowerDmg/Range/Rate`, synergy system, sprite drawing
+  arrays), `getTowerDmg/Range/Rate`, sprite drawing
   (`drawTowerIcon`/`_tw*`), and the tower popup/upgrade/awaken/sell
   functions.
 - **`js/game.js`** — `STAGES`/`DEFAULT_CFG`/`CFG`, grid/state setup
