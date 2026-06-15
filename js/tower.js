@@ -51,7 +51,7 @@ const TWEAKNESS=[
   ['ดาเมจต่อตัวต่ำกว่าป้อมอื่น','Chain ต้องการหลายศัตรู'],
   ['ยิงได้ทีละตัว ไม่มี splash','ใช้ได้แค่ Endgame'],
 ];
-function getTowerDmg(t,lv){return CFG.t_dmg[t]*(1+(lv-1)*.25);}
+function getTowerDmg(t,lv,star){return CFG.t_dmg[t]*(1+((star||1)-1)*.1)*(1+(lv-1)*.25);}
 function getTowerRange(t,lv){return CFG.t_rng[t]*(1+(lv-1)*.15);}
 function getTowerRate(t,lv){return CFG.t_rate[t]*(1+(lv-1)*.1);}
 // 📈 ราคาป้อมชนิดนี้ถัดไปแพงขึ้นตามจำนวนป้อมชนิดนี้ที่วางอยู่บนกระดาน (+15 ทอง/ป้อม)
@@ -330,7 +330,7 @@ function showTowerPopup(tw,px,py){
   const used=(tw.dmgLv-1)+(tw.rngLv-1)+(tw.rateLv-1);
   const remain=tw.star-used;
   const refund=Math.floor(CFG.t_cost[tw.type]*tw.lv*.6);
-  const dmgVal=CFG.t_dmg[tw.type]===0?'—':Math.round(getTowerDmg(tw.type,tw.dmgLv));
+  const dmgVal=CFG.t_dmg[tw.type]===0?'—':Math.round(getTowerDmg(tw.type,tw.dmgLv,tw.star));
   const rngVal=getTowerRange(tw.type,tw.rngLv).toFixed(1);
   const rateVal=CFG.t_rate[tw.type]===0?'—':getTowerRate(tw.type,tw.rateLv).toFixed(1);
   const dpsVal=(CFG.t_dmg[tw.type]!==0&&CFG.t_rate[tw.type]!==0)?(dmgVal*parseFloat(rateVal)).toFixed(1):null;

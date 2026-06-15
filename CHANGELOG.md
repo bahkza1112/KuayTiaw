@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v2.1.0 — Star Merge grants base damage too
+
+### Changed
+- `getTowerDmg(t, lv, star)` (`js/tower.js`) gained a third `star` parameter:
+  `CFG.t_dmg[t] * (1 + ((star||1)-1)*.1) * (1 + (lv-1)*.25)` — base damage
+  now scales **+10% per ★** gained via Star Merge, independent of the
+  `dmgLv` skill-point allocation. All callers (`tower.js` popup, `game.js`
+  story/endgame damage calc) now pass `tw.star`. Toolbar tooltip and Codex
+  level table intentionally still show ★1 reference values; the Codex
+  explainer box now notes the +10%/★ base bonus.
+
 ## v2.0.3 — Star Merge drag UX polish
 
 ### Added

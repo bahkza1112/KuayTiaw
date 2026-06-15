@@ -802,7 +802,7 @@ function update(dt){
       }
       const fx=tw.col*CS+CS/2, fy=tw.row*CS+CS/2;
       const _aw=tw.awakened&&!(tw._drainT>0); // ⚡ ป้อมตื่นแล้วและไม่ได้ถูกดูดพลัง
-      let _rdmg=getTowerDmg(tw.type,tw.dmgLv||tw.lv)*getBuffMult(tw.col,tw.row);
+      let _rdmg=getTowerDmg(tw.type,tw.dmgLv||tw.lv,tw.star)*getBuffMult(tw.col,tw.row);
       let _rSlow=(TSLOW[tw.type]||0);
       const _wSplashMult=((tw.type===0||tw.type===2)&&G.weather&&G.weather.splashMult)?G.weather.splashMult:1;
       // ⚡ Awaken เฉพาะป้อม: Cannon=splash ใหญ่ขึ้น, Thunder=chain เพิ่ม
@@ -2327,7 +2327,7 @@ function updateEg(dt){
       }
       const fx=tw.col*CS+CS/2,fy=tw.row*CS+CS/2;
       const _aw2=tw.awakened&&!(tw._drainT>0);
-      let _rdmg2=getTowerDmg(tw.type,tw.dmgLv||tw.lv)*getBuffMult(tw.col,tw.row);
+      let _rdmg2=getTowerDmg(tw.type,tw.dmgLv||tw.lv,tw.star)*getBuffMult(tw.col,tw.row);
       let _rSlow2=(TSLOW[tw.type]||0);
       const _wSplashMult2=((tw.type===0||tw.type===2)&&G.weather&&G.weather.splashMult)?G.weather.splashMult:1;
       // ⚡ Awaken เฉพาะป้อม: Cannon=splash ใหญ่ขึ้น, Thunder=chain เพิ่ม

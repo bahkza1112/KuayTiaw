@@ -145,10 +145,13 @@ pierce). Flavor text, tags, and strengths/weaknesses for the Codex are in
 - **Unlock**: gated behind `tq_voidUnlocked` (see Workshop, §7).
 
 ### Stats & Scaling
-- `getTowerDmg(t, lv)`, `getTowerRange(t, lv)`, `getTowerRate(t, lv)`
+- `getTowerDmg(t, lv, star)`, `getTowerRange(t, lv)`, `getTowerRate(t, lv)`
   (`js/tower.js` lines 60-62) compute per-level stats from
   `CFG.t_dmg/t_rng/t_rate` with linear growth per level (+25% dmg, +15%
-  range, +10% rate per level above 1).
+  range, +10% rate per level above 1). `getTowerDmg` also applies a
+  **+10% base-damage bonus per ★** gained via Star Merge (v2.1.0),
+  independent of `dmgLv` — e.g. a ★4 tower's base damage is +30% before
+  any skill points are spent on the damage track.
 - Each placed tower (`G.towers[i]`) tracks independent `dmgLv`, `rngLv`,
   `rateLv` (free skill points spent via Star Merge — see Progression) plus
   `lv` (derived: `(dmgLv-1)+(rngLv-1)+(rateLv-1)+1`, max `star+1`, capped at
