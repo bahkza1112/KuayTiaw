@@ -477,34 +477,20 @@ function renderWorkshop(){
   document.getElementById('wsCraftSection').style.display='';
   document.getElementById('wsAlreadyUnlocked').style.display=unlocked?'block':'none';
   document.getElementById('wsRecipeBox').style.display='none';
+  document.getElementById('wsHeroReqs').innerHTML='';
   const craftBtn=document.getElementById('wsCraftBtn');
   craftBtn.style.display=(unlocked||!finalCleared)?'none':'';
-  if(unlocked){ document.getElementById('wsHeroReqs').innerHTML=''; return; }
-  const reqs=[
-    {icon:'💎',name:'มณีวิญญาณ',have:gems,need:VOID_RECIPE.gems},
-    {icon:MAT_ICONS[0],name:MAT_NAMES[0],have:mats[0]||0,need:VOID_RECIPE.mats[0]},
-    {icon:MAT_ICONS[1],name:MAT_NAMES[1],have:mats[1]||0,need:VOID_RECIPE.mats[1]},
-    {icon:MAT_ICONS[2],name:MAT_NAMES[2],have:mats[2]||0,need:VOID_RECIPE.mats[2]},
-  ];
-  let html='',reqHtml='',allMet=true;
-  reqs.forEach(r=>{
-    const met=r.have>=r.need;
-    if(!met) allMet=false;
-    const pct=Math.min(100,Math.round(r.have/r.need*100));
-    html+=`<div class="ws-recipe-item${met?' met':''}">
-      <div class="ws-recipe-ico">${r.icon}</div>
-      <div class="ws-recipe-info">
-        <div class="ws-recipe-name">${r.name}</div>
-        <div class="ach-progress-bar"><div class="ach-progress-fill" style="width:${pct}%;${met?'background:linear-gradient(90deg,#69f0ae,#4caf50);':''}"></div></div>
-        <div class="ws-recipe-count">${r.have.toLocaleString()} / ${r.need.toLocaleString()}</div>
-      </div>
-      ${met?'<div class="ws-recipe-check">✔</div>':''}
-    </div>`;
-    reqHtml+=`<div class="ws-hero-req-item${met?' met':''}">${r.icon} ${r.need.toLocaleString()}</div>`;
-  });
-  document.getElementById('wsRecipeGrid').innerHTML=html;
-  document.getElementById('wsHeroReqs').innerHTML=reqHtml;
-  craftBtn.disabled=!allMet;
+  if(unlocked) return;
+  if(finalCleared){
+    const reqs=[
+      {icon:'💎',name:'มณีวิญญาณ',have:gems,need:VOID_RECIPE.gems},
+      {icon:MAT_ICONS[0],name:MAT_NAMES[0],have:mats[0]||0,need:VOID_RECIPE.mats[0]},
+      {icon:MAT_ICONS[1],name:MAT_NAMES[1],have:mats[1]||0,need:VOID_RECIPE.mats[1]},
+      {icon:MAT_ICONS[2],name:MAT_NAMES[2],have:mats[2]||0,need:VOID_RECIPE.mats[2]},
+    ];
+    const allMet=reqs.every(r=>r.have>=r.need);
+    craftBtn.disabled=!allMet;
+  }
   // render persistent upgrades
   const pg=loadPGold();
   const badge=document.getElementById('wsPGoldBadge');
