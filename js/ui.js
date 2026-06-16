@@ -1,6 +1,9 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.4.0';
+const GAME_VERSION='3.4.1';
 const PATCH_NOTES=[
+  {ver:'3.4.1',date:'2026-06-16',title:'🧹 ปรับ UI เมนูหลัก',notes:[
+    'ลบปุ่ม "เอนด์เกม" ออกจากหน้าเมนูหลักและ bottom nav — เข้าได้จากหน้าเนื้อเรื่องอยู่แล้ว',
+  ]},
   {ver:'3.4.0',date:'2026-06-16',title:'🎒 ระบบกระเป๋าผู้เล่น',notes:[
     'เพิ่มแท็บ "กระเป๋า" ในแถบนำทางด้านล่าง — เก็บ วัสดุ, ไอเทมบัฟ, ชิ้นส่วนสะสม',
     'จบด่านมีโอกาสได้รับไอเทมบัฟ (ยาเพิ่มทอง/HP/ดาเมจ) — โอกาสสูงขึ้นตามดาวที่ได้',
@@ -1817,8 +1820,6 @@ document.getElementById('devNavBtn').addEventListener('click',()=>openDev(true))
 document.getElementById('devCloseBtn').addEventListener('click',closeDev);
 document.getElementById('codexNavBtn').addEventListener('click',openCodex);
 document.getElementById('codexBackBtn').addEventListener('click',()=>showScreen('mm',true));
-document.getElementById('egNavBtn').addEventListener('click',openEgMenu);
-document.getElementById('egMenuBtn').addEventListener('click',openEgMenu);
 document.getElementById('egBackBtn').addEventListener('click',()=>showScreen('mm',true));
 document.getElementById('lbNavBtn').addEventListener('click',openLeaderboard);
 document.getElementById('lbBackBtn').addEventListener('click',()=>showScreen('mm',true));
