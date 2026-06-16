@@ -474,18 +474,36 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 #gacha{background:linear-gradient(160deg,#120824 0%,#0a0418 55%,#050010 100%);min-height:600px;border-radius:16px;overflow:hidden;position:relative;}
 .gacha-gem-bar{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 14px;font-size:12px;color:#ccc;}
 .gacha-grid{display:grid;gap:8px;}
-/* ticket layout */
-.gacha-ticket{background:rgba(30,10,60,.7);border:1px solid rgba(179,136,255,.2);border-radius:10px;padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;}
-.gacha-ticket-big{border-radius:18px;padding:32px 24px;gap:18px;width:100%;max-width:280px;margin:0 auto;background:rgba(25,5,55,.9);border:2px solid rgba(179,136,255,.4);box-shadow:0 0 40px rgba(100,0,200,.2);}
-/* slot machine digits */
-.gacha-slot-row{display:flex;gap:5px;align-items:center;justify-content:center;}
-.gacha-digit{width:34px;height:46px;border-radius:8px;background:#0a0018;border:2px solid rgba(179,136,255,.25);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:rgba(179,136,255,.35);font-family:monospace;transition:color .25s;}
-.gacha-digit-big{width:72px;height:96px;border-radius:14px;background:#08001a;border:2px solid rgba(179,136,255,.4);display:flex;align-items:center;justify-content:center;font-size:52px;font-weight:900;color:rgba(179,136,255,.35);font-family:monospace;transition:color .3s;box-shadow:0 4px 20px rgba(0,0,0,.6) inset;}
-@keyframes gDigitPop{0%{transform:scale(1.5);}65%{transform:scale(.9);}100%{transform:scale(1);}}
-.gacha-digit-pop{animation:gDigitPop .32s ease-out;}
-/* prize label */
-.gacha-ticket-prize{min-height:18px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;}
-.gacha-prize-name{font-size:10px;font-weight:700;line-height:1.3;}
+/* card flip system */
+.gc-wrap{perspective:700px;}
+.gc-single{grid-column:1/-1;display:flex;justify-content:center;}
+.gc-single .gc-card{width:160px;height:220px;}
+.gc-card{width:100%;aspect-ratio:2/3;cursor:pointer;position:relative;}
+.gc-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,0,.2,1);}
+.gc-card.flipped .gc-inner{transform:rotateY(180deg);}
+.gc-front,.gc-back{position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px;}
+.gc-front{background:linear-gradient(145deg,#2a0a4a,#1a0535);border:2px solid rgba(179,136,255,.35);box-shadow:0 0 16px rgba(90,0,180,.25);}
+.gc-front::after{content:'';position:absolute;inset:6px;border-radius:9px;border:1px solid rgba(179,136,255,.15);}
+.gc-qmark{font-size:36px;font-weight:900;color:rgba(179,136,255,.3);line-height:1;}
+.gc-back{background:linear-gradient(145deg,#1a1230,#100c25);border:2px solid rgba(255,255,255,.15);transform:rotateY(180deg);}
+/* rarity back variants */
+.rarity-back-legendary{border-color:#b388ff!important;background:linear-gradient(145deg,#2e0d5e,#1a0840)!important;box-shadow:0 0 24px rgba(179,136,255,.45)!important;}
+.rarity-back-epic{border-color:#ff8f00!important;background:linear-gradient(145deg,#2a1500,#1a0e00)!important;box-shadow:0 0 18px rgba(255,143,0,.35)!important;}
+.rarity-back-rare{border-color:#ce93d8!important;background:linear-gradient(145deg,#1e0a28,#130618)!important;box-shadow:0 0 14px rgba(206,147,216,.3)!important;}
+.rarity-back-uncommon{border-color:#90caf9!important;background:linear-gradient(145deg,#071a2e,#040f1e)!important;box-shadow:0 0 10px rgba(144,202,249,.2)!important;}
+.rarity-back-common{border-color:#555!important;}
+/* card content */
+.gc-num{font-family:monospace;font-size:11px;font-weight:900;letter-spacing:2px;color:rgba(255,255,255,.3);margin-bottom:2px;}
+.gc-num-dud{color:rgba(255,255,255,.18)!important;}
+.rarity-num-legendary{color:#b388ff!important;font-size:12px;text-shadow:0 0 8px rgba(179,136,255,.6);}
+.rarity-num-epic{color:#ff8f00!important;text-shadow:0 0 6px rgba(255,143,0,.5);}
+.rarity-num-rare{color:#ce93d8!important;}
+.rarity-num-uncommon{color:#90caf9!important;}
+.rarity-num-common{color:#aaa!important;}
+.gc-ico{font-size:28px;line-height:1;}
+.gc-name{font-size:8px;font-weight:700;text-align:center;line-height:1.35;color:#ddd;}
+.gc-dud-txt{font-size:9px;color:#333;font-style:italic;}
+/* rarity tag (shared with odds table) */
 .gacha-rarity-tag{font-size:7px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;padding:1px 5px;border-radius:4px;background:rgba(255,255,255,.07);}
 .gacha-rarity-tag.rarity-legendary{color:#b388ff;border:1px solid #b388ff;box-shadow:0 0 6px rgba(179,136,255,.4);}
 .gacha-rarity-tag.rarity-epic{color:#ff8f00;border:1px solid #ff8f00;}

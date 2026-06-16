@@ -2,6 +2,18 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.5.4 — Gacha card flip (player-controlled)
+
+### Changed
+- Replaced slot machine digit reveal with a card-flip mechanic.
+- Each pull result is a face-down card; player taps any card to flip it.
+- x1: one large centered card. x10: 5×2 grid, flip in any order.
+- "ข้าม" button flips all remaining cards at once.
+- Prize cards glow with rarity border (legendary/epic/rare/uncommon/common).
+- Dud cards (011–999) show the number dimmed with "ไม่ได้รางวัล".
+- Removed slot machine CSS/JS; added `.gc-*` card classes.
+- Fixed back button cleanup (removed stale `_gachaSlotTimers` refs).
+
 ## v3.5.3 — New-item highlight in bag
 
 ### Added
