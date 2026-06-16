@@ -415,39 +415,43 @@
     <div class="eg-hd-title">🛠️ เวิร์กชอป</div>
   </div>
   <div class="eg-body">
-    <div class="ws-hero">
-      <div class="ws-hero-icon">🌑</div>
-      <div style="flex:1;min-width:0;">
-        <div class="ws-hero-name">ป้อมมนตราโมฆะ</div>
-        <div class="ws-hero-tag">✦ ป้อมลับที่ 9 — ปลดล็อกได้ที่เวิร์กชอปเท่านั้น</div>
-        <div class="ws-hero-stats">
-          <span class="ws-stat">⚔️ ดาเมจ 42</span>
-          <span class="ws-stat">📡 ระยะ 3.0</span>
-          <span class="ws-stat">⚡ 0.6 วิ/นัด</span>
-          <span class="ws-stat">💰 ราคา 90</span>
-        </div>
-        <div id="wsLockBadge" style="display:none;margin-top:8px;font-size:10px;color:#ffab40;background:rgba(255,171,64,.1);border:1px solid rgba(255,171,64,.3);border-radius:8px;padding:4px 8px;">🔒 ผ่านด่านสุดท้ายก่อนจึงจะคราฟได้</div>
-      </div>
-      <div class="ws-hero-reqs" id="wsHeroReqs"></div>
-    </div>
-    <div class="eg-info-box" style="cursor:pointer;" onclick="toggleWsSkill()">
-      <div class="eg-info-title" style="display:flex;justify-content:space-between;align-items:center;">
-        <span>✨ พลังมนตราโมฆะ</span>
-        <span id="wsSkillArrow" style="font-size:10px;color:#9575cd;font-weight:400;">▼ รายละเอียด</span>
-      </div>
-      <div id="wsSkillDetail" style="display:none;margin-top:8px;">
-        <div class="eg-info-txt">
-          ปล่อยพลังโมฆะใส่ศัตรู มีโอกาสติด <strong>Void Mark</strong> ทำให้ศัตรูตัวนั้นรับดาเมจเพิ่มจากป้อมทุกชนิด<br>
-          🌙 Awaken: โอกาสติดมาร์กเพิ่มเป็น 50% และเพิ่มดาเมจที่รับเป็น +40%<br>
-          🔥 ใช้ได้เฉพาะโหมด Endgame เท่านั้น
+    <div class="ws-hero" style="flex-direction:column;gap:0;">
+      <!-- ── ส่วนหัว: ไอคอน + ชื่อ + สถิติ ── -->
+      <div style="display:flex;gap:14px;align-items:flex-start;width:100%;">
+        <div class="ws-hero-icon">🌑</div>
+        <div style="flex:1;min-width:0;">
+          <div class="ws-hero-name">ป้อมมนตราโมฆะ</div>
+          <div class="ws-hero-tag">✦ ป้อมลับที่ 9 — ปลดล็อกได้ที่เวิร์กชอปเท่านั้น</div>
+          <div class="ws-hero-stats">
+            <span class="ws-stat">⚔️ ดาเมจ 42</span>
+            <span class="ws-stat">📡 ระยะ 3.0</span>
+            <span class="ws-stat">⚡ 0.6 วิ/นัด</span>
+            <span class="ws-stat">💰 ราคา 90</span>
+          </div>
         </div>
       </div>
-    </div>
-    <div id="wsCraftSection">
-      <div id="wsRecipeBox" style="display:none;"><div class="ws-recipe-grid" id="wsRecipeGrid"></div></div>
-      <div class="eg-locked-note" id="wsAlreadyUnlocked" style="display:none;color:#b388ff;margin-top:10px;">🌑 ปลดล็อกแล้ว — สามารถเลือกใช้ในโหมด Endgame ได้</div>
-      <div id="wsCraftReqNote" style="display:none;font-size:10px;color:#888;text-align:center;margin-top:10px;"></div>
-      <button class="eg-start-btn" id="wsCraftBtn" style="background:linear-gradient(180deg,#7e57c2,#311b92);margin-top:8px;width:100%;">🛠️ สร้าง</button>
+      <!-- ── สกิล (กดขยาย) ── -->
+      <div style="width:100%;margin-top:10px;border-top:1px solid rgba(179,136,255,.15);padding-top:10px;cursor:pointer;" onclick="toggleWsSkill()">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:12px;font-weight:700;color:#ce93d8;">✨ พลังมนตราโมฆะ</span>
+          <span id="wsSkillArrow" style="font-size:10px;color:#9575cd;">▼ รายละเอียด</span>
+        </div>
+        <div id="wsSkillDetail" style="display:none;margin-top:8px;">
+          <div class="eg-info-txt" style="margin:0;">
+            ปล่อยพลังโมฆะใส่ศัตรู มีโอกาสติด <strong>Void Mark</strong> ทำให้ศัตรูตัวนั้นรับดาเมจเพิ่มจากป้อมทุกชนิด<br>
+            🌙 Awaken: โอกาสติดมาร์กเพิ่มเป็น 50% และเพิ่มดาเมจที่รับเป็น +40%<br>
+            🔥 ใช้ได้เฉพาะโหมด Endgame เท่านั้น
+          </div>
+        </div>
+      </div>
+      <!-- ── ส่วนคราฟ / สถานะ ── -->
+      <div id="wsCraftSection" style="width:100%;margin-top:10px;border-top:1px solid rgba(179,136,255,.15);padding-top:10px;">
+        <div id="wsRecipeBox" style="display:none;"><div class="ws-recipe-grid" id="wsRecipeGrid"></div></div>
+        <div id="wsLockBadge" style="display:none;font-size:11px;color:#ffab40;">🔒 ผ่านด่านสุดท้ายก่อนจึงจะคราฟได้</div>
+        <div id="wsAlreadyUnlocked" style="display:none;font-size:11px;color:#b388ff;">🌑 ปลดล็อกแล้ว — เลือกใช้ในโหมด Endgame ได้เลย</div>
+        <div id="wsCraftReqNote" style="display:none;font-size:11px;color:#aaa;line-height:1.7;margin-bottom:8px;"></div>
+        <button class="eg-start-btn" id="wsCraftBtn" style="background:linear-gradient(180deg,#7e57c2,#311b92);width:100%;display:none;">🛠️ คราฟป้อมมนตราโมฆะ</button>
+      </div>
     </div>
     <!-- 🪙 อัพเกรดถาวรด้วยทองถาวร -->
     <div id="wsPUpSection" style="margin-top:16px;">

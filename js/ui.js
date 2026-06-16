@@ -482,14 +482,11 @@ function renderWorkshop(){
   const unlocked=isVoidUnlocked();
   const finalCleared=isFinalStageCleared();
   document.getElementById('wsLockBadge').style.display=(!unlocked&&!finalCleared)?'block':'none';
-  document.getElementById('wsCraftSection').style.display='';
   document.getElementById('wsAlreadyUnlocked').style.display=unlocked?'block':'none';
   document.getElementById('wsRecipeBox').style.display='none';
-  document.getElementById('wsHeroReqs').innerHTML='';
   const craftBtn=document.getElementById('wsCraftBtn');
-  craftBtn.style.display=(unlocked||!finalCleared)?'none':'';
-  if(unlocked) return;
   const reqNote=document.getElementById('wsCraftReqNote');
+  if(unlocked){craftBtn.style.display='none';if(reqNote)reqNote.style.display='none';return;}
   if(finalCleared){
     const reqs=[
       {icon:'💎',name:'มณีวิญญาณ',have:gems,need:VOID_RECIPE.gems},
@@ -498,16 +495,19 @@ function renderWorkshop(){
       {icon:MAT_ICONS[2],name:MAT_NAMES[2],have:mats[2]||0,need:VOID_RECIPE.mats[2]},
     ];
     const allMet=reqs.every(r=>r.have>=r.need);
+    craftBtn.style.display='';
     craftBtn.disabled=!allMet;
     if(reqNote){
-      if(allMet){reqNote.style.display='none';}
-      else{
-        const missing=reqs.filter(r=>r.have<r.need).map(r=>`${r.icon} ${r.have}/${r.need}`).join('  ');
-        reqNote.textContent='ขาด: '+missing;
-        reqNote.style.display='block';
-      }
+      reqNote.style.display='block';
+      reqNote.innerHTML=reqs.map(r=>{
+        const met=r.have>=r.need;
+        return `<span style="color:${met?'#69f0ae':'#ef5350'};">${r.icon} ${r.need.toLocaleString()} ${r.name}</span>`;
+      }).join('&ensp;·&ensp;');
     }
-  } else if(reqNote) reqNote.style.display='none';
+  } else {
+    craftBtn.style.display='none';
+    if(reqNote)reqNote.style.display='none';
+  }
   // render persistent upgrades
   const pg=loadPGold();
   const badge=document.getElementById('wsPGoldBadge');
