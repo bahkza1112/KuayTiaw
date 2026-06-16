@@ -601,6 +601,9 @@ function renderStageSelect(){
       html+=`<div class="ss-unlock-note">🔒 ผ่านด่าน ${si} เพื่อปลดล็อก <strong>${STAGES[si].name}</strong></div>`;
     }
   }
+  html+=`<div style="margin-top:16px;text-align:center;">
+    <button onclick="openEgMenu()" style="background:linear-gradient(180deg,rgba(255,80,80,.35),rgba(180,20,20,.45));color:#ff8a80;font-size:15px;font-weight:800;border:2px solid rgba(255,50,50,.5);border-radius:50px;padding:11px 46px;cursor:pointer;letter-spacing:1px;box-shadow:0 0 16px rgba(255,50,50,.35);width:100%;">🔥 โหมดเอนด์เกม</button>
+  </div>`;
   document.getElementById('ssBody').innerHTML=html;
 }
 
