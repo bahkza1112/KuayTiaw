@@ -70,11 +70,14 @@ const GACHA_POOL=[
   {code:'010',icon:'🪙',name:'ทองถาวร +25',   rarity:'common', color:'#ffd54f',w:15,
    apply(){addPGold(25);}},
 ];
+// GACHA_POOL indexed by code number 1-10 for O(1) lookup
+// Roll 1-100: 1→001(1%), 2→002(1%), 3→003(1%), 4→004(1%), 5→005(1%),
+//             6→006(1%), 7→007(1%), 8→008(1%), 9→009(1%), 10→010(1%), 11-100→dud(90%)
 function _gachaRoll(){
-  const total=GACHA_POOL.reduce((s,p)=>s+p.w,0);
-  let r=Math.random()*total;
-  for(const p of GACHA_POOL){r-=p.w;if(r<=0)return p;}
-  return GACHA_POOL[GACHA_POOL.length-1];
+  const r=Math.floor(Math.random()*100)+1; // 1-100
+  if(r<=10) return {prizeIdx:r-1, num:r}; // 001-010
+  // dud: pick a random display number 011-999
+  return {prizeIdx:-1, num:Math.floor(Math.random()*989)+11};
 }
 function loadGachaPity(){try{return Number(localStorage.getItem('tq_gpity'))||0;}catch(e){return 0;}}
 function saveGachaPity(n){localStorage.setItem('tq_gpity',String(n));}
@@ -86,11 +89,12 @@ function doGachaPulls(n){
   const results=[];
   for(let i=0;i<n;i++){
     pity++;
-    let prize=_gachaRoll();
-    if(pity>=GACHA_PITY){prize=GACHA_POOL[0];pity=0;} // guaranteed 001
-    else if(prize.code==='001'){pity=0;}
-    prize.apply();
-    results.push(prize);
+    let roll=_gachaRoll();
+    if(pity>=GACHA_PITY){roll={prizeIdx:0,num:1};pity=0;} // guaranteed 001
+    else if(roll.prizeIdx===0){pity=0;}
+    const prize=roll.prizeIdx>=0?GACHA_POOL[roll.prizeIdx]:null;
+    if(prize) prize.apply();
+    results.push({num:roll.num, prize});
   }
   saveGachaPity(pity);
   return results;

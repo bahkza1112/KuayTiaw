@@ -2,7 +2,29 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
-## v3.4.0 — Player bag / inventory system
+## v3.5.1 — Gacha: slot machine digit reveal + 001-999 pool
+
+### Changed
+- **Gacha number pool expanded 001→999**: `_gachaRoll()` in `js/save.js` now
+  rolls 1–100; values 1–10 map to prizes (001–010, each 1%), values 11–100
+  give a dud (90%) with a random display number 011–999.
+- **`doGachaPulls` return type changed**: each result is now
+  `{num: int, prize: obj|null}` instead of bare prize object.
+- **Slot machine reveal animation**: replaced card-flip mechanic with a
+  3-digit slot machine in `js/ui.js`. Each digit spins rapidly then stops
+  one-by-one (hundreds → tens → units) with a pop animation. Creates suspense
+  when the first two digits settle on "0" and "0".
+- **x1 pull**: single large ticket (`gacha-ticket-big`) — digits spin for
+  ~700/1200/1700ms before stopping.
+- **x10 pull**: 10 mini tickets (5×2 grid), staggered 200ms start per ticket,
+  each spins ~500/850/1200ms per digit.
+- **Skip button**: instantly fills all pending digits and shows prize labels.
+- **CSS**: removed old card-flip classes; added `.gacha-ticket`,
+  `.gacha-ticket-big`, `.gacha-digit`, `.gacha-digit-big`, `.gacha-slot-row`,
+  `.gacha-ticket-prize`, `.gacha-prize-name`, `.gacha-rarity-tag`,
+  `@keyframes gDigitPop`.
+
+## v3.5.0 — Gacha prize pool system
 
 ### Added
 - **Player bag (`tq_bag`)** — `localStorage` key storing item quantities as a

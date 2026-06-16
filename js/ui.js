@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.5.0';
+const GAME_VERSION='3.5.1';
 const PATCH_NOTES=[
+  {ver:'3.5.1',date:'2026-06-16',title:'🎰 กาชา: สล็อตแมชชีนลุ้นเลข',notes:[
+    'ขยาย pool เป็น 001–999: เลข 011–999 ไม่ได้รางวัล (90%), 001–010 มีรางวัล (10%)',
+    'ระบบเปิดเผยเลขแบบสล็อตแมชชีน — หลักร้อย → หลักสิบ → หลักหน่วย หยุดทีละตัวเพื่อสร้างความลุ้น',
+    'เห็น "0" แล้ว "0" อีกตัว — ลุ้นว่าหลักสุดท้ายจะได้รางวัลหรือเปล่า!',
+  ]},
   {ver:'3.5.0',date:'2026-06-16',title:'✨ ระบบกาชาตู้สุ่มรางวัล',notes:[
     'เพิ่มตู้สุ่มรางวัล 001–010 ใช้ 💎 มณีวิญญาณ 30 ดวงต่อครั้ง',
     'รางวัลมี 10 ระดับ: 001 ปลดล็อกป้อมมนตราโมฆะ, 002-006 วัสดุคราฟ, 007-010 ไอเทมบัฟและทองถาวร',
@@ -394,7 +399,7 @@ let _bagTab=0;
 function openBag(){showScreen('bag',true);_updateBagBadge();renderBag();}
 
 /* ══ GACHA ══ */
-let _gachaResults=[],_gachaRevIdx=0,_gachaTimer=null;
+let _gachaResults=[],_gachaSlotTimers=[],_gachaSpinIntervals=[],_gachaBusy=false;
 function openGacha(){
   showScreen('gacha',true);
   _renderGachaUI();
@@ -407,72 +412,126 @@ function _renderGachaUI(){
   const canAfford10=loadGems()>=GACHA_COST*10;
   document.getElementById('gachaPull1').disabled=!canAfford1;
   document.getElementById('gachaPull10').disabled=!canAfford10;
-  if(!_gachaResults.length){
+  if(!_gachaBusy){
     document.getElementById('gachaGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;color:#444;padding:40px 0;font-size:13px;">กดสุ่มเพื่อเริ่ม ✨</div>';
     document.getElementById('gachaSkipRow').style.display='none';
     document.getElementById('gachaBtns').style.display='flex';
   }
 }
+// Build one ticket HTML (slot digits + prize area)
+function _ticketHTML(i,big){
+  const sz=big?'gacha-digit-big':'gacha-digit';
+  return `<div class="gacha-ticket${big?' gacha-ticket-big':''}">
+    <div class="gacha-slot-row">
+      <div class="${sz}" id="gd${i}_0">?</div>
+      <div class="${sz}" id="gd${i}_1">?</div>
+      <div class="${sz}" id="gd${i}_2">?</div>
+    </div>
+    <div class="gacha-ticket-prize" id="gtp${i}"></div>
+  </div>`;
+}
 function startGacha(n){
-  if(_gachaTimer) return;
+  if(_gachaBusy) return;
   const results=doGachaPulls(n);
   if(!results){showToast('💎 มณีวิญญาณไม่พอ!');return;}
   _gachaResults=results;
-  _gachaRevIdx=0;
+  _gachaBusy=true;
+  _gachaRevealedCount=0;
   document.getElementById('gachaBtns').style.display='none';
   document.getElementById('gachaGemCount').textContent=loadGems().toLocaleString();
-  // build face-down cards
   const grid=document.getElementById('gachaGrid');
   const single=n===1;
-  grid.innerHTML=results.map((_,i)=>`
-    <div class="${single?'gacha-card-single':''}">
-      <div class="gacha-card" id="gc${i}" onclick="revealCard(${i})">
-        <div class="gacha-card-inner">
-          <div class="gacha-card-front"></div>
-          <div class="gacha-card-back" id="gcb${i}"></div>
-        </div>
-      </div>
-    </div>`).join('');
-  if(n===1){
-    // single: player taps to reveal
-    document.getElementById('gachaSkipRow').style.display='none';
+  grid.style.gridTemplateColumns=single?'1fr':'repeat(5,1fr)';
+  grid.innerHTML=results.map((_,i)=>_ticketHTML(i,single)).join('');
+  _gachaSlotTimers=[];
+  _gachaSpinIntervals=[];
+  document.getElementById('gachaSkipRow').style.display='block';
+  if(single){
+    // x1: start spinning immediately, stop after 1.8s digit by digit
+    _startSpin(0,results[0],0,true);
   } else {
-    // x10: auto-reveal with delay, skippable
-    document.getElementById('gachaSkipRow').style.display='block';
-    _autoReveal();
+    // x10: stagger start with 200ms between each
+    results.forEach((_,i)=>{
+      const t=setTimeout(()=>_startSpin(i,results[i],0,false),i*200);
+      _gachaSlotTimers.push(t);
+    });
   }
 }
-function _cardHTML(p){
-  return `<div class="gacha-card-code">${p.code}</div>
-    <div class="gacha-card-ico">${p.icon}</div>
-    <div class="gacha-card-name" style="color:${p.color};">${p.name}</div>`;
+// Start the slot spin for ticket i, digit d
+function _startSpin(i,result,d,isSingle){
+  const el=document.getElementById(`gd${i}_${d}`);
+  if(!el) return;
+  let interval=setInterval(()=>{el.textContent=Math.floor(Math.random()*10);},80);
+  _gachaSpinIntervals.push({i,d,interval});
+  // stop time: d0 stops at 0.7s, d1 at 1.2s, d2 at 1.7s (single) or compressed for x10
+  const base=isSingle?700:500;
+  const gap=isSingle?500:350;
+  const stopAt=base+d*gap;
+  const t=setTimeout(()=>{
+    clearInterval(interval);
+    const num=String(result.num).padStart(3,'0');
+    el.textContent=num[d];
+    // pop animation
+    el.classList.add('gacha-digit-pop');
+    setTimeout(()=>el.classList.remove('gacha-digit-pop'),300);
+    if(d<2){
+      _startSpin(i,result,d+1,isSingle);
+    } else {
+      // all 3 digits done → show prize label
+      _showTicketPrize(i,result);
+      // check if all tickets done
+      _checkAllDone(isSingle?1:_gachaResults.length);
+    }
+  },stopAt);
+  _gachaSlotTimers.push(t);
 }
-function revealCard(i){
-  if(i!==_gachaRevIdx) return; // ต้องเปิดตามลำดับ
-  const p=_gachaResults[i];
-  const back=document.getElementById('gcb'+i);
-  back.innerHTML=_cardHTML(p);
-  back.className='gacha-card-back rarity-'+p.rarity;
-  document.getElementById('gc'+i).classList.add('revealed');
-  _gachaRevIdx++;
-  if(_gachaRevIdx>=_gachaResults.length) _gachaDone();
+function _showTicketPrize(i,result){
+  const el=document.getElementById('gtp'+i);
+  if(!el) return;
+  const p=result.prize;
+  // color the digit slots based on result
+  [0,1,2].forEach(d=>{
+    const dEl=document.getElementById(`gd${i}_${d}`);
+    if(dEl) dEl.style.color=p?(p.color||'#fff'):'#555';
+  });
+  if(p){
+    el.innerHTML=`<span class="gacha-rarity-tag rarity-${p.rarity}">${p.rarity}</span><span class="gacha-prize-name" style="color:${p.color};">${p.icon} ${p.name}</span>`;
+  } else {
+    el.innerHTML=`<span style="color:#444;font-size:10px;">ไม่ได้รางวัล</span>`;
+  }
 }
-function _autoReveal(){
-  if(_gachaRevIdx>=_gachaResults.length){_gachaDone();return;}
-  _gachaTimer=setTimeout(()=>{
-    revealCard(_gachaRevIdx);
-    _gachaTimer=null;
-    _autoReveal();
-  },350);
+let _gachaRevealedCount=0;
+function _checkAllDone(total){
+  _gachaRevealedCount++;
+  if(_gachaRevealedCount>=total){
+    _gachaRevealedCount=0;
+    setTimeout(_gachaDone,800);
+  }
 }
 function skipGachaReveal(){
-  if(_gachaTimer){clearTimeout(_gachaTimer);_gachaTimer=null;}
-  while(_gachaRevIdx<_gachaResults.length) revealCard(_gachaRevIdx);
+  // clear all pending timers and intervals
+  _gachaSlotTimers.forEach(t=>clearTimeout(t));
+  _gachaSlotTimers=[];
+  _gachaSpinIntervals.forEach(({interval})=>clearInterval(interval));
+  _gachaSpinIntervals=[];
+  // instantly fill all tickets
+  _gachaRevealedCount=0;
+  _gachaResults.forEach((result,i)=>{
+    const num=String(result.num).padStart(3,'0');
+    [0,1,2].forEach(d=>{
+      const el=document.getElementById(`gd${i}_${d}`);
+      if(el){el.textContent=num[d];el.classList.remove('gacha-digit-pop');}
+    });
+    _showTicketPrize(i,result);
+  });
+  _gachaRevealedCount=0;
+  setTimeout(_gachaDone,400);
 }
 function _gachaDone(){
-  _gachaTimer=null;
+  _gachaBusy=false;
   _gachaResults=[];
-  _gachaRevIdx=0;
+  _gachaSlotTimers=[];
+  _gachaSpinIntervals=[];
   document.getElementById('gachaSkipRow').style.display='none';
   document.getElementById('gachaBtns').style.display='flex';
   const canAfford1=loadGems()>=GACHA_COST;
