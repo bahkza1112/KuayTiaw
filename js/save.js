@@ -23,6 +23,27 @@ function saveProgress(si,stars){
   return gain;
 }
 
+/* ══ BAG / INVENTORY ══ */
+const BAG_ITEM_DEFS=[
+  {id:'gold_pot',icon:'🧪',name:'ยาเพิ่มทอง',  desc:'ได้ทองเพิ่ม +100 เมื่อเริ่มด่าน',   color:'#ffd54f',type:'buff'},
+  {id:'hp_pot',  icon:'💊',name:'ยาเพิ่ม HP',   desc:'HP ปราสาทเพิ่ม +3 เมื่อเริ่มด่าน',  color:'#ef5350',type:'buff'},
+  {id:'dmg_pot', icon:'⚔️',name:'ยาเข้มแข็ง',  desc:'ดาเมจป้อมทั้งหมด +10% เมื่อเริ่มด่าน',color:'#ff8a65',type:'buff'},
+  {id:'shard_c', icon:'🔹',name:'เศษสีน้ำเงิน', desc:'ชิ้นส่วนสะสมสามัญจากกล่องบรอนซ์',   color:'#64b5f6',type:'shard'},
+  {id:'shard_r', icon:'💜',name:'เศษสีม่วง',    desc:'ชิ้นส่วนสะสมหายากจากกล่องเงิน',     color:'#ab47bc',type:'shard'},
+  {id:'shard_e', icon:'🌟',name:'เศษสีทอง',    desc:'ชิ้นส่วนสะสมพิเศษจากกล่องทอง',     color:'#ff8f00',type:'shard'},
+];
+function loadBag(){try{return JSON.parse(localStorage.getItem('tq_bag')||'{}');}catch(e){return{};}}
+function saveBag(b){localStorage.setItem('tq_bag',JSON.stringify(b));}
+function addBagItem(id,qty){if(!qty||qty<=0)return;const b=loadBag();b[id]=(b[id]||0)+qty;saveBag(b);}
+function getBagQty(id){return loadBag()[id]||0;}
+function loadActiveBuff(){return localStorage.getItem('tq_abuff')||'';}
+function setActiveBuff(id){localStorage.setItem('tq_abuff',id||'');}
+function consumeActiveBuff(){
+  const id=loadActiveBuff(); if(!id) return '';
+  const b=loadBag(); if((b[id]||0)>0){b[id]--;if(!b[id]) delete b[id]; saveBag(b);}
+  setActiveBuff(''); return id;
+}
+
 /* ══ PERSISTENT GOLD ══ */
 const PGOLD_STAR_TABLE=[0,50,75,100]; // ทองถาวรที่ได้จากดาว 0/1★/2★/3★
 function loadPGold(){try{return Number(localStorage.getItem('tq_pgold'))||0;}catch(e){return 0;}}

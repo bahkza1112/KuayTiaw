@@ -190,7 +190,7 @@ function mkState(){
     wave:0,score:0,selTwr:-1,waveActive:false,
     over:false,win:false,queue:[],spawnT:0,mx:-1,my:-1,
     selTowerInfo:null,gmTimers:{},shakeT:0,waveBanner:null,bossWarning:null,
-    kills:0,comboN:0,comboT:0,maxCombo:0,
+    kills:0,comboN:0,comboT:0,maxCombo:0,dmgBuff:1,
     weather:mkWeatherState()};
 }
 /* ══ WEATHER SYSTEM ══ */
@@ -558,6 +558,20 @@ function endGame(win){
   }
   /* บันทึกเสมอทั้ง win และ lose (lose = 0 ดาว แต่ยังบันทึก attempt ไว้) */
   const gemGain=saveProgress(si, stars);
+  // 🎒 drop ไอเทมใส่กระเป๋าหลังจบด่าน
+  if(win){
+    const _bids=['gold_pot','hp_pot','dmg_pot'];
+    const _bchance=stars===3?.7:stars===2?.45:.2;
+    if(Math.random()<_bchance){
+      const _bid=_bids[Math.floor(Math.random()*_bids.length)];
+      addBagItem(_bid,1);
+      const _bdef=BAG_ITEM_DEFS.find(d=>d.id===_bid);
+      setTimeout(()=>showToast('🎒 ได้รับ '+_bdef.icon+' '+_bdef.name+'!'),1300);
+    }
+    if(stars===3&&Math.random()<.2) addBagItem('shard_e',1);
+    else if(stars>=2&&Math.random()<.4) addBagItem('shard_r',1);
+    else if(Math.random()<.6) addBagItem('shard_c',1);
+  }
   updateMenuStats();
   document.getElementById('endTitle').textContent=win?'🏆 ชัยชนะ!':'💀 เกมจบ';
   /* 🌟 สร้างดาวเป็น span ทีละดวงเพื่อ stagger animation pop-in */
@@ -833,7 +847,7 @@ function update(dt){
       }
       const fx=tw.col*CS+CS/2, fy=tw.row*CS+CS/2;
       const _aw=tw.awakened&&!(tw._drainT>0); // ⚡ ป้อมตื่นแล้วและไม่ได้ถูกดูดพลัง
-      let _rdmg=getTowerDmg(tw.type,tw.dmgLv||tw.lv,tw.star)*getBuffMult(tw.col,tw.row);
+      let _rdmg=getTowerDmg(tw.type,tw.dmgLv||tw.lv,tw.star)*getBuffMult(tw.col,tw.row)*(G.dmgBuff||1);
       // 🎯 สไนเปอร์: โอกาสคริติคอล x2 ดาเมจ
       let _rIsCrit=false;
       if(tw.type===3){
@@ -2383,7 +2397,7 @@ function updateEg(dt){
       }
       const fx=tw.col*CS+CS/2,fy=tw.row*CS+CS/2;
       const _aw2=tw.awakened&&!(tw._drainT>0);
-      let _rdmg2=getTowerDmg(tw.type,tw.dmgLv||tw.lv,tw.star)*getBuffMult(tw.col,tw.row);
+      let _rdmg2=getTowerDmg(tw.type,tw.dmgLv||tw.lv,tw.star)*getBuffMult(tw.col,tw.row)*(G.dmgBuff||1);
       // 🎯 สไนเปอร์: โอกาสคริติคอล x2 ดาเมจ
       let _rIsCrit2=false;
       if(tw.type===3){

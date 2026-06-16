@@ -2,7 +2,7 @@
 <html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Tower Quest 🏰 v3.3.0</title>
+<title>Tower Quest 🏰 v3.4.0</title>
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -43,7 +43,7 @@
   <div class="island">🏰</div>
   <div class="gtitle">TOWER QUEST</div>
   <div class="gsub">⚔️ ปกป้องอาณาจักรของคุณ!</div>
-  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v3.3.0 — มีอะไรใหม่<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
+  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v3.4.0 — มีอะไรใหม่<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
 
   <!-- battle buttons -->
   <button class="bbattle" id="startBtn">⚔️ โหมดเนื้อเรื่อง</button>
@@ -55,6 +55,7 @@
     <div class="bnav active" id="battleNavBtn"><span class="bnav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="21" x2="17" y2="7"/><line x1="13" y1="3" x2="17" y2="7"/><line x1="17" y1="3" x2="13" y2="7"/><line x1="21" y1="21" x2="7" y2="7"/><line x1="11" y1="3" x2="7" y2="7"/><line x1="7" y1="3" x2="11" y2="7"/></svg></span>เนื้อเรื่อง</div>
     <div class="bnav" id="codexNavBtn"><span class="bnav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5c-2-1.3-5-1.7-9-1.3v15c4-.4 7 0 9 1.3 2-1.3 5-1.7 9-1.3v-15c-4-.4-7 0-9 1.3Z"/><line x1="12" y1="4.5" x2="12" y2="19.5"/></svg></span>สารานุกรม<span id="achBadge" style="display:none;background:#ffe082;color:#6d2900;font-size:8px;font-weight:900;border-radius:8px;padding:1px 5px;margin-left:2px;vertical-align:middle;"></span></div>
     <div class="bnav" id="lbNavBtn"><span class="bnav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v4a4 4 0 0 1-8 0V4Z"/><path d="M8 5H5a3 3 0 0 0 3 3"/><path d="M16 5h3a3 3 0 0 1-3 3"/><line x1="12" y1="12" x2="12" y2="16"/><path d="M9 20h6"/><path d="M10 16h4l1 4H9l1-4Z"/></svg></span>อันดับ</div>
+    <div class="bnav" id="bagNavBtn"><span class="bnav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span>กระเป๋า<span id="bagBadge" style="display:none;background:#ef5350;color:#fff;font-size:8px;font-weight:900;border-radius:8px;padding:1px 5px;margin-left:2px;vertical-align:middle;"></span></div>
     <div class="bnav" id="devNavBtn"><span class="bnav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 1 0-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 0 0 5.4-5.4l-2.1 2.1-2-2 2.1-2.1Z"/></svg></span>Dev</div>
   </div>
 </div>
@@ -390,6 +391,20 @@
 </div>
 
 <!-- WORKSHOP -->
+<!-- BAG SCREEN -->
+<div id="bag" style="display:none;flex-direction:column;min-height:100%;">
+  <div class="eg-hd">
+    <button class="bback" id="bagBackBtn">← กลับ</button>
+    <div class="eg-hd-title">🎒 กระเป๋า</div>
+  </div>
+  <div class="bag-tabs">
+    <button class="bag-tab active" id="bagTab0" onclick="switchBagTab(0)">🧱 วัสดุ</button>
+    <button class="bag-tab" id="bagTab1" onclick="switchBagTab(1)">🧪 บัฟ</button>
+    <button class="bag-tab" id="bagTab2" onclick="switchBagTab(2)">✨ สะสม</button>
+  </div>
+  <div class="eg-body" id="bagBody"></div>
+</div>
+
 <div id="workshop" style="display: none;">
   <div class="void-mote" style="left:14%;bottom:30px;width:5px;height:5px;animation-duration:8s;animation-delay:.6s;"></div>
   <div class="void-mote" style="left:78%;bottom:60px;width:4px;height:4px;animation-duration:10s;animation-delay:2.4s;"></div>

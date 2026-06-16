@@ -2,6 +2,32 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.4.0 — Player bag / inventory system
+
+### Added
+- **Player bag (`tq_bag`)** — `localStorage` key storing item quantities as a
+  JSON object. Managed via `loadBag`/`saveBag`/`addBagItem`/`getBagQty` in
+  `js/save.js`.
+- **6 item definitions (`BAG_ITEM_DEFS`)** in `js/save.js`:
+  - Buff items: `gold_pot` (+100 gold), `hp_pot` (+3 HP), `dmg_pot` (+10% dmg)
+  - Shard items: `shard_c` (common/blue), `shard_r` (rare/purple), `shard_e` (epic/gold)
+- **Active buff slot (`tq_abuff`)** — single localStorage key for selected buff
+  item. Managed via `loadActiveBuff`/`setActiveBuff`/`consumeActiveBuff`.
+- **Item drops after stage clear** in `endGame()` (`js/game.js`): buff item
+  drop chance 20%/45%/70% for 1★/2★/3★; shard always drops (rarity weighted
+  by star count). Toast notification delayed 1.3s to avoid overlap.
+- **`G.dmgBuff`** field in game state (`mkState`) — multiplier applied at
+  damage calc sites (`_rdmg`/`_rdmg2` in both story and endgame loops).
+- **Bag screen** (`#bag` div in HTML, `openBag`/`renderBag`/`switchBagTab`/
+  `useBuffItem`/`_updateBagBadge` in `js/ui.js`) with 3 tabs:
+  - 🧱 วัสดุ — shows crafting materials from `loadMaterials()`
+  - 🧪 บัฟ — shows buff items; tap to select active buff for next stage
+  - ✨ สะสม — shows shard collection items
+- **Bag nav tab** in bottom nav bar with badge counter showing total item count.
+- **Buff applied on stage start** in `_doStartStage` (`js/ui.js`): calls
+  `consumeActiveBuff()` and applies effect to `G` before first render.
+- **CSS** for all `.bag-*` classes in `css/main.css`.
+
 ## v3.3.0 — Persistent gold system + Workshop permanent upgrades
 
 ### Added

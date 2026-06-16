@@ -1,6 +1,12 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.3.0';
+const GAME_VERSION='3.4.0';
 const PATCH_NOTES=[
+  {ver:'3.4.0',date:'2026-06-16',title:'🎒 ระบบกระเป๋าผู้เล่น',notes:[
+    'เพิ่มแท็บ "กระเป๋า" ในแถบนำทางด้านล่าง — เก็บ วัสดุ, ไอเทมบัฟ, ชิ้นส่วนสะสม',
+    'จบด่านมีโอกาสได้รับไอเทมบัฟ (ยาเพิ่มทอง/HP/ดาเมจ) — โอกาสสูงขึ้นตามดาวที่ได้',
+    'เลือกบัฟ 1 ชิ้นก่อนเข้าด่าน บัฟจะถูกใช้อัตโนมัติตอนเริ่มด่านและหมดไป 1 ชิ้น',
+    'ได้รับชิ้นส่วนสะสม (เศษสีน้ำเงิน/ม่วง/ทอง) จากการจบด่านทุกครั้ง',
+  ]},
   {ver:'3.3.0',date:'2026-06-16',title:'🪙 ระบบทองถาวร + อัพเกรดใน Workshop',notes:[
     'จบด่านได้ทองถาวร 🪙 ตามดาว (1★=50, 2★=75, 3★=100) สะสมข้ามด่านได้',
     'เปิด Workshop เพื่อซื้ออัพเกรดถาวร 3 อย่าง: ทองเริ่มต้น +100, HP ปราสาท +5, Awaken ราคาลด 50',
@@ -346,7 +352,7 @@ function renderAchievTab(){
 }
 
 /* ══ SCREEN MANAGEMENT ══ */
-function hideAll(){['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','whatsnew','towersel','storyscr','workshop'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const cs=document.getElementById('cutscene');if(cs)cs.style.display='none';}
+function hideAll(){['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','whatsnew','towersel','storyscr','workshop','bag'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const cs=document.getElementById('cutscene');if(cs)cs.style.display='none';}
 function showScreen(id,flex){
   hideAll();
   const el=document.getElementById(id);
@@ -368,12 +374,89 @@ function updateMenuStats(){
   updateMenuGold();
   _updateAchBadge();
   _updateNewsBadge();
+  _updateBagBadge();
 }
 
 /* ══ WORKSHOP ══ */
 const VOID_RECIPE={gems:800,mats:{0:30,1:15,2:8}};
 const MAT_ICONS=['🪨','🔘','🌟'];
 const MAT_NAMES=['เศษหินมืด','แกนเวทอสูร','ผงดาวตก'];
+/* ══ BAG SCREEN ══ */
+let _bagTab=0;
+function openBag(){showScreen('bag',true);_updateBagBadge();renderBag();}
+function switchBagTab(t){
+  _bagTab=t;
+  [0,1,2].forEach(i=>{const b=document.getElementById('bagTab'+i);if(b)b.classList.toggle('active',i===t);});
+  renderBag();
+}
+function renderBag(){
+  const body=document.getElementById('bagBody');
+  if(!body) return;
+  const mats=loadMaterials(),bag=loadBag(),abuff=loadActiveBuff();
+  if(_bagTab===0){
+    // วัสดุ
+    const matDefs=[
+      {icon:MAT_ICONS[0],name:MAT_NAMES[0],col:'#90caf9',qty:mats[0]||0},
+      {icon:MAT_ICONS[1],name:MAT_NAMES[1],col:'#ce93d8',qty:mats[1]||0},
+      {icon:MAT_ICONS[2],name:MAT_NAMES[2],col:'#ffe082',qty:mats[2]||0},
+    ];
+    const has=matDefs.some(m=>m.qty>0);
+    body.innerHTML=has
+      ?matDefs.map(m=>`<div class="bag-item">
+          <div class="bag-ico" style="font-size:22px;color:${m.col};">${m.icon}</div>
+          <div class="bag-info">
+            <div class="bag-name" style="color:${m.col};">${m.name}</div>
+            <div class="bag-qty">มี ${m.qty} ชิ้น</div>
+          </div>
+        </div>`).join('')
+      :'<div class="bag-empty">ยังไม่มีวัสดุ<br>ได้รับจากการเอาชนะศัตรูระหว่างเล่น</div>';
+  } else if(_bagTab===1){
+    // บัฟ
+    const buffs=BAG_ITEM_DEFS.filter(d=>d.type==='buff'&&(bag[d.id]||0)>0);
+    if(!buffs.length){body.innerHTML='<div class="bag-empty">ยังไม่มีไอเทมบัฟ<br>ได้รับจากการจบด่าน</div>';return;}
+    body.innerHTML='<div class="bag-hint">เลือก 1 ชิ้นเพื่อใช้ในด่านถัดไป (บัฟจะถูกใช้อัตโนมัติตอนเริ่มด่าน)</div>'
+      +buffs.map(d=>{
+        const isActive=abuff===d.id;
+        return `<div class="bag-item${isActive?' bag-active':''}" style="border-color:${isActive?d.color:'rgba(255,255,255,.1)'};">
+          <div class="bag-ico" style="background:${isActive?d.color+'33':'rgba(255,255,255,.06)'};">${d.icon}</div>
+          <div class="bag-info">
+            <div class="bag-name" style="color:${d.color};">${d.name}</div>
+            <div class="bag-desc">${d.desc}</div>
+            <div class="bag-qty">มี ${bag[d.id]} ชิ้น${isActive?' <span style="color:'+d.color+';font-weight:700;">● จะใช้ในด่านถัดไป</span>':''}</div>
+          </div>
+          <button class="bag-use-btn" onclick="useBuffItem('${d.id}')"
+            style="border-color:${d.color};color:${isActive?'#111':d.color};background:${isActive?d.color:'transparent'};">
+            ${isActive?'✓ เลือกแล้ว':'เลือกใช้'}
+          </button>
+        </div>`;
+      }).join('');
+  } else {
+    // สะสม
+    const shards=BAG_ITEM_DEFS.filter(d=>d.type==='shard'&&(bag[d.id]||0)>0);
+    if(!shards.length){body.innerHTML='<div class="bag-empty">ยังไม่มีชิ้นส่วนสะสม<br>ได้รับจากกล่องรางวัลหลังจบด่าน</div>';return;}
+    body.innerHTML=shards.map(d=>`<div class="bag-item">
+        <div class="bag-ico" style="font-size:22px;">${d.icon}</div>
+        <div class="bag-info">
+          <div class="bag-name" style="color:${d.color};">${d.name}</div>
+          <div class="bag-desc">${d.desc}</div>
+          <div class="bag-qty">มี ${bag[d.id]} ชิ้น</div>
+        </div>
+      </div>`).join('');
+  }
+}
+function useBuffItem(id){
+  setActiveBuff(loadActiveBuff()===id?'':id); // toggle
+  renderBag();
+}
+function _updateBagBadge(){
+  const b=document.getElementById('bagBadge');
+  if(!b) return;
+  const bag=loadBag();
+  const total=BAG_ITEM_DEFS.reduce((s,d)=>s+(bag[d.id]||0),0);
+  b.style.display=total>0?'inline-block':'none';
+  b.textContent=total>9?'9+':total;
+}
+
 const P_UPGRADES=[
   {idx:0,icon:'💰',name:'ทองเริ่มต้น +100',desc:'ได้ทอง 100 เพิ่มทุกครั้งที่เริ่มด่าน',cost:200},
   {idx:1,icon:'❤️',name:'HP ปราสาท +5',desc:'ปราสาทมีพลังชีวิตสูงสุดเพิ่ม 5 (20→25)',cost:350},
@@ -549,9 +632,15 @@ function _doStartStage(si){
   cv.removeEventListener('pointerdown',onCanvasPointerDown);
   cv.addEventListener('pointerdown',onCanvasPointerDown);
   initGame();
-  // 🪙 apply persistent upgrades bought with permanent gold
-  if(hasPUpgrade(0)){G.gold+=100;updateHUD();}
-  if(hasPUpgrade(1)){G.maxHp+=5;G.hp+=5;updateHUD();}
+  // 🪙 apply persistent upgrades
+  if(hasPUpgrade(0)){G.gold+=100;}
+  if(hasPUpgrade(1)){G.maxHp+=5;G.hp+=5;}
+  // 🎒 consume active buff from bag
+  const _abid=consumeActiveBuff();
+  if(_abid==='gold_pot'){G.gold+=100;}
+  else if(_abid==='hp_pot'){G.maxHp+=3;G.hp+=3;}
+  else if(_abid==='dmg_pot'){G.dmgBuff=1.1;}
+  if(hasPUpgrade(0)||hasPUpgrade(1)||_abid) updateHUD();
   initTutorial();
 }
 
@@ -1744,11 +1833,6 @@ document.getElementById('workshopBtn').addEventListener('click',openWorkshop);
 document.getElementById('workshopBackBtn').addEventListener('click',()=>showScreen('mm',true));
 document.getElementById('wsCraftBtn').addEventListener('click',craftVoidTower);
 document.getElementById('voidCraftCloseBtn').addEventListener('click',()=>{document.getElementById('voidCraftOverlay').style.display='none';});
-// update hideAll to include new screens
-const _origHideAll=hideAll;
-window.hideAll=function(){
-  ['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','whatsnew','towersel','workshop'].forEach(id=>{
-    const el=document.getElementById(id); if(el) el.style.display='none';
-  });
-};
+document.getElementById('bagNavBtn').addEventListener('click',openBag);
+document.getElementById('bagBackBtn').addEventListener('click',()=>showScreen('mm',true));
 updateMenuStats();
