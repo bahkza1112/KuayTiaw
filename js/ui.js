@@ -466,6 +466,14 @@ const P_UPGRADES=[
   {idx:2,icon:'⚡',name:'Awaken ราคาลด 50',desc:'อเวคป้อมราคา 300 ทอง (ปกติ 350)',cost:500},
 ];
 function openWorkshop(){ showScreen('workshop',true); renderWorkshop(); }
+function toggleWsSkill(){
+  const d=document.getElementById('wsSkillDetail');
+  const a=document.getElementById('wsSkillArrow');
+  if(!d||!a) return;
+  const show=d.style.display==='none';
+  d.style.display=show?'':'none';
+  a.textContent=show?'▲ ซ่อน':'▼ รายละเอียด';
+}
 function isFinalStageCleared(){
   return (loadProgress()[STAGES.length-1]||0)>=1;
 }
@@ -473,7 +481,7 @@ function renderWorkshop(){
   const gems=loadGems(), mats=loadMaterials();
   const unlocked=isVoidUnlocked();
   const finalCleared=isFinalStageCleared();
-  document.getElementById('wsStageLockNote').style.display=(!unlocked&&!finalCleared)?'flex':'none';
+  document.getElementById('wsLockBadge').style.display=(!unlocked&&!finalCleared)?'block':'none';
   document.getElementById('wsCraftSection').style.display='';
   document.getElementById('wsAlreadyUnlocked').style.display=unlocked?'block':'none';
   document.getElementById('wsRecipeBox').style.display='none';

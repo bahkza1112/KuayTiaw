@@ -417,7 +417,7 @@
   <div class="eg-body">
     <div class="ws-hero">
       <div class="ws-hero-icon">🌑</div>
-      <div>
+      <div style="flex:1;min-width:0;">
         <div class="ws-hero-name">ป้อมมนตราโมฆะ</div>
         <div class="ws-hero-tag">✦ ป้อมลับที่ 9 — ปลดล็อกได้ที่เวิร์กชอปเท่านั้น</div>
         <div class="ws-hero-stats">
@@ -426,20 +426,22 @@
           <span class="ws-stat">⚡ 0.6 วิ/นัด</span>
           <span class="ws-stat">💰 ราคา 90</span>
         </div>
+        <div id="wsLockBadge" style="display:none;margin-top:8px;font-size:10px;color:#ffab40;background:rgba(255,171,64,.1);border:1px solid rgba(255,171,64,.3);border-radius:8px;padding:4px 8px;">🔒 ผ่านด่านสุดท้ายก่อนจึงจะคราฟได้</div>
       </div>
       <div class="ws-hero-reqs" id="wsHeroReqs"></div>
     </div>
-    <div class="eg-info-box">
-      <div class="eg-info-title">✨ พลังมนตราโมฆะ</div>
-      <div class="eg-info-txt">
-        ปล่อยพลังโมฆะใส่ศัตรู มีโอกาสติด <strong>Void Mark</strong> ทำให้ศัตรูตัวนั้นรับดาเมจเพิ่มจากป้อมทุกชนิด<br>
-        🌙 Awaken: โอกาสติดมาร์กเพิ่มเป็น 50% และเพิ่มดาเมจที่รับเป็น +40%<br>
-        🔥 ใช้ได้เฉพาะโหมด Endgame เท่านั้น
+    <div class="eg-info-box" style="cursor:pointer;" onclick="toggleWsSkill()">
+      <div class="eg-info-title" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>✨ พลังมนตราโมฆะ</span>
+        <span id="wsSkillArrow" style="font-size:10px;color:#9575cd;font-weight:400;">▼ รายละเอียด</span>
       </div>
-    </div>
-    <div class="eg-locked-note" id="wsStageLockNote" style="display:none;">
-      <div class="ws-lock-icon">🔒</div>
-      ผ่านด่านสุดท้ายของโหมดเนื้อเรื่องให้ครบก่อน จึงจะเริ่มคราฟป้อมมนตราโมฆะได้
+      <div id="wsSkillDetail" style="display:none;margin-top:8px;">
+        <div class="eg-info-txt">
+          ปล่อยพลังโมฆะใส่ศัตรู มีโอกาสติด <strong>Void Mark</strong> ทำให้ศัตรูตัวนั้นรับดาเมจเพิ่มจากป้อมทุกชนิด<br>
+          🌙 Awaken: โอกาสติดมาร์กเพิ่มเป็น 50% และเพิ่มดาเมจที่รับเป็น +40%<br>
+          🔥 ใช้ได้เฉพาะโหมด Endgame เท่านั้น
+        </div>
+      </div>
     </div>
     <div id="wsCraftSection">
       <div id="wsRecipeBox" style="display:none;"><div class="ws-recipe-grid" id="wsRecipeGrid"></div></div>
