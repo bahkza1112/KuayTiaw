@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.2.0';
+const GAME_VERSION='3.3.0';
 const PATCH_NOTES=[
+  {ver:'3.3.0',date:'2026-06-16',title:'🪙 ระบบทองถาวร + อัพเกรดใน Workshop',notes:[
+    'จบด่านได้ทองถาวร 🪙 ตามดาว (1★=50, 2★=75, 3★=100) สะสมข้ามด่านได้',
+    'เปิด Workshop เพื่อซื้ออัพเกรดถาวร 3 อย่าง: ทองเริ่มต้น +100, HP ปราสาท +5, Awaken ราคาลด 50',
+    'ทองถาวรแสดงที่ topbar หน้าเมนูหลัก — แตะเพื่อเปิด Workshop ได้เลย',
+  ]},
   {ver:'3.2.0',date:'2026-06-16',title:'🎁 หน้าจอจบด่านสไตล์กล่องรางวัล',notes:[
     'หน้าจอจบด่านปรับใหม่: ไอคอนกล่องรางวัล (👑/🎁/📦/💀) และกรอบเรืองแสงเปลี่ยนสีตามจำนวนดาวที่ได้',
     'ดาวที่ได้จะค่อย ๆ เด้งขึ้นทีละดวงพร้อมแสงเรืองสีทอง',
@@ -353,17 +358,27 @@ function showScreen(id,flex){
 }
 
 /* ══ MENU STATS ══ */
+function updateMenuGold(){
+  const el=document.getElementById('mmGoldDisplay');
+  if(el) el.textContent=(loadPGold()||0).toLocaleString();
+}
 function updateMenuStats(){
   const gd=document.getElementById('mmGemsDisplay');
   if(gd) gd.textContent=loadGems().toLocaleString();
-  _updateAchBadge(); // อัปเดต badge ทุกครั้งที่ menu render
-  _updateNewsBadge(); // อัปเดต badge ข่าวสารทุกครั้งที่ menu render
+  updateMenuGold();
+  _updateAchBadge();
+  _updateNewsBadge();
 }
 
 /* ══ WORKSHOP ══ */
 const VOID_RECIPE={gems:800,mats:{0:30,1:15,2:8}};
 const MAT_ICONS=['🪨','🔘','🌟'];
 const MAT_NAMES=['เศษหินมืด','แกนเวทอสูร','ผงดาวตก'];
+const P_UPGRADES=[
+  {idx:0,icon:'💰',name:'ทองเริ่มต้น +100',desc:'ได้ทอง 100 เพิ่มทุกครั้งที่เริ่มด่าน',cost:200},
+  {idx:1,icon:'❤️',name:'HP ปราสาท +5',desc:'ปราสาทมีพลังชีวิตสูงสุดเพิ่ม 5 (20→25)',cost:350},
+  {idx:2,icon:'⚡',name:'Awaken ราคาลด 50',desc:'อเวคป้อมราคา 300 ทอง (ปกติ 350)',cost:500},
+];
 function openWorkshop(){ showScreen('workshop',true); renderWorkshop(); }
 function isFinalStageCleared(){
   return (loadProgress()[STAGES.length-1]||0)>=1;
@@ -404,6 +419,28 @@ function renderWorkshop(){
   document.getElementById('wsRecipeGrid').innerHTML=html;
   document.getElementById('wsHeroReqs').innerHTML=reqHtml;
   craftBtn.disabled=!allMet;
+  // render persistent upgrades
+  const pg=loadPGold();
+  const badge=document.getElementById('wsPGoldBadge');
+  if(badge) badge.textContent='🪙 มี '+pg.toLocaleString()+' ทอง';
+  const grid=document.getElementById('wsPUpGrid');
+  if(grid){
+    grid.innerHTML=P_UPGRADES.map(u=>{
+      const owned=hasPUpgrade(u.idx);
+      const canBuy=!owned&&pg>=u.cost;
+      return `<div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,${owned?'.35':'.1'});border-radius:10px;padding:10px 12px;">
+        <div style="font-size:22px;flex-shrink:0;">${u.icon}</div>
+        <div style="flex:1;">
+          <div style="font-size:12px;font-weight:700;color:${owned?'#69f0ae':'#ffe082'};">${u.name}</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.55);margin-top:2px;">${u.desc}</div>
+        </div>
+        ${owned
+          ?'<div style="font-size:18px;">✅</div>'
+          :`<button onclick="buyPUpgrade(${u.idx},${u.cost})" style="flex-shrink:0;background:${canBuy?'linear-gradient(180deg,#ffd54f,#f9a825)':'rgba(255,255,255,.08)'};color:${canBuy?'#3e2000':'rgba(255,255,255,.4)'};border:none;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:${canBuy?'pointer':'not-allowed'};">🪙${u.cost}</button>`
+        }
+      </div>`;
+    }).join('');
+  }
 }
 function craftVoidTower(){
   if(isVoidUnlocked()||!isFinalStageCleared())return;
@@ -508,6 +545,9 @@ function _doStartStage(si){
   cv.removeEventListener('pointerdown',onCanvasPointerDown);
   cv.addEventListener('pointerdown',onCanvasPointerDown);
   initGame();
+  // 🪙 apply persistent upgrades bought with permanent gold
+  if(hasPUpgrade(0)){G.gold+=100;updateHUD();}
+  if(hasPUpgrade(1)){G.maxHp+=5;G.hp+=5;updateHUD();}
   initTutorial();
 }
 

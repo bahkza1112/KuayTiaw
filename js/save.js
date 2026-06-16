@@ -11,11 +11,38 @@ function saveProgress(si,stars){
     p[si]=stars; localStorage.setItem('tq_progress',JSON.stringify(p));
     if(stars>prevStars){
       gain=GEM_STAR_TABLE[stars]-GEM_STAR_TABLE[prevStars];
-      if(gain>0){ addGems(gain); showToast('💎 +'+gain+' Soul Gems!'); }
+      const pgGain=PGOLD_STAR_TABLE[stars]-PGOLD_STAR_TABLE[prevStars||0];
+      if(gain>0) addGems(gain);
+      if(pgGain>0) addPGold(pgGain);
+      if(gain>0&&pgGain>0) showToast('💎 +'+gain+' Soul Gems  🪙 +'+pgGain+' ทองถาวร!');
+      else if(gain>0) showToast('💎 +'+gain+' Soul Gems!');
+      else if(pgGain>0) showToast('🪙 +'+pgGain+' ทองถาวร!');
     }
   }
   checkAchievements(); // ตรวจ achievement ทุกครั้งที่ clear ด่าน
   return gain;
+}
+
+/* ══ PERSISTENT GOLD ══ */
+const PGOLD_STAR_TABLE=[0,50,75,100]; // ทองถาวรที่ได้จากดาว 0/1★/2★/3★
+function loadPGold(){try{return Number(localStorage.getItem('tq_pgold'))||0;}catch(e){return 0;}}
+function savePGold(n){localStorage.setItem('tq_pgold',String(Math.max(0,Math.floor(n))));}
+function addPGold(n){
+  if(n<=0)return;
+  savePGold(loadPGold()+Math.floor(n));
+  if(typeof updateMenuGold==='function') updateMenuGold();
+}
+function loadPUpgrades(){try{return JSON.parse(localStorage.getItem('tq_pups')||'[]');}catch(e){return[];}}
+function hasPUpgrade(idx){return loadPUpgrades().includes(idx);}
+function buyPUpgrade(idx,cost){
+  if(hasPUpgrade(idx)){showToast('✅ ซื้อแล้ว!');return;}
+  const g=loadPGold();
+  if(g<cost){showToast('🪙 ทองถาวรไม่พอ!');return;}
+  savePGold(g-cost);
+  const ups=loadPUpgrades(); ups.push(idx); localStorage.setItem('tq_pups',JSON.stringify(ups));
+  showToast('✅ ซื้อ upgrade สำเร็จ!');
+  if(typeof renderWorkshop==='function') renderWorkshop();
+  if(typeof updateMenuGold==='function') updateMenuGold();
 }
 
 /* ══ SOUL GEMS / MATERIALS / WORKSHOP ══ */

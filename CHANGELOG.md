@@ -2,6 +2,30 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.3.0 — Persistent gold system + Workshop permanent upgrades
+
+### Added
+- **Persistent gold (`tq_pgold`)** — a cross-stage currency earned by clearing
+  story stages. Awarded on star improvement only (delta from `PGOLD_STAR_TABLE
+  =[0,50,75,100]`): 0→1★ gives 50, 1★→2★ gives 25, 2★→3★ gives 25 (max 100
+  per stage first clear, 100 total for a perfect 3★ first run). Stored in
+  `localStorage` via `loadPGold`/`savePGold`/`addPGold` (`js/save.js`).
+- **3 permanent Workshop upgrades** (`P_UPGRADES` in `js/ui.js`, rendered in
+  `renderWorkshop`): 
+  - 💰 ทองเริ่มต้น +100 (200pg) — adds 100 to `G.gold` after `initGame()` in
+    `_doStartStage` (`js/ui.js`) when `hasPUpgrade(0)`.
+  - ❤️ HP ปราสาท +5 (350pg) — adds 5 to `G.maxHp`/`G.hp` after `initGame()`
+    when `hasPUpgrade(1)`.
+  - ⚡ Awaken ราคาลด 50 (500pg) — reduces awaken cost 350→300 (`js/tower.js`
+    `showTowerPopup` and `awakenTowerFromPopup`) when `hasPUpgrade(2)`.
+  - Purchases stored in `tq_pups` (JSON array of bought indices) via
+    `loadPUpgrades`/`hasPUpgrade`/`buyPUpgrade` (`js/save.js`).
+- **Persistent gold topbar display** (`#mmGoldDisplay`) in main menu, replaces
+  the hardcoded "3,200". Updated by `updateMenuGold()` (called from
+  `updateMenuStats`, `addPGold`, `buyPUpgrade`). Tapping opens Workshop.
+- **Workshop persistent-gold section** (`#wsPUpSection`/`#wsPUpGrid`) rendered
+  below the Void Tower recipe, showing owned status and buy buttons.
+
 ## v3.2.0 — Stage-clear reward popup polish
 
 ### Added

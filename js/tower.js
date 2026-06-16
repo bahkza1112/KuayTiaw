@@ -374,7 +374,8 @@ function showTowerPopup(tw,px,py){
   const used=(tw.rngLv-1)+(tw.rateLv-1);
   const remain=tw.star-used;
   const refund=Math.floor(CFG.t_cost[tw.type]*tw.lv*.6);
-  const canAwaken=tw.star>=3&&!tw.awakened&&G.gold>=350;
+  const _awCost=hasPUpgrade(2)?300:350;
+  const canAwaken=tw.star>=3&&!tw.awakened&&G.gold>=_awCost;
   const showAwakenBtn=tw.star>=3&&!tw.awakened;
   const starStr='★'.repeat(tw.star);
   const synHtml=(tw._drainT>0)?
@@ -431,7 +432,7 @@ function showTowerPopup(tw,px,py){
       </div>`;
   const awakenCellHtml=showAwakenBtn?
     `<button class="tp-upbtn" ${canAwaken?'':'disabled'} onclick="awakenTowerFromPopup()" style="background:${canAwaken?'linear-gradient(180deg,#ffe234,#ff9800)':''};color:${canAwaken?'#6d2900':''};">
-        ⚡ Awaken<br><small>💰350 (ล็อก${starStr})</small>
+        ⚡ Awaken<br><small>💰${_awCost} (ล็อก${starStr})</small>
       </button>`
     : '';
   pop.innerHTML=`<div class="tp-head">
@@ -495,8 +496,9 @@ function awakenTowerFromPopup(){
   const tw=_popupTw;
   if(tw.awakened){showToast('⚡ อเวคแล้ว!');return;}
   if((tw.star||1)<3){showToast('⚡ ต้องรวมป้อมให้ถึง 3★ ก่อนถึงจะ Awaken ได้!');return;}
-  if(G.gold<350){showToast('💰 ต้องการ 350 ทอง!');hideTowerPopup();return;}
-  G.gold-=350; tw.awakened=true;
+  const _awC=hasPUpgrade(2)?300:350;
+  if(G.gold<_awC){showToast('💰 ต้องการ '+_awC+' ทอง!');hideTowerPopup();return;}
+  G.gold-=_awC; tw.awakened=true;
   tw.spawnAnim=0.8;
   const ax=tw.col*CS+CS/2, ay=tw.row*CS+CS/2;
   // FX — golden burst
