@@ -570,7 +570,7 @@ function endGame(win){
     }
     if(stars===3&&Math.random()<.2) addBagItem('shard_e',1);
     else if(stars>=2&&Math.random()<.4) addBagItem('shard_r',1);
-    else if(Math.random()<.6) addBagItem('shard_c',1);
+    else addBagItem('shard_c',1);
   }
   updateMenuStats();
   document.getElementById('endTitle').textContent=win?'🏆 ชัยชนะ!':'💀 เกมจบ';

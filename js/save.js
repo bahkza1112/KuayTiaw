@@ -40,8 +40,9 @@ function loadActiveBuff(){return localStorage.getItem('tq_abuff')||'';}
 function setActiveBuff(id){localStorage.setItem('tq_abuff',id||'');}
 function consumeActiveBuff(){
   const id=loadActiveBuff(); if(!id) return '';
-  const b=loadBag(); if((b[id]||0)>0){b[id]--;if(!b[id]) delete b[id]; saveBag(b);}
-  setActiveBuff(''); return id;
+  const b=loadBag();
+  if((b[id]||0)>0){b[id]--;if(!b[id]) delete b[id]; saveBag(b); setActiveBuff(''); return id;}
+  setActiveBuff(''); return '';
 }
 
 /* ══ PERSISTENT GOLD ══ */
