@@ -2,6 +2,20 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.5.2 — Gacha odds table + Dev gem/material cheats
+
+### Added
+- **Gacha odds table**: collapsible "📋 อัตราการออก" section in gacha screen.
+  Lists all 10 prizes (001–010) with rarity tag and 1% chance each, plus the
+  90% dud row (011–999). Populated from `GACHA_POOL` in `toggleGachaOdds()`.
+- **Dev Panel — 💎 มณีวิญญาณ section**: +100, +999, set 0, reset Pity cheats
+  (`gem100`, `gem999`, `gem0`, `pity0` in `cheat()`).
+- **Dev Panel — 🪨 วัสดุคราฟ section**: +10 เศษหินมืด, +10 แกนเวทอสูร,
+  +5 ผงดาวตก, reset all materials (`mat0_10`, `mat1_10`, `mat2_5`, `mat_reset`).
+
+### Changed
+- Renamed "💰 Resources" dev section to "💰 ทองในด่าน" for clarity.
+
 ## v3.5.1 — Gacha: slot machine digit reveal + 001-999 pool
 
 ### Changed

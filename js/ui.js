@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.5.1';
+const GAME_VERSION='3.5.2';
 const PATCH_NOTES=[
+  {ver:'3.5.2',date:'2026-06-16',title:'📋 กาชา: ตารางอัตราออก + Dev cheats',notes:[
+    'เพิ่มตาราง "อัตราการออก" ในตู้กาชา — กดเพื่อดู % โอกาสของรางวัลแต่ละชิ้น',
+    'Dev Panel: เพิ่ม 💎 มณีวิญญาณ (+100/+999/รีเซ็ต), เพิ่มวัสดุคราฟ, รีเซ็ต Pity',
+  ]},
   {ver:'3.5.1',date:'2026-06-16',title:'🎰 กาชา: สล็อตแมชชีนลุ้นเลข',notes:[
     'ขยาย pool เป็น 001–999: เลข 011–999 ไม่ได้รางวัล (90%), 001–010 มีรางวัล (10%)',
     'ระบบเปิดเผยเลขแบบสล็อตแมชชีน — หลักร้อย → หลักสิบ → หลักหน่วย หยุดทีละตัวเพื่อสร้างความลุ้น',
@@ -541,6 +545,23 @@ function _gachaDone(){
   document.getElementById('gachaGemCount').textContent=loadGems().toLocaleString();
   document.getElementById('gachaPityInfo').textContent=`สะสม ${loadGachaPity()}/90 ครั้ง`;
   updateMenuStats();
+}
+function toggleGachaOdds(){
+  const body=document.getElementById('gachaOddsBody');
+  const arrow=document.getElementById('gachaOddsArrow');
+  if(!body||!arrow) return;
+  const show=body.style.display==='none';
+  body.style.display=show?'':'none';
+  arrow.textContent=show?'▲ ซ่อน':'▼ ดูรายละเอียด';
+  if(show&&!document.getElementById('gachaOddsPool').innerHTML){
+    document.getElementById('gachaOddsPool').innerHTML=GACHA_POOL.map(p=>`
+      <div class="gacha-odds-row">
+        <span style="font-family:monospace;color:rgba(179,136,255,.6);">${p.code}</span>
+        <span style="color:${p.color};">${p.icon} ${p.name}</span>
+        <span class="gacha-rarity-tag rarity-${p.rarity}" style="font-size:7px;">${p.rarity}</span>
+        <span style="color:#aaa;">1%</span>
+      </div>`).join('');
+  }
 }
 function switchBagTab(t){
   _bagTab=t;
@@ -1485,12 +1506,26 @@ function renderDevTower(){
     ${dSlide('t_cost_'+i,'Cost','ทอง',CFG.t_cost[i],10,300,5,true)}</div>`).join('');
 }
 function renderDevCheat(){
-  return `<div class="dev-section"><div class="dev-section-title">💰 Resources</div>
+  return `<div class="dev-section"><div class="dev-section-title">💰 ทองในด่าน</div>
   <div class="dev-cheat-grid">
     <div class="dev-cheat-btn green" onclick="cheat('gold500')">+500 ทอง</div>
     <div class="dev-cheat-btn green" onclick="cheat('gold9999')">+9999 ทอง</div>
     <div class="dev-cheat-btn green" onclick="cheat('hp_full')">❤️ HP เต็ม</div>
     <div class="dev-cheat-btn" onclick="cheat('hp10')">ตั้ง HP=10</div>
+  </div></div>
+  <div class="dev-section"><div class="dev-section-title">💎 มณีวิญญาณ</div>
+  <div class="dev-cheat-grid">
+    <div class="dev-cheat-btn green" onclick="cheat('gem100')">+100 💎</div>
+    <div class="dev-cheat-btn green" onclick="cheat('gem999')">+999 💎</div>
+    <div class="dev-cheat-btn" onclick="cheat('gem0')">ตั้ง 0 💎</div>
+    <div class="dev-cheat-btn" onclick="cheat('pity0')">รีเซ็ต Pity</div>
+  </div></div>
+  <div class="dev-section"><div class="dev-section-title">🪨 วัสดุคราฟ</div>
+  <div class="dev-cheat-grid">
+    <div class="dev-cheat-btn green" onclick="cheat('mat0_10')">+10 เศษหินมืด</div>
+    <div class="dev-cheat-btn green" onclick="cheat('mat1_10')">+10 แกนเวทอสูร</div>
+    <div class="dev-cheat-btn green" onclick="cheat('mat2_5')">+5 ผงดาวตก</div>
+    <div class="dev-cheat-btn" onclick="cheat('mat_reset')">รีเซ็ตวัสดุ</div>
   </div></div>
   <div class="dev-section"><div class="dev-section-title">🌊 Wave Control</div>
   <div class="dev-cheat-grid">
@@ -1594,6 +1629,14 @@ function cheat(cmd){
     case 'reset_ach':
       localStorage.removeItem('tq_ach');localStorage.removeItem('tq_achstats');localStorage.removeItem('tq_ach_seen');
       _updateAchBadge();showToast('↺ Reset Achievement แล้ว!');break;
+    case 'gem100': saveGems(loadGems()+100);showToast('💎 +100 มณีวิญญาณ!');break;
+    case 'gem999': saveGems(loadGems()+999);showToast('💎 +999 มณีวิญญาณ!');break;
+    case 'gem0': saveGems(0);showToast('💎 ตั้งมณีเป็น 0 แล้ว');break;
+    case 'pity0': saveGachaPity(0);showToast('🔄 รีเซ็ต Pity แล้ว');break;
+    case 'mat0_10':{const m=loadMaterials();m[0]=(m[0]||0)+10;saveMaterials(m);showToast('🪨 +10 เศษหินมืด!');break;}
+    case 'mat1_10':{const m=loadMaterials();m[1]=(m[1]||0)+10;saveMaterials(m);showToast('🔘 +10 แกนเวทอสูร!');break;}
+    case 'mat2_5':{const m=loadMaterials();m[2]=(m[2]||0)+5;saveMaterials(m);showToast('🌟 +5 ผงดาวตก!');break;}
+    case 'mat_reset': saveMaterials([0,0,0]);showToast('↺ รีเซ็ตวัสดุแล้ว!');break;
   }
 }
 function devReset(){CFG=JSON.parse(JSON.stringify(DEFAULT_CFG));localStorage.removeItem('tq_cfg');showToast('↺ รีเซ็ตค่าคอนฟิกแล้ว!');renderDevPanel();}
