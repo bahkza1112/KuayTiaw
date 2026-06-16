@@ -489,6 +489,7 @@ function renderWorkshop(){
   const craftBtn=document.getElementById('wsCraftBtn');
   craftBtn.style.display=(unlocked||!finalCleared)?'none':'';
   if(unlocked) return;
+  const reqNote=document.getElementById('wsCraftReqNote');
   if(finalCleared){
     const reqs=[
       {icon:'💎',name:'มณีวิญญาณ',have:gems,need:VOID_RECIPE.gems},
@@ -498,7 +499,15 @@ function renderWorkshop(){
     ];
     const allMet=reqs.every(r=>r.have>=r.need);
     craftBtn.disabled=!allMet;
-  }
+    if(reqNote){
+      if(allMet){reqNote.style.display='none';}
+      else{
+        const missing=reqs.filter(r=>r.have<r.need).map(r=>`${r.icon} ${r.have}/${r.need}`).join('  ');
+        reqNote.textContent='ขาด: '+missing;
+        reqNote.style.display='block';
+      }
+    }
+  } else if(reqNote) reqNote.style.display='none';
   // render persistent upgrades
   const pg=loadPGold();
   const badge=document.getElementById('wsPGoldBadge');
