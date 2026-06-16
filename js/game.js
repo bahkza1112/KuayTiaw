@@ -189,7 +189,7 @@ function mkState(){
     gold:CFG.startGold,hp:CFG.baseHP,maxHp:CFG.baseHP,
     wave:0,score:0,selTwr:-1,waveActive:false,
     over:false,win:false,queue:[],spawnT:0,mx:-1,my:-1,
-    selTowerInfo:null,gmTimers:{},shakeT:0,waveBanner:null,bossWarning:null,
+    selTowerInfo:null,gmTimers:{},shakeT:0,hitStopT:0,waveBanner:null,bossWarning:null,
     kills:0,comboN:0,comboT:0,maxCombo:0,dmgBuff:1,
     weather:mkWeatherState()};
 }
@@ -327,13 +327,16 @@ function initGame(){
   updateTowerPanel();
   updateHUD();
   updateMenuStats();
+  startBgm();
   let last=performance.now();
   function loop(ts){
     /* BUG FIX: guard against stale loops after goMenu/goStageSelect */
     if(!G){return;}
     if(paused){rafId=requestAnimationFrame(loop);return;}
-    const dt=Math.min((ts-last)/1000,.1)*speed; last=ts;
-    update(dt); render();
+    const rdt=(ts-last)/1000; last=ts;
+    const dt=Math.min(rdt,.1)*speed;
+    if(G.hitStopT>0){ G.hitStopT-=rdt; render(); } // hit-stop: freeze sim, keep drawing
+    else { update(dt); render(); }
     if(!G.over&&!G.win) rafId=requestAnimationFrame(loop);
     // else loop stops naturally
   }
@@ -346,6 +349,7 @@ function restartGame(){
 }
 function goStageSelect(){
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
+  stopBgm();
   G=null;paused=false;
   document.getElementById('endOverlay').style.display='none';
   document.getElementById('pauseScreen').style.display='none';
@@ -353,6 +357,7 @@ function goStageSelect(){
 }
 function goMenu(){
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
+  stopBgm();
   G=null;paused=false;
   showScreen('mm',true);
   updateMenuStats();
@@ -506,17 +511,69 @@ function _playSound(type){
           og.gain.setValueAtTime(.28,ac.currentTime+i*.08); og.gain.exponentialRampToValueAtTime(.001,ac.currentTime+i*.08+.35);
           o.connect(og); og.connect(v); o.start(ac.currentTime+i*.08); o.stop(ac.currentTime+i*.08+.35);
         }); break;}
+      case 'void':{// 🌑 eerie detuned void warp
+        const o=ac.createOscillator(),og=ac.createGain();
+        o.type='sawtooth'; o.frequency.setValueAtTime(300,ac.currentTime);
+        o.frequency.exponentialRampToValueAtTime(90,ac.currentTime+.26);
+        og.gain.setValueAtTime(.4,ac.currentTime); og.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.3);
+        o.connect(og); og.connect(v);
+        const o2=ac.createOscillator(),o2g=ac.createGain();
+        o2.type='sine'; o2.frequency.setValueAtTime(307,ac.currentTime); // detune for dissonance
+        o2.frequency.exponentialRampToValueAtTime(94,ac.currentTime+.26);
+        o2g.gain.setValueAtTime(.25,ac.currentTime); o2g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.3);
+        o2.connect(o2g); o2g.connect(v);
+        o.start(); o.stop(ac.currentTime+.3); o2.start(); o2.stop(ac.currentTime+.3); break;}
     }
   }catch(e){}
 }
 /* tower type → sound name */
-const _TSND=['cannon','ice','magic','sniper',null,'archer',null,'thunder'];
+const _TSND=['cannon','ice','magic','sniper',null,'archer',null,'thunder','void'];
 let _sfxLastDie=0; /* throttle death sounds */
 function toggleSfx(){
   _sfxOn=!_sfxOn;
   const btn=document.getElementById('sfxBtn');
   if(btn) btn.textContent=_sfxOn?'🔊':'🔇';
   if(_sfxOn){_resumeAC();_playSound('wave_clear');}
+}
+
+/* ══ BGM — synthesized looping background music (Web Audio) ══ */
+let _bgmOn=true,_bgmTimer=null,_bgmStep=0,_bgmNext=0,_bgmGain=null;
+/* dark/heroic minor loop — bass walk + soft arpeggio (Am feel), 16 steps */
+const _BGM_BASS=[110,110,82,82,98,98,73,73,110,110,82,82,98,98,87,65];
+const _BGM_ARP =[440,330,392,494,523,392,440,330,587,440,494,392,523,440,392,330];
+const _BGM_TEMPO=0.3; // sec per step
+function _bgmNote(freq,t,dur,type,vol){
+  const ac=_getAC(); if(!ac||!_bgmGain) return;
+  const o=ac.createOscillator(),g=ac.createGain();
+  o.type=type; o.frequency.setValueAtTime(freq,t);
+  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+.03);
+  g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(g); g.connect(_bgmGain); o.start(t); o.stop(t+dur+.03);
+}
+function _bgmSchedule(){
+  const ac=_getAC(); if(!ac) return;
+  while(_bgmNext<ac.currentTime+0.2){
+    const s=_bgmStep%16;
+    _bgmNote(_BGM_BASS[s],_bgmNext,_BGM_TEMPO*0.95,'triangle',0.55);   // bass
+    _bgmNote(_BGM_ARP[s], _bgmNext,_BGM_TEMPO*0.6,'sine',0.16);        // melody
+    if(s%4===0) _bgmNote(_BGM_ARP[s]*2,_bgmNext,_BGM_TEMPO*0.4,'sine',0.07); // sparkle on beat
+    _bgmNext+=_BGM_TEMPO; _bgmStep++;
+  }
+}
+function startBgm(){
+  if(!_bgmOn) return;
+  const ac=_getAC(); if(!ac) return; _resumeAC();
+  if(!_bgmGain){_bgmGain=ac.createGain();_bgmGain.gain.value=0.05;_bgmGain.connect(ac.destination);}
+  if(_bgmTimer) return; // already playing
+  _bgmNext=ac.currentTime+0.1;
+  _bgmSchedule();
+  _bgmTimer=setInterval(_bgmSchedule,70);
+}
+function stopBgm(){ if(_bgmTimer){clearInterval(_bgmTimer);_bgmTimer=null;} }
+function toggleBgm(){
+  _bgmOn=!_bgmOn;
+  if(_bgmOn) startBgm(); else stopBgm();
+  const b=document.getElementById('settBgmBtn'); if(b) b.textContent=_bgmOn?'🎵':'🔇';
 }
 
 /* ══ WAVE ══ */
@@ -1870,6 +1927,32 @@ function render(){
     ctx.fillText(G.waveBanner.text,cv.width/2+slideX,by2+bh2/2);
     ctx.shadowBlur=0;ctx.restore();
   }
+  // ⚡ combo meter — persistent on-screen while a streak is active
+  if(G.comboN>=2&&G.comboT>0){
+    const mult=G.comboN>=10?3:G.comboN>=5?2:G.comboN>=3?1.5:1;
+    const col=mult>=3?'#ff1744':mult>=2?'#ff9100':mult>=1.5?'#ffe234':'#80d8ff';
+    const alpha=Math.min(1,G.comboT/0.5); // fade out in last 0.5s
+    const pop=G.comboT>2.0?1+(G.comboT-2.0)*0.6:1; // brief pop on increment (comboT resets to 2.2)
+    const cx=cv.width/2, cy=46;
+    ctx.save(); ctx.globalAlpha=alpha;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.font='bold '+Math.round(26*pop)+'px Arial';
+    ctx.fillStyle=col; ctx.shadowColor=col; ctx.shadowBlur=12;
+    ctx.fillText('⚡ COMBO ×'+G.comboN,cx,cy);
+    ctx.shadowBlur=0;
+    if(mult>1){
+      ctx.font='bold 13px Arial'; ctx.fillStyle='#fff';
+      ctx.fillText('คะแนน ×'+mult,cx,cy+20);
+    }
+    // timer bar
+    const bw=110,bh=4,bx=cx-bw/2,byb=cy+30;
+    ctx.fillStyle='rgba(255,255,255,.18)';
+    if(ctx.roundRect)ctx.roundRect(bx,byb,bw,bh,2);else ctx.rect(bx,byb,bw,bh);ctx.fill();
+    ctx.fillStyle=col;
+    const tw=bw*Math.min(1,G.comboT/2.2);
+    if(ctx.roundRect)ctx.roundRect(bx,byb,tw,bh,2);else ctx.rect(bx,byb,tw,bh);ctx.fill();
+    ctx.restore();
+  }
 }
 
 /* ══ CANVAS EVENTS ══ */
@@ -1924,6 +2007,7 @@ function tryPlaceTower(type,col,row){
       life:.8,vy:Math.sin(ang)*spd,vx:Math.cos(ang)*spd,decay:2.2});
   }
   addParticle(col*CS+CS/2,row*CS+CS/2,'✅ สร้างแล้ว!','#ffe234');
+  if(typeof questProgress==='function') questProgress('build',1); // 📅 daily quest
   updateHUD();
   return true;
 }
@@ -2199,12 +2283,15 @@ function initEgGame(){
   updateTowerPanel();
   updateHUD();
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
+  startBgm();
   let last=performance.now();
   function loop(ts){
     if(!G) return;
     if(paused){rafId=requestAnimationFrame(loop);return;}
-    const dt=Math.min((ts-last)/1000,.1)*speed; last=ts;
-    updateEg(dt); render();
+    const rdt=(ts-last)/1000; last=ts;
+    const dt=Math.min(rdt,.1)*speed;
+    if(G.hitStopT>0){ G.hitStopT-=rdt; render(); }
+    else { updateEg(dt); render(); }
     if(!G.over&&!G.win) rafId=requestAnimationFrame(loop);
   }
   rafId=requestAnimationFrame(loop);
@@ -2559,6 +2646,7 @@ function updateEg(dt){
     if(egDiff===2&&G.weather&&G.weather.active) unlockAchievement('eghw'); // 🌩️ Hard + weather wave clear
     clearWeather(); // 🌦 clear weather when Endgame wave ends
     const bonus=30+G.wave*8+egRound*15; G.gold+=bonus; updateHUD();
+    if(typeof questProgress==='function') questProgress('wave',G.wave); // 📅 daily quest: reach wave
     // heal 1 HP per wave clear
     if(G.hp<G.maxHp){G.hp=Math.min(G.maxHp,G.hp+1);updateHUD();}
     const drops=rollEndgameMaterialDrops();

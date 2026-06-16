@@ -1,6 +1,13 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.5.5';
+const GAME_VERSION='3.6.0';
 const PATCH_NOTES=[
+  {ver:'3.6.0',date:'2026-06-16',title:'📅 ภารกิจประจำวัน + ฟีลเกม + เพลงพื้นหลัง',notes:[
+    'ใหม่! ภารกิจประจำวัน — รางวัลล็อกอินต่อเนื่อง 7 วัน (มณี/เศษ/ทองถาวร) + เควสต์รายวัน 3 ข้อ',
+    'เควสต์รายวันสุ่มทุกวัน: กำจัดศัตรู / ผ่านด่าน / คอมโบ / สร้างป้อม / เก็บทอง / ไปถึงคลื่น',
+    'ฟีลเกม: เพิ่ม "ตัวนับคอมโบ" ค้างบนจอ + เอฟเฟกต์ hit-stop ตอนบอสตาย (เกมหยุดเสี้ยววินาทีให้รู้สึกหนัก)',
+    'เพลงพื้นหลัง (BGM) สังเคราะห์วนระหว่างเล่น — เปิด/ปิดได้ในเมนูตั้งค่า 🎵',
+    'ป้อมมนตราโมฆะมีเสียงยิงเป็นของตัวเองแล้ว (เดิมเงียบ)',
+  ]},
   {ver:'3.5.5',date:'2026-06-16',title:'⚖️ บาลานซ์กาชา + ระบบแลกเศษสะสม',notes:[
     'กาชา: pull ที่ไม่ได้รางวัลหลักจะได้ 🔹 เศษสีน้ำเงิน 1 ชิ้นทุกครั้ง (ไม่มือเปล่าอีกต่อไป)',
     'Workshop ใหม่: ส่วน "แลกเศษสะสม" — เศษจากกาชาแลกเป็นวัสดุคราฟได้ (🔹×10→🪨 / 💜×5→🔘 / 🌟×3→⭐)',
@@ -385,7 +392,7 @@ function renderAchievTab(){
 }
 
 /* ══ SCREEN MANAGEMENT ══ */
-function hideAll(){['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','whatsnew','towersel','storyscr','workshop','bag','gacha'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const cs=document.getElementById('cutscene');if(cs)cs.style.display='none';}
+function hideAll(){['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','whatsnew','towersel','storyscr','workshop','bag','gacha','daily'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const cs=document.getElementById('cutscene');if(cs)cs.style.display='none';}
 function showScreen(id,flex){
   hideAll();
   const el=document.getElementById(id);
@@ -408,6 +415,7 @@ function updateMenuStats(){
   _updateAchBadge();
   _updateNewsBadge();
   _updateBagBadge();
+  _updateDailyBadge();
 }
 
 /* ══ WORKSHOP ══ */
@@ -726,6 +734,83 @@ function craftVoidTower(){
   renderWorkshop(); updateMenuStats(); checkAchievements();
   // 🌑 popup ฉลองคราฟสำเร็จ (สไตล์เดียวกับหน้าจอจบด่าน)
   document.getElementById('voidCraftOverlay').style.display='flex';
+}
+
+/* ══ DAILY (LOGIN + QUESTS) — v3.6.0 ══ */
+function openDaily(){showScreen('daily',true);renderDaily();}
+function renderDaily(){
+  const st=getLoginState();
+  // 7-day login strip
+  const strip=document.getElementById('dailyLoginStrip');
+  if(strip){
+    strip.innerHTML=LOGIN_REWARDS.map((rw,i)=>{
+      // determine cell state relative to today's claimable day (st.dayIndex)
+      let state; // 'claimed' | 'today' | 'locked'
+      if(st.claimedToday) state=i<=st.dayIndex?'claimed':'locked';
+      else state=i<st.dayIndex?'claimed':(i===st.dayIndex?'today':'locked');
+      const border=state==='today'?'#69f0ae':state==='claimed'?'rgba(105,240,174,.35)':'rgba(255,255,255,.08)';
+      const bg=state==='today'?'rgba(105,240,174,.14)':state==='claimed'?'rgba(105,240,174,.05)':'rgba(255,255,255,.03)';
+      const opa=state==='locked'?'.5':'1';
+      const tick=state==='claimed'?'<div style="position:absolute;top:2px;right:4px;font-size:10px;color:#69f0ae;">✓</div>':'';
+      return `<div style="position:relative;background:${bg};border:1.5px solid ${border};border-radius:10px;padding:8px 4px;text-align:center;opacity:${opa};${state==='today'?'box-shadow:0 0 12px rgba(105,240,174,.4);':''}">
+        ${tick}
+        <div style="font-size:9px;color:rgba(255,255,255,.5);">วันที่ ${i+1}</div>
+        <div style="font-size:22px;margin:2px 0;">${rw.icon}</div>
+        <div style="font-size:8px;color:${state==='today'?'#a5d6a7':'rgba(255,255,255,.45)'};line-height:1.25;min-height:20px;">${rw.label}</div>
+      </div>`;
+    }).join('');
+  }
+  // claim button
+  const cb=document.getElementById('dailyClaimBtn');
+  if(cb){
+    if(st.claimedToday){
+      cb.disabled=true; cb.textContent='✅ รับแล้ววันนี้ (สตรีค '+st.streak+' วัน)';
+      cb.style.opacity='.55';
+    } else {
+      cb.disabled=false; cb.style.opacity='1';
+      cb.textContent='🎁 รับรางวัลวันนี้ ('+LOGIN_REWARDS[st.dayIndex].label+')';
+    }
+  }
+  // quests
+  const ql=document.getElementById('dailyQuestList');
+  if(ql){
+    const quests=getDailyQuests();
+    ql.innerHTML=quests.map(q=>{
+      const pct=Math.min(100,Math.round(q.prog/q.goal*100));
+      const ready=q.done&&!q.claimed;
+      const barCol=q.claimed?'#9e9e9e':q.done?'#69f0ae':'#42a5f5';
+      const btn=q.claimed
+        ?`<button disabled style="background:rgba(255,255,255,.06);color:rgba(255,255,255,.3);border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;flex-shrink:0;">✅ รับแล้ว</button>`
+        :`<button onclick="_claimQuestUI('${q.id}')" ${ready?'':'disabled'} style="background:${ready?'linear-gradient(180deg,#43a047,#1b5e20)':'rgba(255,255,255,.06)'};color:${ready?'#fff':'rgba(255,255,255,.3)'};border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;cursor:${ready?'pointer':'not-allowed'};flex-shrink:0;${ready?'box-shadow:0 0 10px rgba(67,160,71,.6);':''}">${q.rwTxt}</button>`;
+      return `<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,${ready?'.18':'.07'});border-radius:10px;padding:9px 11px;display:flex;align-items:center;gap:10px;">
+        <div style="font-size:20px;flex-shrink:0;">${q.icon}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:11px;font-weight:700;color:${q.claimed?'rgba(255,255,255,.4)':'#fff'};">${q.desc}</div>
+          <div style="height:5px;background:rgba(255,255,255,.1);border-radius:3px;margin-top:5px;overflow:hidden;">
+            <div style="height:100%;width:${pct}%;background:${barCol};border-radius:3px;transition:width .3s;"></div>
+          </div>
+          <div style="font-size:9px;color:rgba(255,255,255,.45);margin-top:3px;">${q.prog} / ${q.goal}</div>
+        </div>
+        ${btn}
+      </div>`;
+    }).join('');
+  }
+}
+function _claimDailyLoginUI(){
+  const res=claimDailyLogin();
+  if(!res){showToast('✅ รับรางวัลวันนี้แล้ว');return;}
+  showToast('🎁 รับ '+res.reward.icon+' '+res.reward.label+'! (สตรีค '+res.streak+' วัน)');
+  renderDaily(); updateMenuStats();
+}
+function _claimQuestUI(id){
+  const q=claimDailyQuest(id);
+  if(!q){showToast('❌ ยังทำเควสต์ไม่สำเร็จ');return;}
+  showToast('✅ '+q.icon+' '+q.desc+' สำเร็จ! รับ '+q.rwTxt);
+  renderDaily(); updateMenuStats();
+}
+function _updateDailyBadge(){
+  const b=document.getElementById('dailyBadge');
+  if(b) b.style.display=(typeof dailyHasClaimable==='function'&&dailyHasClaimable())?'block':'none';
 }
 
 /* ══ STAGE SELECT ══ */
@@ -2007,6 +2092,10 @@ document.getElementById('settSfxBtn').addEventListener('click',function(){
   toggleSfx();
   this.textContent=_sfxOn?'🔊':'🔇';
 });
+document.getElementById('settBgmBtn').addEventListener('click',function(){
+  toggleBgm();
+  this.textContent=_bgmOn?'🎵':'🔇';
+});
 document.getElementById('settVolSlider').addEventListener('input',function(){
   _sfxVol=this.value/100;
 });
@@ -2037,6 +2126,9 @@ document.getElementById('tsBackBtn').addEventListener('click',()=>{
 });
 document.getElementById('workshopBtn').addEventListener('click',openWorkshop);
 document.getElementById('workshopBackBtn').addEventListener('click',()=>showScreen('mm',true));
+document.getElementById('dailyBtn').addEventListener('click',openDaily);
+document.getElementById('dailyBackBtn').addEventListener('click',()=>showScreen('mm',true));
+document.getElementById('dailyClaimBtn').addEventListener('click',_claimDailyLoginUI);
 document.getElementById('wsCraftBtn').addEventListener('click',craftVoidTower);
 document.getElementById('voidCraftCloseBtn').addEventListener('click',()=>{document.getElementById('voidCraftOverlay').style.display='none';});
 document.getElementById('bagNavBtn').addEventListener('click',openBag);

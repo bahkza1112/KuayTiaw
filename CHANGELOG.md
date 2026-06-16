@@ -2,6 +2,34 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.6.0 — Daily Quests + Game Feel + BGM
+
+### Added
+- **Daily system** (`js/save.js`): 7-day login reward cycle (`LOGIN_REWARDS`,
+  `loadLogin`/`getLoginState`/`claimDailyLogin`, key `tq_login`) and 3 rotating
+  daily quests (`QUEST_POOL`, `getDailyQuests`/`questProgress`/`claimDailyQuest`,
+  key `tq_quests`). Quests seeded deterministically per date; types
+  kill/clear/combo/build/gold/wave. `dailyHasClaimable()` drives the menu badge.
+- New `#daily` screen + main-menu `#dailyBtn` (with `#dailyBadge`) in
+  `Tower Quest 🏰.html`; `openDaily`/`renderDaily`/`_claimDailyLoginUI`/
+  `_claimQuestUI`/`_updateDailyBadge` in `js/ui.js`. `'daily'` added to
+  `hideAll()`; `_updateDailyBadge()` called from `updateMenuStats()`.
+- Quest-progress hooks: `killEnemy` (kill/gold/combo, `js/enemy.js`),
+  `tryPlaceTower` (build) + endgame wave-clear (wave, `js/game.js`),
+  `saveProgress` (clear, `js/save.js`).
+- **Game feel**: persistent on-screen combo meter drawn at end of `render()`
+  (count + score multiplier + timer bar); hit-stop on boss death
+  (`G.hitStopT`, gated in both game loops) plus extra screen shake in
+  `killEnemy` for boss types (4/9).
+- **Audio**: synthesized looping BGM (`startBgm`/`stopBgm`/`toggleBgm`,
+  `_BGM_BASS`/`_BGM_ARP` scheduler) started in both game loops, stopped on
+  `goMenu`/`goStageSelect`; `#settBgmBtn` toggle in Settings. Void Tower SFX
+  added: `_TSND[8]='void'` + new `'void'` case in `_playSound`.
+
+### Notes
+- `G.hitStopT` added to `mkState()`. BGM uses a separate gain node (vol 0.05),
+  independent of the SFX volume slider.
+
 ## v3.5.5 — Gacha balance + Shard Exchange
 
 ### Added

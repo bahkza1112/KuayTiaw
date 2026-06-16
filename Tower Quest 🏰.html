@@ -2,7 +2,7 @@
 <html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Tower Quest 🏰 v3.5.5</title>
+<title>Tower Quest 🏰 v3.6.0</title>
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -43,12 +43,13 @@
   <div class="island">🏰</div>
   <div class="gtitle">TOWER QUEST</div>
   <div class="gsub">⚔️ ปกป้องอาณาจักรของคุณ!</div>
-  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v3.5.5 — มีอะไรใหม่<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
+  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v3.6.0 — มีอะไรใหม่<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
 
   <!-- battle buttons -->
   <button class="bbattle" id="startBtn">⚔️ โหมดเนื้อเรื่อง</button>
   <button id="egMenuBtn" style="margin-top:12px;font-family:&#39;Arial Black&#39;,&#39;Segoe UI&#39;,Arial,sans-serif;background:linear-gradient(180deg,rgba(255,80,80,.35),rgba(180,20,20,.45));color:#ff8a80;font-size:17px;font-weight:800;border:2px solid rgba(255,50,50,.5);border-radius:50px;padding:13px 54px;cursor:pointer;letter-spacing:1px;transition:all .2s;box-shadow:0 0 20px rgba(255,50,50,.4);" onmouseover="this.style.background=&#39;linear-gradient(180deg,rgba(255,80,80,.5),rgba(180,20,20,.6))&#39;;this.style.boxShadow=&#39;0 0 32px rgba(255,50,50,.65)&#39;" onmouseout="this.style.background=&#39;linear-gradient(180deg,rgba(255,80,80,.35),rgba(180,20,20,.45))&#39;;this.style.boxShadow=&#39;0 0 20px rgba(255,50,50,.4)&#39;">🔥 เอนด์เกม</button>
   <button id="workshopBtn" style="margin-top:12px;font-family:'Arial Black','Segoe UI',Arial,sans-serif;background:linear-gradient(180deg,rgba(126,87,194,.35),rgba(49,27,146,.45));color:#d1c4e9;font-size:15px;font-weight:800;border:2px solid rgba(126,87,194,.5);border-radius:50px;padding:11px 46px;cursor:pointer;letter-spacing:1px;transition:all .2s;box-shadow:0 0 18px rgba(126,87,194,.4);" onmouseover="this.style.background=&#39;linear-gradient(180deg,rgba(126,87,194,.5),rgba(49,27,146,.6))&#39;;this.style.boxShadow=&#39;0 0 28px rgba(126,87,194,.65)&#39;" onmouseout="this.style.background=&#39;linear-gradient(180deg,rgba(126,87,194,.35),rgba(49,27,146,.45))&#39;;this.style.boxShadow=&#39;0 0 18px rgba(126,87,194,.4)&#39;">🛠️ เวิร์กชอป</button>
+  <button id="dailyBtn" style="position:relative;margin-top:12px;font-family:'Arial Black','Segoe UI',Arial,sans-serif;background:linear-gradient(180deg,rgba(67,160,71,.35),rgba(27,94,32,.45));color:#c8e6c9;font-size:15px;font-weight:800;border:2px solid rgba(67,160,71,.5);border-radius:50px;padding:11px 46px;cursor:pointer;letter-spacing:1px;transition:all .2s;box-shadow:0 0 18px rgba(67,160,71,.4);" onmouseover="this.style.background=&#39;linear-gradient(180deg,rgba(67,160,71,.5),rgba(27,94,32,.6))&#39;;this.style.boxShadow=&#39;0 0 28px rgba(67,160,71,.65)&#39;" onmouseout="this.style.background=&#39;linear-gradient(180deg,rgba(67,160,71,.35),rgba(27,94,32,.45))&#39;;this.style.boxShadow=&#39;0 0 18px rgba(67,160,71,.4)&#39;">📅 ภารกิจประจำวัน<span id="dailyBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:#ef5350;color:#fff;font-size:10px;font-weight:900;border-radius:50%;width:18px;height:18px;line-height:18px;text-align:center;box-shadow:0 0 8px rgba(239,83,80,.8);">!</span></button>
 
   <div class="bottom-nav">
 <div class="bnav active" id="battleNavBtn"><span class="bnav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="21" x2="17" y2="7"/><line x1="13" y1="3" x2="17" y2="7"/><line x1="17" y1="3" x2="13" y2="7"/><line x1="21" y1="21" x2="7" y2="7"/><line x1="11" y1="3" x2="7" y2="7"/><line x1="7" y1="3" x2="11" y2="7"/></svg></span>เนื้อเรื่อง</div>
@@ -330,6 +331,7 @@
       <h2>⚙ ตั้งค่า</h2>
       <div class="settings-row"><span>⚡ ความเร็ว</span><button class="speedbtn" id="settSpeedBtn">1×</button></div>
       <div class="settings-row"><span>🔊 เสียง</span><button class="speedbtn" id="settSfxBtn">🔊</button></div>
+      <div class="settings-row"><span>🎵 เพลงพื้นหลัง</span><button class="speedbtn" id="settBgmBtn">🎵</button></div>
       <div class="settings-row"><span>🔉 ระดับเสียง</span><input type="range" id="settVolSlider" min="0" max="100" value="35"></div>
       <div class="settings-row"><span>🔁 ส่งคลื่นอัตโนมัติ</span><button class="autobtn" id="settAutoBtn">🔁 อัตโนมัติ</button></div>
       <button class="obtn" onclick="closeSettings()">✔ ปิด</button>
@@ -513,6 +515,26 @@
         <p>ป้อมมนตราโมฆะพร้อมใช้งานแล้ว — เลือกใช้ได้ในโหมด Endgame ทันที!</p>
         <button class="obtn" id="voidCraftCloseBtn">✨ เยี่ยมมาก!</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- DAILY (LOGIN + QUESTS) -->
+<div id="daily" style="display:none;flex-direction:column;min-height:100%;">
+  <div class="eg-hd" style="background:linear-gradient(90deg,#1b5e20,#0d3010);">
+    <button class="bback" id="dailyBackBtn">← กลับ</button>
+    <div class="eg-hd-title">📅 ภารกิจประจำวัน</div>
+  </div>
+  <div class="eg-body" style="gap:14px;">
+    <div class="eg-info-box">
+      <div class="eg-info-title">🎁 รางวัลล็อกอิน 7 วัน</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.4);margin:4px 0 10px;">ล็อกอินต่อเนื่องเพื่อรับรางวัลใหญ่ขึ้น</div>
+      <div id="dailyLoginStrip" style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;"></div>
+      <button class="eg-start-btn" id="dailyClaimBtn" style="background:linear-gradient(180deg,#43a047,#1b5e20);width:100%;margin-top:12px;">🎁 รับรางวัลวันนี้</button>
+    </div>
+    <div class="eg-info-box">
+      <div class="eg-info-title">📋 เควสต์ประจำวัน <span id="dailyResetNote" style="font-size:10px;font-weight:400;color:rgba(255,255,255,.4);margin-left:6px;">รีเซ็ตเที่ยงคืน</span></div>
+      <div id="dailyQuestList" style="display:flex;flex-direction:column;gap:8px;margin-top:8px;"></div>
     </div>
   </div>
 </div>

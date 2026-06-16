@@ -202,6 +202,8 @@ function killEnemy(e){
   }
   G.gold+=e.reward;
   addParticle(e.x,e.y,'+'+e.reward+'💰','#ffe082');
+  // 📅 daily quest tracking
+  if(typeof questProgress==='function'){questProgress('kill',1);questProgress('gold',e.reward);questProgress('combo',G.comboN);}
   updateHUD();
   // V2: death burst — color-coded by enemy type
   const _dc=['#4caf50','#eceff1','#7c4dff','#ff5722','#b71c1c','#9e9e9e','#37474f','#ce93d8','#90a4ae','#9c27b0','#69f0ae'];
@@ -212,6 +214,11 @@ function killEnemy(e){
       life:.65+Math.random()*.45,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:2.3,scale:.5+Math.random()*.6});
   }
   G.fxRings.push({x:e.x,y:e.y,r:ESIZES[e.ti]*.4,maxR:ESIZES[e.ti]*3.8,life:.55,lw:2.5,col:_dc[e.ti]||'#fff',delay:0});
+  // 💥 boss death impact — hit-stop freeze + extra shake (ti 9=จอมมาร, 4=บอส)
+  if(e.ti===9||e.ti===4){
+    G.hitStopT=Math.max(G.hitStopT||0,e.ti===9?.13:.07);
+    G.shakeT=Math.min(.75,G.shakeT+(e.ti===9?.5:.3));
+  }
   // death sound (throttled — max once per 80ms)
   const _now=performance.now();
   if(_now-_sfxLastDie>80){_sfxLastDie=_now;_playSound('die');}

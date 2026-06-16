@@ -3,6 +3,7 @@
 function loadProgress(){try{return JSON.parse(localStorage.getItem('tq_progress')||'{}');}catch(e){return{};}}
 const GEM_STAR_TABLE=[0,10,20,30]; // เพชรสะสมตามดาว 0/1/2/3
 function saveProgress(si,stars){
+  if(typeof questProgress==='function') questProgress('clear',1); // 📅 daily quest: clear stages
   const p=loadProgress();
   const prevStars=p[si]||0;
   let gain=0;
@@ -159,6 +160,89 @@ function isStageUnlocked(si){
   if(si===0) return true;
   if(si>=STAGES.length||STAGES[si].comingSoon) return false;
   return (loadProgress()[si-1]||0)>=1;
+}
+
+/* ══ DAILY LOGIN + DAILY QUESTS (v3.6.0) ══ */
+function _todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function _daysBetween(a,b){return Math.round((Date.parse(b)-Date.parse(a))/86400000);}
+/* 7-day login reward cycle */
+const LOGIN_REWARDS=[
+  {icon:'💎',label:'40 มณีวิญญาณ',         grant(){addGems(40);}},
+  {icon:'🔹',label:'เศษสีน้ำเงิน ×3',      grant(){addBagItem('shard_c',3);}},
+  {icon:'🪙',label:'ทองถาวร 60',           grant(){addPGold(60);}},
+  {icon:'💎',label:'80 มณีวิญญาณ',         grant(){addGems(80);}},
+  {icon:'💜',label:'เศษสีม่วง ×2',         grant(){addBagItem('shard_r',2);}},
+  {icon:'🎁',label:'120 มณีวิญญาณ',        grant(){addGems(120);}},
+  {icon:'🌟',label:'เศษสีทอง ×2 + 150 มณี', grant(){addBagItem('shard_e',2);addGems(150);}},
+];
+function loadLogin(){try{return JSON.parse(localStorage.getItem('tq_login')||'{}');}catch(e){return {};}}
+function saveLogin(o){localStorage.setItem('tq_login',JSON.stringify(o));}
+function getLoginState(){
+  const o=loadLogin(), today=_todayStr();
+  const streak=o.streak||0, last=o.last||null, claimedToday=(last===today);
+  let dayIndex; // 0-based reward index for TODAY
+  if(claimedToday) dayIndex=((streak-1)%7+7)%7;
+  else if(last&&_daysBetween(last,today)===1) dayIndex=streak%7; // streak continues
+  else dayIndex=0; // streak reset
+  return {claimedToday,streak,dayIndex,today,last};
+}
+function claimDailyLogin(){
+  const st=getLoginState();
+  if(st.claimedToday) return false;
+  const o=loadLogin();
+  const newStreak=(o.last&&_daysBetween(o.last,st.today)===1)?(o.streak||0)+1:1;
+  const idx=(newStreak-1)%7;
+  const rw=LOGIN_REWARDS[idx];
+  rw.grant();
+  saveLogin({last:st.today,streak:newStreak});
+  return {reward:rw,streak:newStreak,idx};
+}
+/* Daily quests — 3 chosen deterministically per day from pool */
+const QUEST_POOL=[
+  {id:'kill60', icon:'⚔️',type:'kill', goal:60,  desc:'กำจัดศัตรู 60 ตัว',       grant(){addGems(30);},     rwTxt:'💎 30'},
+  {id:'kill150',icon:'💀',type:'kill', goal:150, desc:'กำจัดศัตรู 150 ตัว',      grant(){addGems(60);},     rwTxt:'💎 60'},
+  {id:'clear2', icon:'🏁',type:'clear',goal:2,   desc:'ผ่านด่าน 2 ครั้ง',        grant(){addGems(40);},     rwTxt:'💎 40'},
+  {id:'combo8', icon:'⚡',type:'combo',goal:8,   desc:'ทำคอมโบ ×8',             grant(){addBagItem('shard_c',3);}, rwTxt:'🔹 ×3'},
+  {id:'build12',icon:'🏗️',type:'build',goal:12,  desc:'สร้างป้อม 12 หลัง',       grant(){addGems(35);},     rwTxt:'💎 35'},
+  {id:'gold600',icon:'💰',type:'gold', goal:600, desc:'เก็บทองรวม 600 (จากศัตรู)',grant(){addPGold(80);},    rwTxt:'🪙 80'},
+  {id:'wave15', icon:'🌊',type:'wave', goal:15,  desc:'ไปถึงคลื่น 15 (เอนด์เกม)', grant(){addGems(50);},     rwTxt:'💎 50'},
+];
+const _QUEST_MAX_TYPES=['combo','wave']; // these track max value, others accumulate
+function loadQuestProg(){
+  let o; try{o=JSON.parse(localStorage.getItem('tq_quests')||'{}');}catch(e){o={};}
+  if(o.date!==_todayStr()){o={date:_todayStr(),kill:0,clear:0,combo:0,build:0,gold:0,wave:0,_claimed:[]};localStorage.setItem('tq_quests',JSON.stringify(o));}
+  return o;
+}
+function saveQuestProg(o){localStorage.setItem('tq_quests',JSON.stringify(o));}
+function questProgress(type,amount){
+  if(!amount&&amount!==0) return;
+  const o=loadQuestProg();
+  if(_QUEST_MAX_TYPES.includes(type)) o[type]=Math.max(o[type]||0,amount);
+  else o[type]=(o[type]||0)+amount;
+  saveQuestProg(o);
+}
+function _daySeed(){const t=_todayStr();let h=2166136261;for(let i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+function getDailyQuests(){
+  let s=_daySeed();
+  const pool=QUEST_POOL.map((_,i)=>i), idxs=[];
+  for(let k=0;k<3&&pool.length;k++){s=(Math.imul(s,1103515245)+12345)>>>0;idxs.push(pool.splice(s%pool.length,1)[0]);}
+  const o=loadQuestProg(), claimed=o._claimed||[];
+  return idxs.map(i=>{const q=QUEST_POOL[i];return {...q,prog:Math.min(o[q.type]||0,q.goal),done:(o[q.type]||0)>=q.goal,claimed:claimed.includes(q.id)};});
+}
+function claimDailyQuest(id){
+  const q=QUEST_POOL.find(x=>x.id===id); if(!q) return false;
+  const o=loadQuestProg();
+  if((o._claimed||[]).includes(id)) return false;
+  if((o[q.type]||0)<q.goal) return false;
+  q.grant();
+  o._claimed=(o._claimed||[]).concat(id);
+  saveQuestProg(o);
+  return q;
+}
+/* badge: is there a login claim or completed-unclaimed quest available? */
+function dailyHasClaimable(){
+  if(!getLoginState().claimedToday) return true;
+  return getDailyQuests().some(q=>q.done&&!q.claimed);
 }
 
 let seenMonsters=new Set(JSON.parse(localStorage.getItem('tq_seen')||'[]'));
