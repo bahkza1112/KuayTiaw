@@ -2049,5 +2049,10 @@ document.getElementById('voidCraftCloseBtn').addEventListener('click',()=>{docum
 document.getElementById('bagNavBtn').addEventListener('click',openBag);
 document.getElementById('bagBackBtn').addEventListener('click',()=>showScreen('mm',true));
 document.getElementById('gachaNavBtn').addEventListener('click',openGacha);
-document.getElementById('gachaBackBtn').addEventListener('click',()=>{if(_gachaTimer){clearTimeout(_gachaTimer);_gachaTimer=null;}_gachaResults=[];showScreen('mm',true);});
+document.getElementById('gachaBackBtn').addEventListener('click',()=>{
+  _gachaSlotTimers.forEach(t=>clearTimeout(t));_gachaSlotTimers=[];
+  _gachaSpinIntervals.forEach(({interval})=>clearInterval(interval));_gachaSpinIntervals=[];
+  _gachaResults=[];_gachaBusy=false;_gachaRevealedCount=0;
+  showScreen('mm',true);
+});
 updateMenuStats();
