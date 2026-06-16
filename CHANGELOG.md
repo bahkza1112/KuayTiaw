@@ -2,6 +2,20 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.5.5 — Gacha balance + Shard Exchange
+
+### Added
+- `js/ui.js` `SHARD_EXCHANGE` / `exchangeShards()` / `_renderShardExchange()`:
+  shard-to-material exchange in Workshop (🔹×10→🪨 / 💜×5→🔘 / 🌟×3→⭐).
+  `wsShardExchange` div in `Tower Quest 🏰.html` renders the exchange UI.
+- Gacha card (code `001` Void Tower) now shows "🔥 ใช้ได้เฉพาะ Endgame" note.
+
+### Changed
+- `js/save.js` `doGachaPulls()`: dud rolls (no prize) now award `shard_c ×1`;
+  `_cardBackHTML()` updated to display 🔹 เศษสีน้ำเงิน + common tag for duds.
+- `js/game.js` `MAT_DROP_RATES[2]` (ผงดาวตก): 0.02/0.04/0.06 → 0.04/0.05/0.08
+  (ง่าย/ปกติ/ยาก) — was the binding bottleneck for Void Tower recipe.
+
 ## v3.5.4 — Gacha card flip (player-controlled)
 
 ### Changed

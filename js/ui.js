@@ -1,6 +1,12 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.5.4';
+const GAME_VERSION='3.5.5';
 const PATCH_NOTES=[
+  {ver:'3.5.5',date:'2026-06-16',title:'⚖️ บาลานซ์กาชา + ระบบแลกเศษสะสม',notes:[
+    'กาชา: pull ที่ไม่ได้รางวัลหลักจะได้ 🔹 เศษสีน้ำเงิน 1 ชิ้นทุกครั้ง (ไม่มือเปล่าอีกต่อไป)',
+    'Workshop ใหม่: ส่วน "แลกเศษสะสม" — เศษจากกาชาแลกเป็นวัสดุคราฟได้ (🔹×10→🪨 / 💜×5→🔘 / 🌟×3→⭐)',
+    'ปรับ drop rate ผงดาวตก (Endgame): ง่าย 2%→4%, ปกติ 4%→5%, ยาก 6%→8% (เดิมเป็น bottleneck ที่เกินไป)',
+    'กาชา: การ์ด Void Tower (001) แสดงหมายเหตุ "🔥 ใช้ได้เฉพาะ Endgame" เพื่อไม่ให้ผู้เล่นสับสน',
+  ]},
   {ver:'3.5.4',date:'2026-06-16',title:'🃏 กาชา: เปิดการ์ดไพ่ด้วยตัวเอง',notes:[
     'เปลี่ยนระบบเปิดผลเป็นการ์ดไพ่ — แตะการ์ดที่ต้องการเพื่อพลิกเปิดดูผล',
     'สุ่ม ×10 ได้การ์ด 10 ใบ เลือกเปิดใบไหนก่อนก็ได้ หรือกดข้ามเพื่อเปิดทั้งหมด',
@@ -438,10 +444,13 @@ function _cardBackHTML(result){
     return `<div class="gc-num rarity-num-${p.rarity}">${num}</div>
       <div class="gc-ico">${p.icon}</div>
       <div class="gc-name" style="color:${p.color};">${p.name}</div>
-      <div class="gacha-rarity-tag rarity-${p.rarity}">${p.rarity}</div>`;
+      <div class="gacha-rarity-tag rarity-${p.rarity}">${p.rarity}</div>
+      ${p.code==='001'?'<div style="font-size:9px;color:#9575cd;margin-top:3px;">🔥 ใช้ได้เฉพาะ Endgame</div>':''}`;
   }
   return `<div class="gc-num gc-num-dud">${num}</div>
-    <div class="gc-dud-txt">ไม่ได้รางวัล</div>`;
+    <div class="gc-ico">🔹</div>
+    <div class="gc-name" style="color:#64b5f6;">เศษสีน้ำเงิน</div>
+    <div class="gacha-rarity-tag rarity-common">common</div>`;
 }
 function startGacha(n){
   if(_gachaBusy) return;
@@ -640,6 +649,9 @@ function renderWorkshop(){
     craftBtn.style.display='none';
     if(reqNote)reqNote.style.display='none';
   }
+  // render shard exchange
+  const exSection=document.getElementById('wsShardExchange');
+  if(exSection) exSection.innerHTML=_renderShardExchange();
   // render persistent upgrades
   const pg=loadPGold();
   const badge=document.getElementById('wsPGoldBadge');
@@ -666,6 +678,41 @@ function renderWorkshop(){
       </div>`;
     }).join('');
   }
+}
+/* ── Shard Exchange (v3.5.5) ── */
+const SHARD_EXCHANGE=[
+  {shardId:'shard_c',shardIcon:'🔹',shardName:'เศษสีน้ำเงิน',cost:10,matIdx:0},
+  {shardId:'shard_r',shardIcon:'💜',shardName:'เศษสีม่วง',   cost:5,  matIdx:1},
+  {shardId:'shard_e',shardIcon:'🌟',shardName:'เศษสีทอง',    cost:3,  matIdx:2},
+];
+function exchangeShards(shardId){
+  const ex=SHARD_EXCHANGE.find(e=>e.shardId===shardId);
+  if(!ex) return;
+  const bag=loadBag();
+  const have=bag[shardId]||0;
+  if(have<ex.cost){showToast('❌ '+ex.shardIcon+' ไม่พอ (ต้องการ '+ex.cost+' ชิ้น)');return;}
+  bag[shardId]=have-ex.cost;
+  if(!bag[shardId]) delete bag[shardId];
+  saveBag(bag);
+  addMaterial(ex.matIdx,1);
+  const matName=MAT_NAMES[ex.matIdx];
+  showToast('✅ แลก '+ex.shardIcon+' ×'+ex.cost+' → '+MAT_ICONS[ex.matIdx]+' '+matName+' ×1 สำเร็จ!');
+  renderWorkshop();
+}
+function _renderShardExchange(){
+  const bag=loadBag();
+  return SHARD_EXCHANGE.map(ex=>{
+    const have=bag[ex.shardId]||0;
+    const canDo=have>=ex.cost;
+    return `<div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,${canDo?'.15':'.06'});border-radius:10px;padding:8px 10px;">
+      <div style="font-size:20px;flex-shrink:0;">${ex.shardIcon}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:11px;font-weight:700;color:${canDo?'#fff':'rgba(255,255,255,.4)'};">${ex.shardIcon}×${ex.cost} → ${MAT_ICONS[ex.matIdx]} ${MAT_NAMES[ex.matIdx]} ×1</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;">มี ${have} ชิ้น</div>
+      </div>
+      <button onclick="exchangeShards('${ex.shardId}')" ${canDo?'':'disabled'} style="background:${canDo?'linear-gradient(180deg,#7e57c2,#311b92)':'rgba(255,255,255,.06)'};color:${canDo?'#fff':'rgba(255,255,255,.3)'};border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:${canDo?'pointer':'not-allowed'};">แลก</button>
+    </div>`;
+  }).join('');
 }
 function craftVoidTower(){
   if(isVoidUnlocked()||!isFinalStageCleared())return;

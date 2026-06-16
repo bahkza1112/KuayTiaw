@@ -101,6 +101,7 @@ function doGachaPulls(n){
     else if(roll.prizeIdx===0){pity=0;}
     const prize=roll.prizeIdx>=0?GACHA_POOL[roll.prizeIdx]:null;
     if(prize) prize.apply();
+    else addBagItem('shard_c',1); // 🔹 dud pull → consolation เศษสีน้ำเงิน (v3.5.5)
     results.push({num:roll.num, prize});
   }
   saveGachaPity(pity);
