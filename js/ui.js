@@ -398,21 +398,21 @@ function renderBag(){
   const mats=loadMaterials(),bag=loadBag(),abuff=loadActiveBuff();
   if(_bagTab===0){
     // วัสดุ
+    const gems=loadGems();
     const matDefs=[
-      {icon:MAT_ICONS[0],name:MAT_NAMES[0],col:'#90caf9',qty:mats[0]||0},
-      {icon:MAT_ICONS[1],name:MAT_NAMES[1],col:'#ce93d8',qty:mats[1]||0},
-      {icon:MAT_ICONS[2],name:MAT_NAMES[2],col:'#ffe082',qty:mats[2]||0},
+      {icon:'💎',name:'มณีวิญญาณ',col:'#80d8ff',qty:gems,desc:'ใช้คราฟป้อมมนตราโมฆะใน Workshop'},
+      {icon:MAT_ICONS[0],name:MAT_NAMES[0],col:'#90caf9',qty:mats[0]||0,desc:'วัสดุสามัญจากการเล่น'},
+      {icon:MAT_ICONS[1],name:MAT_NAMES[1],col:'#ce93d8',qty:mats[1]||0,desc:'วัสดุหายากจากการเล่น'},
+      {icon:MAT_ICONS[2],name:MAT_NAMES[2],col:'#ffe082',qty:mats[2]||0,desc:'วัสดุพิเศษจากการเล่น'},
     ];
-    const has=matDefs.some(m=>m.qty>0);
-    body.innerHTML=has
-      ?matDefs.map(m=>`<div class="bag-item">
-          <div class="bag-ico" style="font-size:22px;color:${m.col};">${m.icon}</div>
-          <div class="bag-info">
-            <div class="bag-name" style="color:${m.col};">${m.name}</div>
-            <div class="bag-qty">มี ${m.qty} ชิ้น</div>
-          </div>
-        </div>`).join('')
-      :'<div class="bag-empty">ยังไม่มีวัสดุ<br>ได้รับจากการเอาชนะศัตรูระหว่างเล่น</div>';
+    body.innerHTML=matDefs.map(m=>`<div class="bag-item">
+        <div class="bag-ico" style="font-size:24px;">${m.icon}</div>
+        <div class="bag-info">
+          <div class="bag-name" style="color:${m.col};">${m.name}</div>
+          <div class="bag-desc">${m.desc}</div>
+        </div>
+        <div class="bag-qty">${m.qty}</div>
+      </div>`).join('');
   } else if(_bagTab===1){
     // บัฟ
     const buffs=BAG_ITEM_DEFS.filter(d=>d.type==='buff'&&(bag[d.id]||0)>0);
@@ -476,7 +476,7 @@ function renderWorkshop(){
   document.getElementById('wsStageLockNote').style.display=(!unlocked&&!finalCleared)?'flex':'none';
   document.getElementById('wsCraftSection').style.display='';
   document.getElementById('wsAlreadyUnlocked').style.display=unlocked?'block':'none';
-  document.getElementById('wsRecipeBox').style.display=unlocked?'none':'';
+  document.getElementById('wsRecipeBox').style.display='none';
   const craftBtn=document.getElementById('wsCraftBtn');
   craftBtn.style.display=(unlocked||!finalCleared)?'none':'';
   if(unlocked){ document.getElementById('wsHeroReqs').innerHTML=''; return; }
