@@ -45,6 +45,57 @@ function consumeActiveBuff(){
   setActiveBuff(''); return '';
 }
 
+/* ══ GACHA ══ */
+const GACHA_COST=30;
+const GACHA_PITY=90; // รับ 001 guaranteed ทุก 90 pull
+const GACHA_POOL=[
+  {code:'001',icon:'🌑',name:'ป้อมมนตราโมฆะ', rarity:'legendary',color:'#b388ff',w:1,
+   apply(){setVoidUnlocked();}},
+  {code:'002',icon:'🌟',name:'ผงดาวตก x3',    rarity:'epic',   color:'#ff8f00',w:3,
+   apply(){addMaterial(2,3);}},
+  {code:'003',icon:'🌟',name:'ผงดาวตก x1',    rarity:'epic',   color:'#ffe082',w:6,
+   apply(){addMaterial(2,1);}},
+  {code:'004',icon:'🔘',name:'แกนเวทอสูร x3', rarity:'rare',   color:'#ce93d8',w:8,
+   apply(){addMaterial(1,3);}},
+  {code:'005',icon:'🔘',name:'แกนเวทอสูร x1', rarity:'rare',   color:'#ce93d8',w:10,
+   apply(){addMaterial(1,1);}},
+  {code:'006',icon:'🪨',name:'เศษหินมืด x5',  rarity:'uncommon',color:'#90caf9',w:15,
+   apply(){addMaterial(0,5);}},
+  {code:'007',icon:'⚔️',name:'ยาเข้มแข็ง',    rarity:'uncommon',color:'#ff8a65',w:12,
+   apply(){addBagItem('dmg_pot',1);}},
+  {code:'008',icon:'💊',name:'ยาเพิ่ม HP',     rarity:'common', color:'#ef5350',w:15,
+   apply(){addBagItem('hp_pot',1);}},
+  {code:'009',icon:'🧪',name:'ยาเพิ่มทอง',    rarity:'common', color:'#ffd54f',w:15,
+   apply(){addBagItem('gold_pot',1);}},
+  {code:'010',icon:'🪙',name:'ทองถาวร +25',   rarity:'common', color:'#ffd54f',w:15,
+   apply(){addPGold(25);}},
+];
+function _gachaRoll(){
+  const total=GACHA_POOL.reduce((s,p)=>s+p.w,0);
+  let r=Math.random()*total;
+  for(const p of GACHA_POOL){r-=p.w;if(r<=0)return p;}
+  return GACHA_POOL[GACHA_POOL.length-1];
+}
+function loadGachaPity(){try{return Number(localStorage.getItem('tq_gpity'))||0;}catch(e){return 0;}}
+function saveGachaPity(n){localStorage.setItem('tq_gpity',String(n));}
+function doGachaPulls(n){
+  const gems=loadGems();
+  if(gems<GACHA_COST*n) return null;
+  saveGems(gems-GACHA_COST*n);
+  let pity=loadGachaPity();
+  const results=[];
+  for(let i=0;i<n;i++){
+    pity++;
+    let prize=_gachaRoll();
+    if(pity>=GACHA_PITY){prize=GACHA_POOL[0];pity=0;} // guaranteed 001
+    else if(prize.code==='001'){pity=0;}
+    prize.apply();
+    results.push(prize);
+  }
+  saveGachaPity(pity);
+  return results;
+}
+
 /* ══ PERSISTENT GOLD ══ */
 const PGOLD_STAR_TABLE=[0,50,75,100]; // ทองถาวรที่ได้จากดาว 0/1★/2★/3★
 function loadPGold(){try{return Number(localStorage.getItem('tq_pgold'))||0;}catch(e){return 0;}}

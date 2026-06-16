@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.4.1';
+const GAME_VERSION='3.5.0';
 const PATCH_NOTES=[
+  {ver:'3.5.0',date:'2026-06-16',title:'✨ ระบบกาชาตู้สุ่มรางวัล',notes:[
+    'เพิ่มตู้สุ่มรางวัล 001–010 ใช้ 💎 มณีวิญญาณ 30 ดวงต่อครั้ง',
+    'รางวัลมี 10 ระดับ: 001 ปลดล็อกป้อมมนตราโมฆะ, 002-006 วัสดุคราฟ, 007-010 ไอเทมบัฟและทองถาวร',
+    'สุ่มทีละ 1 หรือ 10 ใบ (มีปุ่มข้ามแอนิเมชัน), ค้ำประกัน 001 ทุก 90 ครั้ง',
+  ]},
   {ver:'3.4.1',date:'2026-06-16',title:'🧹 ปรับ UI เมนูหลัก',notes:[
     'ลบปุ่ม "เอนด์เกม" ออกจากหน้าเมนูหลักและ bottom nav — เข้าได้จากหน้าเนื้อเรื่องอยู่แล้ว',
   ]},
@@ -355,7 +360,7 @@ function renderAchievTab(){
 }
 
 /* ══ SCREEN MANAGEMENT ══ */
-function hideAll(){['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','whatsnew','towersel','storyscr','workshop','bag'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const cs=document.getElementById('cutscene');if(cs)cs.style.display='none';}
+function hideAll(){['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','whatsnew','towersel','storyscr','workshop','bag','gacha'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const cs=document.getElementById('cutscene');if(cs)cs.style.display='none';}
 function showScreen(id,flex){
   hideAll();
   const el=document.getElementById(id);
@@ -387,6 +392,97 @@ const MAT_NAMES=['เศษหินมืด','แกนเวทอสูร',
 /* ══ BAG SCREEN ══ */
 let _bagTab=0;
 function openBag(){showScreen('bag',true);_updateBagBadge();renderBag();}
+
+/* ══ GACHA ══ */
+let _gachaResults=[],_gachaRevIdx=0,_gachaTimer=null;
+function openGacha(){
+  showScreen('gacha',true);
+  _renderGachaUI();
+}
+function _renderGachaUI(){
+  document.getElementById('gachaGemCount').textContent=loadGems().toLocaleString();
+  const pity=loadGachaPity();
+  document.getElementById('gachaPityInfo').textContent=`สะสม ${pity}/90 ครั้ง`;
+  const canAfford1=loadGems()>=GACHA_COST;
+  const canAfford10=loadGems()>=GACHA_COST*10;
+  document.getElementById('gachaPull1').disabled=!canAfford1;
+  document.getElementById('gachaPull10').disabled=!canAfford10;
+  if(!_gachaResults.length){
+    document.getElementById('gachaGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;color:#444;padding:40px 0;font-size:13px;">กดสุ่มเพื่อเริ่ม ✨</div>';
+    document.getElementById('gachaSkipRow').style.display='none';
+    document.getElementById('gachaBtns').style.display='flex';
+  }
+}
+function startGacha(n){
+  if(_gachaTimer) return;
+  const results=doGachaPulls(n);
+  if(!results){showToast('💎 มณีวิญญาณไม่พอ!');return;}
+  _gachaResults=results;
+  _gachaRevIdx=0;
+  document.getElementById('gachaBtns').style.display='none';
+  document.getElementById('gachaGemCount').textContent=loadGems().toLocaleString();
+  // build face-down cards
+  const grid=document.getElementById('gachaGrid');
+  const single=n===1;
+  grid.innerHTML=results.map((_,i)=>`
+    <div class="${single?'gacha-card-single':''}">
+      <div class="gacha-card" id="gc${i}" onclick="revealCard(${i})">
+        <div class="gacha-card-inner">
+          <div class="gacha-card-front"></div>
+          <div class="gacha-card-back" id="gcb${i}"></div>
+        </div>
+      </div>
+    </div>`).join('');
+  if(n===1){
+    // single: player taps to reveal
+    document.getElementById('gachaSkipRow').style.display='none';
+  } else {
+    // x10: auto-reveal with delay, skippable
+    document.getElementById('gachaSkipRow').style.display='block';
+    _autoReveal();
+  }
+}
+function _cardHTML(p){
+  return `<div class="gacha-card-code">${p.code}</div>
+    <div class="gacha-card-ico">${p.icon}</div>
+    <div class="gacha-card-name" style="color:${p.color};">${p.name}</div>`;
+}
+function revealCard(i){
+  if(i!==_gachaRevIdx) return; // ต้องเปิดตามลำดับ
+  const p=_gachaResults[i];
+  const back=document.getElementById('gcb'+i);
+  back.innerHTML=_cardHTML(p);
+  back.className='gacha-card-back rarity-'+p.rarity;
+  document.getElementById('gc'+i).classList.add('revealed');
+  _gachaRevIdx++;
+  if(_gachaRevIdx>=_gachaResults.length) _gachaDone();
+}
+function _autoReveal(){
+  if(_gachaRevIdx>=_gachaResults.length){_gachaDone();return;}
+  _gachaTimer=setTimeout(()=>{
+    revealCard(_gachaRevIdx);
+    _gachaTimer=null;
+    _autoReveal();
+  },350);
+}
+function skipGachaReveal(){
+  if(_gachaTimer){clearTimeout(_gachaTimer);_gachaTimer=null;}
+  while(_gachaRevIdx<_gachaResults.length) revealCard(_gachaRevIdx);
+}
+function _gachaDone(){
+  _gachaTimer=null;
+  _gachaResults=[];
+  _gachaRevIdx=0;
+  document.getElementById('gachaSkipRow').style.display='none';
+  document.getElementById('gachaBtns').style.display='flex';
+  const canAfford1=loadGems()>=GACHA_COST;
+  const canAfford10=loadGems()>=GACHA_COST*10;
+  document.getElementById('gachaPull1').disabled=!canAfford1;
+  document.getElementById('gachaPull10').disabled=!canAfford10;
+  document.getElementById('gachaGemCount').textContent=loadGems().toLocaleString();
+  document.getElementById('gachaPityInfo').textContent=`สะสม ${loadGachaPity()}/90 ครั้ง`;
+  updateMenuStats();
+}
 function switchBagTab(t){
   _bagTab=t;
   [0,1,2].forEach(i=>{const b=document.getElementById('bagTab'+i);if(b)b.classList.toggle('active',i===t);});
@@ -1840,4 +1936,6 @@ document.getElementById('wsCraftBtn').addEventListener('click',craftVoidTower);
 document.getElementById('voidCraftCloseBtn').addEventListener('click',()=>{document.getElementById('voidCraftOverlay').style.display='none';});
 document.getElementById('bagNavBtn').addEventListener('click',openBag);
 document.getElementById('bagBackBtn').addEventListener('click',()=>showScreen('mm',true));
+document.getElementById('gachaNavBtn').addEventListener('click',openGacha);
+document.getElementById('gachaBackBtn').addEventListener('click',()=>{if(_gachaTimer){clearTimeout(_gachaTimer);_gachaTimer=null;}_gachaResults=[];showScreen('mm',true);});
 updateMenuStats();
