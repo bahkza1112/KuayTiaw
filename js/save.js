@@ -34,7 +34,14 @@ const BAG_ITEM_DEFS=[
 ];
 function loadBag(){try{return JSON.parse(localStorage.getItem('tq_bag')||'{}');}catch(e){return{};}}
 function saveBag(b){localStorage.setItem('tq_bag',JSON.stringify(b));}
-function addBagItem(id,qty){if(!qty||qty<=0)return;const b=loadBag();b[id]=(b[id]||0)+qty;saveBag(b);}
+function loadBagNew(){try{return new Set(JSON.parse(localStorage.getItem('tq_bagnew')||'[]'));}catch(e){return new Set();}}
+function saveBagNew(s){localStorage.setItem('tq_bagnew',JSON.stringify([...s]));}
+function clearBagNew(){localStorage.removeItem('tq_bagnew');}
+function addBagItem(id,qty){
+  if(!qty||qty<=0)return;
+  const b=loadBag();b[id]=(b[id]||0)+qty;saveBag(b);
+  const n=loadBagNew();n.add(id);saveBagNew(n);
+}
 function getBagQty(id){return loadBag()[id]||0;}
 function loadActiveBuff(){return localStorage.getItem('tq_abuff')||'';}
 function setActiveBuff(id){localStorage.setItem('tq_abuff',id||'');}

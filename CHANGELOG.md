@@ -2,6 +2,18 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.5.3 — New-item highlight in bag
+
+### Added
+- **`tq_bagnew`** localStorage key (Set of item IDs) — written by `addBagItem()`
+  whenever an item enters the bag; cleared by `clearBagNew()` when bag opens.
+- **New-item highlight**: items in `tq_bagnew` render with red border
+  (`bag-item-new`), a red "ใหม่" pill badge (`.bag-new-dot` top-right), and
+  a subtle red glow background in the bag's บัฟ and สะสม tabs.
+- **Badge count update**: bottom-nav bag badge now shows count of *unseen* items
+  (from `loadBagNew().size`) instead of total item count — clears to hidden
+  once the bag is opened.
+
 ## v3.5.2 — Gacha odds table + Dev gem/material cheats
 
 ### Added

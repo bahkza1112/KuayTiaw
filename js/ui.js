@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.5.2';
+const GAME_VERSION='3.5.3';
 const PATCH_NOTES=[
+  {ver:'3.5.3',date:'2026-06-16',title:'🆕 ไฮไลต์ไอเทมใหม่ในกระเป๋า',notes:[
+    'ไอเทมที่เพิ่งได้รับจะมีขอบแดงและป้าย "ใหม่" ในกระเป๋า',
+    'เข้ากระเป๋าแล้วป้ายแดงจะหายออกไปเอง — ช่วยให้รู้ว่าได้อะไรมาใหม่',
+    'ตัวเลขแจ้งเตือนบน icon กระเป๋า (bottom nav) นับเฉพาะไอเทมที่ยังไม่ได้ดู',
+  ]},
   {ver:'3.5.2',date:'2026-06-16',title:'📋 กาชา: ตารางอัตราออก + Dev cheats',notes:[
     'เพิ่มตาราง "อัตราการออก" ในตู้กาชา — กดเพื่อดู % โอกาสของรางวัลแต่ละชิ้น',
     'Dev Panel: เพิ่ม 💎 มณีวิญญาณ (+100/+999/รีเซ็ต), เพิ่มวัสดุคราฟ, รีเซ็ต Pity',
@@ -400,7 +405,7 @@ const MAT_ICONS=['🪨','🔘','🌟'];
 const MAT_NAMES=['เศษหินมืด','แกนเวทอสูร','ผงดาวตก'];
 /* ══ BAG SCREEN ══ */
 let _bagTab=0;
-function openBag(){showScreen('bag',true);_updateBagBadge();renderBag();}
+function openBag(){showScreen('bag',true);clearBagNew();_updateBagBadge();renderBag();}
 
 /* ══ GACHA ══ */
 let _gachaResults=[],_gachaSlotTimers=[],_gachaSpinIntervals=[],_gachaBusy=false;
@@ -571,7 +576,7 @@ function switchBagTab(t){
 function renderBag(){
   const body=document.getElementById('bagBody');
   if(!body) return;
-  const mats=loadMaterials(),bag=loadBag(),abuff=loadActiveBuff();
+  const mats=loadMaterials(),bag=loadBag(),abuff=loadActiveBuff(),newSet=loadBagNew();
   if(_bagTab===0){
     // วัสดุ
     const gems=loadGems();
@@ -596,7 +601,9 @@ function renderBag(){
     body.innerHTML='<div class="bag-hint">เลือก 1 ชิ้นเพื่อใช้ในด่านถัดไป (บัฟจะถูกใช้อัตโนมัติตอนเริ่มด่าน)</div>'
       +buffs.map(d=>{
         const isActive=abuff===d.id;
-        return `<div class="bag-item${isActive?' bag-active':''}" style="border-color:${isActive?d.color:'rgba(255,255,255,.1)'};">
+        const isNew=newSet.has(d.id);
+        return `<div class="bag-item${isActive?' bag-active':''}${isNew?' bag-item-new':''}" style="border-color:${isActive?d.color:isNew?'rgba(239,83,80,.55)':'rgba(255,255,255,.1)'};">
+          ${isNew?'<div class="bag-new-dot">ใหม่</div>':''}
           <div class="bag-ico" style="background:${isActive?d.color+'33':'rgba(255,255,255,.06)'};">${d.icon}</div>
           <div class="bag-info">
             <div class="bag-name" style="color:${d.color};">${d.name}</div>
@@ -613,14 +620,18 @@ function renderBag(){
     // สะสม
     const shards=BAG_ITEM_DEFS.filter(d=>d.type==='shard'&&(bag[d.id]||0)>0);
     if(!shards.length){body.innerHTML='<div class="bag-empty">ยังไม่มีชิ้นส่วนสะสม<br>ได้รับจากกล่องรางวัลหลังจบด่าน</div>';return;}
-    body.innerHTML=shards.map(d=>`<div class="bag-item">
+    body.innerHTML=shards.map(d=>{
+      const isNew=newSet.has(d.id);
+      return `<div class="bag-item${isNew?' bag-item-new':''}" style="border-color:${isNew?'rgba(239,83,80,.55)':'rgba(255,255,255,.1)'};">
+        ${isNew?'<div class="bag-new-dot">ใหม่</div>':''}
         <div class="bag-ico" style="font-size:22px;">${d.icon}</div>
         <div class="bag-info">
           <div class="bag-name" style="color:${d.color};">${d.name}</div>
           <div class="bag-desc">${d.desc}</div>
           <div class="bag-qty">มี ${bag[d.id]} ชิ้น</div>
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
   }
 }
 function useBuffItem(id){
@@ -630,10 +641,9 @@ function useBuffItem(id){
 function _updateBagBadge(){
   const b=document.getElementById('bagBadge');
   if(!b) return;
-  const bag=loadBag();
-  const total=BAG_ITEM_DEFS.reduce((s,d)=>s+(bag[d.id]||0),0);
-  b.style.display=total>0?'inline-block':'none';
-  b.textContent=total>9?'9+':total;
+  const newCount=loadBagNew().size;
+  b.style.display=newCount>0?'inline-block':'none';
+  b.textContent=newCount>9?'9+':String(newCount);
 }
 
 const P_UPGRADES=[
