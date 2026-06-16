@@ -422,21 +422,25 @@ function renderWorkshop(){
   // render persistent upgrades
   const pg=loadPGold();
   const badge=document.getElementById('wsPGoldBadge');
-  if(badge) badge.textContent='🪙 มี '+pg.toLocaleString()+' ทอง';
+  if(badge) badge.innerHTML=`<span style="background:rgba(255,213,79,.15);border:1px solid rgba(255,213,79,.35);border-radius:20px;padding:2px 10px;font-size:11px;color:#ffd54f;font-weight:700;">มี ${pg.toLocaleString()} ทองถาวร</span>`;
   const grid=document.getElementById('wsPUpGrid');
   if(grid){
-    grid.innerHTML=P_UPGRADES.map(u=>{
+    grid.innerHTML=P_UPGRADES.map((u,i)=>{
       const owned=hasPUpgrade(u.idx);
       const canBuy=!owned&&pg>=u.cost;
-      return `<div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,${owned?'.35':'.1'});border-radius:10px;padding:10px 12px;">
-        <div style="font-size:22px;flex-shrink:0;">${u.icon}</div>
-        <div style="flex:1;">
-          <div style="font-size:12px;font-weight:700;color:${owned?'#69f0ae':'#ffe082'};">${u.name}</div>
-          <div style="font-size:10px;color:rgba(255,255,255,.55);margin-top:2px;">${u.desc}</div>
+      const borderCol=owned?'rgba(105,240,174,.4)':canBuy?'rgba(255,213,79,.35)':'rgba(255,255,255,.08)';
+      const bgCol=owned?'rgba(105,240,174,.06)':canBuy?'rgba(255,213,79,.07)':'rgba(255,255,255,.03)';
+      return `<div style="display:flex;align-items:center;gap:12px;background:${bgCol};border:1px solid ${borderCol};border-radius:12px;padding:12px 14px;transition:border .2s;">
+        <div style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">${u.icon}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:12px;font-weight:700;color:${owned?'#69f0ae':canBuy?'#ffe082':'rgba(255,255,255,.6)'};">${u.name}</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:3px;line-height:1.4;">${u.desc}</div>
         </div>
         ${owned
-          ?'<div style="font-size:18px;">✅</div>'
-          :`<button onclick="buyPUpgrade(${u.idx},${u.cost})" style="flex-shrink:0;background:${canBuy?'linear-gradient(180deg,#ffd54f,#f9a825)':'rgba(255,255,255,.08)'};color:${canBuy?'#3e2000':'rgba(255,255,255,.4)'};border:none;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:${canBuy?'pointer':'not-allowed'};">🪙${u.cost}</button>`
+          ?`<div style="flex-shrink:0;text-align:center;"><div style="font-size:18px;">✅</div><div style="font-size:9px;color:#69f0ae;margin-top:1px;">ซื้อแล้ว</div></div>`
+          :`<div style="flex-shrink:0;text-align:center;">
+              <button onclick="buyPUpgrade(${u.idx},${u.cost})" style="background:${canBuy?'linear-gradient(180deg,#ffd54f,#f9a825)':'rgba(255,255,255,.06)'};color:${canBuy?'#3e2000':'rgba(255,255,255,.3)'};border:1px solid ${canBuy?'transparent':'rgba(255,255,255,.1)'};border-radius:8px;padding:7px 12px;font-size:11px;font-weight:800;cursor:${canBuy?'pointer':'not-allowed'};line-height:1.3;">${u.cost}<br><span style="font-size:9px;font-weight:400;">ทองถาวร</span></button>
+            </div>`
         }
       </div>`;
     }).join('');
