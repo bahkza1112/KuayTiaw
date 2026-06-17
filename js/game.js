@@ -911,7 +911,7 @@ function update(dt){
         if(prog>bestP){bestP=prog;best=e;}
       }
     });
-    if((tw.type===2||tw.type===3)&&shamanInRange) best=shamanInRange;
+    if(tw.type===3&&shamanInRange) best=shamanInRange;
     if(best) tw.angle=Math.atan2(best.y/CS-cy,best.x/CS-cx);
     if(best&&tw.cd<=0){
       const _rateMultW=(tw.type===1&&G.weather&&G.weather.iceRateMult)?G.weather.iceRateMult:1;
@@ -2495,7 +2495,7 @@ function updateEg(dt){
         if(p>bestP){bestP=p;best=e;}
       }
     });
-    if((tw.type===2||tw.type===3)&&shamanInRange) best=shamanInRange;
+    if(tw.type===3&&shamanInRange) best=shamanInRange;
     if(best) tw.angle=Math.atan2(best.y/CS-cy,best.x/CS-cx);
     if(best&&tw.cd<=0){
       const _rateMultW2=(tw.type===1&&G.weather&&G.weather.iceRateMult)?G.weather.iceRateMult:1;
