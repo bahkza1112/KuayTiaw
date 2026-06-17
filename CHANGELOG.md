@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.8.2 — Stage 8 difficulty adjustment
+
+### Changed
+- **Stage 8 (Dark Throne)**: `bossChance` 0.10 → 0 — bosses removed; Shaman is the
+  intended primary threat and boss spawns were causing early-wave difficulty spikes.
+- **Stage 8 (Dark Throne)**: `maxTowers` 5 → 6 — one extra tower slot to give players
+  more options for dealing with the Shaman heal loop.
+
 ## v3.8.1 — Sniper Shaman targeting priority
 
 ### Changed
