@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.6.2';
+const GAME_VERSION='3.6.3';
 const PATCH_NOTES=[
+  {ver:'3.6.3',date:'2026-06-17',title:'🔒 กาชา: ปรับ Pity เป็น 100 ครั้ง',notes:[
+    'ค้ำประกัน 001 (ป้อมมนตราโมฆะ) ปรับจากทุก 90 ครั้ง → ทุก 100 ครั้ง (เลขกลม จำง่าย)',
+    'ตัวนับ Pity และตารางอัตราอัปเดตเป็น /100 ให้ตรงกัน',
+  ]},
   {ver:'3.6.2',date:'2026-06-17',title:'🧹 จัดระเบียบเมนูหลัก',notes:[
     'หน้าเมนูหลักเหลือ 2 ปุ่มโหมดเกม: ⚔️ เนื้อเรื่อง + 🔥 เอนด์เกม — โล่งขึ้น',
     'ย้าย เวิร์กชอป + ภารกิจประจำวัน ลงแถบล่าง (bottom nav) — ภารกิจมี badge แจ้งเตือนเหมือนเดิม',
@@ -445,7 +449,7 @@ function openGacha(){
 }
 function _renderGachaUI(){
   document.getElementById('gachaGemCount').textContent=loadGems().toLocaleString();
-  document.getElementById('gachaPityInfo').textContent=`สะสม ${loadGachaPity()}/90 ครั้ง`;
+  document.getElementById('gachaPityInfo').textContent=`สะสม ${loadGachaPity()}/100 ครั้ง`;
   const canAfford1=loadGems()>=GACHA_COST;
   const canAfford10=loadGems()>=gachaCost(10);
   document.getElementById('gachaPull1').disabled=!canAfford1;
@@ -522,7 +526,7 @@ function _gachaDone(){
   document.getElementById('gachaPull1').disabled=!canAfford1;
   document.getElementById('gachaPull10').disabled=!canAfford10;
   document.getElementById('gachaGemCount').textContent=loadGems().toLocaleString();
-  document.getElementById('gachaPityInfo').textContent=`สะสม ${loadGachaPity()}/90 ครั้ง`;
+  document.getElementById('gachaPityInfo').textContent=`สะสม ${loadGachaPity()}/100 ครั้ง`;
   updateMenuStats();
 }
 function toggleGachaOdds(){

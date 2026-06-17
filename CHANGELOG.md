@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.6.3 — Gacha pity 90 → 100
+
+### Changed
+- `GACHA_PITY` 90 → 100 in `js/save.js` — guaranteed 001 (Void Tower) now
+  every 100 pulls (rounder, easier to remember).
+- Updated pity counter (`gachaPityInfo` → `/100`) in both `_renderGachaUI`
+  and `_gachaDone`, and both pity notes in the gacha screen HTML (live counter
+  row + odds-table footer). Odds-table footer also clarifies 001 = Void Tower.
+
 ## v3.6.2 — Main menu declutter
 
 ### Changed

@@ -57,7 +57,7 @@ function consumeActiveBuff(){
 const GACHA_COST=30;
 const GACHA_COST10=270; // ×10 ส่วนลด 10% (ปกติ 300 = ฟรี 1 ครั้ง)
 function gachaCost(n){return n===10?GACHA_COST10:GACHA_COST*n;}
-const GACHA_PITY=90; // รับ 001 guaranteed ทุก 90 pull
+const GACHA_PITY=100; // รับ 001 guaranteed ทุก 100 pull
 const GACHA_POOL=[
   {code:'001',icon:'🌑',name:'ป้อมมนตราโมฆะ', rarity:'legendary',color:'#b388ff',w:1,
    apply(){setVoidUnlocked();}},
