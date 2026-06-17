@@ -523,6 +523,23 @@ function _playSound(type){
         o2g.gain.setValueAtTime(.25,ac.currentTime); o2g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.3);
         o2.connect(o2g); o2g.connect(v);
         o.start(); o.stop(ac.currentTime+.3); o2.start(); o2.stop(ac.currentTime+.3); break;}
+      case 'gacha_big':{// 🎉 triumphant fanfare for legendary/epic reveals
+        [523,659,784,1047,1319].forEach((freq,i)=>{
+          const o=ac.createOscillator(),og=ac.createGain();
+          o.type='triangle'; o.frequency.setValueAtTime(freq,ac.currentTime+i*.07);
+          og.gain.setValueAtTime(.3,ac.currentTime+i*.07); og.gain.exponentialRampToValueAtTime(.001,ac.currentTime+i*.07+.4);
+          o.connect(og); og.connect(v); o.start(ac.currentTime+i*.07); o.stop(ac.currentTime+i*.07+.4);
+        });
+        const sh=ac.createOscillator(),shg=ac.createGain(); // high shimmer tail
+        sh.type='sine'; sh.frequency.setValueAtTime(1568,ac.currentTime+.32);
+        shg.gain.setValueAtTime(.12,ac.currentTime+.32); shg.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.85);
+        sh.connect(shg); shg.connect(v); sh.start(ac.currentTime+.32); sh.stop(ac.currentTime+.85); break;}
+      case 'gacha_small':{// soft reveal chime for low rarities
+        const o=ac.createOscillator(),og=ac.createGain();
+        o.type='sine'; o.frequency.setValueAtTime(660,ac.currentTime);
+        o.frequency.setValueAtTime(990,ac.currentTime+.06);
+        og.gain.setValueAtTime(.22,ac.currentTime); og.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.25);
+        o.connect(og); og.connect(v); o.start(); o.stop(ac.currentTime+.25); break;}
     }
   }catch(e){}
 }

@@ -2,6 +2,25 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.7.0 — Gacha reveal FX (rarity-tiered)
+
+### Added
+- **`_gachaFx(card, rarity)`** in `js/ui.js` + `RARITY_FX` config table —
+  fired ~300ms into each card flip. Effects scale by rarity tier:
+  - particle explosion (6–34 DOM particles radiating outward, `.gc-burst`/`.gc-particle`)
+  - expanding shockwave rings (`.gc-ring`, rare+ → 1, legendary → 2)
+  - radial card flash (`.gc-flash`, rare+)
+  - rotating light rays behind card (`.gc-rays`, epic/legendary)
+  - full-screen flash (`.gacha-screen-flash`) + screen shake (`.gc-shake`) for legendary
+  - persistent aura pulse on revealed legendary/epic cards
+- **Two synthesized SFX** in `js/game.js` `_playSound()`: `gacha_big`
+  (5-note triumphant fanfare + shimmer tail, for epic/legendary) and
+  `gacha_small` (soft two-note chime, for rare/uncommon/common).
+
+### Notes
+- `.gc-wrap` made `position:relative` and `.gc-card` given `z-index:1` so the
+  light rays render behind the card. All FX nodes self-remove via `setTimeout`.
+
 ## v3.6.3 — Gacha pity 90 → 100
 
 ### Changed

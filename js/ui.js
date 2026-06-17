@@ -1,6 +1,12 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.6.3';
+const GAME_VERSION='3.7.0';
 const PATCH_NOTES=[
+  {ver:'3.7.0',date:'2026-06-17',title:'💥 กาชา: เอฟเฟคระเบิดตามความหายาก',notes:[
+    'พลิกการ์ดได้รางวัลแล้วมีเอฟเฟคระเบิด — อนุภาคกระจาย, คลื่นกระแทก, แฟลชการ์ด',
+    'รางวัลหายากสูง (Epic/Legendary) มีแสงเรืองหมุนรอบการ์ด + การ์ดเรืองแสงเต้นต่อเนื่อง',
+    'Legendary (001 ป้อมมนตราโมฆะ) จอกระพริบ + สั่นทั้งหน้าจอ สุดอลังการ',
+    'เพิ่มเสียงตอนเปิดการ์ด: แฟนแฟร์สำหรับของหายาก, ระฆังนุ่มสำหรับของทั่วไป',
+  ]},
   {ver:'3.6.3',date:'2026-06-17',title:'🔒 กาชา: ปรับ Pity เป็น 100 ครั้ง',notes:[
     'ค้ำประกัน 001 (ป้อมมนตราโมฆะ) ปรับจากทุก 90 ครั้ง → ทุก 100 ครั้ง (เลขกลม จำง่าย)',
     'ตัวนับ Pity และตารางอัตราอัปเดตเป็น /100 ให้ตรงกัน',
@@ -500,6 +506,56 @@ function startGacha(n){
   }).join('');
   document.getElementById('gachaSkipRow').style.display='block';
 }
+// reveal FX tuned per rarity tier
+const RARITY_FX={
+  legendary:{n:34,ring:2,flash:1,rays:1,shake:1,scr:1,big:1,cols:['#b388ff','#ffd54f','#ffffff','#e1bee7']},
+  epic:     {n:22,ring:1,flash:1,rays:1,shake:0,scr:0,big:1,cols:['#ff8f00','#ffd54f','#fff3e0']},
+  rare:     {n:15,ring:1,flash:1,rays:0,shake:0,scr:0,big:0,cols:['#ce93d8','#e1bee7','#f3e5f5']},
+  uncommon: {n:10,ring:0,flash:0,rays:0,shake:0,scr:0,big:0,cols:['#90caf9','#bbdefb']},
+  common:   {n:6, ring:0,flash:0,rays:0,shake:0,scr:0,big:0,cols:['#90a4ae','#cfd8dc']},
+};
+function _gachaFx(card,rarity){
+  const fx=RARITY_FX[rarity]||RARITY_FX.common, cols=fx.cols;
+  const kill=(el,ms)=>setTimeout(()=>el.remove(),ms);
+  // rotating light rays behind the card (epic/legendary)
+  if(fx.rays){
+    const wrap=card.parentElement;
+    const rays=document.createElement('div'); rays.className='gc-rays';
+    rays.style.setProperty('--rayc',rarity==='legendary'?'rgba(255,213,79,.4)':'rgba(255,143,0,.32)');
+    wrap.appendChild(rays); kill(rays,1300);
+  }
+  // radial flash burst on the card face
+  if(fx.flash){
+    const fl=document.createElement('div'); fl.className='gc-flash';
+    fl.style.setProperty('--flashc',cols[0]);
+    card.appendChild(fl); kill(fl,650);
+  }
+  // expanding shockwave rings
+  for(let r=0;r<fx.ring;r++){
+    const ring=document.createElement('div'); ring.className='gc-ring';
+    ring.style.setProperty('--ringc',cols[r%cols.length]);
+    ring.style.animationDelay=(r*120)+'ms';
+    card.appendChild(ring); kill(ring,900+r*120);
+  }
+  // particle explosion radiating outward
+  const burst=document.createElement('div'); burst.className='gc-burst';
+  for(let k=0;k<fx.n;k++){
+    const p=document.createElement('div'); p.className='gc-particle';
+    const ang=Math.random()*Math.PI*2, dist=40+Math.random()*75, col=cols[k%cols.length], sz=4+Math.random()*7;
+    p.style.width=p.style.height=sz.toFixed(1)+'px';
+    p.style.background=col; p.style.boxShadow='0 0 6px '+col;
+    p.style.setProperty('--tx',(Math.cos(ang)*dist).toFixed(1)+'px');
+    p.style.setProperty('--ty',(Math.sin(ang)*dist).toFixed(1)+'px');
+    p.style.animationDelay=(Math.random()*60).toFixed(0)+'ms';
+    burst.appendChild(p);
+  }
+  card.appendChild(burst); kill(burst,1000);
+  // full-screen flash + shake for the top tier
+  const scr=document.getElementById('gacha');
+  if(fx.scr&&scr){const sf=document.createElement('div'); sf.className='gacha-screen-flash'; scr.appendChild(sf); kill(sf,550);}
+  if(fx.shake&&scr){scr.classList.add('gc-shake'); setTimeout(()=>scr.classList.remove('gc-shake'),450);}
+  if(typeof _playSound==='function') _playSound(fx.big?'gacha_big':'gacha_small');
+}
 function flipCard(i){
   if(_gachaFlipped[i]) return;
   _gachaFlipped[i]=true;
@@ -508,8 +564,10 @@ function flipCard(i){
   const card=document.getElementById('gcc'+i);
   if(!back||!card) return;
   back.innerHTML=_cardBackHTML(result);
+  const rarity=result.prize?result.prize.rarity:'common';
   if(result.prize) back.className=`gc-back rarity-back-${result.prize.rarity}`;
   card.classList.add('flipped');
+  setTimeout(()=>_gachaFx(card,rarity),300); // fire as the back face appears
   if(_gachaFlipped.every(Boolean)) setTimeout(_gachaDone,900);
 }
 function skipGachaReveal(){

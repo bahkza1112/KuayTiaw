@@ -475,7 +475,7 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .gacha-gem-bar{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 14px;font-size:12px;color:#ccc;}
 .gacha-grid{display:grid;gap:8px;}
 /* card flip system */
-.gc-wrap{perspective:700px;}
+.gc-wrap{perspective:700px;position:relative;}
 .gc-single{grid-column:1/-1;display:flex;justify-content:center;}
 .gc-single .gc-card{width:160px;height:220px;}
 .gc-card{width:100%;aspect-ratio:2/3;cursor:pointer;position:relative;}
@@ -510,6 +510,31 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .gacha-rarity-tag.rarity-rare{color:#ce93d8;border:1px solid #ce93d8;}
 .gacha-rarity-tag.rarity-uncommon{color:#90caf9;border:1px solid #90caf9;}
 .gacha-rarity-tag.rarity-common{color:#888;border:1px solid #444;}
+/* ── REVEAL FX (rarity-tiered) ── */
+.gc-card{overflow:visible;z-index:1;}/* sits above its own light rays */
+/* particle explosion */
+.gc-burst{position:absolute;top:50%;left:50%;width:0;height:0;pointer-events:none;z-index:6;}
+.gc-particle{position:absolute;top:0;left:0;border-radius:50%;transform:translate(-50%,-50%);animation:gcPart .85s ease-out forwards;}
+@keyframes gcPart{0%{transform:translate(-50%,-50%) scale(1);opacity:1;}100%{transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) scale(.2);opacity:0;}}
+/* expanding shockwave ring */
+.gc-ring{position:absolute;top:50%;left:50%;width:46px;height:46px;border-radius:50%;border:3px solid var(--ringc,#fff);transform:translate(-50%,-50%) scale(0);pointer-events:none;z-index:5;animation:gcRing .7s ease-out forwards;}
+@keyframes gcRing{0%{transform:translate(-50%,-50%) scale(0);opacity:.9;}100%{transform:translate(-50%,-50%) scale(4.2);opacity:0;}}
+/* radial flash on card face */
+.gc-flash{position:absolute;inset:-4px;border-radius:16px;pointer-events:none;z-index:4;background:radial-gradient(circle,var(--flashc,#fff) 0%,transparent 70%);animation:gcFlash .6s ease-out forwards;}
+@keyframes gcFlash{0%{opacity:.85;}100%{opacity:0;}}
+/* rotating light rays behind epic/legendary */
+.gc-rays{position:absolute;top:50%;left:50%;width:280px;height:280px;transform:translate(-50%,-50%);pointer-events:none;z-index:0;opacity:0;background:repeating-conic-gradient(from 0deg,var(--rayc,rgba(255,255,255,.3)) 0deg 5deg,transparent 5deg 16deg);-webkit-mask:radial-gradient(circle,#000 0%,transparent 68%);mask:radial-gradient(circle,#000 0%,transparent 68%);animation:gcRays 1.2s ease-out forwards;}
+@keyframes gcRays{0%{opacity:0;transform:translate(-50%,-50%) rotate(0) scale(.4);}25%{opacity:.85;}100%{opacity:0;transform:translate(-50%,-50%) rotate(55deg) scale(1.15);}}
+/* legendary full-screen flash + shake */
+.gacha-screen-flash{position:absolute;inset:0;pointer-events:none;z-index:60;background:radial-gradient(circle,rgba(179,136,255,.55),transparent 65%);animation:gcScrFlash .5s ease-out forwards;}
+@keyframes gcScrFlash{0%{opacity:.9;}100%{opacity:0;}}
+@keyframes gcShake{0%,100%{transform:translate(0,0);}20%{transform:translate(-6px,3px);}40%{transform:translate(5px,-4px);}60%{transform:translate(-4px,-3px);}80%{transform:translate(3px,4px);}}
+.gc-shake{animation:gcShake .42s ease-in-out;}
+/* persistent aura pulse on revealed top-tier cards */
+.gc-card.flipped .gc-back.rarity-back-legendary{animation:gcPulseLeg 1.6s ease-in-out infinite;}
+@keyframes gcPulseLeg{0%,100%{box-shadow:0 0 22px rgba(179,136,255,.45);}50%{box-shadow:0 0 38px rgba(179,136,255,.85);}}
+.gc-card.flipped .gc-back.rarity-back-epic{animation:gcPulseEpic 1.8s ease-in-out infinite;}
+@keyframes gcPulseEpic{0%,100%{box-shadow:0 0 16px rgba(255,143,0,.35);}50%{box-shadow:0 0 28px rgba(255,143,0,.65);}}
 /* pull buttons */
 .gacha-pull-btn{flex:1;background:linear-gradient(180deg,rgba(179,136,255,.35),rgba(74,20,140,.5));color:#e1bee7;border:2px solid rgba(179,136,255,.5);border-radius:16px;padding:14px 0;font-size:14px;font-weight:900;cursor:pointer;text-align:center;line-height:1.4;transition:all .2s;}
 .gacha-pull-btn:hover{background:linear-gradient(180deg,rgba(179,136,255,.5),rgba(74,20,140,.7));box-shadow:0 0 18px rgba(179,136,255,.3);}
