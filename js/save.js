@@ -61,33 +61,36 @@ const GACHA_PITY=100; // รับ 001 guaranteed ทุก 100 pull
 const GACHA_POOL=[
   {code:'001',icon:'🌑',name:'ป้อมมนตราโมฆะ', rarity:'legendary',color:'#b388ff',w:1,
    apply(){setVoidUnlocked();}},
-  {code:'002',icon:'🌟',name:'ผงดาวตก x3',    rarity:'epic',   color:'#ff8f00',w:3,
+  {code:'002',icon:'🌟',name:'ผงดาวตก x3',    rarity:'epic',   color:'#ff8f00',w:10,
    apply(){addMaterial(2,3);}},
-  {code:'003',icon:'🌟',name:'ผงดาวตก x1',    rarity:'epic',   color:'#ffe082',w:6,
+  {code:'003',icon:'🌟',name:'ผงดาวตก x1',    rarity:'epic',   color:'#ffe082',w:20,
    apply(){addMaterial(2,1);}},
-  {code:'004',icon:'🔘',name:'แกนเวทอสูร x3', rarity:'rare',   color:'#ce93d8',w:8,
+  {code:'004',icon:'🔘',name:'แกนเวทอสูร x3', rarity:'rare',   color:'#ce93d8',w:20,
    apply(){addMaterial(1,3);}},
-  {code:'005',icon:'🔘',name:'แกนเวทอสูร x1', rarity:'rare',   color:'#ce93d8',w:10,
+  {code:'005',icon:'🔘',name:'แกนเวทอสูร x1', rarity:'rare',   color:'#ce93d8',w:30,
    apply(){addMaterial(1,1);}},
-  {code:'006',icon:'🪨',name:'เศษหินมืด x5',  rarity:'uncommon',color:'#90caf9',w:15,
+  {code:'006',icon:'🪨',name:'เศษหินมืด x5',  rarity:'uncommon',color:'#90caf9',w:30,
    apply(){addMaterial(0,5);}},
-  {code:'007',icon:'⚔️',name:'ยาเข้มแข็ง',    rarity:'uncommon',color:'#ff8a65',w:12,
+  {code:'007',icon:'⚔️',name:'ยาเข้มแข็ง',    rarity:'uncommon',color:'#ff8a65',w:30,
    apply(){addBagItem('dmg_pot',1);}},
-  {code:'008',icon:'💊',name:'ยาเพิ่ม HP',     rarity:'common', color:'#ef5350',w:15,
+  {code:'008',icon:'💊',name:'ยาเพิ่ม HP',     rarity:'common', color:'#ef5350',w:30,
    apply(){addBagItem('hp_pot',1);}},
-  {code:'009',icon:'🧪',name:'ยาเพิ่มทอง',    rarity:'common', color:'#ffd54f',w:15,
+  {code:'009',icon:'🧪',name:'ยาเพิ่มทอง',    rarity:'common', color:'#ffd54f',w:30,
    apply(){addBagItem('gold_pot',1);}},
-  {code:'010',icon:'🪙',name:'ทองถาวร +25',   rarity:'common', color:'#ffd54f',w:15,
-   apply(){addPGold(25);}},
+  {code:'010',icon:'🪙',name:'ทองถาวร +50',   rarity:'common', color:'#ffd54f',w:50,
+   apply(){addPGold(50);}},
 ];
-// GACHA_POOL indexed by code number 1-10 for O(1) lookup
-// Roll 1-100: 1→001(1%), 2→002(1%), 3→003(1%), 4→004(1%), 5→005(1%),
-//             6→006(1%), 7→007(1%), 8→008(1%), 9→009(1%), 10→010(1%), 11-100→dud(90%)
+// Weighted roll /1000: 001=0.1%(1), 002=1%(10), 003=2%(20), 004=2%(20), 005=3%(30),
+//   006=3%(30), 007=3%(30), 008=3%(30), 009=3%(30), 010=5%(50), dud=74.9%(749) — total=1000
+const _GACHA_W=[1,10,20,20,30,30,30,30,30,50]; // cumulative sum stops at 251, rest=dud
 function _gachaRoll(){
-  const r=Math.floor(Math.random()*100)+1; // 1-100
-  if(r<=10) return {prizeIdx:r-1, num:r}; // 001-010
-  // dud: pick a random display number 011-999
-  return {prizeIdx:-1, num:Math.floor(Math.random()*989)+11};
+  const r=Math.floor(Math.random()*1000);
+  let cum=0;
+  for(let i=0;i<_GACHA_W.length;i++){
+    cum+=_GACHA_W[i];
+    if(r<cum) return {prizeIdx:i,num:i+1};
+  }
+  return {prizeIdx:-1,num:Math.floor(Math.random()*989)+11};
 }
 function loadGachaPity(){try{return Number(localStorage.getItem('tq_gpity'))||0;}catch(e){return 0;}}
 function saveGachaPity(n){localStorage.setItem('tq_gpity',String(n));}

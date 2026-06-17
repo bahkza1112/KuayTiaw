@@ -1,6 +1,13 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.8.6';
+const GAME_VERSION='3.8.7';
 const PATCH_NOTES=[
+  {ver:'3.8.7',date:'2026-06-18',title:'🎰 ปรับอัตรากาชาใหม่ + ทองถาวร +50',notes:[
+    '001 ป้อมมนตราโมฆะ (legendary) ลดเหลือ 0.1% — หายากขึ้น แต่ปิตี้ 100 ยังการันตีเหมือนเดิม',
+    'ปรับระบบ roll เป็น weighted /1000 (เดิม /100) รองรับ % ทศนิยมได้',
+    '010 ทองถาวร เพิ่มจาก +25 → +50 และโอกาสสูงขึ้นเป็น 5%',
+    'dud ลดจาก 90% → 74.9% — โอกาสได้ของจริงสูงขึ้นรวม ~25%',
+    'ตารางอัตราในกาชาอัปเดตแสดง % จริงพร้อมแถว dud',
+  ]},
   {ver:'3.8.6',date:'2026-06-18',title:'📖 กดค้างที่การ์ดป้อมเพื่อดูข้อมูลเต็ม',notes:[
     'กดค้าง (0.5 วินาที) ที่การ์ดป้อมในหน้าเลือกเพื่อดูรายละเอียดเต็ม',
     'แสดง: ดาเมจ / ระยะ / อัตรายิง / ราคา + ความสามารถพิเศษ + เอฟเฟค Awaken + จุดแข็ง/จุดอ่อน',
@@ -636,8 +643,14 @@ function toggleGachaOdds(){
         <span style="font-family:monospace;color:rgba(179,136,255,.6);">${p.code}</span>
         <span style="color:${p.color};">${p.icon} ${p.name}</span>
         <span class="gacha-rarity-tag rarity-${p.rarity}" style="font-size:7px;">${p.rarity}</span>
-        <span style="color:#aaa;">1%</span>
-      </div>`).join('');
+        <span style="color:#aaa;">${p.w/10}%</span>
+      </div>`).join('')+`
+      <div class="gacha-odds-row">
+        <span style="font-family:monospace;color:rgba(179,136,255,.6);">dud</span>
+        <span style="color:#888;">🔹 เศษสีน้ำเงิน ×1</span>
+        <span class="gacha-rarity-tag" style="font-size:7px;background:rgba(255,255,255,.08);color:#888;">ปลอบใจ</span>
+        <span style="color:#aaa;">74.9%</span>
+      </div>`;
   }
 }
 function switchBagTab(t){

@@ -8,6 +8,16 @@ All notable changes to Tower Quest 🏰 will be documented in this file.
 - **Stage 7 (Dark Fortress)**: `bossChance` 0.10 → 0. Shield Knight + Wyvern are the
   designed threats; random boss spawns dilute the mechanic and create unfair difficulty spikes.
 
+## v3.8.7 — Gacha rates overhaul
+
+### Changed
+- Roll system changed from integer 1-100 to weighted pool /1000 (`_GACHA_W`) to support
+  sub-1% rates. New rates: 001=0.1%, 002=1%, 003=2%, 004=2%, 005=3%, 006=3%, 007=3%,
+  008=3%, 009=3%, 010=5%, dud=74.9%. Total=100%.
+- 010 ทองถาวร: amount +25→+50, weight 15→50 (5%).
+- dud rate: 90%→74.9% — meaningful prize rate up from 10% to 25.1%.
+- Odds table in gacha UI now derives % from `p.w/10` and includes dud row.
+
 ## v3.8.6 — Tower long-press info modal
 
 ### Added
