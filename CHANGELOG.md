@@ -2,6 +2,19 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.8.1 — Shaman targeting priority
+
+### Changed
+- **Magic Tower (type 2) + Sniper (type 3)** now prioritize targeting Shaman (enemy type 10)
+  over all other enemies when one is in range. If multiple Shamans are present, targets
+  the one furthest along the path. Falls back to normal "furthest along path" targeting
+  when no Shaman is in range.
+- Implementation: `shamanInRange` variable added to targeting loop in both story and
+  endgame `G.towers.forEach` blocks (`js/game.js`). Override applied after loop via
+  `if((tw.type===2||tw.type===3)&&shamanInRange) best=shamanInRange;`
+- `TSPECIAL[2]` and `TSPECIAL[3]` in `js/tower.js` updated to mention shaman lock-on.
+- `MWEAKNESS[10]` in `js/enemy.js` updated: "เวทมนตร์+สไนเปอร์ล็อกเป้าก่อนเสมอ".
+
 ## v3.8.0 — Talent Tree (meta-progression)
 
 ### Added

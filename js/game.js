@@ -901,15 +901,17 @@ function update(dt){
     tw.cd=Math.max(0,tw.cd-dt);
     const range=getTowerRange(tw.type,tw.rngLv||tw.lv)*((G&&G.weather&&G.weather.rangeMult)?G.weather.rangeMult:1);
     const cx=tw.col+.5,cy=tw.row+.5;
-    let best=null,bestP=-1;
+    let best=null,bestP=-1,shamanInRange=null;
     G.enemies.forEach(e=>{
       if(!e.alive) return;
       if(e.isAir&&!TCANAIR[tw.type]) return; /* ยิง air ไม่ได้ */
       if(Math.hypot(cx-e.x/CS,cy-e.y/CS)<=range){
         const prog=e.pi+e.prog/CS;
+        if(e.ti===10&&(!shamanInRange||prog>(shamanInRange.pi+shamanInRange.prog/CS))) shamanInRange=e;
         if(prog>bestP){bestP=prog;best=e;}
       }
     });
+    if((tw.type===2||tw.type===3)&&shamanInRange) best=shamanInRange;
     if(best) tw.angle=Math.atan2(best.y/CS-cy,best.x/CS-cx);
     if(best&&tw.cd<=0){
       const _rateMultW=(tw.type===1&&G.weather&&G.weather.iceRateMult)?G.weather.iceRateMult:1;
@@ -2483,14 +2485,17 @@ function updateEg(dt){
     tw.cd=Math.max(0,tw.cd-dt);
     const range=getTowerRange(tw.type,tw.rngLv||tw.lv)*((G&&G.weather&&G.weather.rangeMult)?G.weather.rangeMult:1);
     const cx=tw.col+.5,cy=tw.row+.5;
-    let best=null,bestP=-1;
+    let best=null,bestP=-1,shamanInRange=null;
     G.enemies.forEach(e=>{
       if(!e.alive) return;
       if(e.isAir&&!TCANAIR[tw.type]) return; /* ✅ fix: air check */
       if(Math.hypot(cx-e.x/CS,cy-e.y/CS)<=range){
-        const p=e.pi+e.prog/CS; if(p>bestP){bestP=p;best=e;}
+        const p=e.pi+e.prog/CS;
+        if(e.ti===10&&(!shamanInRange||p>(shamanInRange.pi+shamanInRange.prog/CS))) shamanInRange=e;
+        if(p>bestP){bestP=p;best=e;}
       }
     });
+    if((tw.type===2||tw.type===3)&&shamanInRange) best=shamanInRange;
     if(best) tw.angle=Math.atan2(best.y/CS-cy,best.x/CS-cx);
     if(best&&tw.cd<=0){
       const _rateMultW2=(tw.type===1&&G.weather&&G.weather.iceRateMult)?G.weather.iceRateMult:1;
