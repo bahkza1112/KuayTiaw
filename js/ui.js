@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.6.0';
+const GAME_VERSION='3.6.1';
 const PATCH_NOTES=[
+  {ver:'3.6.1',date:'2026-06-17',title:'🎰 กาชา: ส่วนลด ×10 + แก้ตารางอัตรา',notes:[
+    'สุ่ม ×10 ลดราคาเหลือ 270💎 (เดิม 300💎) — เท่ากับสุ่มฟรี 1 ครั้ง!',
+    'แก้ตารางอัตรา: เลข 011–999 ได้ 🔹 เศษสีน้ำเงิน ×1 เป็นรางวัลปลอบใจ (เดิมเขียนว่า "ไม่ได้รางวัล")',
+    'เพิ่มข้อมูลค้ำประกัน 001 ทุก 90 ครั้ง ในตารางอัตรา',
+  ]},
   {ver:'3.6.0',date:'2026-06-16',title:'📅 ภารกิจประจำวัน + ฟีลเกม + เพลงพื้นหลัง',notes:[
     'ใหม่! ภารกิจประจำวัน — รางวัลล็อกอินต่อเนื่อง 7 วัน (มณี/เศษ/ทองถาวร) + เควสต์รายวัน 3 ข้อ',
     'เควสต์รายวันสุ่มทุกวัน: กำจัดศัตรู / ผ่านด่าน / คอมโบ / สร้างป้อม / เก็บทอง / ไปถึงคลื่น',
@@ -436,7 +441,7 @@ function _renderGachaUI(){
   document.getElementById('gachaGemCount').textContent=loadGems().toLocaleString();
   document.getElementById('gachaPityInfo').textContent=`สะสม ${loadGachaPity()}/90 ครั้ง`;
   const canAfford1=loadGems()>=GACHA_COST;
-  const canAfford10=loadGems()>=GACHA_COST*10;
+  const canAfford10=loadGems()>=gachaCost(10);
   document.getElementById('gachaPull1').disabled=!canAfford1;
   document.getElementById('gachaPull10').disabled=!canAfford10;
   if(!_gachaBusy){
@@ -507,7 +512,7 @@ function _gachaDone(){
   document.getElementById('gachaSkipRow').style.display='none';
   document.getElementById('gachaBtns').style.display='flex';
   const canAfford1=loadGems()>=GACHA_COST;
-  const canAfford10=loadGems()>=GACHA_COST*10;
+  const canAfford10=loadGems()>=gachaCost(10);
   document.getElementById('gachaPull1').disabled=!canAfford1;
   document.getElementById('gachaPull10').disabled=!canAfford10;
   document.getElementById('gachaGemCount').textContent=loadGems().toLocaleString();

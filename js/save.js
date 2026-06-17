@@ -55,6 +55,8 @@ function consumeActiveBuff(){
 
 /* ══ GACHA ══ */
 const GACHA_COST=30;
+const GACHA_COST10=270; // ×10 ส่วนลด 10% (ปกติ 300 = ฟรี 1 ครั้ง)
+function gachaCost(n){return n===10?GACHA_COST10:GACHA_COST*n;}
 const GACHA_PITY=90; // รับ 001 guaranteed ทุก 90 pull
 const GACHA_POOL=[
   {code:'001',icon:'🌑',name:'ป้อมมนตราโมฆะ', rarity:'legendary',color:'#b388ff',w:1,
@@ -91,8 +93,9 @@ function loadGachaPity(){try{return Number(localStorage.getItem('tq_gpity'))||0;
 function saveGachaPity(n){localStorage.setItem('tq_gpity',String(n));}
 function doGachaPulls(n){
   const gems=loadGems();
-  if(gems<GACHA_COST*n) return null;
-  saveGems(gems-GACHA_COST*n);
+  const cost=gachaCost(n);
+  if(gems<cost) return null;
+  saveGems(gems-cost);
   let pity=loadGachaPity();
   const results=[];
   for(let i=0;i<n;i++){

@@ -2,7 +2,7 @@
 <html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Tower Quest 🏰 v3.6.0</title>
+<title>Tower Quest 🏰 v3.6.1</title>
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -43,7 +43,7 @@
   <div class="island">🏰</div>
   <div class="gtitle">TOWER QUEST</div>
   <div class="gsub">⚔️ ปกป้องอาณาจักรของคุณ!</div>
-  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v3.6.0 — มีอะไรใหม่<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
+  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v3.6.1 — มีอะไรใหม่<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
 
   <!-- battle buttons -->
   <button class="bbattle" id="startBtn">⚔️ โหมดเนื้อเรื่อง</button>
@@ -409,7 +409,7 @@
     <!-- buttons -->
     <div id="gachaBtns" style="display:flex;gap:10px;margin-top:4px;">
       <button class="gacha-pull-btn" id="gachaPull1" onclick="startGacha(1)">สุ่ม ×1<br><span style="font-size:10px;font-weight:400;opacity:.8;">30 💎</span></button>
-      <button class="gacha-pull-btn gacha-pull10" id="gachaPull10" onclick="startGacha(10)">สุ่ม ×10<br><span style="font-size:10px;font-weight:400;opacity:.8;">300 💎</span></button>
+      <button class="gacha-pull-btn gacha-pull10" id="gachaPull10" onclick="startGacha(10)">สุ่ม ×10<br><span style="font-size:10px;font-weight:400;opacity:.8;"><span style="text-decoration:line-through;opacity:.5;">300</span> 270 💎 <span style="color:#69f0ae;">ลด 10%</span></span></button>
     </div>
     <div id="gachaSkipRow" style="display:none;text-align:center;">
       <button class="gacha-skip-btn" onclick="skipGachaReveal()">ข้าม →</button>
@@ -423,10 +423,14 @@
       <span>📋 อัตราการออก</span><span id="gachaOddsArrow">▼ ดูรายละเอียด</span>
     </div>
     <div id="gachaOddsBody" style="display:none;">
-      <div class="gacha-odds-row" style="color:#555;font-style:italic;">
-        <span>011–999</span><span>ไม่ได้รางวัล</span><span style="color:#444;">90%</span>
+      <div class="gacha-odds-row">
+        <span style="font-family:monospace;color:rgba(255,255,255,.3);">011–999</span>
+        <span style="color:#64b5f6;">🔹 เศษสีน้ำเงิน ×1</span>
+        <span class="gacha-rarity-tag rarity-common" style="font-size:7px;">ปลอบใจ</span>
+        <span style="color:#aaa;">90%</span>
       </div>
       <div id="gachaOddsPool"></div>
+      <div style="text-align:center;font-size:9px;color:#666;margin-top:6px;border-top:1px solid rgba(255,255,255,.06);padding-top:6px;">🔒 ค้ำประกัน 001 ทุก 90 ครั้งที่สุ่ม</div>
     </div>
   </div>
 </div>

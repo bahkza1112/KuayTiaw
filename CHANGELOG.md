@@ -2,6 +2,20 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.6.1 — Gacha x10 discount + odds table fix
+
+### Changed
+- **x10 pull discount**: `GACHA_COST10=270` (was 300) — 10% off, effectively
+  one free pull. Added `gachaCost(n)` helper in `js/save.js`; `doGachaPulls()`
+  and affordability checks in `js/ui.js` now use it. x10 button shows
+  strikethrough 300 → 270 with "ลด 10%" tag.
+
+### Fixed
+- **Odds table accuracy**: dud rolls (011–999) award 🔹 เศษสีน้ำเงิน ×1 since
+  v3.5.5, but the table still read "ไม่ได้รางวัล". Updated to show the
+  consolation shard at 90%, with a common "ปลอบใจ" tag.
+- Added pity guarantee note (001 every 90 pulls) to the odds table footer.
+
 ## v3.6.0 — Daily Quests + Game Feel + BGM
 
 ### Added
