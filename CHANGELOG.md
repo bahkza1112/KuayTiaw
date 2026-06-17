@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.7.1 — Bigger single-card number
+
+### Changed
+- Single (×1) gacha card enlarged (180×248) with prominent content:
+  number `.gc-num` 11px → 28px, icon 28px → 50px, name 8px → 13px, rarity tag
+  bumped. Multi-pull (×10) cards unchanged. CSS-only via `.gc-single` overrides.
+
 ## v3.7.0 — Gacha reveal FX (rarity-tiered)
 
 ### Added
