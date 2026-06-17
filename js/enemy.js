@@ -200,8 +200,9 @@ function killEnemy(e){
     G.particles.push({x:e.x,y:e.y-ESIZES[e.ti]-20,txt:'⚡'+ct,col:'#ffe234',
       life:1.2,vy:-1.6,vx:0,decay:.9,scale:1.3});
   }
-  G.gold+=e.reward;
-  addParticle(e.x,e.y,'+'+e.reward+'💰','#ffe082');
+  const _gr=Math.round(e.reward*(G.goldMult||1)); // 🌳 talent: gold from kills
+  G.gold+=_gr;
+  addParticle(e.x,e.y,'+'+_gr+'💰','#ffe082');
   // 📅 daily quest tracking
   if(typeof questProgress==='function'){questProgress('kill',1);questProgress('gold',e.reward);questProgress('combo',G.comboN);}
   updateHUD();

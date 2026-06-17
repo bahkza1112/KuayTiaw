@@ -2285,6 +2285,7 @@ function initEgGame(){
   currentStage.enemyTypes=_getEgEnemyPool(); // อัปเดต pool ตาม round ปัจจุบัน
   G.gold=CFG.startGold+egRound*35; // bonus gold per round
   G.hp=CFG.baseHP; G.maxHp=CFG.baseHP;
+  if(typeof applyTalents==='function') applyTalents(); // 🌳 talent tree (gold/HP/dmg/goldMult)
   document.getElementById('endOverlay').style.display='none';
   document.getElementById('pauseScreen').style.display='none';
   document.getElementById('waveBtn').disabled=false;

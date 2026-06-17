@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.7.2';
+const GAME_VERSION='3.8.0';
 const PATCH_NOTES=[
+  {ver:'3.8.0',date:'2026-06-17',title:'🌳 ระบบต้นไม้ทาเลนต์',notes:[
+    'เพิ่มต้นไม้ทาเลนต์ใน Workshop — 3 สาย (เศรษฐกิจ/โจมตี/ป้องกัน) สายละ 4 ขั้น ปลดด้วยทองถาวร',
+    'โบนัสถาวร: ทองเริ่มต้น, ทองจากศัตรู +%, ดาเมจป้อม +%, HP ปราสาท, ลดราคา Awaken',
+    'ใช้ได้ทั้งโหมดเนื้อเรื่องและเอนด์เกม — อัปเกรดเดิมที่ซื้อไว้ยังอยู่ครบ',
+  ]},
   {ver:'3.7.2',date:'2026-06-17',title:'🛠️ ยกเครื่องหน้า Dev Console',notes:[
     'ปรับ Dev Panel เป็นธีมใหม่ทันสมัย — การ์ดกระจกเรืองแสง, สไลเดอร์/ปุ่มดีไซน์ใหม่',
     'แท็บแบบ segmented มีไฮไลต์เรืองแสง + แถบหัวข้อพร้อมไฟสถานะ',
@@ -690,11 +695,58 @@ function _updateBagBadge(){
   b.textContent=newCount>9?'9+':String(newCount);
 }
 
-const P_UPGRADES=[
-  {idx:0,icon:'💰',name:'ทองเริ่มต้น +100',desc:'ได้ทอง 100 เพิ่มทุกครั้งที่เริ่มด่าน',cost:200},
-  {idx:1,icon:'❤️',name:'HP ปราสาท +5',desc:'ปราสาทมีพลังชีวิตสูงสุดเพิ่ม 5 (20→25)',cost:350},
-  {idx:2,icon:'⚡',name:'Awaken ราคาลด 50',desc:'อเวคป้อมราคา 300 ทอง (ปกติ 350)',cost:500},
+/* 🌳 Talent Tree — 3 branches × 4 tiers, linear unlock. Node ids map to tq_pups
+   (legacy ids 0/1/2 kept as tier-1 nodes so old purchases carry over). */
+const TALENT_TREE=[
+  {key:'eco',icon:'💰',name:'เศรษฐกิจ',color:'#ffd54f',nodes:[
+    {id:0, name:'ทองเริ่มต้น +100', desc:'เริ่มด่านมีทอง +100',            cost:200},
+    {id:3, name:'ทองเริ่มต้น +150', desc:'เริ่มด่านมีทอง +150 (รวม +250)', cost:450},
+    {id:4, name:'ทองจากศัตรู +5%',  desc:'ฆ่าศัตรูได้ทอง +5%',             cost:750},
+    {id:5, name:'ทองจากศัตรู +5%',  desc:'ฆ่าศัตรูได้ทอง +5% (รวม +10%)',  cost:1150},
+  ]},
+  {key:'atk',icon:'⚔️',name:'โจมตี',color:'#ff8a65',nodes:[
+    {id:2, name:'Awaken ลดราคา 50', desc:'อเวคป้อมราคา 300 (ปกติ 350)',    cost:500},
+    {id:8, name:'ดาเมจป้อม +5%',    desc:'ดาเมจป้อมทุกหลัง +5%',           cost:550},
+    {id:9, name:'ดาเมจป้อม +5%',    desc:'ดาเมจป้อมทุกหลัง +5% (รวม +10%)', cost:800},
+    {id:10,name:'ดาเมจป้อม +5%',    desc:'ดาเมจป้อมทุกหลัง +5% (รวม +15%)', cost:1200},
+  ]},
+  {key:'def',icon:'🛡️',name:'ป้องกัน',color:'#64b5f6',nodes:[
+    {id:1, name:'HP ปราสาท +5', desc:'HP ปราสาทสูงสุด +5',          cost:350},
+    {id:6, name:'HP ปราสาท +3', desc:'HP ปราสาทสูงสุด +3 (รวม +8)',  cost:550},
+    {id:7, name:'HP ปราสาท +2', desc:'HP ปราสาทสูงสุด +2 (รวม +10)', cost:850},
+    {id:11,name:'HP ปราสาท +2', desc:'HP ปราสาทสูงสุด +2 (รวม +12)', cost:1250},
+  ]},
 ];
+function buyTalent(id,cost,prereqId){
+  if(prereqId!=null && !hasPUpgrade(prereqId)){ showToast('🔒 ปลดทาเลนต์ขั้นก่อนหน้าก่อน!'); return; }
+  buyPUpgrade(id,cost);
+}
+function _renderTalentTree(){
+  const pg=loadPGold();
+  return TALENT_TREE.map(br=>{
+    const nodes=br.nodes.map((nd,t)=>{
+      const owned=hasPUpgrade(nd.id);
+      const prereqId=t>0?br.nodes[t-1].id:null;
+      const prereqOk=t===0||hasPUpgrade(prereqId);
+      const buyable=!owned&&prereqOk&&pg>=nd.cost;
+      const state=owned?'owned':(!prereqOk?'locked':buyable?'buyable':'tooexp');
+      const act=owned
+        ?`<span class="talent-owned">ปลดแล้ว</span>`
+        :(!prereqOk
+          ?`<span class="talent-lock">🔒</span>`
+          :`<button class="talent-buy${buyable?'':' dim'}" ${buyable?`onclick="buyTalent(${nd.id},${nd.cost},${prereqId})"`:'disabled'}>${nd.cost}<span>ทองถาวร</span></button>`);
+      return `<div class="talent-node ${state}">
+        <div class="talent-tier">${owned?'✓':(t+1)}</div>
+        <div class="talent-info"><div class="talent-name">${nd.name}</div><div class="talent-desc">${nd.desc}</div></div>
+        <div class="talent-act">${act}</div>
+      </div>`;
+    }).join('');
+    return `<div class="talent-branch" style="--bc:${br.color};">
+      <div class="talent-head">${br.icon} ${br.name}</div>
+      <div class="talent-nodes">${nodes}</div>
+    </div>`;
+  }).join('');
+}
 function openWorkshop(){ showScreen('workshop',true); renderWorkshop(); }
 function toggleWsSkill(){
   const d=document.getElementById('wsSkillDetail');
@@ -746,27 +798,7 @@ function renderWorkshop(){
   const badge=document.getElementById('wsPGoldBadge');
   if(badge) badge.innerHTML=`<span style="background:rgba(255,213,79,.15);border:1px solid rgba(255,213,79,.35);border-radius:20px;padding:2px 10px;font-size:11px;color:#ffd54f;font-weight:700;">มี ${pg.toLocaleString()} ทองถาวร</span>`;
   const grid=document.getElementById('wsPUpGrid');
-  if(grid){
-    grid.innerHTML=P_UPGRADES.map((u,i)=>{
-      const owned=hasPUpgrade(u.idx);
-      const canBuy=!owned&&pg>=u.cost;
-      const borderCol=owned?'rgba(105,240,174,.4)':canBuy?'rgba(255,213,79,.35)':'rgba(255,255,255,.08)';
-      const bgCol=owned?'rgba(105,240,174,.06)':canBuy?'rgba(255,213,79,.07)':'rgba(255,255,255,.03)';
-      return `<div style="display:flex;align-items:center;gap:12px;background:${bgCol};border:1px solid ${borderCol};border-radius:12px;padding:12px 14px;transition:border .2s;">
-        <div style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">${u.icon}</div>
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:12px;font-weight:700;color:${owned?'#69f0ae':canBuy?'#ffe082':'rgba(255,255,255,.6)'};">${u.name}</div>
-          <div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:3px;line-height:1.4;">${u.desc}</div>
-        </div>
-        ${owned
-          ?`<div style="flex-shrink:0;text-align:center;"><div style="font-size:18px;">✅</div><div style="font-size:9px;color:#69f0ae;margin-top:1px;">ซื้อแล้ว</div></div>`
-          :`<div style="flex-shrink:0;text-align:center;">
-              <button onclick="buyPUpgrade(${u.idx},${u.cost})" style="background:${canBuy?'linear-gradient(180deg,#ffd54f,#f9a825)':'rgba(255,255,255,.06)'};color:${canBuy?'#3e2000':'rgba(255,255,255,.3)'};border:1px solid ${canBuy?'transparent':'rgba(255,255,255,.1)'};border-radius:8px;padding:7px 12px;font-size:11px;font-weight:800;cursor:${canBuy?'pointer':'not-allowed'};line-height:1.3;">${u.cost}<br><span style="font-size:9px;font-weight:400;">ทองถาวร</span></button>
-            </div>`
-        }
-      </div>`;
-    }).join('');
-  }
+  if(grid) grid.innerHTML=_renderTalentTree();
 }
 /* ── Shard Exchange (v3.5.5) ── */
 const SHARD_EXCHANGE=[
@@ -983,15 +1015,14 @@ function _doStartStage(si){
   cv.removeEventListener('pointerdown',onCanvasPointerDown);
   cv.addEventListener('pointerdown',onCanvasPointerDown);
   initGame();
-  // 🪙 apply persistent upgrades
-  if(hasPUpgrade(0)){G.gold+=100;}
-  if(hasPUpgrade(1)){G.maxHp+=5;G.hp+=5;}
-  // 🎒 consume active buff from bag
+  // 🌳 apply talent tree (gold/HP/dmg/goldMult) — sets G.dmgBuff & G.goldMult
+  applyTalents();
+  // 🎒 consume active buff from bag (stacks on top of talents)
   const _abid=consumeActiveBuff();
   if(_abid==='gold_pot'){G.gold+=100;}
   else if(_abid==='hp_pot'){G.maxHp+=3;G.hp+=3;}
-  else if(_abid==='dmg_pot'){G.dmgBuff=1.1;}
-  if(hasPUpgrade(0)||hasPUpgrade(1)||_abid) updateHUD();
+  else if(_abid==='dmg_pot'){G.dmgBuff*=1.1;}
+  updateHUD();
   initTutorial();
 }
 

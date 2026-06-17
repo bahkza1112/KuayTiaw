@@ -244,6 +244,27 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 /* info box (cyan accent) */
 .dev-info-box{background:linear-gradient(180deg,rgba(34,211,238,.08),rgba(34,211,238,.02));border:1px solid rgba(34,211,238,.22);border-left:3px solid #22d3ee;border-radius:10px;padding:11px 12px;font-size:10.5px;color:#b6c2cf;line-height:1.7;}
 .dev-info-box strong{color:#ffd24d;}
+/* ════ TALENT TREE ════ */
+.talent-branch{border:1px solid rgba(255,255,255,.08);border-left:3px solid var(--bc,#ffd54f);border-radius:12px;padding:10px 12px 12px;background:rgba(255,255,255,.025);}
+.talent-head{font-size:13px;font-weight:800;color:var(--bc,#ffd54f);margin-bottom:8px;letter-spacing:.5px;}
+.talent-nodes{display:flex;flex-direction:column;position:relative;padding-left:6px;}
+.talent-nodes::before{content:'';position:absolute;left:18px;top:14px;bottom:14px;width:2px;background:linear-gradient(180deg,var(--bc,#ffd54f),rgba(255,255,255,.06));opacity:.35;}
+.talent-node{display:flex;align-items:center;gap:11px;padding:8px 6px;position:relative;z-index:1;}
+.talent-tier{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;border:2px solid rgba(255,255,255,.15);background:#0e1220;color:rgba(255,255,255,.5);}
+.talent-node.owned .talent-tier{background:var(--bc,#ffd54f);border-color:var(--bc,#ffd54f);color:#1a1000;box-shadow:0 0 12px var(--bc,#ffd54f);}
+.talent-node.buyable .talent-tier{border-color:var(--bc,#ffd54f);color:var(--bc,#ffd54f);box-shadow:0 0 8px rgba(255,213,79,.4);}
+.talent-info{flex:1;min-width:0;}
+.talent-name{font-size:12px;font-weight:700;color:#e8eef5;line-height:1.25;}
+.talent-node.locked .talent-name,.talent-node.tooexp .talent-name{color:rgba(255,255,255,.5);}
+.talent-desc{font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;line-height:1.35;}
+.talent-act{flex-shrink:0;text-align:center;min-width:62px;}
+.talent-owned{font-size:10px;font-weight:800;color:#69f0ae;}
+.talent-lock{font-size:16px;opacity:.5;}
+.talent-buy{display:inline-flex;flex-direction:column;align-items:center;gap:1px;background:linear-gradient(180deg,#ffd54f,#f9a825);color:#3e2000;border:none;border-radius:9px;padding:6px 12px;font-size:13px;font-weight:900;cursor:pointer;line-height:1.1;transition:all .15s;}
+.talent-buy span{font-size:8px;font-weight:600;opacity:.8;}
+.talent-buy:hover{box-shadow:0 0 14px rgba(255,213,79,.5);transform:translateY(-1px);}
+.talent-buy.dim{background:rgba(255,255,255,.06);color:rgba(255,255,255,.35);cursor:not-allowed;}
+.talent-buy.dim:hover{box-shadow:none;transform:none;}
 
 /* ── CUTSCENE ── */
 #cutscene{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:100;

@@ -129,9 +129,23 @@ function buyPUpgrade(idx,cost){
   if(g<cost){showToast('🪙 ทองถาวรไม่พอ!');return;}
   savePGold(g-cost);
   const ups=loadPUpgrades(); ups.push(idx); localStorage.setItem('tq_pups',JSON.stringify(ups));
-  showToast('✅ ซื้อ upgrade สำเร็จ!');
+  showToast('✅ ปลดทาเลนต์สำเร็จ!');
   if(typeof renderWorkshop==='function') renderWorkshop();
   if(typeof updateMenuGold==='function') updateMenuGold();
+}
+/* 🌳 apply talent-tree effects onto current game state G (story + endgame).
+   Talent node ids map to tq_pups entries (legacy 0/1/2 preserved as tier-1 nodes). */
+function applyTalents(){
+  if(typeof G==='undefined'||!G) return;
+  const h=hasPUpgrade;
+  const gold=(h(0)?100:0)+(h(3)?150:0);                       // 💰 starting gold
+  const hp  =(h(1)?5:0)+(h(6)?3:0)+(h(7)?2:0)+(h(11)?2:0);     // 🛡️ castle HP (max +12)
+  const dmg =1+(h(8)?.05:0)+(h(9)?.05:0)+(h(10)?.05:0);        // ⚔️ tower damage (max +15%)
+  const gm  =1+(h(4)?.05:0)+(h(5)?.05:0);                      // 💰 gold from kills (max +10%)
+  if(gold){ G.gold+=gold; }
+  if(hp){ G.maxHp+=hp; G.hp+=hp; }
+  G.dmgBuff=dmg;
+  G.goldMult=gm;
 }
 
 /* ══ SOUL GEMS / MATERIALS / WORKSHOP ══ */

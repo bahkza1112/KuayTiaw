@@ -2,6 +2,30 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.8.0 — Talent Tree (meta-progression)
+
+### Added
+- **Talent Tree** replacing the flat 3-item permanent-upgrade list in the
+  Workshop. 3 branches × 4 tiers, linear unlock per branch, spent with
+  persistent gold (`tq_pups`). `TALENT_TREE` + `_renderTalentTree()` +
+  `buyTalent(id,cost,prereqId)` in `js/ui.js`; tree CSS (`.talent-*`) in
+  `css/main.css`; `wsPUpSection` un-hidden and retitled in the HTML.
+  - 💰 Economy: +100 / +150 starting gold, +5% / +5% gold-from-kills (max +10%)
+  - ⚔️ Offense: Awaken −50, +5% / +5% / +5% tower damage (max +15%)
+  - 🛡️ Defense: +5 / +3 / +2 / +2 castle HP (max +12)
+- **`applyTalents()`** in `js/save.js` — applies talent effects to `G` at battle
+  start; called from story `startGame` (replacing the old inline `hasPUpgrade`
+  block) and endgame `initEgGame`, so talents work in **both** modes. Sets
+  `G.dmgBuff` (damage) and `G.goldMult` (kills); the bag `dmg_pot` buff now
+  multiplies on top of talent damage.
+- **Gold-from-kills hook** in `js/enemy.js` `killEnemy`: reward scaled by
+  `G.goldMult` (guarded `||1`).
+
+### Notes
+- Backward compatible: legacy upgrade ids 0/1/2 are the tier-1 nodes of their
+  branches, so existing purchases carry over. Conservative power budget
+  (max +15% dmg, +12 HP, +10% gold) to protect balance.
+
 ## v3.7.2 — Dev Console UI overhaul
 
 ### Changed
