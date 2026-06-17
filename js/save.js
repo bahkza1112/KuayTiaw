@@ -270,34 +270,34 @@ let seenMonsters=new Set(JSON.parse(localStorage.getItem('tq_seen')||'[]'));
 /* ══ ACHIEVEMENT SYSTEM ══ */
 const ACHIEVEMENTS=[
   // Story
-  {id:'s0',  icon:'🌿',cat:'story',  name:'ก้าวแรก',        desc:'ผ่านด่าน Grassland'},
-  {id:'s4',  icon:'💰',cat:'story',  name:'รักสมบัติ',       desc:'ผ่านด่าน Treasure Valley'},
-  {id:'s7',  icon:'🏰',cat:'story',  name:'ป้อมมืด',         desc:'ผ่านด่าน Dark Fortress'},
-  {id:'s9',  icon:'💀',cat:'story',  name:'ผู้พิชิตความมืด', desc:'ผ่านด่าน Dark Tower Summit'},
-  {id:'s10', icon:'🌑',cat:'story',  name:'ผู้ยุติเงามืด',   desc:'ผ่านด่านสุดท้าย Shadow Remnant'},
-  {id:'sall',icon:'👑',cat:'story',  name:'ราชันผู้พิทักษ์', desc:'ผ่านครบทั้ง 11 ด่าน'},
+  {id:'s0',  icon:'🌿',cat:'story',  name:'ก้าวแรก',        desc:'ผ่านด่าน Grassland',            reward:20},
+  {id:'s4',  icon:'💰',cat:'story',  name:'รักสมบัติ',       desc:'ผ่านด่าน Treasure Valley',       reward:30},
+  {id:'s7',  icon:'🏰',cat:'story',  name:'ป้อมมืด',         desc:'ผ่านด่าน Dark Fortress',         reward:50},
+  {id:'s9',  icon:'💀',cat:'story',  name:'ผู้พิชิตความมืด', desc:'ผ่านด่าน Dark Tower Summit',     reward:60},
+  {id:'s10', icon:'🌑',cat:'story',  name:'ผู้ยุติเงามืด',   desc:'ผ่านด่านสุดท้าย Shadow Remnant', reward:80},
+  {id:'sall',icon:'👑',cat:'story',  name:'ราชันผู้พิทักษ์', desc:'ผ่านครบทั้ง 11 ด่าน',           reward:200},
   // Combat
-  {id:'k100', icon:'⚔️',cat:'combat', name:'นักรบ',          desc:'สังหารรวม 100 ศัตรู'},
-  {id:'k1000',icon:'🗡️',cat:'combat', name:'จอมนักรบ',       desc:'สังหารรวม 1,000 ศัตรู'},
-  {id:'k5000',icon:'💥',cat:'combat', name:'เทพสงคราม',      desc:'สังหารรวม 5,000 ศัตรู'},
-  {id:'boss1',icon:'👹',cat:'combat', name:'นักล่าบอส',      desc:'สังหาร Boss ครั้งแรก'},
-  {id:'jmn',  icon:'👁️',cat:'combat', name:'ปราบจอมมาร',    desc:'สังหารจอมมารได้'},
-  {id:'heal50',icon:'🧙',cat:'combat',name:'ตัดรากถอนโคน',   desc:'สังหารหมอผีรวม 50 ตัว'},
+  {id:'k100', icon:'⚔️',cat:'combat', name:'นักรบ',          desc:'สังหารรวม 100 ศัตรู',           reward:20},
+  {id:'k1000',icon:'🗡️',cat:'combat', name:'จอมนักรบ',       desc:'สังหารรวม 1,000 ศัตรู',         reward:40},
+  {id:'k5000',icon:'💥',cat:'combat', name:'เทพสงคราม',      desc:'สังหารรวม 5,000 ศัตรู',         reward:80},
+  {id:'boss1',icon:'👹',cat:'combat', name:'นักล่าบอส',      desc:'สังหาร Boss ครั้งแรก',           reward:25},
+  {id:'jmn',  icon:'👁️',cat:'combat', name:'ปราบจอมมาร',    desc:'สังหารจอมมารได้',               reward:60},
+  {id:'heal50',icon:'🧙',cat:'combat',name:'ตัดรากถอนโคน',   desc:'สังหารหมอผีรวม 50 ตัว',         reward:30},
   // Skill
-  {id:'combo5', icon:'🔥',cat:'skill', name:'Hot Streak!',   desc:'ทำ Combo ×5 ขึ้นไปได้'},
-  {id:'combo10',icon:'💫',cat:'skill', name:'ULTRA COMBO',   desc:'ทำ Combo ×10 ขึ้นไปได้'},
-  {id:'nodmg',  icon:'🛡️',cat:'skill', name:'ไร้ที่ติ',       desc:'ผ่าน Wave โดยไม่เสีย HP'},
-  {id:'sc10k',  icon:'⭐',cat:'skill', name:'นักเก็บแต้ม',    desc:'ทำคะแนน 10,000 ในเกมเดียว'},
-  {id:'sc50k',  icon:'🌟',cat:'skill', name:'ราชาแต้ม',      desc:'ทำคะแนน 50,000 ในเกมเดียว'},
+  {id:'combo5', icon:'🔥',cat:'skill', name:'Hot Streak!',   desc:'ทำ Combo ×5 ขึ้นไปได้',         reward:20},
+  {id:'combo10',icon:'💫',cat:'skill', name:'ULTRA COMBO',   desc:'ทำ Combo ×10 ขึ้นไปได้',        reward:50},
+  {id:'nodmg',  icon:'🛡️',cat:'skill', name:'ไร้ที่ติ',       desc:'ผ่าน Wave โดยไม่เสีย HP',       reward:40},
+  {id:'sc10k',  icon:'⭐',cat:'skill', name:'นักเก็บแต้ม',    desc:'ทำคะแนน 10,000 ในเกมเดียว',    reward:30},
+  {id:'sc50k',  icon:'🌟',cat:'skill', name:'ราชาแต้ม',      desc:'ทำคะแนน 50,000 ในเกมเดียว',    reward:80},
   // Endgame
-  {id:'eg3',icon:'🔥',cat:'endgame',name:'ผู้รอดชีวิต',     desc:'ผ่าน Endgame Round 3+'},
-  {id:'eg7',icon:'☠️',cat:'endgame',name:'ไม่มีวันตาย',     desc:'ผ่าน Endgame Round 7+'},
-  {id:'eghw',icon:'🌩️',cat:'endgame',name:'ผู้ฝ่าวิกฤต',   desc:'ผ่าน Wave ใน Endgame ระดับยาก ขณะมีสภาพอากาศแปรปรวน'},
+  {id:'eg3',icon:'🔥',cat:'endgame',name:'ผู้รอดชีวิต',     desc:'ผ่าน Endgame Round 3+',          reward:50},
+  {id:'eg7',icon:'☠️',cat:'endgame',name:'ไม่มีวันตาย',     desc:'ผ่าน Endgame Round 7+',          reward:120},
+  {id:'eghw',icon:'🌩️',cat:'endgame',name:'ผู้ฝ่าวิกฤต',   desc:'ผ่าน Wave ใน Endgame ระดับยาก ขณะมีสภาพอากาศแปรปรวน',reward:60},
   // Collection
-  {id:'cdx_m',icon:'📖',cat:'collect',name:'นักวิชาการ',    desc:'พบ Monster ทุกตัวใน Codex'},
-  {id:'cdx_t',icon:'🏗️',cat:'collect',name:'สถาปนิก',       desc:'ปลดล็อก Tower ทุกแบบ'},
-  {id:'gem1k',icon:'💎',cat:'collect',name:'นักสะสมมณีวิญญาณ',desc:'สะสม Soul Gems รวม 1,000'},
-  {id:'void1',icon:'🌑',cat:'collect',name:'ผู้เชี่ยวชาญโมฆะ', desc:'ปลดล็อกป้อมมนตราโมฆะที่เวิร์กชอป'},
+  {id:'cdx_m',icon:'📖',cat:'collect',name:'นักวิชาการ',    desc:'พบ Monster ทุกตัวใน Codex',      reward:80},
+  {id:'cdx_t',icon:'🏗️',cat:'collect',name:'สถาปนิก',       desc:'ปลดล็อก Tower ทุกแบบ',           reward:100},
+  {id:'gem1k',icon:'💎',cat:'collect',name:'นักสะสมมณีวิญญาณ',desc:'สะสม Soul Gems รวม 1,000',     reward:50},
+  {id:'void1',icon:'🌑',cat:'collect',name:'ผู้เชี่ยวชาญโมฆะ', desc:'ปลดล็อกป้อมมนตราโมฆะที่เวิร์กชอป',reward:100},
 ];
 const ACH_CATS={story:'📜 เนื้อเรื่อง',combat:'⚔️ การต่อสู้',skill:'🎯 ทักษะ',endgame:'🔥 Endgame',collect:'📚 สะสม'};
 
@@ -323,7 +323,7 @@ function _showNextAchNotif(){
   const el=document.getElementById('achNotif');
   document.getElementById('achNotifIco').textContent=ach.icon;
   document.getElementById('achNotifName').textContent=ach.name;
-  document.getElementById('achNotifDesc').textContent=ach.desc;
+  document.getElementById('achNotifDesc').textContent=ach.desc+(ach.reward?'  💎 +'+ach.reward:'');
   el.className='cat-'+ach.cat; // 🎖️ รีเซ็ตคลาสกรอบเรืองแสงตามหมวดของ achievement นี้
   el.classList.add('show');
   setTimeout(()=>{
@@ -337,6 +337,7 @@ function unlockAchievement(id){
   const ach=ACHIEVEMENTS.find(a=>a.id===id);
   if(!ach) return;
   _saveAch(id);
+  if(ach.reward>0) addGems(ach.reward);
   _achQueue.push(ach);
   _showNextAchNotif();
   _updateAchBadge();

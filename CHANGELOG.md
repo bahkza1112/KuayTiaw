@@ -2,6 +2,23 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.8.8 — Achievement gem rewards + Wave Preview in Story mode
+
+### Added
+- **Achievement gem rewards**: every ACHIEVEMENTS entry now has a `reward` field (20–200 💎
+  depending on difficulty). `unlockAchievement()` calls `addGems(ach.reward)` on first unlock.
+  Achievement notification now shows the gem reward alongside the description.
+- **Wave Preview — Story mode**: `showWavePreview()` is now called after each story wave ends
+  (waveBtn re-enabled). Shows a rough simulation of next wave enemy composition.
+- **Wave Preview — Endgame**: same `showWavePreview()` call wired after each Endgame wave end.
+  Preview hides automatically when the player clicks Start Wave (both modes).
+
+### Changed
+- `showWavePreview()` updated to be mode-aware: uses `_getEgEnemyPool()` + Endgame boss chance
+  when `isEndgame=true`, otherwise uses `currentStage.enemyTypes` + per-stage `bossChance`.
+- `hideWavePreview()` now called at start of both `startWave()` and `startEgWave()` to ensure
+  clean state.
+
 ## v3.8.4 — Stage 7 boss removal
 
 ### Changed

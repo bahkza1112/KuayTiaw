@@ -596,6 +596,7 @@ function toggleBgm(){
 /* ══ WAVE ══ */
 function startWave(){
   if(!G||G.waveActive||G.over||G.win||paused) return;
+  hideWavePreview();
   G.wave++;
   document.getElementById('waveTxt').textContent=G.wave;
   document.getElementById('waveBtn').disabled=true;
@@ -1209,6 +1210,7 @@ function update(dt){
     showToast('🎉 คลื่นที่ '+G.wave+' ผ่านแล้ว! +'+bonus+' ทอง');
     if(G.wave>=currentStage.waves){endGame(true);return;}
     document.getElementById('waveBtn').disabled=false;
+    showWavePreview();
     if(autoWave) setTimeout(()=>{ if(G&&!G.over&&!G.win&&!G.waveActive) startWave(); },1200);
   }
 }
@@ -1979,15 +1981,22 @@ function render(){
 function showWavePreview(){
   if(!G||G.waveActive||G.over||G.win) return;
   const nextWave=G.wave+1;
-  const avail=currentStage.enemyTypes;
+  let avail,bChance;
+  if(typeof isEndgame!=='undefined'&&isEndgame){
+    avail=_getEgEnemyPool();
+    bChance=0.08+(typeof egRound!=='undefined'?egRound:.0)*.015;
+  } else {
+    avail=currentStage.enemyTypes;
+    bChance=currentStage.bossChance!==undefined?currentStage.bossChance:CFG.bossChance;
+  }
   // simulate what enemies will spawn
   const count=CFG.enemyPerWaveBase+nextWave*CFG.enemyPerWaveInc;
   const tally={};
   for(let i=0;i<count;i++){
     const maxIdx=Math.min(avail.length-1,Math.ceil(nextWave/2)-1);
     let ei=avail[Math.floor(Math.random()*(maxIdx+1))];
-    if(avail.includes(4)&&nextWave>=4&&Math.random()<CFG.bossChance) ei=4;
-    if(avail.includes(9)&&nextWave>=9&&Math.random()<CFG.bossChance*.8) ei=9;
+    if(avail.includes(4)&&nextWave>=4&&Math.random()<bChance) ei=4;
+    if(avail.includes(9)&&nextWave>=9&&Math.random()<bChance*.8) ei=9;
     tally[ei]=(tally[ei]||0)+1;
   }
   let html='';
@@ -2353,6 +2362,7 @@ function spawnEgEnemy(ti){
 
 function startEgWave(){
   if(!G||G.waveActive||G.over||paused) return;
+  hideWavePreview();
   G.wave++;
   document.getElementById('waveTxt').textContent=G.wave;
   document.getElementById('waveBtn').disabled=true;
@@ -2679,6 +2689,7 @@ function updateEg(dt){
     addParticle(COLS*CS/2,ROWS*CS/2,'🎉 +'+bonus+' ทอง','#ffe234');
     showToast(msg);
     document.getElementById('waveBtn').disabled=false;
+    showWavePreview();
     if(autoWave) setTimeout(()=>{if(G&&!G.over&&!G.waveActive)startEgWave();},1200);
   }
 }
