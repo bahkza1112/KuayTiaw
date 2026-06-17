@@ -412,7 +412,8 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .ts-card-name{font-size:11px;color:#fff;font-weight:700;}
 .ts-card-cost{font-size:9px;color:#ffe082;margin-top:2px;}
 .ts-card-desc{font-size:8px;color:#9e9e9e;margin-top:4px;line-height:1.4;}
-.ts-card-badge{position:absolute;top:4px;right:4px;font-size:8px;padding:1px 5px;border-radius:6px;font-weight:700;}
+.ts-card-badges{position:absolute;top:4px;right:4px;display:flex;flex-direction:column;gap:2px;align-items:flex-end;}
+.ts-card-badge{font-size:8px;padding:1px 5px;border-radius:6px;font-weight:700;}
 .badge-air{background:rgba(33,150,243,.3);color:#90caf9;border:1px solid rgba(33,150,243,.4);}
 .badge-gold{background:rgba(255,193,7,.2);color:#ffe082;border:1px solid rgba(255,193,7,.3);}
 .badge-trap{background:rgba(156,39,176,.2);color:#ce93d8;border:1px solid rgba(156,39,176,.3);}

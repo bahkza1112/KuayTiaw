@@ -1,6 +1,9 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.8.4';
+const GAME_VERSION='3.8.5';
 const PATCH_NOTES=[
+  {ver:'3.8.5',date:'2026-06-17',title:'🔧 แก้ badge ทับกันในหน้าเลือกป้อม',notes:[
+    'แก้ badge Air และ Chain ที่ทับซ้อนกันในการ์ดป้อมสายฟ้า — ตอนนี้เรียงแนวตั้งไม่ทับกัน',
+  ]},
   {ver:'3.8.4',date:'2026-06-17',title:'⚖️ ด่าน 7 ไม่มีบอสสุ่ม',notes:[
     'ด่าน 7 Dark Fortress นำบอสสุ่มออก — ชิลด์ไนท์และวิเวิร์นคือภัยคุกคามหลัก ไม่ต้องการบอสมาขัดจังหวะ',
   ]},
@@ -1366,7 +1369,7 @@ function renderTowerSelection(available){
     if(TGOLDMINE[ti]) badges.push('<span class="ts-card-badge badge-gold">💰 Gold</span>');
     if(TCHAIN[ti]) badges.push('<span class="ts-card-badge badge-air">⚡ Chain</span>');
     grid+=`<div class="ts-card${isSel?' selected':''}" onclick="toggleTowerSelection(${ti})">
-      ${badges.join('')}
+      ${badges.length?`<div class="ts-card-badges">${badges.join('')}</div>`:''}
       <div class="ts-card-ico">${TICONS[ti]}</div>
       <div class="ts-card-name">${TNAMES[ti]}</div>
       <div class="ts-card-cost">💰${CFG.t_cost[ti]}</div>
