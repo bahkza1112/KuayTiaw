@@ -2,6 +2,12 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.8.4 — Stage 7 boss removal
+
+### Changed
+- **Stage 7 (Dark Fortress)**: `bossChance` 0.10 → 0. Shield Knight + Wyvern are the
+  designed threats; random boss spawns dilute the mechanic and create unfair difficulty spikes.
+
 ## v3.8.3 — Tower selection card descriptions
 
 ### Changed
