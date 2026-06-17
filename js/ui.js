@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.8.2';
+const GAME_VERSION='3.8.3';
 const PATCH_NOTES=[
+  {ver:'3.8.3',date:'2026-06-17',title:'📋 หน้าเลือกป้อม: เพิ่มคำอธิบายสั้นในการ์ด',notes:[
+    'การ์ดป้อมในหน้าเลือกตอนนี้แสดงจุดเด่นสั้นๆ ใต้ราคา เช่น "Splash กว้างที่สุด · ดาเมจสูง"',
+    'ช่วยผู้เล่นใหม่เข้าใจบทบาทของป้อมแต่ละแบบก่อนตัดสินใจเลือก',
+  ]},
   {ver:'3.8.2',date:'2026-06-17',title:'⚖️ ปรับความยาก ด่าน 8 Dark Throne',notes:[
     'ลบโอกาสบอสออกจากด่าน 8 — หมอผีคือภัยคุกคามหลัก ไม่ควรมีบอสขัดจังหวะ',
     'เพิ่มช่องวางป้อมจาก 5 → 6 ตัว ให้ผู้เล่นมีตัวเลือกมากขึ้นในการจัดการหมอผี',
@@ -1363,6 +1367,7 @@ function renderTowerSelection(available){
       <div class="ts-card-ico">${TICONS[ti]}</div>
       <div class="ts-card-name">${TNAMES[ti]}</div>
       <div class="ts-card-cost">💰${CFG.t_cost[ti]}</div>
+      <div class="ts-card-desc">${TSTRENGTH[ti].join(' · ')}</div>
     </div>`;
   });
   document.getElementById('tsGrid').innerHTML=grid;

@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.8.3 — Tower selection card descriptions
+
+### Changed
+- Tower selection screen: each card now shows a short strength summary below the cost,
+  sourced from `TSTRENGTH[ti].join(' · ')` (e.g. "Splash กว้างที่สุด · ดาเมจสูง").
+  CSS: `.ts-card-desc` added to `css/main.css`.
+
 ## v3.8.2 — Stage 8 difficulty adjustment
 
 ### Changed
