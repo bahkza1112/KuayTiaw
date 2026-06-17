@@ -8,6 +8,16 @@ All notable changes to Tower Quest 🏰 will be documented in this file.
 - **Stage 7 (Dark Fortress)**: `bossChance` 0.10 → 0. Shield Knight + Wyvern are the
   designed threats; random boss spawns dilute the mechanic and create unfair difficulty spikes.
 
+## v3.8.6 — Tower long-press info modal
+
+### Added
+- Long-press (500ms hold) on any tower card in the selection screen opens a full-detail
+  modal showing: base stats (dmg/range/rate/cost), special ability (`TSPECIAL`), Awaken
+  effect (`TAWAKEN_DESC`), and strengths/weaknesses (`TSTRENGTH`/`TWEAKNESS`).
+- New `TAWAKEN_DESC[9]` array in `js/tower.js` — one-line awaken description per tower.
+- `_showTsInfo(ti)` + `_closeTsInfo()` functions in `js/ui.js`.
+- `.tsim-*` CSS classes in `css/main.css` for the modal overlay.
+
 ## v3.8.3 — Tower selection card descriptions
 
 ### Changed

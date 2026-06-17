@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.8.5';
+const GAME_VERSION='3.8.6';
 const PATCH_NOTES=[
+  {ver:'3.8.6',date:'2026-06-18',title:'📖 กดค้างที่การ์ดป้อมเพื่อดูข้อมูลเต็ม',notes:[
+    'กดค้าง (0.5 วินาที) ที่การ์ดป้อมในหน้าเลือกเพื่อดูรายละเอียดเต็ม',
+    'แสดง: ดาเมจ / ระยะ / อัตรายิง / ราคา + ความสามารถพิเศษ + เอฟเฟค Awaken + จุดแข็ง/จุดอ่อน',
+  ]},
   {ver:'3.8.5',date:'2026-06-17',title:'🔧 แก้ badge ทับกันในหน้าเลือกป้อม',notes:[
     'แก้ badge Air และ Chain ที่ทับซ้อนกันในการ์ดป้อมสายฟ้า — ตอนนี้เรียงแนวตั้งไม่ทับกัน',
   ]},
@@ -1378,7 +1382,38 @@ function renderTowerSelection(available){
   });
   document.getElementById('tsGrid').innerHTML=grid;
   document.getElementById('tsStartBtn').disabled=selectedTowersForStage.length===0;
+  // long-press to show tower info
+  document.querySelectorAll('#tsGrid .ts-card').forEach((card,idx)=>{
+    const ti=available[idx];
+    let _pt=null;
+    const _cancel=()=>{clearTimeout(_pt);_pt=null;};
+    card.addEventListener('touchstart',()=>{_pt=setTimeout(()=>{_showTsInfo(ti);_pt=null;},500);},{passive:true});
+    card.addEventListener('touchend',_cancel);
+    card.addEventListener('touchmove',_cancel);
+    card.addEventListener('mousedown',()=>{_pt=setTimeout(()=>{_showTsInfo(ti);_pt=null;},500);});
+    card.addEventListener('mouseup',_cancel);
+    card.addEventListener('mouseleave',_cancel);
+  });
 }
+function _showTsInfo(ti){
+  const ex=document.getElementById('tsInfoModal'); if(ex) ex.remove();
+  const dmg=CFG.t_dmg[ti];
+  const statsHtml=dmg>0
+    ?`<div class="tsim-stat">⚔️ ดาเมจ <span>${dmg}</span></div><div class="tsim-stat">🎯 ระยะ <span>${CFG.t_rng[ti]} ช่อง</span></div><div class="tsim-stat">⏱️ อัตรา <span>${CFG.t_rate[ti]}/วิ</span></div>`
+    :`<div class="tsim-stat" style="color:#aaa">ไม่โจมตีโดยตรง</div>`;
+  const el=document.createElement('div');
+  el.id='tsInfoModal';
+  el.innerHTML=`<div class="tsim-backdrop" onclick="_closeTsInfo()"></div>
+    <div class="tsim-card">
+      <div class="tsim-header"><span class="tsim-ico">${TICONS[ti]}</span><span class="tsim-name">${TNAMES[ti]}</span><button class="tsim-close" onclick="_closeTsInfo()">✕</button></div>
+      <div class="tsim-stats">${statsHtml}<div class="tsim-stat">💰 ราคา <span>${CFG.t_cost[ti]}</span></div></div>
+      <div class="tsim-section"><div class="tsim-label">💡 ความสามารถพิเศษ</div><div class="tsim-body">${TSPECIAL[ti]}</div></div>
+      <div class="tsim-section"><div class="tsim-label">⚡ เมื่อ Awaken</div><div class="tsim-body tsim-awaken">${TAWAKEN_DESC[ti]}</div></div>
+      <div class="tsim-row"><div class="tsim-section half"><div class="tsim-label">✅ จุดแข็ง</div><div class="tsim-body">${TSTRENGTH[ti].join('<br>')}</div></div><div class="tsim-section half"><div class="tsim-label">⚠️ จุดอ่อน</div><div class="tsim-body tsim-weak">${TWEAKNESS[ti].join('<br>')}</div></div></div>
+    </div>`;
+  document.body.appendChild(el);
+}
+function _closeTsInfo(){const el=document.getElementById('tsInfoModal');if(el)el.remove();}
 function _tsAvailable(){
   return towerSelMode==='endgame'
     ? [0,1,2,3,4,5,6,7].concat(isVoidUnlocked()?[8]:[])
