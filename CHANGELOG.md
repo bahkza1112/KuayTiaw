@@ -2,6 +2,20 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.7.2 — Dev Console UI overhaul
+
+### Changed
+- Full visual redesign of the Dev panel (`#devpanel` + all `.dev-*` classes
+  in `css/main.css`) — modern dark glass/neon-amber theme: gradient panel with
+  subtle scanlines, glowing logo badge + pulsing cyan status dot in the header,
+  segmented pill tabs with glowing active state, glass section cards, custom
+  range-slider track/thumb, pill value chips, gradient cheat buttons with hover
+  lift, cyan-accent info boxes, custom scrollbar.
+- HTML header restructured (`Tower Quest 🏰.html`): logo badge + title/subtitle
+  stack + `DEV ONLY` chip + icon close button. Tabs container `flex-wrap`
+  removed (now horizontally scrollable). All ids/classes the JS relies on
+  (`dtabN`, `devBody`, `devCloseBtn`, `.dev-*`) preserved — no JS logic changes.
+
 ## v3.7.1 — Bigger single-card number
 
 ### Changed
