@@ -1,6 +1,12 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.6.1';
+const GAME_VERSION='3.6.2';
 const PATCH_NOTES=[
+  {ver:'3.6.2',date:'2026-06-17',title:'🧹 จัดระเบียบเมนูหลัก',notes:[
+    'หน้าเมนูหลักเหลือ 2 ปุ่มโหมดเกม: ⚔️ เนื้อเรื่อง + 🔥 เอนด์เกม — โล่งขึ้น',
+    'ย้าย เวิร์กชอป + ภารกิจประจำวัน ลงแถบล่าง (bottom nav) — ภารกิจมี badge แจ้งเตือนเหมือนเดิม',
+    'แถบล่างใหม่: 📅 ภารกิจ · 🛠️ เวิร์กชอป · 🎁 กาชา · 🎒 กระเป๋า · 📖 สารานุกรม · 🏆 อันดับ',
+    '(เวิร์กชอปยังกดเข้าจากเหรียญทองมุมบนได้เหมือนเดิม)',
+  ]},
   {ver:'3.6.1',date:'2026-06-17',title:'🎰 กาชา: ส่วนลด ×10 + แก้ตารางอัตรา',notes:[
     'สุ่ม ×10 ลดราคาเหลือ 270💎 (เดิม 300💎) — เท่ากับสุ่มฟรี 1 ครั้ง!',
     'แก้ตารางอัตรา: เลข 011–999 ได้ 🔹 เศษสีน้ำเงิน ×1 เป็นรางวัลปลอบใจ (เดิมเขียนว่า "ไม่ได้รางวัล")',
@@ -2079,7 +2085,6 @@ window.goMenu=function(){
 
 /* ══ BUTTON WIRING ══ */
 document.getElementById('startBtn').addEventListener('click',openStageSelect);
-document.getElementById('battleNavBtn').addEventListener('click',openStageSelect);
 document.getElementById('backBtn').addEventListener('click',goStageSelect);
 document.getElementById('pauseBtn').addEventListener('click',()=>{if(!G||G.over||G.win)return;togglePause();});
 document.getElementById('speedBtn').addEventListener('click',function(){
@@ -2114,8 +2119,17 @@ for(let _i=0;_i<9;_i++){
   if(_tb) _tb.addEventListener('pointerdown',(e)=>onTbtnPointerDown(e,_i));
 }
 document.getElementById('devIngameBtn').addEventListener('click',()=>{if(!G||G.over||G.win)return;openDev(false);});
-document.getElementById('devNavBtn').addEventListener('click',()=>openDev(true));
 document.getElementById('devCloseBtn').addEventListener('click',closeDev);
+// 🔧 hidden Dev access: press-and-hold the 🏰 logo ~800ms (Dev tab removed from bottom nav v3.6.2)
+(function(){
+  const logo=document.getElementById('logoIsland'); if(!logo) return;
+  let _t=null;
+  const start=()=>{_t=setTimeout(()=>{_t=null;openDev(true);},800);};
+  const cancel=()=>{if(_t){clearTimeout(_t);_t=null;}};
+  logo.addEventListener('pointerdown',start);
+  logo.addEventListener('pointerup',cancel);
+  logo.addEventListener('pointerleave',cancel);
+})();
 document.getElementById('codexNavBtn').addEventListener('click',openCodex);
 document.getElementById('codexBackBtn').addEventListener('click',()=>showScreen('mm',true));
 document.getElementById('egMenuBtn').addEventListener('click',openEgMenu);
@@ -2129,9 +2143,9 @@ document.getElementById('tsBackBtn').addEventListener('click',()=>{
   if(towerSelMode==='endgame') showScreen('egmenu',true);
   else openStageSelect();
 });
-document.getElementById('workshopBtn').addEventListener('click',openWorkshop);
+document.getElementById('workshopNavBtn').addEventListener('click',openWorkshop);
 document.getElementById('workshopBackBtn').addEventListener('click',()=>showScreen('mm',true));
-document.getElementById('dailyBtn').addEventListener('click',openDaily);
+document.getElementById('dailyNavBtn').addEventListener('click',openDaily);
 document.getElementById('dailyBackBtn').addEventListener('click',()=>showScreen('mm',true));
 document.getElementById('dailyClaimBtn').addEventListener('click',_claimDailyLoginUI);
 document.getElementById('wsCraftBtn').addEventListener('click',craftVoidTower);

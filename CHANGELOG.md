@@ -2,6 +2,26 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.6.2 — Main menu declutter
+
+### Changed
+- **Center buttons reduced to 2 game modes**: ⚔️ Story + 🔥 Endgame. Removed
+  the Workshop and Daily buttons from the center stack.
+- **Workshop + Daily moved to bottom nav**. New bottom-nav order (6 items):
+  📅 ภารกิจ · 🛠️ เวิร์กชอป · 🎁 กาชา · 🎒 กระเป๋า · 📖 สารานุกรม · 🏆 อันดับ.
+  Daily nav button keeps the claimable badge (`#dailyBadge`, repositioned).
+- **Removed redundant nav items**: the duplicate "เนื้อเรื่อง" home tab
+  (`battleNavBtn`, same action as the big Story button) and the player-facing
+  "Dev" tab (`devNavBtn`).
+- **Dev panel hidden access**: press-and-hold the 🏰 logo (`#logoIsland`) for
+  ~800ms to open the Dev panel. Workshop is still reachable via the top-bar
+  gold counter.
+
+### Wiring
+- `js/ui.js`: removed `battleNavBtn`/`devNavBtn` listeners; rebound
+  `workshopBtn`→`workshopNavBtn`, `dailyBtn`→`dailyNavBtn`; added logo
+  press-hold handler.
+
 ## v3.6.1 — Gacha x10 discount + odds table fix
 
 ### Changed
