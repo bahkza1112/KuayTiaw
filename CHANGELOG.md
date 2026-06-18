@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.8.9 — Fix duplicate gacha odds row
+
+### Fixed
+- Removed the stale static "ไม่ได้รางวัล 90%" dud row in the gacha odds table
+  HTML. After the v3.8.7 rates overhaul the JS (`toggleGachaOdds`) already
+  renders a correct dud row (74.9%) plus per-prize weights, so the static row
+  was both duplicated and wrong. (`Tower Quest 🏰.html`)
+
 ## v3.8.8 — Achievement gem rewards + Wave Preview in Story mode
 
 ### Added
