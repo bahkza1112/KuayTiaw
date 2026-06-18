@@ -2,6 +2,25 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.8.11 — End-of-game stats + Endgame milestone gems
+
+### Added
+- **End-of-game stats block** (`#endStats` in `Tower Quest 🏰.html`,
+  `_renderEndStats()` in `js/game.js`, `.end-stats`/`.es-*` CSS): the end
+  overlay now shows total kills, max combo, total damage, and a per-tower-type
+  **DPS breakdown** (horizontal bars sorted by damage, tinted with each tower's
+  `TACCENT`). Shown in both Story (`endGame`) and Endgame (`showEgResult`).
+- Telemetry to drive it: `G.dmgByType` (damage accumulated per tower type in
+  `applyDmg`, `js/enemy.js`) and `G.battleT` (combat time accumulated while
+  `G.waveActive` in both `update`/`updateEg`). DPS = damage / battle time.
+- **Endgame milestone gems**: clearing wave 10/20/30/… in Endgame now awards a
+  lump of 💎 Soul Gems immediately (`G.egMilestones` guards one payout per
+  wave per run), in addition to the run-end `awardEndgameGems`. Reward
+  `floor(20*(wave/10)*(1+egDiff*0.5))` scales with wave and difficulty.
+
+### Notes
+- New `mkState()` fields: `dmgByType`, `battleT`, `egMilestones`.
+
 ## v3.8.10 — Move towers during the wait phase
 
 ### Added

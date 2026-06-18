@@ -509,6 +509,7 @@ function showEgResult(){
   banner.style.borderColor='#ef5350';
   banner.innerHTML=`<strong>🔥 Round ${egRound+1}</strong> · Difficulty: ${EG_DIFF_NAMES[egDiff]} · <a href="#" onclick="openLeaderboard();return false;" style="color:#ffe082;">ดู Leaderboard →</a>`;
   document.getElementById('nextStageBtn').style.display='none';
+  if(typeof _renderEndStats==='function') _renderEndStats(); // 📊 สถิติจบเกม
   document.getElementById('endOverlay').style.display='flex';
 }
 

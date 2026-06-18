@@ -97,6 +97,8 @@ function applyDmg(e,dmg,towerType,forcePierce){
     if(e._armorPct===undefined) e._armorPct=.24;
     dmg*=(1-e._armorPct);
   }
+  // 📊 สะสมดาเมจต่อชนิดป้อม (สำหรับสถิติ DPS จบเกม)
+  if(towerType!=null&&dmg>0){if(!G.dmgByType)G.dmgByType={};G.dmgByType[towerType]=(G.dmgByType[towerType]||0)+dmg;}
   if(e.shieldHp>0&&!pierce){
     // damage hits shield
     e.shieldHp-=dmg;

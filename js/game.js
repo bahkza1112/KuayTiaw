@@ -191,6 +191,7 @@ function mkState(){
     over:false,win:false,queue:[],spawnT:0,mx:-1,my:-1,
     selTowerInfo:null,gmTimers:{},shakeT:0,hitStopT:0,waveBanner:null,bossWarning:null,
     kills:0,comboN:0,comboT:0,maxCombo:0,dmgBuff:1,
+    dmgByType:{},battleT:0,egMilestones:{}, /* สถิติจบเกม + หมุดหมาย Endgame */
     weather:mkWeatherState()};
 }
 /* ══ WEATHER SYSTEM ══ */
@@ -620,6 +621,29 @@ function startWave(){
   G.waveBanner={text:'⚔️  WAVE  '+G.wave,t:1.5};
 }
 
+/* 📊 สร้างบล็อกสถิติจบเกม: ฆ่า/คอมโบ/ดาเมจรวม + DPS แต่ละชนิดป้อม */
+function _renderEndStats(){
+  const el=document.getElementById('endStats');
+  if(!el||!G){return;}
+  const bt=Math.max(1,G.battleT||0), dbt=G.dmgByType||{};
+  const types=Object.keys(dbt).map(k=>+k).filter(k=>dbt[k]>0).sort((a,b)=>dbt[b]-dbt[a]);
+  const fmt=n=>n>=1000?(n/1000).toFixed(1)+'k':Math.round(n);
+  let rows='';
+  if(types.length){
+    const maxD=dbt[types[0]];
+    rows=types.map(t=>{
+      const dps=Math.round(dbt[t]/bt), pct=Math.max(4,Math.round(dbt[t]/maxD*100));
+      return `<div class="es-row"><span class="es-ico" style="border-color:${TACCENT[t]}">${TICONS[t]}</span>`+
+        `<div class="es-bar-wrap"><div class="es-bar" style="width:${pct}%;background:${TACCENT[t]}"></div></div>`+
+        `<span class="es-dps">${dps}/s</span></div>`;
+    }).join('');
+  }
+  const totalD=types.reduce((s,t)=>s+dbt[t],0);
+  el.innerHTML=
+    `<div class="es-top"><span>💀 ${G.kills||0} ฆ่า</span><span>⚡ คอมโบสูงสุด ×${G.maxCombo||1}</span><span>🗡️ ${fmt(totalD)} ดาเมจ</span></div>`+
+    (rows?`<div class="es-title">⚙️ DPS แต่ละป้อม</div>${rows}`:'');
+  el.style.display='block';
+}
 function endGame(win){
   if(!G) return;
   clearWeather(); // 🌦 stop weather when game ends
@@ -689,6 +713,7 @@ function endGame(win){
   } else { banner.style.display='none'; }
   const hasNext=win&&(si+1<STAGES.length)&&!STAGES[si+1].comingSoon&&isStageUnlocked(si+1);
   document.getElementById('nextStageBtn').style.display=hasNext?'inline-block':'none';
+  _renderEndStats(); // 📊 สถิติจบเกม
   /* ══ FINAL STAGE VICTORY ══ */
   if(win&&currentStage.isFinalStage){
     document.getElementById('endTitle').textContent='👑 ยุติความมืดแล้ว!';
@@ -718,6 +743,7 @@ function _launchFinalVictoryFX(){
 /* ══ UPDATE ══ */
 function update(dt){
   if(!G||G.over||G.win) return;
+  if(G.waveActive) G.battleT=(G.battleT||0)+dt; // เวลาสู้จริง (สำหรับ DPS จบเกม)
   // weather: lightning re-shuffle timer
   if(G.weather&&G.weather.active==='lightning'){
     G.weather.lightningTimer=(G.weather.lightningTimer||0)+dt;
@@ -2411,6 +2437,7 @@ function startEgWave(){
 
 function updateEg(dt){
   if(!G||G.over) return;
+  if(G.waveActive) G.battleT=(G.battleT||0)+dt; // เวลาสู้จริง (สำหรับ DPS จบเกม)
   if(G.waveActive&&G.queue.length>0){
     G.spawnT-=dt;
     if(G.spawnT<=0){spawnEgEnemy(G.queue.shift());G.spawnT=CFG.spawnInterval*.8;}
@@ -2707,6 +2734,17 @@ function updateEg(dt){
     clearWeather(); // 🌦 clear weather when Endgame wave ends
     const bonus=30+G.wave*8+egRound*15; G.gold+=bonus; updateHUD();
     if(typeof questProgress==='function') questProgress('wave',G.wave); // 📅 daily quest: reach wave
+    // 💎 หมุดหมาย Endgame: ทุก 10 เวฟ ได้มณีวิญญาณก้อนใหญ่ (รับครั้งเดียวต่อรัน)
+    if(G.wave>0&&G.wave%10===0){
+      if(!G.egMilestones)G.egMilestones={};
+      if(!G.egMilestones[G.wave]){
+        G.egMilestones[G.wave]=1;
+        const mg=Math.floor(20*(G.wave/10)*(1+egDiff*0.5));
+        addGems(mg);
+        showToast('💎 หมุดหมาย Wave '+G.wave+'! +'+mg+' Soul Gems');
+        addParticle(COLS*CS/2,ROWS*CS/2-30,'💎 +'+mg,'#b388ff');
+      }
+    }
     // heal 1 HP per wave clear
     if(G.hp<G.maxHp){G.hp=Math.min(G.maxHp,G.hp+1);updateHUD();}
     const drops=rollEndgameMaterialDrops();
