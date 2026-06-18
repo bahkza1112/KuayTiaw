@@ -1347,6 +1347,14 @@ function render(){
       ctx.globalAlpha=.8;ctx.strokeStyle=ok?'#81c784':'#ef9a9a';ctx.lineWidth=2;
       ctx.strokeRect(hc*CS+1,hr*CS+1,CS-2,CS-2);
       ctx.globalAlpha=1;
+    }else if(!(hc===_twrDragTw.col&&hr===_twrDragTw.row)){
+      // ช่องว่าง: ฟ้า=ย้ายได้ (รอเวฟ+ไม่ใช่เส้นทาง) / แดง=ย้ายไม่ได้
+      const mok=!G.waveActive&&!currentPset.has(hc+','+hr);
+      ctx.globalAlpha=.3;ctx.fillStyle=mok?'#2196f3':'#f44336';
+      ctx.fillRect(hc*CS,hr*CS,CS,CS);
+      ctx.globalAlpha=.8;ctx.strokeStyle=mok?'#64b5f6':'#ef9a9a';ctx.lineWidth=2;
+      ctx.strokeRect(hc*CS+1,hr*CS+1,CS-2,CS-2);
+      ctx.globalAlpha=1;
     }
   }
   // tower ghost
@@ -2150,7 +2158,7 @@ function onCanvasPointerDown(e){
   const col=Math.floor((e.clientX-rect.left)*cv.width/rect.width/CS);
   const row=Math.floor((e.clientY-rect.top)*cv.height/rect.height/CS);
   const tw=G.towers.find(t=>t.col===col&&t.row===row);
-  if(!tw||tw.awakened||(tw.star||1)>=4) return;
+  if(!tw) return; // ลากเพื่อรวม (ทุกช่วง) หรือย้าย (เฉพาะตอนรอเวฟ) — Awaken/4★ ลากเพื่อย้ายได้
   _twrDragTw=tw; _twrDragging=false;
   _twrDragSX=e.clientX; _twrDragSY=e.clientY;
   document.addEventListener('pointermove',_onTwrDragMove);
@@ -2195,6 +2203,7 @@ function _onTwrDragUp(e){
         const row=Math.floor((e.clientY-rect.top)*cv.height/rect.height/CS);
         const target=G.towers.find(t=>t.col===col&&t.row===row&&t!==_twrDragTw);
         if(target) tryMergeTowers(_twrDragTw,target);
+        else tryMoveTower(_twrDragTw,col,row);
       }
     }
     document.getElementById('dragGhost').style.display='none';
@@ -2223,6 +2232,24 @@ function tryMergeTowers(src,target){
   }
   addParticle(mx,my-CS*.4,'✨ รวมเป็น '+'★'.repeat(newStar)+'!','#ffd54f');
   showToast(`✨ ${TNAMES[target.type]} รวมสำเร็จ! → ${'★'.repeat(newStar)} (รับแต้มสกิลใหม่ ${newStar} แต้ม)`);
+  updateHUD();
+  return true;
+}
+
+/* ย้ายป้อมไปช่องว่าง — เฉพาะช่วงรอเวฟ (ไม่ใช่ระหว่างเวฟ) */
+function tryMoveTower(tw,col,row){
+  if(!G) return false;
+  if(col===tw.col&&row===tw.row) return false;
+  if(G.waveActive){showToast('❌ ย้ายป้อมได้เฉพาะช่วงรอเวฟ!');return false;}
+  if(col<0||col>=COLS||row<0||row>=ROWS) return false;
+  if(currentPset.has(col+','+row)){showToast('❌ วางบนเส้นทางไม่ได้!');return false;}
+  if(G.towers.find(t=>t.col===col&&t.row===row)){showToast('❌ ช่องนี้มีป้อมอยู่แล้ว!');return false;}
+  // ย้าย timer เหมืองทองตามตำแหน่งใหม่ (key ผูกกับ col_row)
+  if(G.gmTimers){const ok2=tw.col+'_'+tw.row;if(G.gmTimers[ok2]!==undefined){G.gmTimers[col+'_'+row]=G.gmTimers[ok2];delete G.gmTimers[ok2];}}
+  tw.col=col; tw.row=row;
+  const nx=col*CS+CS/2, ny=row*CS+CS/2;
+  G.fxRings.push({x:nx,y:ny,r:0,maxR:CS*1.4,life:.8,col:TACCENT[tw.type],lw:2.5});
+  addParticle(nx,ny-CS*.35,'↪️ ย้ายแล้ว','#64b5f6');
   updateHUD();
   return true;
 }

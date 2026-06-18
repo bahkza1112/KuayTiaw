@@ -2,6 +2,26 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.8.10 — Move towers during the wait phase
+
+### Added
+- **Drag-to-move**: dragging a placed tower onto an empty buildable cell now
+  relocates it, but **only while `G.waveActive` is false** (between waves /
+  before the first wave). Awakened and 4★ towers — previously not draggable at
+  all — can now be dragged to *move* (still can't merge). New
+  `tryMoveTower(tw,col,row)` in `js/game.js`, called from the empty-cell branch
+  of `_onTwrDragUp`; rejects path cells, occupied cells, and mid-wave moves
+  with a toast. Gold Mine production timers (`G.gmTimers`, keyed by
+  `col_row`) are re-keyed to the new position so progress isn't lost.
+- Drag highlight extended (`render()`): hovering an empty cell while dragging
+  tints it blue (movable) or red (path / occupied / mid-wave), matching the
+  existing green/red merge highlight.
+
+### Changed
+- `onCanvasPointerDown` no longer early-returns for Awakened/4★ towers, so they
+  can start a drag (for moving); merge eligibility is still gated by
+  `canMergeTowers`/`tryMergeTowers` as before.
+
 ## v3.8.9 — Fix duplicate gacha odds row
 
 ### Fixed
