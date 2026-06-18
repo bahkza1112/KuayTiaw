@@ -476,7 +476,7 @@ function renderAchievTab(){
 }
 
 /* ══ SCREEN MANAGEMENT ══ */
-function hideAll(){['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','whatsnew','towersel','storyscr','workshop','bag','gacha','daily'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const cs=document.getElementById('cutscene');if(cs)cs.style.display='none';}
+function hideAll(){['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','whatsnew','towersel','storyscr','workshop','bag','gacha','skillgacha','daily'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const cs=document.getElementById('cutscene');if(cs)cs.style.display='none';}
 function showScreen(id,flex){
   hideAll();
   const el=document.getElementById(id);
@@ -577,7 +577,7 @@ const RARITY_FX={
   uncommon: {n:10,ring:0,flash:0,rays:0,shake:0,scr:0,big:0,cols:['#90caf9','#bbdefb']},
   common:   {n:6, ring:0,flash:0,rays:0,shake:0,scr:0,big:0,cols:['#90a4ae','#cfd8dc']},
 };
-function _gachaFx(card,rarity){
+function _gachaFx(card,rarity,screenId){
   const fx=RARITY_FX[rarity]||RARITY_FX.common, cols=fx.cols;
   const kill=(el,ms)=>setTimeout(()=>el.remove(),ms);
   // rotating light rays behind the card (epic/legendary)
@@ -614,7 +614,7 @@ function _gachaFx(card,rarity){
   }
   card.appendChild(burst); kill(burst,1000);
   // full-screen flash + shake for the top tier
-  const scr=document.getElementById('gacha');
+  const scr=document.getElementById(screenId||'gacha');
   if(fx.scr&&scr){const sf=document.createElement('div'); sf.className='gacha-screen-flash'; scr.appendChild(sf); kill(sf,550);}
   if(fx.shake&&scr){scr.classList.add('gc-shake'); setTimeout(()=>scr.classList.remove('gc-shake'),450);}
   if(typeof _playSound==='function') _playSound(fx.big?'gacha_big':'gacha_small');
@@ -673,9 +673,103 @@ function toggleGachaOdds(){
       </div>`;
   }
 }
+/* ══ SKILL GACHA (v4.0.0 — Phase 2 UI) ══ */
+let _skResults=[],_skFlipped=[],_skBusy=false;
+function openSkillGacha(){showScreen('skillgacha',true);_renderSkillGachaUI();}
+function _renderSkillGachaUI(){
+  document.getElementById('skillTicketCount').textContent=loadTickets().toLocaleString();
+  document.getElementById('skillGachaPityInfo').textContent=`สะสม ${loadSkillPity()}/${SKILL_PITY} ครั้ง`;
+  document.getElementById('skillPull1').disabled=loadTickets()<skillPullCost(1);
+  document.getElementById('skillPull10').disabled=loadTickets()<skillPullCost(10);
+  if(!_skBusy){
+    document.getElementById('skillGachaGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;color:#444;padding:40px 0;font-size:13px;">กดสุ่มเพื่อเริ่ม ⭐</div>';
+    document.getElementById('skillGachaSkipRow').style.display='none';
+    document.getElementById('skillGachaBtns').style.display='flex';
+  }
+}
+const _SKILL_STAR_LABEL={true:'✨ ปลดล็อกใหม่!'};
+function _skillCardBackHTML(result){
+  const d=result.def, res=result.res;
+  const stars='★'.repeat(res.star)+'☆'.repeat(SKILL_MAX_STAR-res.star);
+  let status;
+  if(res.isNew) status='<span style="color:#69f0ae;">✨ ปลดล็อกใหม่!</span>';
+  else if(res.maxed) status='<span style="color:#ffd54f;">MAX · คืน 🎟️1</span>';
+  else status=`<span style="color:#fff;">★${res.star-1} → ★${res.star}</span>`;
+  return `<div class="gc-ico">${d.icon}</div>
+    <div class="gc-name" style="color:${d.color};">${d.name}</div>
+    <div class="sk-stars">${stars}</div>
+    <div class="gacha-rarity-tag rarity-${d.rarity}">${d.rarity}</div>
+    <div style="font-size:9px;margin-top:3px;">${status}</div>`;
+}
+function startSkillGacha(n){
+  if(_skBusy) return;
+  const results=doSkillPulls(n);
+  if(!results){showToast('🎟️ ตั๋วสกิลไม่พอ!');return;}
+  _skResults=results;
+  _skFlipped=new Array(n).fill(false);
+  _skBusy=true;
+  document.getElementById('skillGachaBtns').style.display='none';
+  document.getElementById('skillTicketCount').textContent=loadTickets().toLocaleString();
+  const grid=document.getElementById('skillGachaGrid');
+  const single=n===1;
+  grid.style.gridTemplateColumns=single?'1fr':'repeat(5,1fr)';
+  grid.innerHTML=results.map((_,i)=>{
+    const big=single?' gc-single':'';
+    return `<div class="gc-wrap${big}">
+      <div class="gc-card" id="skc${i}" onclick="flipSkillCard(${i})">
+        <div class="gc-inner">
+          <div class="gc-front"><span class="gc-qmark">⭐</span></div>
+          <div class="gc-back" id="skb${i}"></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('skillGachaSkipRow').style.display='block';
+}
+function flipSkillCard(i){
+  if(_skFlipped[i]) return;
+  _skFlipped[i]=true;
+  const result=_skResults[i];
+  const back=document.getElementById('skb'+i);
+  const card=document.getElementById('skc'+i);
+  if(!back||!card) return;
+  back.innerHTML=_skillCardBackHTML(result);
+  const rarity=result.def.rarity;
+  back.className=`gc-back rarity-back-${rarity}`;
+  card.classList.add('flipped');
+  setTimeout(()=>_gachaFx(card,rarity,'skillgacha'),300);
+  if(_skFlipped.every(Boolean)) setTimeout(_skillGachaDone,900);
+}
+function skipSkillReveal(){_skResults.forEach((_,i)=>{if(!_skFlipped[i]) flipSkillCard(i);});}
+function _skillGachaDone(){
+  _skBusy=false;_skResults=[];_skFlipped=[];
+  document.getElementById('skillGachaSkipRow').style.display='none';
+  document.getElementById('skillGachaBtns').style.display='flex';
+  document.getElementById('skillPull1').disabled=loadTickets()<skillPullCost(1);
+  document.getElementById('skillPull10').disabled=loadTickets()<skillPullCost(10);
+  document.getElementById('skillTicketCount').textContent=loadTickets().toLocaleString();
+  document.getElementById('skillGachaPityInfo').textContent=`สะสม ${loadSkillPity()}/${SKILL_PITY} ครั้ง`;
+  updateMenuStats();
+}
+function toggleSkillOdds(){
+  const body=document.getElementById('skillOddsBody');
+  const arrow=document.getElementById('skillOddsArrow');
+  if(!body||!arrow) return;
+  const show=body.style.display==='none';
+  body.style.display=show?'':'none';
+  arrow.textContent=show?'▲ ซ่อน':'▼ ดูรายละเอียด';
+  if(show&&!document.getElementById('skillOddsPool').innerHTML){
+    document.getElementById('skillOddsPool').innerHTML=SKILL_DEFS.map(d=>`
+      <div class="gacha-odds-row">
+        <span style="color:${d.color};">${d.icon} ${d.name}</span>
+        <span class="gacha-rarity-tag rarity-${d.rarity}" style="font-size:7px;">${d.rarity}</span>
+        <span style="color:#aaa;">${(d.gw/_SKILL_GW_TOTAL*100).toFixed(0)}%</span>
+      </div>`).join('');
+  }
+}
 function switchBagTab(t){
   _bagTab=t;
-  [0,1,2].forEach(i=>{const b=document.getElementById('bagTab'+i);if(b)b.classList.toggle('active',i===t);});
+  [0,1,2,3].forEach(i=>{const b=document.getElementById('bagTab'+i);if(b)b.classList.toggle('active',i===t);});
   renderBag();
 }
 function renderBag(){
@@ -721,7 +815,7 @@ function renderBag(){
           </button>
         </div>`;
       }).join('');
-  } else {
+  } else if(_bagTab===2){
     // สะสม
     const shards=BAG_ITEM_DEFS.filter(d=>d.type==='shard'&&(bag[d.id]||0)>0);
     if(!shards.length){body.innerHTML='<div class="bag-empty">ยังไม่มีชิ้นส่วนสะสม<br>ได้รับจากกล่องรางวัลหลังจบด่าน</div>';return;}
@@ -737,7 +831,34 @@ function renderBag(){
         </div>
       </div>`;
     }).join('');
+  } else {
+    // ⭐ สกิล — การ์ดกดเอง (เลือกใส่ 1 ใบ/รัน)
+    const askill=loadActiveSkill();
+    body.innerHTML='<div class="bag-hint">เลือกการ์ด 1 ใบเพื่อใช้ในด่านถัดไป (กดสกิลเองตอนเล่นได้เมื่อพร้อม) · ได้การ์ดจากตู้สุ่มสกิล</div>'
+      +SKILL_DEFS.map(d=>{
+        const star=getSkillStar(d.id), owned=star>0, isActive=askill===d.id&&owned;
+        const cur=owned?getSkillStat(d.id,star):null;
+        const nextS=owned&&star<SKILL_MAX_STAR?getSkillStat(d.id,star+1):null;
+        const starStr=owned?('★'.repeat(star)+'☆'.repeat(SKILL_MAX_STAR-star)):'🔒 ยังไม่ปลดล็อก';
+        const cdLine=owned?`Cooldown ${cur.cd}s`+(nextS?` <span style="opacity:.6;">→ ★${star+1}: ${nextS.cd}s</span>`:' (★สูงสุด)'):'';
+        return `<div class="bag-item${isActive?' bag-active':''}${owned?'':' sk-locked'}" style="border-color:${isActive?d.color:'rgba(255,255,255,.1)'};">
+          <div class="bag-ico" style="background:${owned?d.color+'33':'rgba(255,255,255,.04)'};${owned?'':'filter:grayscale(1);opacity:.5;'}">${d.icon}</div>
+          <div class="bag-info">
+            <div class="bag-name" style="color:${owned?d.color:'#777'};">${d.name} <span class="gacha-rarity-tag rarity-${d.rarity}" style="font-size:7px;">${d.rarity}</span></div>
+            <div class="bag-desc">${d.desc}</div>
+            <div class="sk-stars" style="color:${owned?'#ffd54f':'#666'};">${starStr}</div>
+            ${cdLine?`<div class="bag-qty">${cdLine}${isActive?' <span style="color:'+d.color+';font-weight:700;">● จะใช้ในด่านถัดไป</span>':''}</div>`:''}
+          </div>
+          ${owned?`<button class="bag-use-btn" onclick="useSkillCard('${d.id}')"
+            style="border-color:${d.color};color:${isActive?'#111':d.color};background:${isActive?d.color:'transparent'};">
+            ${isActive?'✓ เลือกแล้ว':'เลือกใช้'}</button>`:''}
+        </div>`;
+      }).join('');
   }
+}
+function useSkillCard(id){
+  setActiveSkill(loadActiveSkill()===id?null:id); // toggle
+  renderBag();
 }
 function useBuffItem(id){
   setActiveBuff(loadActiveBuff()===id?'':id); // toggle
@@ -2345,5 +2466,9 @@ document.getElementById('gachaNavBtn').addEventListener('click',openGacha);
 document.getElementById('gachaBackBtn').addEventListener('click',()=>{
   _gachaResults=[];_gachaFlipped=[];_gachaBusy=false;
   showScreen('mm',true);
+});
+document.getElementById('skillGachaBackBtn').addEventListener('click',()=>{
+  _skResults=[];_skFlipped=[];_skBusy=false;
+  openGacha(); // กลับไปหน้ากาชาหลัก
 });
 updateMenuStats();

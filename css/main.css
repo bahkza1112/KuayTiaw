@@ -541,6 +541,11 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .bag-use-btn.active-buff{background:rgba(244,67,54,.15);color:#ef5350;border-color:rgba(244,67,54,.4);}
 .bag-empty{text-align:center;color:#555;font-size:13px;padding:40px 0;}
 .bag-hint{text-align:center;color:#7986cb;font-size:10px;margin-top:6px;font-style:italic;}
+.skill-banner-link{display:block;width:100%;text-align:center;background:linear-gradient(90deg,rgba(126,87,194,.3),rgba(179,136,255,.18));border:1px solid rgba(179,136,255,.45);border-radius:10px;color:#d1c4e9;font-size:12px;font-weight:700;padding:9px;cursor:pointer;transition:filter .15s,transform .15s;}
+.skill-banner-link:hover{filter:brightness(1.2);transform:translateY(-1px);}
+.sk-stars{font-size:12px;letter-spacing:1px;margin-top:2px;}
+.bag-item.sk-locked{opacity:.7;}
+.bag-item.sk-locked .bag-name{color:#777;}
 /* ── GACHA SCREEN ── */
 #gacha{background:linear-gradient(160deg,#120824 0%,#0a0418 55%,#050010 100%);min-height:600px;border-radius:16px;overflow:hidden;position:relative;}
 .gacha-gem-bar{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 14px;font-size:12px;color:#ccc;}

@@ -403,6 +403,7 @@
       <span id="gachaGemCount" style="font-weight:900;color:#80d8ff;"></span>
       <span style="margin-left:auto;font-size:10px;color:#888;">30 💎 ต่อครั้ง</span>
     </div>
+    <button class="skill-banner-link" onclick="openSkillGacha()">⭐ ตู้สุ่มการ์ดสกิล (ใช้ 🎟️ ตั๋วสกิล) →</button>
     <!-- cards grid -->
     <div class="gacha-grid" id="gachaGrid"></div>
     <!-- buttons -->
@@ -427,6 +428,38 @@
     </div>
   </div>
 </div>
+<!-- SKILL GACHA SCREEN -->
+<div id="skillgacha" style="display:none;flex-direction:column;">
+  <div class="eg-hd" style="background:linear-gradient(90deg,#311b92,#0d0524);">
+    <button class="bback" id="skillGachaBackBtn">← กลับ</button>
+    <div class="eg-hd-title">⭐ ตู้สุ่มการ์ดสกิล</div>
+  </div>
+  <div class="eg-body" style="gap:14px;">
+    <div class="gacha-gem-bar" style="background:linear-gradient(90deg,rgba(126,87,194,.25),rgba(49,27,146,.15));">
+      <span>🎟️ ตั๋วสกิล:</span>
+      <span id="skillTicketCount" style="font-weight:900;color:#b388ff;"></span>
+      <span style="margin-left:auto;font-size:10px;color:#888;">1 🎟️ ต่อครั้ง</span>
+    </div>
+    <div class="gacha-grid" id="skillGachaGrid"></div>
+    <div id="skillGachaBtns" style="display:flex;gap:10px;margin-top:4px;">
+      <button class="gacha-pull-btn" id="skillPull1" onclick="startSkillGacha(1)">สุ่ม ×1<br><span style="font-size:10px;font-weight:400;opacity:.8;">1 🎟️</span></button>
+      <button class="gacha-pull-btn gacha-pull10" id="skillPull10" onclick="startSkillGacha(10)">สุ่ม ×10<br><span style="font-size:10px;font-weight:400;opacity:.8;"><span style="text-decoration:line-through;opacity:.5;">10</span> 9 🎟️ <span style="color:#69f0ae;">ลด 1</span></span></button>
+    </div>
+    <div id="skillGachaSkipRow" style="display:none;text-align:center;">
+      <button class="gacha-skip-btn" onclick="skipSkillReveal()">ข้าม →</button>
+    </div>
+    <div style="text-align:center;font-size:10px;color:#555;margin-top:2px;">
+      🔒 ค้ำประกัน Legendary (🛡️ กำแพงวิญญาณ) ทุก 30 ครั้ง — <span id="skillGachaPityInfo"></span>
+    </div>
+    <div class="gacha-odds-toggle" onclick="toggleSkillOdds()">
+      <span>📋 อัตราการออก</span><span id="skillOddsArrow">▼ ดูรายละเอียด</span>
+    </div>
+    <div id="skillOddsBody" style="display:none;">
+      <div id="skillOddsPool"></div>
+      <div style="text-align:center;font-size:9px;color:#666;margin-top:6px;border-top:1px solid rgba(255,255,255,.06);padding-top:6px;">ทุกการสุ่มได้การ์ดเสมอ · ได้ใบซ้ำ = อัพดาว ★ (สูงสุด ★5)</div>
+    </div>
+  </div>
+</div>
 <!-- WORKSHOP -->
 <!-- BAG SCREEN -->
 <div id="bag" style="display:none;flex-direction:column;min-height:100%;">
@@ -438,6 +471,7 @@
     <button class="bag-tab active" id="bagTab0" onclick="switchBagTab(0)">🧱 วัสดุ</button>
     <button class="bag-tab" id="bagTab1" onclick="switchBagTab(1)">🧪 บัฟ</button>
     <button class="bag-tab" id="bagTab2" onclick="switchBagTab(2)">✨ สะสม</button>
+    <button class="bag-tab" id="bagTab3" onclick="switchBagTab(3)">⭐ สกิล</button>
   </div>
   <div class="eg-body" id="bagBody"></div>
 </div>
