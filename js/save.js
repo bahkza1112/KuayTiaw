@@ -115,6 +115,120 @@ function doGachaPulls(n){
   return results;
 }
 
+/* ══ ACTIVE SKILL CARDS (v4.0.0 — Phase 1 backend) ══
+   การ์ดสกิลกดเอง สุ่มจากตู้แยกด้วย "ตั๋วสกิล" (tq_tickets), เก็บถาวรใน tq_skills
+   พร้อมระดับดาว ★1–★5 (ได้ใบซ้ำ = อัพดาว). ใส่ได้ 1 ใบ/รัน (tq_askill).
+   ผลแต่ละสกิลเก็บเป็น tiers[star-1] เพื่อให้ทั้งเกมและ UI อ่านค่าเดียวกัน. */
+const SKILL_MAX_STAR=5;
+const SKILL_DEFS=[
+  {id:'goldrush', icon:'💰', name:'โกลด์รัช',     rarity:'uncommon', color:'#ffd54f', gw:38,
+   desc:'ได้ทองทันที + เพิ่มทองจากการฆ่าชั่วคราว',
+   tiers:[ // {gold:ทองทันที, bonus:+%ทอง/ฆ่า, dur:วินาที, cd:cooldown}
+     {gold:80, bonus:.30, dur:8,  cd:45},
+     {gold:110,bonus:.40, dur:8,  cd:42},
+     {gold:150,bonus:.50, dur:10, cd:38},
+     {gold:200,bonus:.60, dur:10, cd:34},
+     {gold:280,bonus:.80, dur:12, cd:30},
+   ]},
+  {id:'freeze',   icon:'❄️', name:'แช่แข็งสนาม',  rarity:'rare',     color:'#4fc3f7', gw:27,
+   desc:'หยุดศัตรูทั้งสนามชั่วขณะ',
+   tiers:[ // {dur:freeze วินาที, cd}
+     {dur:2.0, cd:40},
+     {dur:2.5, cd:36},
+     {dur:3.0, cd:32},
+     {dur:3.5, cd:28},
+     {dur:4.5, cd:24},
+   ]},
+  {id:'meteor',   icon:'☄️', name:'อุกกาบาต',     rarity:'epic',     color:'#ff7043', gw:16,
+   desc:'ทิ้งอุกกาบาตระเบิด AoE ตรงจุดที่เลือก (ดาเมจตรง ไม่สนเกราะ)',
+   tiers:[ // {dmg, radius:ช่อง, cd}
+     {dmg:250, radius:1.5, cd:35},
+     {dmg:350, radius:1.5, cd:32},
+     {dmg:500, radius:2.0, cd:28},
+     {dmg:700, radius:2.0, cd:24},
+     {dmg:950, radius:2.5, cd:20},
+   ]},
+  {id:'overdrive',icon:'⚡', name:'พลังโจมตี',    rarity:'epic',     color:'#ffca28', gw:14,
+   desc:'ป้อมทุกตัวดาเมจ+อัตรายิงเพิ่มชั่วคราว',
+   tiers:[ // {dmg:+%ดาเมจ, rate:+%ยิง, dur, cd}
+     {dmg:.25, rate:.20, dur:6,  cd:45},
+     {dmg:.30, rate:.25, dur:6,  cd:42},
+     {dmg:.40, rate:.30, dur:8,  cd:38},
+     {dmg:.50, rate:.40, dur:8,  cd:34},
+     {dmg:.65, rate:.50, dur:10, cd:28},
+   ]},
+  {id:'barrier',  icon:'🛡️', name:'กำแพงวิญญาณ',  rarity:'legendary',color:'#b388ff', gw:5,
+   desc:'ฟื้น HP ปราสาท + กันดาเมจเข้าปราสาทชั่วขณะ',
+   tiers:[ // {heal:HP, block:กันดาเมจ วินาที, cd}
+     {heal:3,  block:4,  cd:60},
+     {heal:4,  block:5,  cd:55},
+     {heal:6,  block:6,  cd:50},
+     {heal:8,  block:8,  cd:44},
+     {heal:12, block:10, cd:38},
+   ]},
+];
+function getSkillDef(id){return SKILL_DEFS.find(s=>s.id===id)||null;}
+/* ค่าผลของสกิล id ที่ดาว star (clamp 1–5). คืน object จาก tiers พร้อม cd. */
+function getSkillStat(id,star){
+  const d=getSkillDef(id); if(!d) return null;
+  const s=Math.max(1,Math.min(SKILL_MAX_STAR,star||1));
+  return d.tiers[s-1];
+}
+/* คลังการ์ด: { id:{star} } */
+function loadSkills(){try{return JSON.parse(localStorage.getItem('tq_skills')||'{}');}catch(e){return{};}}
+function saveSkills(o){localStorage.setItem('tq_skills',JSON.stringify(o));}
+function getSkillStar(id){const o=loadSkills();return o[id]?o[id].star:0;} // 0 = ยังไม่มี
+function hasSkill(id){return getSkillStar(id)>0;}
+/* เพิ่มการ์ด: ครั้งแรก ★1, ซ้ำ = ★+1 (สูงสุด 5). คืนสถานะไว้ให้ UI โชว์.
+   ★5 แล้วซ้ำ = overflow → คืนตั๋วคืน 1 ใบ (กันตันรางวัล). */
+function addSkillCard(id){
+  const d=getSkillDef(id); if(!d) return null;
+  const o=loadSkills();
+  if(!o[id]){o[id]={star:1};saveSkills(o);return{id,star:1,isNew:true,maxed:false,refund:0};}
+  if(o[id].star>=SKILL_MAX_STAR){addTickets(1);return{id,star:SKILL_MAX_STAR,isNew:false,maxed:true,refund:1};}
+  o[id].star++;saveSkills(o);return{id,star:o[id].star,isNew:false,maxed:false,refund:0};
+}
+/* ตั๋วสกิล */
+function loadTickets(){try{return Number(localStorage.getItem('tq_tickets'))||0;}catch(e){return 0;}}
+function saveTickets(n){localStorage.setItem('tq_tickets',String(Math.max(0,Math.floor(n))));}
+function addTickets(n){
+  if(n<=0)return;
+  saveTickets(loadTickets()+Math.floor(n));
+  if(typeof updateMenuStats==='function') updateMenuStats();
+}
+/* การ์ดที่ใส่ใช้ในรัน (1 ใบ) */
+function loadActiveSkill(){return localStorage.getItem('tq_askill')||null;}
+function setActiveSkill(id){if(id)localStorage.setItem('tq_askill',id);else localStorage.removeItem('tq_askill');}
+/* ตู้สกิล: ×1=🎟️1, ×10=🎟️9. ทุกหมุนได้การ์ด (ไม่มี dud). Pity 30 → การันตี legendary. */
+const SKILL_PITY=30;
+function skillPullCost(n){return n===10?9:n;}
+function loadSkillPity(){try{return Number(localStorage.getItem('tq_spity'))||0;}catch(e){return 0;}}
+function saveSkillPity(n){localStorage.setItem('tq_spity',String(n));}
+const _SKILL_GW_TOTAL=SKILL_DEFS.reduce((s,d)=>s+d.gw,0); // = 100
+function _skillRoll(){
+  let r=Math.random()*_SKILL_GW_TOTAL, cum=0;
+  for(const d of SKILL_DEFS){cum+=d.gw;if(r<cum)return d;}
+  return SKILL_DEFS[SKILL_DEFS.length-1];
+}
+function doSkillPulls(n){
+  const tix=loadTickets();
+  const cost=skillPullCost(n);
+  if(tix<cost) return null;
+  saveTickets(tix-cost);
+  let pity=loadSkillPity();
+  const results=[];
+  for(let i=0;i<n;i++){
+    pity++;
+    let def=_skillRoll();
+    if(pity>=SKILL_PITY){def=getSkillDef('barrier');pity=0;} // การันตี legendary
+    else if(def.rarity==='legendary'){pity=0;}
+    const res=addSkillCard(def.id); // อัพดาว/ปลดล็อก
+    results.push({def,res});
+  }
+  saveSkillPity(pity);
+  return results;
+}
+
 /* ══ PERSISTENT GOLD ══ */
 const PGOLD_STAR_TABLE=[0,50,75,100]; // ทองถาวรที่ได้จากดาว 0/1★/2★/3★
 function loadPGold(){try{return Number(localStorage.getItem('tq_pgold'))||0;}catch(e){return 0;}}
