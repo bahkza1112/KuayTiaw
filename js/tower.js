@@ -63,7 +63,7 @@ const TAWAKEN_DESC=[
   'Chain เพิ่มอีก 2 ตัว รวมสูงสุด 4 chain ต่อยิง',
   'Void Mark: proc 30%→50%, โบนัสดาเมจ +25%→+40%',
 ];
-const STAR_DMG_BONUS=[0,.15,.3,.5];// โบนัสดาเมจพื้นฐานตาม★ (★1=+0%, ★2=+15%, ★3=+30%, ★4=+50%)
+const STAR_DMG_BONUS=[0,.5,1.1,2.0];// โบนัสดาเมจพื้นฐานตาม★ (★1=+0%, ★2=+50%, ★3=+110%, ★4=+200%)
 function getTowerDmg(t,lv,star){return CFG.t_dmg[t]*(1+STAR_DMG_BONUS[(star||1)-1])*(1+(lv-1)*.25);}
 // 🎯 สไนเปอร์: สายที่ 2 (เดิมระยะ) ถูกเปลี่ยนเป็นคริติคอล — ระยะคงที่ไม่ต้องอัพ
 function getTowerRange(t,lv){return t===3?CFG.t_rng[t]:CFG.t_rng[t]*(1+(lv-1)*.15);}

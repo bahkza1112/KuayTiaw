@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.10.7 — Star damage rebalance + UI overhaul
+
+### Changed
+- **`STAR_DMG_BONUS`** (`js/tower.js`): ★2 +50% / ★3 +110% / ★4 +200% (was +15/30/50%) — star upgrades now feel impactful
+- Skill FAB redesigned as square button (no drag), positioned bottom-left of tower panel
+- Stage select cards now show gem rewards per star (💎10 / 💎20 / 💎30)
+- Renamed materials: เศษแกนเวท→แกนเวทย์, เศษสีม่วง→เศษแกนเวทย์
+- Terrain decorations (trees, rocks, bushes) redrawn with top face + side face for 2.5D look
+- Tower selection grid: 4-column layout, smaller cards, tower art 25% larger with drop-shadow
+- Cache-bust version bumped to `?v=3.10.7` on all `<script src>` and `<link>` tags
+
 ## v3.10.6 — Upgrade All card layout + CD freeze between waves
 
 - Moved Upgrade All button to center slot between tower bar and control buttons
