@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.10.4 — Floating star indicator (no badge box)
+
+### Changed
+- **Star badge** (`js/game.js` render loop): replaced the filled rounded-rect badge
+  (top-left corner of tile) with a no-background text label centered above the tower
+  sprite. Uses `textBaseline:'bottom'` at `y+2`, `shadowBlur:4` for readability.
+  Star chars repeat by count (`'★'.repeat(star)`); color still maps to RARITY_COLORS
+  (★2=blue, ★3=purple, ★4=gold).
+
+---
+
 ## v3.10.3 — Stage 8 balance fix
 
 ### Fixed

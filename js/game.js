@@ -1583,14 +1583,14 @@ function render(){
       ctx.shadowBlur=0;
       ctx.restore();
     }
-    // star badge — ระดับดาวจากการรวมป้อม (สีพื้นตาม Rarity)
+    // star float — ดาวลอยเหนือป้อม ไม่มีกรอบ
     if(tw.star>1){
-      ctx.fillStyle=RARITY_COLORS[tw.star]||'rgba(0,0,0,.75)';
-      ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x+2,y+2,22,13,3);else ctx.rect(x+2,y+2,22,13);
-      ctx.fill();
-      ctx.fillStyle='#fff';ctx.font='bold 9px Arial';
-      ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.fillText('★'+tw.star,x+13,y+9);
+      ctx.save();
+      ctx.font='bold 9px Arial';ctx.textAlign='center';ctx.textBaseline='bottom';
+      ctx.shadowColor='rgba(0,0,0,.9)';ctx.shadowBlur=4;ctx.shadowOffsetY=1;
+      ctx.fillStyle=RARITY_COLORS[tw.star]||'#ffe234';
+      ctx.fillText('★'.repeat(Math.min(tw.star,4)),cx2,y+2);
+      ctx.restore();
     }
     // gold mine timer bar
     if(TGOLDMINE[tw.type]&&G.gmTimers){
