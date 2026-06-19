@@ -557,6 +557,13 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .skill-fab.aiming{animation:skillAim .6s ease-in-out infinite;}
 @keyframes skillReady{0%,100%{border-color:var(--skc,#b388ff);box-shadow:0 0 6px var(--skc,#b388ff),0 4px 14px rgba(0,0,0,.5);}50%{border-color:#fff;box-shadow:0 0 18px var(--skc,#b388ff),0 4px 14px rgba(0,0,0,.5);}}
 @keyframes skillAim{0%,100%{box-shadow:0 0 8px #ff7043;}50%{box-shadow:0 0 24px #ff7043;}}
+/* ⭐ ตารางสเกลสกิลต่อดาว (ในหน้าข้อมูลสกิล) */
+.sktbl{display:flex;flex-direction:column;gap:3px;margin-top:5px;}
+.sktbl-row{display:grid;grid-template-columns:repeat(var(--cols,3),1fr);gap:4px;font-size:11px;text-align:center;padding:3px 4px;border-radius:5px;align-items:center;}
+.sktbl-row>span:first-child{text-align:left;}
+.sktbl-head{font-size:9px;color:#9fa8da;border-bottom:1px solid rgba(255,255,255,.1);border-radius:0;}
+.sktbl-row.cur{background:rgba(179,136,255,.18);border:1px solid rgba(179,136,255,.4);}
+.sktbl-star{color:#ffd54f;font-weight:700;}
 /* ── GACHA SCREEN ── */
 #gacha{background:linear-gradient(160deg,#120824 0%,#0a0418 55%,#050010 100%);min-height:600px;border-radius:16px;overflow:hidden;position:relative;}
 .gacha-gem-bar{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 14px;font-size:12px;color:#ccc;}

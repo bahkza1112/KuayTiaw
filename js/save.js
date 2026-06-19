@@ -162,11 +162,11 @@ const SKILL_DEFS=[
   {id:'barrier',  icon:'🛡️', name:'กำแพงวิญญาณ',  rarity:'legendary',color:'#b388ff', gw:5,
    desc:'ฟื้น HP ปราสาท + กันดาเมจเข้าปราสาทชั่วขณะ',
    tiers:[ // {heal:HP, block:กันดาเมจ วินาที, cd}
-     {heal:3,  block:4,  cd:60},
-     {heal:4,  block:5,  cd:55},
-     {heal:6,  block:6,  cd:50},
-     {heal:8,  block:8,  cd:44},
-     {heal:12, block:10, cd:38},
+     {heal:3,  block:4, cd:60},
+     {heal:4,  block:5, cd:55},
+     {heal:6,  block:6, cd:50},
+     {heal:8,  block:7, cd:44},
+     {heal:12, block:8, cd:38},
    ]},
 ];
 function getSkillDef(id){return SKILL_DEFS.find(s=>s.id===id)||null;}

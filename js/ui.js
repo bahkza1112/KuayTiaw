@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.9.0';
+const GAME_VERSION='3.9.1';
 const PATCH_NOTES=[
+  {ver:'3.9.1',date:'2026-06-19',title:'⭐ หน้าข้อมูลสกิล + ปรับสมดุล',notes:[
+    'เพิ่มหน้าข้อมูลการ์ดสกิล — แตะการ์ดในแท็บ "⭐ สกิล" เพื่อดูตารางสเกลทุกดาว ★1–★5',
+    'ปรับสมดุล 🛡️ กำแพงวิญญาณ: เวลากันดาเมจ ★4 8→7s, ★5 10→8s (ลดภูมิคุ้มกันอัตโนมัติให้พอดี)',
+  ]},
   {ver:'3.9.0',date:'2026-06-19',title:'⭐ การ์ดสกิลกดเอง! (ระบบใหม่)',notes:[
     'ระบบใหม่: การ์ดสกิลกดใช้เองตอนเล่น — มีปุ่มสกิลพร้อม cooldown ในสนาม (ทั้ง Story + Endgame)',
     '5 ใบ: ☄️ อุกกาบาต · ❄️ แช่แข็งสนาม · 💰 โกลด์รัช · ⚡ พลังโจมตี · 🛡️ กำแพงวิญญาณ',
@@ -853,9 +857,9 @@ function renderBag(){
         const starStr=owned?('★'.repeat(star)+'☆'.repeat(SKILL_MAX_STAR-star)):'🔒 ยังไม่ปลดล็อก';
         const cdLine=owned?`Cooldown ${cur.cd}s`+(nextS?` <span style="opacity:.6;">→ ★${star+1}: ${nextS.cd}s</span>`:' (★สูงสุด)'):'';
         return `<div class="bag-item${isActive?' bag-active':''}${owned?'':' sk-locked'}" style="border-color:${isActive?d.color:'rgba(255,255,255,.1)'};">
-          <div class="bag-ico" style="background:${owned?d.color+'33':'rgba(255,255,255,.04)'};${owned?'':'filter:grayscale(1);opacity:.5;'}">${d.icon}</div>
-          <div class="bag-info">
-            <div class="bag-name" style="color:${owned?d.color:'#777'};">${d.name} <span class="gacha-rarity-tag rarity-${d.rarity}" style="font-size:7px;">${d.rarity}</span></div>
+          <div class="bag-ico" style="background:${owned?d.color+'33':'rgba(255,255,255,.04)'};${owned?'':'filter:grayscale(1);opacity:.5;'};cursor:pointer;" onclick="_showSkillInfo('${d.id}')">${d.icon}</div>
+          <div class="bag-info" style="cursor:pointer;" onclick="_showSkillInfo('${d.id}')">
+            <div class="bag-name" style="color:${owned?d.color:'#777'};">${d.name} <span class="gacha-rarity-tag rarity-${d.rarity}" style="font-size:7px;">${d.rarity}</span> <span style="font-size:9px;color:#9fa8da;">ℹ️ ข้อมูล</span></div>
             <div class="bag-desc">${d.desc}</div>
             <div class="sk-stars" style="color:${owned?'#ffd54f':'#666'};">${starStr}</div>
             ${cdLine?`<div class="bag-qty">${cdLine}${isActive?' <span style="color:'+d.color+';font-weight:700;">● จะใช้ในด่านถัดไป</span>':''}</div>`:''}
@@ -1583,6 +1587,37 @@ function _showTsInfo(ti){
   document.body.appendChild(el);
 }
 function _closeTsInfo(){const el=document.getElementById('tsInfoModal');if(el)el.remove();}
+/* ⭐ หน้าข้อมูลการ์ดสกิล — ตารางสเกลต่อดาว ★1–★5 (reuse .tsim-* + .sktbl-*) */
+const _SKILL_INFO={
+  meteor:{head:['ดาว','ดาเมจ','รัศมี','CD'], row:t=>[t.dmg,t.radius+' ช่อง',t.cd+'s']},
+  freeze:{head:['ดาว','หยุด','CD'],          row:t=>[t.dur+'s',t.cd+'s']},
+  goldrush:{head:['ดาว','ทอง','+ทอง/ฆ่า','นาน','CD'], row:t=>['+'+t.gold,'+'+Math.round(t.bonus*100)+'%',t.dur+'s',t.cd+'s']},
+  overdrive:{head:['ดาว','+ดาเมจ','+ยิง','นาน','CD'], row:t=>['+'+Math.round(t.dmg*100)+'%','+'+Math.round(t.rate*100)+'%',t.dur+'s',t.cd+'s']},
+  barrier:{head:['ดาว','ฟื้น HP','กัน','CD'], row:t=>['+'+t.heal,t.block+'s',t.cd+'s']},
+};
+function _showSkillInfo(id){
+  const ex=document.getElementById('skInfoModal'); if(ex) ex.remove();
+  const d=getSkillDef(id), info=_SKILL_INFO[id]; if(!d||!info) return;
+  const star=getSkillStar(id), cols=info.head.length;
+  const head=info.head.map(h=>`<span>${h}</span>`).join('');
+  const rows=d.tiers.map((t,i)=>{
+    const cur=(i+1)===star;
+    return `<div class="sktbl-row${cur?' cur':''}"><span class="sktbl-star">★${i+1}</span>${info.row(t).map(v=>`<span>${v}</span>`).join('')}</div>`;
+  }).join('');
+  const el=document.createElement('div');
+  el.id='skInfoModal';
+  el.innerHTML=`<div class="tsim-backdrop" onclick="_closeSkillInfo()"></div>
+    <div class="tsim-card">
+      <div class="tsim-header"><span class="tsim-ico">${d.icon}</span><span class="tsim-name" style="color:${d.color};">${d.name}</span><button class="tsim-close" onclick="_closeSkillInfo()">✕</button></div>
+      <div class="tsim-section"><div class="tsim-label"><span class="gacha-rarity-tag rarity-${d.rarity}" style="font-size:8px;">${d.rarity}</span> ${star>0?'มีอยู่ ★'+star:'🔒 ยังไม่ปลดล็อก'}</div><div class="tsim-body">${d.desc}</div></div>
+      <div class="tsim-section"><div class="tsim-label">📊 สเกลตามดาว</div>
+        <div class="sktbl" style="--cols:${cols};"><div class="sktbl-row sktbl-head">${head}</div>${rows}</div>
+      </div>
+      <div class="tsim-body" style="font-size:10px;color:#888;margin-top:4px;">ได้ใบซ้ำจากตู้สุ่มสกิล = อัพดาว · ทาเลนต์สาย ⭐ ลด cooldown เพิ่มได้</div>
+    </div>`;
+  document.body.appendChild(el);
+}
+function _closeSkillInfo(){const el=document.getElementById('skInfoModal');if(el)el.remove();}
 function _tsAvailable(){
   return towerSelMode==='endgame'
     ? [0,1,2,3,4,5,6,7].concat(isVoidUnlocked()?[8]:[])

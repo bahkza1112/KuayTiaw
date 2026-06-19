@@ -3,7 +3,7 @@
 This document is a system-by-system map of the game as implemented in
 [`Tower Quest 🏰.html`](Tower%20Quest%20%F0%9F%8F%B0.html) plus its
 `css/main.css` and `js/{save,enemy,tower,game,ui}.js` modules (current
-version **v3.9.0**). Line numbers refer to these files and
+version **v3.9.1**). Line numbers refer to these files and
 may drift as they change — use them as a starting point for searches, not as
 permanent anchors.
 
@@ -387,6 +387,10 @@ There is no server/backend or file-based save.
 | `tq_gems` | Soul Gems currency (v1.12.0) | `loadGems()`/`saveGems()`/`addGems()` (`js/save.js`) |
 | `tq_materials` | Craftable materials `{0,1,2}` = 🪨 เศษหินมืด / 🔘 แกนเวทอสูร / 🌟 ผงดาวตก (v1.12.0) | `loadMaterials()`/`saveMaterials()`/`addMaterial()` (`js/save.js`) |
 | `tq_voidUnlocked` | Whether the Void Tower (index 8) has been crafted/unlocked (v1.12.0) | `isVoidUnlocked()`/`setVoidUnlocked()` (`js/save.js`) |
+| `tq_skills` | Owned active-skill cards `{id:{star}}`, ★1–★5 (v3.9.0) | `loadSkills`/`addSkillCard`/`getSkillStar`/`getSkillStat` (`js/save.js`) |
+| `tq_tickets` | Skill-gacha currency (🎟️ ตั๋วสกิล) (v3.9.0) | `loadTickets`/`addTickets`/`exchangeGemForTicket` (`js/save.js`) |
+| `tq_askill` | Equipped skill card for the next run (1 slot) (v3.9.0) | `loadActiveSkill`/`setActiveSkill` (`js/save.js`) |
+| `tq_spity` | Skill-gacha pity counter (legendary guaranteed at 30) (v3.9.0) | `loadSkillPity`/`saveSkillPity` (`js/save.js`) |
 
 Notes:
 - `isStageUnlocked(si)` (`js/save.js` line 12) gates story progression based
@@ -594,6 +598,33 @@ Notes:
   `MAT_DROP_RATES` (not wave-scaled).
 - Both currencies feed the Workshop (see §6) and ultimately unlock the Void
   Tower.
+
+### Active Skill Cards (v3.9.0)
+- **Player-activated skills** collected from a separate gacha and triggered
+  mid-battle on a cooldown, in both Story and Endgame. Five cards
+  (`SKILL_DEFS`, `js/save.js`), each with ★1–★5 tier stats and a per-type
+  cooldown (20–60s, lowered per star):
+  - ☄️ **อุกกาบาต** (Epic) — tap-to-aim AoE nuke (`_castMeteorAt`, via
+    `onCanvasClick` aim mode; 250→950 dmg, radius 1.5→2.5 cells).
+  - ❄️ **แช่แข็งสนาม** (Rare) — full field freeze 2.0→4.5s (`_castFreeze`).
+  - 💰 **โกลด์รัช** (Uncommon) — instant gold + timed kill-gold buff
+    (`_castGoldrush`; `G.skillGoldMult`/`skillGoldT`, applied in `killEnemy`).
+  - ⚡ **พลังโจมตี** (Epic) — timed tower dmg + fire-rate buff (`_castOverdrive`;
+    `G.skillDmgMult`/`skillRateMult`, applied at the 4 tower fire sites).
+  - 🛡️ **กำแพงวิญญาณ** (Legendary) — heal castle + block leaked damage
+    (`_castBarrier`; `G.skillBlockT`, checked at the 2 reach-end damage sites).
+- **Gacha** (`#skillgacha`, `doSkillPulls`): ×1=🎟️1 / ×10=🎟️9, no dud, pity 30
+  guarantees the legendary; duplicate pulls raise a card's star (★5 overflow
+  refunds a ticket). Collection + equip via the "⭐ สกิล" Bag tab; a per-star
+  stat table is shown by `_showSkillInfo(id)`.
+- **Runtime** (`js/game.js`): `_initRunSkill` (called from `initGame`/
+  `initEgGame`) reads `tq_askill`, applies the ⭐ talent cooldown reduction
+  (`TALENT_TREE` ids 12/13, −10%/−10%) and starts on full cooldown; `_tickSkill`
+  ticks cooldown + buff timers in both update loops; `activateSkill` dispatches
+  the casts; the HUD FAB `#skillBtn` shows a radial cooldown overlay.
+- **Ticket sources**: daily quest claim (+1), login rewards (day 4 +2 / day 7
+  +3), first-time new-star Story clears (+1, `saveProgress`), Endgame milestone
+  waves 15/25/35 (+1, `updateEg`), and a 💎50→🎟️1 exchange.
 
 ---
 

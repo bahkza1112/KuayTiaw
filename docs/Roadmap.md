@@ -14,6 +14,18 @@ completed, or dropped.
 
 ---
 
+## Meta Systems
+
+✅ **Active Skill Cards** (v3.9.0) — gacha-collected, player-activated skills
+(☄️ meteor / ❄️ freeze / 💰 goldrush / ⚡ overdrive / 🛡️ barrier), ★1–★5 via
+duplicate pulls, equipped 1-per-run, HUD cooldown button, separate 🎟️ ticket
+currency + sources, and a ⭐ skill-cooldown talent branch. See
+[`../PROJECT_MASTER.md`](../PROJECT_MASTER.md) §7 → Active Skill Cards.
+Balance note: barrier block trimmed (★4 8→7s, ★5 10→8s) in v3.9.1 to cap
+auto-immunity uptime; overdrive/freeze flagged to monitor with live data.
+
+---
+
 ## Balance (PATCH-level)
 
 ✅ **Cannon DPS nerf** (v1.6.2) — `t_dmg[0]` 28 → 24. Reduced DPS/Cost from

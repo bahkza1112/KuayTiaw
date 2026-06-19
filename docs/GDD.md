@@ -53,6 +53,7 @@ difficulty on a local leaderboard. Unlocked after clearing ≥1 story stage.
 | Synergies | Cross-tower bonuses (dmg/slow/gold) | [TowerDesign.md](TowerDesign.md#synergies) |
 | Weather | Per-stage hazards/modifiers (8 types) | PROJECT_MASTER.md §2 |
 | Runes | 6 equippable modifiers | [TowerDesign.md](TowerDesign.md#runes) |
+| Active Skill Cards | 5 gacha-collected, player-activated skills (★1–★5), 1 equipped per run, cooldown-gated; 🎟️ ticket gacha (v3.9.0) | PROJECT_MASTER.md §7 → Active Skill Cards |
 | Balance config | `DEFAULT_CFG`, dev-panel overridable | [BalanceSheet.md](BalanceSheet.md) |
 
 ## 6. Target Difficulty Feel

@@ -2,6 +2,25 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.9.1 — Skill info page + barrier balance
+
+### Added
+- **Skill info modal** (`_showSkillInfo(id)`/`_closeSkillInfo()` in `js/ui.js`,
+  `.sktbl-*` CSS): tapping a card in the "⭐ สกิล" Bag tab opens a per-star
+  (★1–★5) stat table with type-specific columns, reusing the `.tsim-*` modal
+  frame. Driven from `SKILL_DEFS`, so it always matches the live numbers.
+
+### Changed
+- **Balance — 🛡️ กำแพงวิญญาณ** (`SKILL_DEFS`, `js/save.js`): block duration
+  trimmed ★4 8→7s, ★5 10→8s, lowering top-end auto-immunity uptime (~26%→21% at
+  ★5 / cd 38s). Heal and cooldowns unchanged. Overdrive/freeze left as-is,
+  flagged to monitor with live data (see `docs/Roadmap.md`).
+
+### Docs
+- `PROJECT_MASTER.md` (§5 save table + §7 Active Skill Cards section),
+  `docs/GDD.md` (§5 systems table), `docs/Roadmap.md` (Meta Systems → Done)
+  now document the skill-card system.
+
 ## v3.9.0 — Active Skill Cards (gacha-collected, player-activated)
 
 A new meta-system: collectible skill cards the player activates mid-battle on a
