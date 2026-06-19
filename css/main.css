@@ -264,25 +264,36 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .dev-info-box{background:linear-gradient(180deg,rgba(34,211,238,.08),rgba(34,211,238,.02));border:1px solid rgba(34,211,238,.22);border-left:3px solid #22d3ee;border-radius:10px;padding:11px 12px;font-size:10.5px;color:#b6c2cf;line-height:1.7;}
 .dev-info-box strong{color:#ffd24d;}
 /* ════ TALENT TREE ════ */
-.talent-branch{border:1px solid rgba(255,255,255,.08);border-left:3px solid var(--bc,#ffd54f);border-radius:12px;padding:10px 12px 12px;background:rgba(255,255,255,.025);}
-.talent-head{font-size:13px;font-weight:800;color:var(--bc,#ffd54f);margin-bottom:8px;letter-spacing:.5px;}
-.talent-nodes{display:flex;flex-direction:column;position:relative;padding-left:6px;}
-.talent-nodes::before{content:'';position:absolute;left:18px;top:14px;bottom:14px;width:2px;background:linear-gradient(180deg,var(--bc,#ffd54f),rgba(255,255,255,.06));opacity:.35;}
-.talent-node{display:flex;align-items:center;gap:11px;padding:8px 6px;position:relative;z-index:1;}
-.talent-tier{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;border:2px solid rgba(255,255,255,.15);background:#0e1220;color:rgba(255,255,255,.5);}
-.talent-node.owned .talent-tier{background:var(--bc,#ffd54f);border-color:var(--bc,#ffd54f);color:#1a1000;box-shadow:0 0 12px var(--bc,#ffd54f);}
-.talent-node.buyable .talent-tier{border-color:var(--bc,#ffd54f);color:var(--bc,#ffd54f);box-shadow:0 0 8px rgba(255,213,79,.4);}
+/* ── Talent Tree ── */
+.talent-branch{border:1px solid rgba(255,255,255,.08);border-radius:14px;margin-bottom:10px;overflow:hidden;background:rgba(255,255,255,.025);}
+.talent-head{display:flex;align-items:center;gap:8px;padding:11px 14px;cursor:pointer;user-select:none;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.06);transition:background .15s;}
+.talent-head:hover{background:rgba(255,255,255,.07);}
+.tb-icon{font-size:18px;line-height:1;}
+.tb-name{font-size:13px;font-weight:800;color:var(--bc,#ffd54f);flex:1;letter-spacing:.3px;}
+.tb-prog{font-size:10px;font-weight:700;color:rgba(255,255,255,.4);background:rgba(255,255,255,.07);border-radius:20px;padding:2px 8px;}
+.tb-prog-done{color:#69f0ae;background:rgba(105,240,174,.12);}
+.tb-arr{font-size:20px;color:var(--bc,#ffd54f);line-height:1;transition:transform .2s;opacity:.7;margin-left:2px;}
+.talent-nodes{display:flex;flex-direction:column;position:relative;padding:6px 10px 10px 10px;}
+.talent-nodes::before{content:'';position:absolute;left:30px;top:14px;bottom:14px;width:2px;background:linear-gradient(180deg,var(--bc,#ffd54f),rgba(255,255,255,.04));opacity:.3;border-radius:2px;}
+.talent-node{display:flex;align-items:center;gap:10px;padding:8px 6px;position:relative;z-index:1;border-radius:8px;transition:background .12s;}
+.talent-node+.talent-node{margin-top:2px;}
+.talent-node.buyable{background:rgba(255,255,255,.03);}
+.talent-node.owned{background:rgba(var(--bcr,255,213,79),.06);}
+.talent-tier{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;border:2px solid rgba(255,255,255,.12);background:#0e1220;color:rgba(255,255,255,.35);}
+.talent-node.owned .talent-tier{background:var(--bc,#ffd54f);border-color:var(--bc,#ffd54f);color:#1a1000;box-shadow:0 0 10px var(--bc,#ffd54f);}
+.talent-node.buyable .talent-tier{border-color:var(--bc,#ffd54f);color:var(--bc,#ffd54f);box-shadow:0 0 6px rgba(255,213,79,.3);}
 .talent-info{flex:1;min-width:0;}
 .talent-name{font-size:12px;font-weight:700;color:#e8eef5;line-height:1.25;}
-.talent-node.locked .talent-name,.talent-node.tooexp .talent-name{color:rgba(255,255,255,.5);}
-.talent-desc{font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;line-height:1.35;}
-.talent-act{flex-shrink:0;text-align:center;min-width:62px;}
-.talent-owned{font-size:10px;font-weight:800;color:#69f0ae;}
-.talent-lock{font-size:16px;opacity:.5;}
-.talent-buy{display:inline-flex;flex-direction:column;align-items:center;gap:1px;background:linear-gradient(180deg,#ffd54f,#f9a825);color:#3e2000;border:none;border-radius:9px;padding:6px 12px;font-size:13px;font-weight:900;cursor:pointer;line-height:1.1;transition:all .15s;}
-.talent-buy span{font-size:8px;font-weight:600;opacity:.8;}
-.talent-buy:hover{box-shadow:0 0 14px rgba(255,213,79,.5);transform:translateY(-1px);}
-.talent-buy.dim{background:rgba(255,255,255,.06);color:rgba(255,255,255,.35);cursor:not-allowed;}
+.talent-node.locked .talent-name,.talent-node.tooexp .talent-name{color:rgba(255,255,255,.35);}
+.talent-desc{font-size:10px;color:rgba(255,255,255,.38);margin-top:2px;line-height:1.35;}
+.talent-act{flex-shrink:0;text-align:center;min-width:70px;}
+.talent-owned{font-size:10px;font-weight:800;color:#69f0ae;letter-spacing:.3px;}
+.talent-lock{font-size:15px;opacity:.35;}
+.talent-buy{display:inline-flex;flex-direction:column;align-items:center;gap:0;background:linear-gradient(160deg,#ffe57f,#f9a825);color:#3e2000;border:none;border-radius:10px;padding:5px 11px 6px;cursor:pointer;transition:all .15s;min-width:64px;}
+.tb-gold{font-size:13px;font-weight:900;line-height:1.2;}
+.tb-label{font-size:8px;font-weight:600;opacity:.75;letter-spacing:.2px;}
+.talent-buy:hover{box-shadow:0 0 12px rgba(255,213,79,.5);transform:translateY(-1px);}
+.talent-buy.dim{background:rgba(255,255,255,.06);color:rgba(255,255,255,.25);cursor:not-allowed;}
 .talent-buy.dim:hover{box-shadow:none;transform:none;}
 
 /* ── CUTSCENE ── */

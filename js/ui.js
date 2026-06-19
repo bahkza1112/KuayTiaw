@@ -1024,9 +1024,22 @@ function buyTalent(id,cost,prereqId){
   if(prereqId!=null && !hasPUpgrade(prereqId)){ showToast('🔒 ปลดทาเลนต์ขั้นก่อนหน้าก่อน!'); return; }
   buyPUpgrade(id,cost);
 }
+const _talentOpen={};
+function _toggleTalentBranch(key){
+  _talentOpen[key]=!_talentOpen[key];
+  const el=document.getElementById('tb-nodes-'+key);
+  const arr=document.getElementById('tb-arr-'+key);
+  if(el) el.style.display=_talentOpen[key]?'':'none';
+  if(arr) arr.style.transform=_talentOpen[key]?'rotate(90deg)':'rotate(0deg)';
+}
 function _renderTalentTree(){
   const pg=loadPGold();
   return TALENT_TREE.map(br=>{
+    const ownedCount=br.nodes.filter(nd=>hasPUpgrade(nd.id)).length;
+    const total=br.nodes.length;
+    const allDone=ownedCount===total;
+    const open=_talentOpen[br.key]!==false;// default open
+    _talentOpen[br.key]=open;
     const nodes=br.nodes.map((nd,t)=>{
       const owned=hasPUpgrade(nd.id);
       const prereqId=t>0?br.nodes[t-1].id:null;
@@ -1034,19 +1047,27 @@ function _renderTalentTree(){
       const buyable=!owned&&prereqOk&&pg>=nd.cost;
       const state=owned?'owned':(!prereqOk?'locked':buyable?'buyable':'tooexp');
       const act=owned
-        ?`<span class="talent-owned">ปลดแล้ว</span>`
+        ?`<div class="talent-owned">✓ ปลดแล้ว</div>`
         :(!prereqOk
-          ?`<span class="talent-lock">🔒</span>`
-          :`<button class="talent-buy${buyable?'':' dim'}" ${buyable?`onclick="buyTalent(${nd.id},${nd.cost},${prereqId})"`:'disabled'}>${nd.cost}<span>ทองถาวร</span></button>`);
+          ?`<div class="talent-lock">🔒</div>`
+          :`<button class="talent-buy${buyable?'':' dim'}" ${buyable?`onclick="buyTalent(${nd.id},${nd.cost},${prereqId})"`:'disabled'}><span class="tb-gold">${nd.cost}</span><span class="tb-label">ทองถาวร</span></button>`);
       return `<div class="talent-node ${state}">
         <div class="talent-tier">${owned?'✓':(t+1)}</div>
         <div class="talent-info"><div class="talent-name">${nd.name}</div><div class="talent-desc">${nd.desc}</div></div>
         <div class="talent-act">${act}</div>
       </div>`;
     }).join('');
+    const prog=allDone
+      ?`<span class="tb-prog tb-prog-done">✓ ครบ</span>`
+      :`<span class="tb-prog">${ownedCount}/${total}</span>`;
     return `<div class="talent-branch" style="--bc:${br.color};">
-      <div class="talent-head">${br.icon} ${br.name}</div>
-      <div class="talent-nodes">${nodes}</div>
+      <div class="talent-head" onclick="_toggleTalentBranch('${br.key}')">
+        <span class="tb-icon">${br.icon}</span>
+        <span class="tb-name">${br.name}</span>
+        ${prog}
+        <span class="tb-arr" id="tb-arr-${br.key}" style="transform:rotate(${open?90:0}deg)">›</span>
+      </div>
+      <div class="talent-nodes" id="tb-nodes-${br.key}" style="display:${open?'':'none'};">${nodes}</div>
     </div>`;
   }).join('');
 }
