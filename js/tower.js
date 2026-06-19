@@ -72,7 +72,7 @@ function getTowerRate(t,lv){return CFG.t_rate[t]*(1+(lv-1)*.1);}
 const SNIPER_CRIT_MULT=1.75;
 function getSniperCrit(critLv){return {chance:Math.min(1,((critLv||1)-1)*.1),mult:SNIPER_CRIT_MULT};}
 // 💰 เหมืองทอง: สาย rateLv ลดคูลดาวน์ผลิตทอง -15%/lv (v3.0.1: -10%→-15%), สาย rngLv เพิ่มจำนวนทอง +2/lv
-function getGoldMineInterval(rateLv){return CFG.t_goldrate*(1-((rateLv||1)-1)*.15);}
+function getGoldMineInterval(rateLv){return CFG.t_goldrate*(1-((rateLv||1)-1)*.20);}
 function getGoldMineAmt(rngLv){return CFG.t_goldamt[0]+((rngLv||1)-1)*2;}
 // 💚 ซัพพอร์ต: กันป้อมหยุดทำงานจากสกิลมอน — base ตาม★/Awaken + บวกเพิ่มจากสาย rateLv (+5%/lv)
 const STAR_RESIST=[.2,.4,.6,.8];// ★1-4 → 20/40/60/80% (Awaken = 100%)
