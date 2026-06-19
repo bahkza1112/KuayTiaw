@@ -1588,14 +1588,15 @@ function _towerIconURL(type){
   }catch(e){return '';}
 }
 function renderTowerSelection(available){
-  const max=stageMaxTowers;
-  document.getElementById('tsSlotCount').textContent=selectedTowersForStage.length+'/'+max;
+  const noLim=stageMaxTowers>=99||available.length<=stageMaxTowers;
+  const max=noLim?available.length:stageMaxTowers;
+  document.getElementById('tsSlotCount').textContent=noLim?`${available.length} (ทั้งหมด)`:selectedTowersForStage.length+'/'+max;
   // strip
   let strip='';
   for(let i=0;i<max;i++){
     const ti=selectedTowersForStage[i];
     if(ti!==undefined){
-      strip+=`<div class="ts-slot filled" onclick="removeTowerFromSelection(${i})" title="กดเพื่อเอาออก"><img src="${_towerIconURL(ti)}" style="width:32px;height:32px;image-rendering:pixelated;"></div>`;
+      strip+=`<div class="ts-slot filled" onclick="${noLim?'':('removeTowerFromSelection('+i+')')}" title="${noLim?'เลือกอัตโนมัติ':'กดเพื่อเอาออก'}"><img src="${_towerIconURL(ti)}" style="width:32px;height:32px;image-rendering:auto;"></div>`;
     } else {
       strip+=`<div class="ts-slot"></div>`;
     }
