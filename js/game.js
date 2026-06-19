@@ -933,7 +933,7 @@ function update(dt){
     if(tw._stunT>0){tw._stunT-=dt;return;} // 🐉 ถูกวิเวิร์นโฉบหยุดทำงาน
     if(CFG.t_dmg[tw.type]===0) return;
     if(G.weather&&G.weather.struckTowers&&G.weather.struckTowers.length&&G.weather.struckTowers.includes(tw)) return; // ⚡ struck by lightning
-    tw.cd=Math.max(0,tw.cd-dt);
+    if(G.waveActive) tw.cd=Math.max(0,tw.cd-dt);
     const range=getTowerRange(tw.type,tw.rngLv||tw.lv)*((G&&G.weather&&G.weather.rangeMult)?G.weather.rangeMult:1);
     const cx=tw.col+.5,cy=tw.row+.5;
     let best=null,bestP=-1,shamanInRange=null;
@@ -2710,7 +2710,7 @@ function updateEg(dt){
     if(tw._stunT>0){tw._stunT-=dt;return;} // 🐉 ถูกวิเวิร์นโฉบหยุดทำงาน
     if(CFG.t_dmg[tw.type]===0) return;
     if(G.weather&&G.weather.struckTowers&&G.weather.struckTowers.length&&G.weather.struckTowers.includes(tw)) return;
-    tw.cd=Math.max(0,tw.cd-dt);
+    if(G.waveActive) tw.cd=Math.max(0,tw.cd-dt);
     const range=getTowerRange(tw.type,tw.rngLv||tw.lv)*((G&&G.weather&&G.weather.rangeMult)?G.weather.rangeMult:1);
     const cx=tw.col+.5,cy=tw.row+.5;
     let best=null,bestP=-1,shamanInRange=null;

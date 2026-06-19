@@ -113,10 +113,13 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .bback{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:4px 8px;cursor:pointer;font-size:11px;-webkit-tap-highlight-color:transparent;min-height:34px;display:inline-flex;align-items:center;box-sizing:border-box;}
 .bback:hover{background:rgba(255,255,255,.27);}
 .speedbtn{background:rgba(255,255,255,.1);color:#ffe234;border:1px solid #ffe234;border-radius:8px;padding:3px 8px;cursor:pointer;font-size:11px;font-weight:700;-webkit-tap-highlight-color:transparent;min-width:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;}
-.upall-btn{position:relative;background:rgba(255,226,52,.12);color:#ffe234;border:1px solid rgba(255,226,52,.4);border-radius:8px;padding:3px 8px;cursor:pointer;font-size:11px;font-weight:700;-webkit-tap-highlight-color:transparent;min-width:38px;min-height:34px;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;transition:background .15s,border-color .15s;}
-.upall-btn:not(:disabled):hover{background:rgba(255,226,52,.25);border-color:#ffe234;}
-.upall-btn:disabled{opacity:.35;cursor:not-allowed;}
-.upall-badge{position:absolute;top:-5px;right:-5px;background:#ef5350;color:#fff;font-size:9px;font-weight:900;border-radius:50%;min-width:14px;height:14px;line-height:14px;text-align:center;padding:0 2px;box-shadow:0 0 6px rgba(239,83,80,.7);}
+.upall-card{position:relative;background:rgba(255,226,52,.08);color:#ffe234;border:2px solid rgba(255,226,52,.5);border-radius:10px;padding:5px 8px;cursor:pointer;font-size:10px;font-weight:700;-webkit-tap-highlight-color:transparent;min-width:56px;align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-sizing:border-box;transition:background .15s,border-color .15s,box-shadow .15s;flex-shrink:0;box-shadow:0 0 6px rgba(255,226,52,.15),inset 0 0 8px rgba(255,226,52,.06);}
+.upall-card:not(:disabled):hover{background:rgba(255,226,52,.2);border-color:#ffe234;box-shadow:0 0 12px rgba(255,226,52,.4),inset 0 0 12px rgba(255,226,52,.1);}
+.upall-card:not(:disabled):active{transform:scale(.95);}
+.upall-card:disabled{opacity:.3;cursor:not-allowed;box-shadow:none;}
+.upall-card-icon{font-size:18px;line-height:1;}
+.upall-card-label{font-size:9px;font-weight:700;text-align:center;line-height:1.3;opacity:.9;}
+.upall-badge{position:absolute;top:-6px;right:-6px;background:#ef5350;color:#fff;font-size:9px;font-weight:900;border-radius:50%;min-width:16px;height:16px;line-height:16px;text-align:center;padding:0 2px;box-shadow:0 0 8px rgba(239,83,80,.8);}
 .pausebtn{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:8px;padding:3px 8px;cursor:pointer;font-size:11px;-webkit-tap-highlight-color:transparent;min-width:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;}
 .devbtn{background:rgba(255,100,0,.2);color:#ff9800;border:1px solid #ff9800;border-radius:8px;padding:3px 8px;cursor:pointer;font-size:11px;font-weight:700;-webkit-tap-highlight-color:transparent;min-width:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;}
 /* OVERLAYS — position:relative on #gp makes these work */

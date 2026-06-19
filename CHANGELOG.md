@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.10.6 — Upgrade All card layout + CD freeze between waves
+
+- Moved Upgrade All button to center slot between tower bar and control buttons
+- Restyled as tall card with gold border (`.upall-card`) distinct from tower buttons
+- Tower cooldown (`tw.cd`) now only ticks when `G.waveActive` — freezes between waves
+- Added `?v=3.10.6` cache-busting suffix to all `<script src>` tags in HTML
+
 ## v3.10.5 — Upgrade All button
 
 ### Added
