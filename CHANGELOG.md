@@ -2,6 +2,19 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.10.9 — Buff item panel in tower selection
+
+### Added
+- `.ts-buff-panel` (`#tsBuff`) shown to the right of the selected-tower strip
+- `_renderTsBuff()` (`js/ui.js`): renders owned buff items with canvas icons, click to toggle active buff
+- Called automatically from `renderTowerSelection()` and after `useBuffItem()`
+
+### Fixed
+- Restored missing `return (_skIconCache[id]=c.toDataURL())` after potion canvas branches in `_skillIconURL`
+
+### Changed
+- `.ts-selected-strip` layout changed from block to flex row (tower slots left, buff panel right 200px)
+
 ## v3.10.8 — Canvas potion icons
 
 ### Changed
