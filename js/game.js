@@ -1584,12 +1584,13 @@ function render(){
       ctx.restore();
     }
     // star float — ดาวลอยเหนือป้อม ไม่มีกรอบ
-    if(tw.star>1){
+    {
+      const _st=tw.star||1;
       ctx.save();
       ctx.font='bold 18px Arial';ctx.textAlign='center';ctx.textBaseline='bottom';
       ctx.shadowColor='rgba(0,0,0,.9)';ctx.shadowBlur=4;ctx.shadowOffsetY=1;
-      ctx.fillStyle=RARITY_COLORS[tw.star]||'#ffe234';
-      ctx.fillText('★'.repeat(Math.min(tw.star,4)),cx2,y+2);
+      ctx.fillStyle=RARITY_COLORS[_st]||'#ffe234';
+      ctx.fillText('★'.repeat(Math.min(_st,4)),cx2,y+2);
       ctx.restore();
     }
     // gold mine timer bar
