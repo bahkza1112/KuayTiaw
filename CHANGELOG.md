@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.10.8 — Canvas potion icons
+
+### Changed
+- `_skillIconURL()` (`js/ui.js`): added canvas drawing branches for `gold_pot`, `hp_pot`, `dmg_pot`
+  - gold_pot: glass bottle with golden liquid and coin symbol
+  - hp_pot: red potion with heart
+  - dmg_pot: orange-red potion with sword
+
 ## v3.10.7 — Star damage rebalance + UI overhaul
 
 ### Changed
