@@ -2298,8 +2298,12 @@ function _initRunSkill(){
   const id=(typeof loadActiveSkill==='function')?loadActiveSkill():null;
   const star=id?getSkillStar(id):0;
   G.skillId=(id&&star>0)?id:null;
-  if(G.skillId){const st=getSkillStat(G.skillId,star);G.skillCdMax=st.cd;G.skillCd=st.cd;} // เริ่ม cooldown เต็ม
-  else{G.skillCdMax=0;G.skillCd=0;}
+  if(G.skillId){
+    const st=getSkillStat(G.skillId,star);
+    // 🌳 ทาเลนต์ ⭐ สกิล: ลด cooldown −10%/−10% (id 12,13)
+    const red=(typeof hasPUpgrade==='function')?((hasPUpgrade(12)?.1:0)+(hasPUpgrade(13)?.1:0)):0;
+    G.skillCdMax=st.cd*(1-red); G.skillCd=G.skillCdMax; // เริ่ม cooldown เต็ม
+  } else{G.skillCdMax=0;G.skillCd=0;}
   G.skillDmgMult=1;G.skillRateMult=1;G.skillDmgT=0;G.skillGoldMult=0;G.skillGoldT=0;G.skillBlockT=0;G.skillAiming=false;
   _setupSkillBtn();
 }
@@ -2853,6 +2857,17 @@ function updateEg(dt){
         addGems(mg);
         showToast('💎 หมุดหมาย Wave '+G.wave+'! +'+mg+' Soul Gems');
         addParticle(COLS*CS/2,ROWS*CS/2-30,'💎 +'+mg,'#b388ff');
+      }
+    }
+    // 🎟️ หมุดหมายตั๋วสกิล: เวฟ 15/25/35… (สลับกับหมุดหมายมณี)
+    if(G.wave>=15&&G.wave%10===5){
+      if(!G.egMilestones)G.egMilestones={};
+      const tkey='t'+G.wave;
+      if(!G.egMilestones[tkey]){
+        G.egMilestones[tkey]=1;
+        if(typeof addTickets==='function') addTickets(1);
+        showToast('🎟️ หมุดหมาย Wave '+G.wave+'! +1 ตั๋วสกิล');
+        addParticle(COLS*CS/2,ROWS*CS/2-30,'🎟️ +1','#b388ff');
       }
     }
     // heal 1 HP per wave clear

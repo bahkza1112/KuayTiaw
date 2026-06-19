@@ -1,6 +1,14 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.8.11';
+const GAME_VERSION='3.9.0';
 const PATCH_NOTES=[
+  {ver:'3.9.0',date:'2026-06-19',title:'⭐ การ์ดสกิลกดเอง! (ระบบใหม่)',notes:[
+    'ระบบใหม่: การ์ดสกิลกดใช้เองตอนเล่น — มีปุ่มสกิลพร้อม cooldown ในสนาม (ทั้ง Story + Endgame)',
+    '5 ใบ: ☄️ อุกกาบาต · ❄️ แช่แข็งสนาม · 💰 โกลด์รัช · ⚡ พลังโจมตี · 🛡️ กำแพงวิญญาณ',
+    'สุ่มจาก "ตู้สุ่มการ์ดสกิล" ด้วย 🎟️ ตั๋วสกิล (เข้าจากหน้ากาชา) · ได้ใบซ้ำ = อัพดาว ★ สูงสุด ★5 (แรงขึ้น + cooldown ลด)',
+    'ได้ตั๋วจาก: ภารกิจรายวัน · login · เคลียร์ด่านได้ดาวใหม่ · หมุดหมาย Endgame เวฟ 15/25/35 · แลก 💎50→🎟️1',
+    'เลือกใส่การ์ด 1 ใบก่อนเข้าด่านที่แท็บ "⭐ สกิล" ในกระเป๋า',
+    'ทาเลนต์สายใหม่ ⭐ สกิล: ลด cooldown สกิลสูงสุด −20%',
+  ]},
   {ver:'3.8.11',date:'2026-06-18',title:'📊 สถิติจบเกม + หมุดหมาย Endgame',notes:[
     'หน้าจบเกมโชว์สถิติใหม่: จำนวนศัตรูที่ฆ่า · คอมโบสูงสุด · ดาเมจรวม · DPS แต่ละชนิดป้อม',
     'รู้แล้วว่าป้อมไหนทำงานหนักสุด — ปรับ build รอบหน้าได้แม่นขึ้น',
@@ -519,6 +527,8 @@ function openGacha(){
 function _renderGachaUI(){
   document.getElementById('gachaGemCount').textContent=loadGems().toLocaleString();
   document.getElementById('gachaPityInfo').textContent=`สะสม ${loadGachaPity()}/100 ครั้ง`;
+  const sbl=document.getElementById('skillBannerLink');
+  if(sbl) sbl.textContent=`⭐ ตู้สุ่มการ์ดสกิล · มี 🎟️${loadTickets()} ตั๋ว →`;
   const canAfford1=loadGems()>=GACHA_COST;
   const canAfford10=loadGems()>=gachaCost(10);
   document.getElementById('gachaPull1').disabled=!canAfford1;
@@ -676,6 +686,7 @@ function toggleGachaOdds(){
 /* ══ SKILL GACHA (v4.0.0 — Phase 2 UI) ══ */
 let _skResults=[],_skFlipped=[],_skBusy=false;
 function openSkillGacha(){showScreen('skillgacha',true);_renderSkillGachaUI();}
+function _doExchangeTicket(){if(exchangeGemForTicket())_renderSkillGachaUI();}
 function _renderSkillGachaUI(){
   document.getElementById('skillTicketCount').textContent=loadTickets().toLocaleString();
   document.getElementById('skillGachaPityInfo').textContent=`สะสม ${loadSkillPity()}/${SKILL_PITY} ครั้ง`;
@@ -893,6 +904,10 @@ const TALENT_TREE=[
     {id:7, name:'HP ปราสาท +2', desc:'HP ปราสาทสูงสุด +2 (รวม +10)', cost:850},
     {id:11,name:'HP ปราสาท +2', desc:'HP ปราสาทสูงสุด +2 (รวม +12)', cost:1250},
   ]},
+  {key:'skl',icon:'⭐',name:'สกิล',color:'#b388ff',nodes:[
+    {id:12,name:'คูลดาวน์สกิล −10%', desc:'การ์ดสกิลที่ใส่ คูลดาวน์ลดลง 10%',          cost:600},
+    {id:13,name:'คูลดาวน์สกิล −10%', desc:'การ์ดสกิลที่ใส่ คูลดาวน์ลดลง 10% (รวม −20%)', cost:1000},
+  ]},
 ];
 function buyTalent(id,cost,prereqId){
   if(prereqId!=null && !hasPUpgrade(prereqId)){ showToast('🔒 ปลดทาเลนต์ขั้นก่อนหน้าก่อน!'); return; }
@@ -1071,7 +1086,7 @@ function renderDaily(){
       const barCol=q.claimed?'#9e9e9e':q.done?'#69f0ae':'#42a5f5';
       const btn=q.claimed
         ?`<button disabled style="background:rgba(255,255,255,.06);color:rgba(255,255,255,.3);border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;flex-shrink:0;">✅ รับแล้ว</button>`
-        :`<button onclick="_claimQuestUI('${q.id}')" ${ready?'':'disabled'} style="background:${ready?'linear-gradient(180deg,#43a047,#1b5e20)':'rgba(255,255,255,.06)'};color:${ready?'#fff':'rgba(255,255,255,.3)'};border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;cursor:${ready?'pointer':'not-allowed'};flex-shrink:0;${ready?'box-shadow:0 0 10px rgba(67,160,71,.6);':''}">${q.rwTxt}</button>`;
+        :`<button onclick="_claimQuestUI('${q.id}')" ${ready?'':'disabled'} style="background:${ready?'linear-gradient(180deg,#43a047,#1b5e20)':'rgba(255,255,255,.06)'};color:${ready?'#fff':'rgba(255,255,255,.3)'};border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;cursor:${ready?'pointer':'not-allowed'};flex-shrink:0;${ready?'box-shadow:0 0 10px rgba(67,160,71,.6);':''}">${q.rwTxt} · 🎟️1</button>`;
       return `<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,${ready?'.18':'.07'});border-radius:10px;padding:9px 11px;display:flex;align-items:center;gap:10px;">
         <div style="font-size:20px;flex-shrink:0;">${q.icon}</div>
         <div style="flex:1;min-width:0;">
@@ -1095,7 +1110,7 @@ function _claimDailyLoginUI(){
 function _claimQuestUI(id){
   const q=claimDailyQuest(id);
   if(!q){showToast('❌ ยังทำเควสต์ไม่สำเร็จ');return;}
-  showToast('✅ '+q.icon+' '+q.desc+' สำเร็จ! รับ '+q.rwTxt);
+  showToast('✅ '+q.icon+' '+q.desc+' สำเร็จ! รับ '+q.rwTxt+' · 🎟️1');
   renderDaily(); updateMenuStats();
 }
 function _updateDailyBadge(){

@@ -2,6 +2,45 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.9.0 — Active Skill Cards (gacha-collected, player-activated)
+
+A new meta-system: collectible skill cards the player activates mid-battle on a
+cooldown, in both Story and Endgame. Built across `js/save.js` (data), `js/game.js`
+(runtime), `js/ui.js` (gacha/collection UI), plus HTML/CSS.
+
+### Added
+- **5 skill cards** (`SKILL_DEFS`, `js/save.js`), each with ★1–★5 tier stats:
+  - ☄️ **อุกกาบาต** (Epic) — tap-to-aim AoE nuke (250→950 dmg, radius 1.5→2.5).
+  - ❄️ **แช่แข็งสนาม** (Rare) — full field freeze (2.0→4.5s).
+  - 💰 **โกลด์รัช** (Uncommon) — instant gold + temporary kill-gold buff.
+  - ⚡ **พลังโจมตี** (Epic) — temporary tower damage + fire-rate buff.
+  - 🛡️ **กำแพงวิญญาณ** (Legendary) — heal castle + block leaked damage.
+  - Cooldowns 20–60s, lowered per star.
+- **Storage**: `tq_skills` (id→star, dup pulls raise star, ★5 overflow refunds a
+  ticket), `tq_tickets` currency, `tq_askill` equipped slot. Helpers
+  `addSkillCard`/`getSkillStar`/`getSkillStat`/`loadActiveSkill`/`setActiveSkill`.
+- **Skill gacha** (`#skillgacha` screen, `doSkillPulls`): ×1=🎟️1 / ×10=🎟️9, no
+  dud, pity 30 guarantees the legendary. Card-flip reveal reuses `_gachaFx`
+  (now screen-id-parameterized). Entry via a link on the gem gacha screen.
+- **Collection tab** "⭐ สกิล" (4th Bag tab): shows owned star + current/next
+  cooldown, locked cards greyed, equip toggles `tq_askill` (`useSkillCard`).
+- **In-battle**: floating `#skillBtn` FAB with radial cooldown overlay + star
+  badge. `_initRunSkill` (called from `initGame`/`initEgGame`) reads the equipped
+  card and starts on full cooldown; `_tickSkill` ticks cd + buff timers in both
+  update loops; `activateSkill` dispatches the 5 casts (meteor via
+  `onCanvasClick` aim). Buff hooks: overdrive at the 4 tower fire sites, goldrush
+  in `killEnemy`, barrier at the 2 reach-end damage sites.
+- **Ticket sources**: daily quest claim (+1 each), login rewards (day 4 +2, day 7
+  +3), first-time new-star story clears (+1, `saveProgress`), Endgame milestone
+  waves 15/25/35 (+1, `updateEg`), and 💎50→🎟️1 exchange (`exchangeGemForTicket`).
+- **Talent branch ⭐ สกิล** (`TALENT_TREE`, ids 12/13): −10%/−10% skill cooldown
+  (max −20%), applied in `_initRunSkill` via `hasPUpgrade`.
+
+### Notes
+- New `mkState()` fields: `skillId`, `skillCd`, `skillCdMax`, `skillAiming`,
+  `skillDmgMult`, `skillRateMult`, `skillDmgT`, `skillGoldMult`, `skillGoldT`,
+  `skillBlockT`.
+
 ## v3.8.11 — End-of-game stats + Endgame milestone gems
 
 ### Added

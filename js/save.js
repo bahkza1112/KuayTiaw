@@ -15,9 +15,11 @@ function saveProgress(si,stars){
       const pgGain=PGOLD_STAR_TABLE[stars]-PGOLD_STAR_TABLE[prevStars||0];
       if(gain>0) addGems(gain);
       if(pgGain>0) addPGold(pgGain);
-      if(gain>0&&pgGain>0) showToast('💎 +'+gain+' Soul Gems  🪙 +'+pgGain+' ทองถาวร!');
-      else if(gain>0) showToast('💎 +'+gain+' Soul Gems!');
-      else if(pgGain>0) showToast('🪙 +'+pgGain+' ทองถาวร!');
+      addTickets(1); // 🎟️ สถิติดาวใหม่ครั้งแรก → ตั๋วสกิล +1
+      if(gain>0&&pgGain>0) showToast('💎 +'+gain+'  🪙 +'+pgGain+'  🎟️ +1!');
+      else if(gain>0) showToast('💎 +'+gain+' Soul Gems  🎟️ +1!');
+      else if(pgGain>0) showToast('🪙 +'+pgGain+' ทองถาวร  🎟️ +1!');
+      else showToast('🎟️ +1 ตั๋วสกิล!');
     }
   }
   checkAchievements(); // ตรวจ achievement ทุกครั้งที่ clear ด่าน
@@ -196,6 +198,15 @@ function addTickets(n){
   saveTickets(loadTickets()+Math.floor(n));
   if(typeof updateMenuStats==='function') updateMenuStats();
 }
+const GEM_PER_TICKET=50; // 💎 แลกตั๋วสกิล
+function exchangeGemForTicket(){
+  const g=loadGems();
+  if(g<GEM_PER_TICKET){showToast('💎 มณีไม่พอ (ต้องการ '+GEM_PER_TICKET+')');return false;}
+  saveGems(g-GEM_PER_TICKET); addTickets(1);
+  if(typeof updateMenuStats==='function') updateMenuStats();
+  showToast('🔁 แลก 💎'+GEM_PER_TICKET+' → 🎟️1 สำเร็จ!');
+  return true;
+}
 /* การ์ดที่ใส่ใช้ในรัน (1 ใบ) */
 function loadActiveSkill(){return localStorage.getItem('tq_askill')||null;}
 function setActiveSkill(id){if(id)localStorage.setItem('tq_askill',id);else localStorage.removeItem('tq_askill');}
@@ -304,10 +315,10 @@ const LOGIN_REWARDS=[
   {icon:'💎',label:'40 มณีวิญญาณ',         grant(){addGems(40);}},
   {icon:'🔹',label:'เศษสีน้ำเงิน ×3',      grant(){addBagItem('shard_c',3);}},
   {icon:'🪙',label:'ทองถาวร 60',           grant(){addPGold(60);}},
-  {icon:'💎',label:'80 มณีวิญญาณ',         grant(){addGems(80);}},
+  {icon:'🎟️',label:'80 มณี + ตั๋วสกิล ×2', grant(){addGems(80);addTickets(2);}},
   {icon:'💜',label:'เศษสีม่วง ×2',         grant(){addBagItem('shard_r',2);}},
   {icon:'🎁',label:'120 มณีวิญญาณ',        grant(){addGems(120);}},
-  {icon:'🌟',label:'เศษสีทอง ×2 + 150 มณี', grant(){addBagItem('shard_e',2);addGems(150);}},
+  {icon:'🌟',label:'เศษทอง ×2 + 150 มณี + 🎟️3', grant(){addBagItem('shard_e',2);addGems(150);addTickets(3);}},
 ];
 function loadLogin(){try{return JSON.parse(localStorage.getItem('tq_login')||'{}');}catch(e){return {};}}
 function saveLogin(o){localStorage.setItem('tq_login',JSON.stringify(o));}
@@ -369,6 +380,7 @@ function claimDailyQuest(id){
   if((o._claimed||[]).includes(id)) return false;
   if((o[q.type]||0)<q.goal) return false;
   q.grant();
+  addTickets(1); // 🎟️ ภารกิจรายวันสำเร็จ → ตั๋วสกิล +1
   o._claimed=(o._claimed||[]).concat(id);
   saveQuestProg(o);
   return q;
