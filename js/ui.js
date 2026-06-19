@@ -1057,7 +1057,7 @@ function _renderShardExchange(){
     return `<div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,${canDo?'.15':'.06'});border-radius:10px;padding:8px 10px;">
       <div style="font-size:20px;flex-shrink:0;">${ex.shardIcon}</div>
       <div style="flex:1;min-width:0;">
-        <div style="font-size:11px;font-weight:700;color:${canDo?'#fff':'rgba(255,255,255,.4)'};">${ex.shardIcon}×${ex.cost} → ${MAT_ICONS[ex.matIdx]} ${MAT_NAMES[ex.matIdx]} ×1</div>
+        <div style="font-size:11px;font-weight:700;color:${canDo?'#fff':'rgba(255,255,255,.4)'};">${ex.shardIcon} ${ex.shardName} ×${ex.cost} → ${MAT_ICONS[ex.matIdx]} ${MAT_NAMES[ex.matIdx]} ×1</div>
         <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;">มี ${have} ชิ้น</div>
       </div>
       <button onclick="exchangeShards('${ex.shardId}')" ${canDo?'':'disabled'} style="background:${canDo?'linear-gradient(180deg,#7e57c2,#311b92)':'rgba(255,255,255,.06)'};color:${canDo?'#fff':'rgba(255,255,255,.3)'};border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:${canDo?'pointer':'not-allowed'};">แลก</button>
