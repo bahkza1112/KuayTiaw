@@ -1575,6 +1575,16 @@ function openEgTowerSelection(){
   info.innerHTML=`เลือก <strong>ป้อมสูงสุด ${stageMaxTowers} แบบ</strong> สำหรับ Endgame (${EG_DIFF_NAMES[egDiff]}) — มีป้อมทั้งหมด ${available.length} แบบให้เลือก`;
   renderTowerSelection(available);
 }
+const _twIconCache={};
+function _towerIconURL(type){
+  if(_twIconCache[type]) return _twIconCache[type];
+  const sz=56,c=document.createElement('canvas');
+  c.width=sz;c.height=sz;
+  const ctx=c.getContext('2d');
+  ctx.translate(sz/2,sz/2);
+  drawTowerIcon(ctx,type,sz*.85,0,0);
+  return (_twIconCache[type]=c.toDataURL());
+}
 function renderTowerSelection(available){
   const max=stageMaxTowers;
   document.getElementById('tsSlotCount').textContent=selectedTowersForStage.length+'/'+max;
@@ -1583,7 +1593,7 @@ function renderTowerSelection(available){
   for(let i=0;i<max;i++){
     const ti=selectedTowersForStage[i];
     if(ti!==undefined){
-      strip+=`<div class="ts-slot filled" onclick="removeTowerFromSelection(${i})" title="กดเพื่อเอาออก">${TICONS[ti]}</div>`;
+      strip+=`<div class="ts-slot filled" onclick="removeTowerFromSelection(${i})" title="กดเพื่อเอาออก"><img src="${_towerIconURL(ti)}" style="width:32px;height:32px;image-rendering:pixelated;"></div>`;
     } else {
       strip+=`<div class="ts-slot"></div>`;
     }
@@ -1599,7 +1609,7 @@ function renderTowerSelection(available){
     if(TCHAIN[ti]) badges.push('<span class="ts-card-badge badge-air">⚡ Chain</span>');
     grid+=`<div class="ts-card${isSel?' selected':''}" onclick="toggleTowerSelection(${ti})">
       ${badges.length?`<div class="ts-card-badges">${badges.join('')}</div>`:''}
-      <div class="ts-card-ico">${TICONS[ti]}</div>
+      <div class="ts-card-ico"><img src="${_towerIconURL(ti)}" style="width:52px;height:52px;image-rendering:pixelated;"></div>
       <div class="ts-card-name">${TNAMES[ti]}</div>
       <div class="ts-card-cost">💰${CFG.t_cost[ti]}</div>
       <div class="ts-card-desc">${TSTRENGTH[ti].join(' · ')}</div>
