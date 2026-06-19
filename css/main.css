@@ -424,6 +424,13 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .ts-card-badge{font-size:8px;padding:1px 5px;border-radius:6px;font-weight:700;}
 .badge-air{background:rgba(33,150,243,.3);color:#90caf9;border:1px solid rgba(33,150,243,.4);}
 .badge-gold{background:rgba(255,193,7,.2);color:#ffe082;border:1px solid rgba(255,193,7,.3);}
+/* ── Skill picker (tower select screen) ── */
+.ts-skill-section{margin:0 0 12px;border-top:1px solid rgba(255,255,255,.1);padding-top:10px;}
+.ts-skill-title{font-size:10px;color:#b388ff;font-weight:700;margin-bottom:6px;letter-spacing:.5px;}
+.ts-skill-row{display:flex;flex-wrap:wrap;gap:6px;}
+.ts-skill-chip{font-size:11px;padding:5px 10px;border-radius:20px;border:1.5px solid rgba(255,255,255,.2);color:#aaa;cursor:pointer;transition:all .15s;background:rgba(0,0,0,.3);}
+.ts-skill-chip:active{transform:scale(.95);}
+.ts-skill-chip.sel{border-color:#b388ff;color:#b388ff;background:rgba(179,136,255,.12);font-weight:700;}
 /* ── Tower info modal (long-press) ── */
 #tsInfoModal{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;}
 .tsim-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.7);}

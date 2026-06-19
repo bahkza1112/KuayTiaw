@@ -122,6 +122,7 @@ function doGachaPulls(n){
    พร้อมระดับดาว ★1–★5 (ได้ใบซ้ำ = อัพดาว). ใส่ได้ 1 ใบ/รัน (tq_askill).
    ผลแต่ละสกิลเก็บเป็น tiers[star-1] เพื่อให้ทั้งเกมและ UI อ่านค่าเดียวกัน. */
 const SKILL_MAX_STAR=5;
+const SKILL_SHARD_COST=[2,4,6,10]; // เศษที่ต้องการอัพ: ★1→2 · ★2→3 · ★3→4 · ★4→5
 const SKILL_DEFS=[
   {id:'goldrush', icon:'💰', name:'โกลด์รัช',     rarity:'uncommon', color:'#ffd54f', gw:38,
    desc:'ได้ทองทันที + เพิ่มทองจากการฆ่าชั่วคราว',
@@ -181,15 +182,29 @@ function loadSkills(){try{return JSON.parse(localStorage.getItem('tq_skills')||'
 function saveSkills(o){localStorage.setItem('tq_skills',JSON.stringify(o));}
 function getSkillStar(id){const o=loadSkills();return o[id]?o[id].star:0;} // 0 = ยังไม่มี
 function hasSkill(id){return getSkillStar(id)>0;}
-/* เพิ่มการ์ด: ครั้งแรก ★1, ซ้ำ = ★+1 (สูงสุด 5). คืนสถานะไว้ให้ UI โชว์.
-   ★5 แล้วซ้ำ = overflow → คืนตั๋วคืน 1 ใบ (กันตันรางวัล). */
+function getSkillShards(id){const o=loadSkills();return o[id]?o[id].shards||0:0;}
+/* เพิ่มการ์ด: ครั้งแรก ★1. ใบซ้ำสะสมเป็น "เศษ" (shards).
+   เศษครบ SKILL_SHARD_COST[star-1] → star++. ★5+ซ้ำ = คืนตั๋ว 1 ใบ. */
 function addSkillCard(id){
   const d=getSkillDef(id); if(!d) return null;
   const o=loadSkills();
   let result;
-  if(!o[id]){o[id]={star:1};saveSkills(o);result={id,star:1,isNew:true,maxed:false,refund:0};}
-  else if(o[id].star>=SKILL_MAX_STAR){addTickets(1);result={id,star:SKILL_MAX_STAR,isNew:false,maxed:true,refund:1};}
-  else{o[id].star++;saveSkills(o);result={id,star:o[id].star,isNew:false,maxed:false,refund:0};}
+  if(!o[id]){
+    o[id]={star:1,shards:0};
+    saveSkills(o);
+    result={id,star:1,shards:0,shardsNeeded:SKILL_SHARD_COST[0],isNew:true,maxed:false,refund:0,upgraded:false};
+  } else if(o[id].star>=SKILL_MAX_STAR){
+    addTickets(1);
+    result={id,star:SKILL_MAX_STAR,shards:o[id].shards||0,shardsNeeded:0,isNew:false,maxed:true,refund:1,upgraded:false};
+  } else {
+    o[id].shards=(o[id].shards||0)+1;
+    const needed=SKILL_SHARD_COST[o[id].star-1];
+    let upgraded=false;
+    if(o[id].shards>=needed){o[id].star++;o[id].shards-=needed;upgraded=true;}
+    saveSkills(o);
+    const nextNeeded=o[id].star<SKILL_MAX_STAR?SKILL_SHARD_COST[o[id].star-1]:0;
+    result={id,star:o[id].star,shards:o[id].shards,shardsNeeded:nextNeeded,isNew:false,maxed:false,refund:0,upgraded};
+  }
   // achievement checks
   const s2=loadSkills();
   if(Object.keys(s2).length>=SKILL_DEFS.length) unlockAchievement('sk_all5');

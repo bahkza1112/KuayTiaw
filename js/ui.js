@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.9.4';
+const GAME_VERSION='3.10.0';
 const PATCH_NOTES=[
+  {ver:'3.10.0',date:'2026-06-19',title:'⭐ อัพเกรดการ์ดสกิลด้วยเศษ + เลือกสกิลตอนเลือกป้อม',notes:[
+    'ระบบอัพดาวใหม่: ใบซ้ำสะสมเป็น "เศษ" — ★1→★2 ใช้ 2 เศษ · ★2→★3 ใช้ 4 · ★3→★4 ใช้ 6 · ★4→★5 ใช้ 10',
+    'เลือกการ์ดสกิลที่จะใช้ได้ตอนหน้าเลือกป้อม (ก่อนเข้าด่านทุกครั้ง) ไม่ต้องไปเลือกที่กระเป๋าแล้ว',
+    'แท็บ ⭐ สกิล ในกระเป๋าเปลี่ยนเป็นหน้าดูคอลเลกชัน — แสดงดาว + เศษที่สะสมไว้',
+  ]},
   {ver:'3.9.4',date:'2026-06-19',title:'🃏 ปุ่มสกิลย้ายได้ + Achievement ใหม่',notes:[
     'ปุ่มสกิล FAB ลากย้ายตำแหน่งได้ — จับลากไปวางมุมไหนก็ได้ที่ไม่บัง HUD (จำตำแหน่งไว้)',
     'Achievement ใหม่ 2 ใบ: 🃏 นักสะสมการ์ด (เก็บครบ 5 ใบ) · ⭐ สกิลสูงสุด (อัพใบใดก็ได้ถึง ★5)',
@@ -738,7 +743,8 @@ function _skillCardBackHTML(result){
   let status;
   if(res.isNew) status='<span style="color:#69f0ae;">✨ ปลดล็อกใหม่!</span>';
   else if(res.maxed) status='<span style="color:#ffd54f;">MAX · คืน 🎫1</span>';
-  else status=`<span style="color:#fff;">★${res.star-1} → ★${res.star}</span>`;
+  else if(res.upgraded) status=`<span style="color:#69f0ae;">★${res.star-1} → ★${res.star} ✨</span>`;
+  else status=`<span style="color:#90caf9;">เศษ ${res.shards}/${res.shardsNeeded} → ★${res.star+1}</span>`;
   return `<div class="gc-ico">${d.icon}</div>
     <div class="gc-name" style="color:${d.color};">${d.name}</div>
     <div class="sk-stars">${stars}</div>
@@ -882,25 +888,25 @@ function renderBag(){
     }).join('');
   } else {
     // ⭐ สกิล — การ์ดกดเอง (เลือกใส่ 1 ใบ/รัน)
-    const askill=loadActiveSkill();
-    body.innerHTML='<div class="bag-hint">เลือกการ์ด 1 ใบเพื่อใช้ในด่านถัดไป (กดสกิลเองตอนเล่นได้เมื่อพร้อม) · ได้การ์ดจากตู้สุ่มสกิล</div>'
+    body.innerHTML='<div class="bag-hint">คอลเลกชันการ์ดสกิล · เลือกการ์ดที่จะใช้ในหน้าเลือกป้อม · ได้การ์ดจากตู้สุ่มสกิล</div>'
       +SKILL_DEFS.map(d=>{
-        const star=getSkillStar(d.id), owned=star>0, isActive=askill===d.id&&owned;
+        const star=getSkillStar(d.id), owned=star>0;
+        const shards=owned?getSkillShards(d.id):0;
+        const needed=owned&&star<SKILL_MAX_STAR?SKILL_SHARD_COST[star-1]:0;
         const cur=owned?getSkillStat(d.id,star):null;
         const nextS=owned&&star<SKILL_MAX_STAR?getSkillStat(d.id,star+1):null;
         const starStr=owned?('★'.repeat(star)+'☆'.repeat(SKILL_MAX_STAR-star)):'🔒 ยังไม่ปลดล็อก';
-        const cdLine=owned?`Cooldown ${cur.cd}s`+(nextS?` <span style="opacity:.6;">→ ★${star+1}: ${nextS.cd}s</span>`:' (★สูงสุด)'):'';
-        return `<div class="bag-item${isActive?' bag-active':''}${owned?'':' sk-locked'}" style="border-color:${isActive?d.color:'rgba(255,255,255,.1)'};">
+        const cdLine=owned?`Cooldown ${cur.cd}s`+(nextS?` <span style="opacity:.6;">→ ★${star+1}: ${nextS.cd}s</span>`:' (★MAX)'):'';
+        const shardLine=owned&&star<SKILL_MAX_STAR?`<span style="color:#90caf9;font-size:9px;">เศษ ${shards}/${needed} → ★${star+1}</span>`:
+          owned?'<span style="color:#ffd54f;font-size:9px;">★ MAX</span>':'';
+        return `<div class="bag-item${owned?'':' sk-locked'}" style="border-color:rgba(255,255,255,.1);">
           <div class="bag-ico" style="background:${owned?d.color+'33':'rgba(255,255,255,.04)'};${owned?'':'filter:grayscale(1);opacity:.5;'};cursor:pointer;" onclick="_showSkillInfo('${d.id}')">${d.icon}</div>
           <div class="bag-info" style="cursor:pointer;" onclick="_showSkillInfo('${d.id}')">
             <div class="bag-name" style="color:${owned?d.color:'#777'};">${d.name} <span class="gacha-rarity-tag rarity-${d.rarity}" style="font-size:7px;">${d.rarity}</span> <span style="font-size:9px;color:#9fa8da;">ℹ️ ข้อมูล</span></div>
             <div class="bag-desc">${d.desc}</div>
-            <div class="sk-stars" style="color:${owned?'#ffd54f':'#666'};">${starStr}</div>
-            ${cdLine?`<div class="bag-qty">${cdLine}${isActive?' <span style="color:'+d.color+';font-weight:700;">● จะใช้ในด่านถัดไป</span>':''}</div>`:''}
+            <div class="sk-stars" style="color:${owned?'#ffd54f':'#666'};">${starStr} ${shardLine}</div>
+            ${cdLine?`<div class="bag-qty">${cdLine}</div>`:''}
           </div>
-          ${owned?`<button class="bag-use-btn" onclick="useSkillCard('${d.id}')"
-            style="border-color:${d.color};color:${isActive?'#111':d.color};background:${isActive?d.color:'transparent'};">
-            ${isActive?'✓ เลือกแล้ว':'เลือกใช้'}</button>`:''}
         </div>`;
       }).join('');
   }
@@ -1527,29 +1533,39 @@ function showStoryScreen(si){
 }
 
 /* ══ TOWER SELECTION ══ */
+let _tsAvailable=[];
 function showTowerSelection(si){
   towerSelMode='story';
   const s=STAGES[si];
   const available=s.unlockedTowers||[0,1,2,3,4,5,6];
   stageMaxTowers=s.maxTowers||99;
-  /* ถ้าไม่มี limit หรือป้อมมีน้อยกว่า limit → ข้ามหน้านี้ไปเลย */
-  if(stageMaxTowers>=99||available.length<=stageMaxTowers){
+  const hasSkills=Object.keys(loadSkills()).length>0;
+  setActiveSkill(null); // รีเซ็ต — เลือกใหม่ทุกด่าน
+  /* ถ้าไม่มี limit และไม่มีสกิล → ข้ามหน้าเลือกป้อมไปเลย */
+  if((stageMaxTowers>=99||available.length<=stageMaxTowers)&&!hasSkills){
     selectedTowersForStage=[...available];
     _doStartStage(si);
     return;
   }
-  /* มีป้อมมากกว่า limit → ต้องให้ผู้เล่นเลือก */
   showScreen('towersel',true);
-  const saved=JSON.parse(localStorage.getItem('tq_sel_'+si)||'[]');
-  selectedTowersForStage=saved.filter(t=>available.includes(t)).slice(0,stageMaxTowers);
+  const noLimit=stageMaxTowers>=99||available.length<=stageMaxTowers;
+  if(noLimit){
+    selectedTowersForStage=[...available];
+  } else {
+    const saved=JSON.parse(localStorage.getItem('tq_sel_'+si)||'[]');
+    selectedTowersForStage=saved.filter(t=>available.includes(t)).slice(0,stageMaxTowers);
+  }
   const info=document.getElementById('tsInfo');
-  info.innerHTML=`เลือก <strong>ป้อมสูงสุด ${stageMaxTowers} แบบ</strong> สำหรับด่านนี้ — มีป้อมทั้งหมด ${available.length} แบบให้เลือก`;
+  info.innerHTML=noLimit
+    ?`ป้อมทั้งหมด ${available.length} แบบถูกเลือกอัตโนมัติ · <strong>เลือกสกิลได้ด้านล่าง</strong>`
+    :`เลือก <strong>ป้อมสูงสุด ${stageMaxTowers} แบบ</strong> สำหรับด่านนี้ — มีป้อมทั้งหมด ${available.length} แบบให้เลือก`;
   renderTowerSelection(available);
 }
 function openEgTowerSelection(){
   towerSelMode='endgame';
   stageMaxTowers=[7,6,5][egDiff];
   const available=[0,1,2,3,4,5,6,7].concat(isVoidUnlocked()?[8]:[]);
+  setActiveSkill(null); // รีเซ็ต
   showScreen('towersel',true);
   const saved=JSON.parse(localStorage.getItem('tq_sel_endgame_'+egDiff)||'[]');
   selectedTowersForStage=saved.filter(t=>available.includes(t)).slice(0,stageMaxTowers);
@@ -1558,6 +1574,7 @@ function openEgTowerSelection(){
   renderTowerSelection(available);
 }
 function renderTowerSelection(available){
+  _tsAvailable=available;
   const max=stageMaxTowers;
   document.getElementById('tsSlotCount').textContent=selectedTowersForStage.length+'/'+max;
   // strip
@@ -1589,6 +1606,25 @@ function renderTowerSelection(available){
   });
   document.getElementById('tsGrid').innerHTML=grid;
   document.getElementById('tsStartBtn').disabled=selectedTowersForStage.length===0;
+  // ⭐ Skill picker
+  const skills=loadSkills();
+  const skillPicker=document.getElementById('tsSkillPicker');
+  if(skillPicker){
+    const ownedDefs=SKILL_DEFS.filter(d=>skills[d.id]);
+    if(ownedDefs.length>0){
+      const askill=loadActiveSkill();
+      const noSkillSel=!askill||!skills[askill];
+      let chips=`<div class="ts-skill-chip${noSkillSel?' sel':''}" onclick="tsSelectSkill(null)">✕ ไม่ใช้</div>`;
+      ownedDefs.forEach(d=>{
+        const star=skills[d.id].star;
+        const isSel=askill===d.id;
+        chips+=`<div class="ts-skill-chip${isSel?' sel':''}" onclick="tsSelectSkill('${d.id}')" style="${isSel?'border-color:'+d.color+';color:'+d.color+';':''}">${d.icon} ★${star} ${d.name}</div>`;
+      });
+      skillPicker.innerHTML=`<div class="ts-skill-section"><div class="ts-skill-title">⭐ การ์ดสกิล — เลือก 1 ใบ (หรือไม่ใช้)</div><div class="ts-skill-row">${chips}</div></div>`;
+    } else {
+      skillPicker.innerHTML='';
+    }
+  }
   // long-press to show tower info
   document.querySelectorAll('#tsGrid .ts-card').forEach((card,idx)=>{
     const ti=available[idx];
@@ -1680,6 +1716,10 @@ function removeTowerFromSelection(slotIdx){
   const available=_tsAvailable();
   localStorage.setItem(_tsSaveKey(),JSON.stringify(selectedTowersForStage));
   renderTowerSelection(available);
+}
+function tsSelectSkill(id){
+  setActiveSkill(id);
+  renderTowerSelection(_tsAvailable);
 }
 function confirmTowerSelection(){
   if(selectedTowersForStage.length===0) return;

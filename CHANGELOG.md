@@ -2,6 +2,30 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.10.0 — Skill shard upgrade system + pre-stage skill selection
+
+### Changed
+- **Skill card upgrade system** (`js/save.js`): duplicate cards no longer instantly
+  upgrade the star. Instead they accumulate "shards" (`o[id].shards`). Thresholds
+  (`SKILL_SHARD_COST = [2,4,6,10]`): ★1→★2 needs 2 shards, ★2→★3 needs 4,
+  ★3→★4 needs 6, ★4→★5 needs 10. Added `getSkillShards(id)`. Old save data
+  (missing `shards` field) treated as 0 — backward compatible.
+- **Skill selection moved to tower-select screen** (`js/ui.js`): `showTowerSelection`
+  and `openEgTowerSelection` now call `setActiveSkill(null)` at the start so the
+  player must pick each run. `renderTowerSelection` appends a `#tsSkillPicker` chip
+  row below the tower grid; `tsSelectSkill(id)` handles selection + re-render.
+  `showTowerSelection` now always shows the screen when the player owns any skill
+  card, even for stages with no tower limit (all towers pre-selected, prompt says
+  "เลือกสกิลได้ด้านล่าง"). Added `_tsAvailable` module var to support re-render.
+- **Bag ⭐ tab** (`js/ui.js`): removed equip button; now shows star level + shard
+  progress (`M/N เศษ → ★(next)`) as a read-only collection viewer.
+- Gacha flip result now shows shard progress on dups (`เศษ M/N → ★X`) and
+  highlights star-upgrades separately (`★(old) → ★(new) ✨`).
+
+### Added
+- `css/main.css`: `.ts-skill-section`, `.ts-skill-row`, `.ts-skill-chip`, `.ts-skill-chip.sel`
+- `Tower Quest 🏰.html`: `<div id="tsSkillPicker">` inside `#towersel` body
+
 ## v3.9.4 — Draggable skill FAB + skill achievements
 
 ### Added
