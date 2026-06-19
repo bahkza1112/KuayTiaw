@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.9.2';
+const GAME_VERSION='3.9.3';
 const PATCH_NOTES=[
+  {ver:'3.9.3',date:'2026-06-19',title:'🎰 ปรับอัตราตู้การ์ดสกิล',notes:[
+    'อัตราใหม่: การ์ดละ 1% (รวม 5 ใบ = 5%) · ที่เหลือ 95% = เกลือ',
+    'เกลือได้ 🔹 เศษสีน้ำเงิน ×1 เอาไปแลกของใน Workshop ได้',
+    'ยังการันตี Legendary (🛡️ กำแพงวิญญาณ) เมื่อสุ่มครบ 30 ครั้ง',
+  ]},
   {ver:'3.9.2',date:'2026-06-19',title:'🎫 แก้ตู้กาชาให้ชัดเจนขึ้น',notes:[
     'เพิ่มแท็บสลับ "💎 ตู้รางวัล" / "⭐ ตู้การ์ดสกิล" ที่หัวทั้งสองหน้า — แยกตู้ชัด ไม่งง',
     'แก้ไอคอนตั๋ว 🎫 ที่บางเครื่องขึ้นเป็นกล่องสี่เหลี่ยม',
@@ -718,6 +723,13 @@ function _renderSkillGachaUI(){
 const _SKILL_STAR_LABEL={true:'✨ ปลดล็อกใหม่!'};
 function _skillCardBackHTML(result){
   const d=result.def, res=result.res;
+  if(!d){ // เกลือ — ได้เศษสีน้ำเงินไปแลกของ
+    return `<div class="gc-ico">🔹</div>
+      <div class="gc-name" style="color:#64b5f6;">เศษสีน้ำเงิน</div>
+      <div class="sk-stars" style="color:#666;">ไม่ได้การ์ด</div>
+      <div class="gacha-rarity-tag rarity-common">เกลือ</div>
+      <div style="font-size:9px;margin-top:3px;color:#90caf9;">🔹 ×1 · เอาไปแลกของได้</div>`;
+  }
   const stars='★'.repeat(res.star)+'☆'.repeat(SKILL_MAX_STAR-res.star);
   let status;
   if(res.isNew) status='<span style="color:#69f0ae;">✨ ปลดล็อกใหม่!</span>';
@@ -762,7 +774,7 @@ function flipSkillCard(i){
   const card=document.getElementById('skc'+i);
   if(!back||!card) return;
   back.innerHTML=_skillCardBackHTML(result);
-  const rarity=result.def.rarity;
+  const rarity=result.def?result.def.rarity:'common';
   back.className=`gc-back rarity-back-${rarity}`;
   card.classList.add('flipped');
   setTimeout(()=>_gachaFx(card,rarity,'skillgacha'),300);
@@ -791,8 +803,13 @@ function toggleSkillOdds(){
       <div class="gacha-odds-row">
         <span style="color:${d.color};">${d.icon} ${d.name}</span>
         <span class="gacha-rarity-tag rarity-${d.rarity}" style="font-size:7px;">${d.rarity}</span>
-        <span style="color:#aaa;">${(d.gw/_SKILL_GW_TOTAL*100).toFixed(0)}%</span>
-      </div>`).join('');
+        <span style="color:#aaa;">${SKILL_CARD_RATE}%</span>
+      </div>`).join('')+`
+      <div class="gacha-odds-row">
+        <span style="color:#888;">🔹 เกลือ (เศษสีน้ำเงิน ×1)</span>
+        <span class="gacha-rarity-tag" style="font-size:7px;background:rgba(255,255,255,.08);color:#888;">ปลอบใจ</span>
+        <span style="color:#aaa;">${100-SKILL_DEFS.length*SKILL_CARD_RATE}%</span>
+      </div>`;
   }
 }
 function switchBagTab(t){

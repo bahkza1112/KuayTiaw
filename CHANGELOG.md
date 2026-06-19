@@ -2,6 +2,22 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.9.3 — Skill gacha rate rework (1% cards + 95% dud)
+
+### Changed
+- **Skill gacha odds** (`js/save.js`): replaced the no-dud weighted pool with a
+  flat per-card rate — each of the 5 cards = 1% (5% total), the remaining 95%
+  is a dud ("เกลือ") that awards 🔹 `shard_c` ×1 (exchangeable in the Workshop).
+  `_skillRoll` now returns a card def or `null`; `doSkillPulls` grants the shard
+  on a dud. Legendary pity (30 pulls → 🛡️ barrier) retained as a mercy.
+- Reveal handles duds: `_skillCardBackHTML` renders a 🔹 shard card, `flipSkillCard`
+  null-safe rarity (FX tier `common`). Odds table lists each card at 1% plus a
+  95% dud row; footer text updated.
+
+### Notes
+- Verified distribution over 2000 raw pulls: ~4.7% cards (even across the 5),
+  ~95.3% duds → matching shard grants; 30-pull pity still yields a legendary.
+
 ## v3.9.2 — Gacha clarity + ticket icon fix
 
 ### Changed

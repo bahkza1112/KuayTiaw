@@ -210,16 +210,16 @@ function exchangeGemForTicket(){
 /* การ์ดที่ใส่ใช้ในรัน (1 ใบ) */
 function loadActiveSkill(){return localStorage.getItem('tq_askill')||null;}
 function setActiveSkill(id){if(id)localStorage.setItem('tq_askill',id);else localStorage.removeItem('tq_askill');}
-/* ตู้สกิล: ×1=🎫1, ×10=🎫9. ทุกหมุนได้การ์ด (ไม่มี dud). Pity 30 → การันตี legendary. */
+/* ตู้สกิล: ×1=🎫1, ×10=🎫9. การ์ดละ 1% (5 ใบ=5%), ที่เหลือ 95%=เกลือ (ได้ 🔹 เศษไปแลกของ).
+   Pity 30 → การันตี legendary (กันซวยยาว). */
 const SKILL_PITY=30;
+const SKILL_CARD_RATE=1; // % ต่อการ์ด 1 ใบ
 function skillPullCost(n){return n===10?9:n;}
 function loadSkillPity(){try{return Number(localStorage.getItem('tq_spity'))||0;}catch(e){return 0;}}
 function saveSkillPity(n){localStorage.setItem('tq_spity',String(n));}
-const _SKILL_GW_TOTAL=SKILL_DEFS.reduce((s,d)=>s+d.gw,0); // = 100
-function _skillRoll(){
-  let r=Math.random()*_SKILL_GW_TOTAL, cum=0;
-  for(const d of SKILL_DEFS){cum+=d.gw;if(r<cum)return d;}
-  return SKILL_DEFS[SKILL_DEFS.length-1];
+function _skillRoll(){ // คืน def การ์ด หรือ null (เกลือ)
+  const r=Math.random()*100;
+  return (r<SKILL_DEFS.length*SKILL_CARD_RATE)?SKILL_DEFS[Math.floor(r/SKILL_CARD_RATE)]:null;
 }
 function doSkillPulls(n){
   const tix=loadTickets();
@@ -230,11 +230,17 @@ function doSkillPulls(n){
   const results=[];
   for(let i=0;i<n;i++){
     pity++;
-    let def=_skillRoll();
+    let def;
     if(pity>=SKILL_PITY){def=getSkillDef('barrier');pity=0;} // การันตี legendary
-    else if(def.rarity==='legendary'){pity=0;}
-    const res=addSkillCard(def.id); // อัพดาว/ปลดล็อก
-    results.push({def,res});
+    else def=_skillRoll();
+    if(def){
+      if(def.rarity==='legendary') pity=0;
+      const res=addSkillCard(def.id); // อัพดาว/ปลดล็อก
+      results.push({def,res});
+    } else {
+      addBagItem('shard_c',1); // 🔹 เกลือ → เศษสีน้ำเงิน (เอาไปแลกของใน Workshop)
+      results.push({def:null,res:null});
+    }
   }
   saveSkillPity(pity);
   return results;
