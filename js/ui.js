@@ -1578,7 +1578,7 @@ function openEgTowerSelection(){
 const _twIconCache={};
 function _towerIconURL(type){
   if(_twIconCache[type]) return _twIconCache[type];
-  const sz=120,c=document.createElement('canvas');
+  const sz=240,c=document.createElement('canvas');
   c.width=sz;c.height=sz;
   const ctx=c.getContext('2d');
   ctx.translate(sz/2,sz/2);
