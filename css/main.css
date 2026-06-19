@@ -436,7 +436,7 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .ts-sk-card.sel{background:rgba(var(--sk-col-rgb,179,136,255),.1);box-shadow:0 0 10px rgba(var(--sk-col-rgb,179,136,255),.35);}
 .ts-sk-none{width:56px;border-style:dashed;}
 .ts-sk-ico{font-size:24px;line-height:1;}
-.ts-sk-stars{font-size:7px;letter-spacing:1px;line-height:1;}
+.ts-sk-stars{font-size:11px;letter-spacing:1px;line-height:1;}
 .ts-sk-name{font-size:9px;font-weight:700;line-height:1.2;word-break:break-all;}
 /* ── Tower info modal (long-press) ── */
 #tsInfoModal{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;}
