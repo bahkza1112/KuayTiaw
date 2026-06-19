@@ -2,6 +2,12 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.1 — Collapsible talent tree
+
+### Changed
+- `_renderTalentTree()` (`js/ui.js`): branch headers are collapsible, show progress badge (owned/total)
+- CSS: card layout with rounded corners, hover states, cleaner spacing
+
 ## v3.11.0 — Support tower fixed cost
 
 ### Changed
