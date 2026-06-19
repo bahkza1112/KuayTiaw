@@ -871,7 +871,7 @@ function renderBag(){
         const isNew=newSet.has(d.id);
         return `<div class="bag-item${isActive?' bag-active':''}${isNew?' bag-item-new':''}" style="border-color:${isActive?d.color:isNew?'rgba(239,83,80,.55)':'rgba(255,255,255,.1)'};">
           ${isNew?'<div class="bag-new-dot">ใหม่</div>':''}
-          <div class="bag-ico" style="background:${isActive?d.color+'33':'rgba(255,255,255,.06)'};">${d.icon}</div>
+          <div class="bag-ico" style="background:${isActive?d.color+'33':'rgba(255,255,255,.06)'};" onclick="useBuffItem('${d.id}')"><img src="${_skillIconURL(d.id)}" style="width:100%;height:100%;object-fit:contain;"></div>
           <div class="bag-info">
             <div class="bag-name" style="color:${d.color};">${d.name}</div>
             <div class="bag-desc">${d.desc}</div>
@@ -897,7 +897,7 @@ function renderBag(){
         const shardLine=owned&&star<SKILL_MAX_STAR?`<span style="color:#90caf9;font-size:9px;">ซ้ำ ${shards}/${needed} → ★${star+1}</span>`:
           owned?'<span style="color:#ffd54f;font-size:9px;">★ MAX</span>':'';
         return `<div class="bag-item${owned?'':' sk-locked'}" style="border-color:rgba(255,255,255,.1);">
-          <div class="bag-ico" style="background:${owned?d.color+'33':'rgba(255,255,255,.04)'};${owned?'':'filter:grayscale(1);opacity:.5;'};cursor:pointer;" onclick="_showSkillInfo('${d.id}')">${d.icon}</div>
+          <div class="bag-ico" style="background:${owned?d.color+'33':'rgba(255,255,255,.04)'};${owned?'':'filter:grayscale(1);opacity:.5;'};cursor:pointer;" onclick="_showSkillInfo('${d.id}')"><img src="${_skillIconURL(d.id)}" style="width:100%;height:100%;object-fit:contain;"></div>
           <div class="bag-info" style="cursor:pointer;" onclick="_showSkillInfo('${d.id}')">
             <div class="bag-name" style="color:${owned?d.color:'#777'};">${d.name} <span class="gacha-rarity-tag rarity-${d.rarity}" style="font-size:7px;">${d.rarity}</span> <span style="font-size:9px;color:#9fa8da;">ℹ️ ข้อมูล</span></div>
             <div class="bag-desc">${d.desc}</div>
@@ -1575,6 +1575,121 @@ function openEgTowerSelection(){
   info.innerHTML=`เลือก <strong>ป้อมสูงสุด ${stageMaxTowers} แบบ</strong> สำหรับ Endgame (${EG_DIFF_NAMES[egDiff]}) — มีป้อมทั้งหมด ${available.length} แบบให้เลือก`;
   renderTowerSelection(available);
 }
+const _skIconCache={};
+function _skillIconURL(id){
+  if(_skIconCache[id]) return _skIconCache[id];
+  try{
+    const sz=120,c=document.createElement('canvas');
+    c.width=sz;c.height=sz;
+    const ctx=c.getContext('2d');
+    const h=sz/2;
+    ctx.translate(h,h);
+    if(id==='goldrush'){
+      // shadow coin back
+      [[10,8,'#996600'],[0,0,'#b8860b'],[-8,-10,'#b8860b']].forEach(([x,y,col])=>{
+        ctx.beginPath();ctx.ellipse(x,y,22,22,0,0,Math.PI*2);ctx.fillStyle=col;ctx.fill();
+      });
+      // coin face gradient
+      [[-8,-10],[0,0],[10,8]].forEach(([x,y])=>{
+        const g=ctx.createRadialGradient(x-4,y-4,2,x,y,22);
+        g.addColorStop(0,'#fff9c4');g.addColorStop(0.4,'#ffd700');g.addColorStop(1,'#c8a000');
+        ctx.beginPath();ctx.ellipse(x,y,20,20,0,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+        // rim
+        ctx.beginPath();ctx.ellipse(x,y,20,20,0,0,Math.PI*2);ctx.strokeStyle='#b8860b';ctx.lineWidth=1.5;ctx.stroke();
+        // shine
+        ctx.beginPath();ctx.ellipse(x-6,y-6,5,3,-.5,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.5)';ctx.fill();
+      });
+    } else if(id==='freeze'){
+      const col='#4fc3f7';
+      ctx.shadowColor='#b3e5fc';ctx.shadowBlur=8;
+      for(let i=0;i<6;i++){
+        ctx.save();ctx.rotate(i*Math.PI/3);
+        ctx.strokeStyle=col;ctx.lineWidth=3;ctx.lineCap='round';
+        // main arm
+        ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,-h*.82);ctx.stroke();
+        // branches at 1/3 and 2/3
+        [-1,1].forEach(s=>{
+          [.35,.62].forEach(t=>{
+            const yy=-h*.82*t;
+            ctx.beginPath();ctx.moveTo(0,yy);ctx.lineTo(s*10,yy-9);ctx.stroke();
+          });
+        });
+        ctx.restore();
+      }
+      // center crystal
+      const cg=ctx.createRadialGradient(0,0,0,0,0,10);
+      cg.addColorStop(0,'#fff');cg.addColorStop(1,'#4fc3f7');
+      ctx.beginPath();ctx.arc(0,0,9,0,Math.PI*2);ctx.fillStyle=cg;ctx.fill();
+      ctx.shadowBlur=0;
+    } else if(id==='meteor'){
+      // trail
+      const tg=ctx.createLinearGradient(28,-32,-30,32);
+      tg.addColorStop(0,'rgba(255,200,0,0)');tg.addColorStop(1,'rgba(255,80,0,.55)');
+      ctx.beginPath();ctx.moveTo(32,-36);ctx.lineTo(-36,32);ctx.lineTo(-18,44);ctx.lineTo(44,-16);ctx.closePath();
+      ctx.fillStyle=tg;ctx.fill();
+      // outer glow
+      ctx.shadowColor='#ff6d00';ctx.shadowBlur=18;
+      const og=ctx.createRadialGradient(8,-10,3,8,-10,26);
+      og.addColorStop(0,'rgba(255,255,200,.9)');og.addColorStop(0.5,'rgba(255,120,0,.6)');og.addColorStop(1,'rgba(200,0,0,0)');
+      ctx.beginPath();ctx.arc(8,-10,26,0,Math.PI*2);ctx.fillStyle=og;ctx.fill();
+      // core
+      const cg=ctx.createRadialGradient(4,-14,1,8,-10,13);
+      cg.addColorStop(0,'#fff');cg.addColorStop(0.4,'#ff8a00');cg.addColorStop(1,'#b71c1c');
+      ctx.beginPath();ctx.arc(8,-10,13,0,Math.PI*2);ctx.fillStyle=cg;ctx.fill();
+      ctx.shadowBlur=0;
+      // craters
+      ctx.fillStyle='rgba(0,0,0,.2)';
+      [[4,-6,3],[12,-14,2]].forEach(([x,y,r])=>{ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();});
+    } else if(id==='overdrive'){
+      // glow behind
+      ctx.shadowColor='#ffca28';ctx.shadowBlur=20;
+      const bg=ctx.createRadialGradient(0,0,5,0,0,h*.7);
+      bg.addColorStop(0,'rgba(255,220,50,.35)');bg.addColorStop(1,'rgba(255,150,0,0)');
+      ctx.beginPath();ctx.arc(0,0,h*.7,0,Math.PI*2);ctx.fillStyle=bg;ctx.fill();
+      // bolt shape
+      ctx.beginPath();
+      ctx.moveTo(10,-h*.88);ctx.lineTo(-12,4);ctx.lineTo(0,4);
+      ctx.lineTo(-10,h*.88);ctx.lineTo(16,-6);ctx.lineTo(4,-6);
+      ctx.closePath();
+      const lg=ctx.createLinearGradient(0,-h*.88,0,h*.88);
+      lg.addColorStop(0,'#fff9c4');lg.addColorStop(0.4,'#ffd740');lg.addColorStop(1,'#ff6d00');
+      ctx.fillStyle=lg;ctx.fill();
+      ctx.shadowBlur=0;
+      // shine streak
+      ctx.beginPath();ctx.moveTo(6,-h*.7);ctx.lineTo(-4,-5);ctx.strokeStyle='rgba(255,255,255,.6)';ctx.lineWidth=2;ctx.lineCap='round';ctx.stroke();
+    } else if(id==='barrier'){
+      // shield outline glow
+      ctx.shadowColor='#b388ff';ctx.shadowBlur=22;
+      // shield path
+      function shieldPath(s){
+        ctx.beginPath();
+        ctx.moveTo(0,-h*s*.88);
+        ctx.bezierCurveTo( h*s*.82,-h*s*.88,  h*s*.82, h*s*.18, 0, h*s*.92);
+        ctx.bezierCurveTo(-h*s*.82, h*s*.18, -h*s*.82,-h*s*.88, 0,-h*s*.88);
+        ctx.closePath();
+      }
+      // outer glow ring
+      shieldPath(1.05);
+      ctx.strokeStyle='rgba(179,136,255,.4)';ctx.lineWidth=6;ctx.stroke();
+      // fill
+      shieldPath(1);
+      const sg=ctx.createLinearGradient(0,-h*.88,0,h*.92);
+      sg.addColorStop(0,'#e1bee7');sg.addColorStop(0.45,'#7b1fa2');sg.addColorStop(1,'#1a0030');
+      ctx.fillStyle=sg;ctx.fill();
+      // border
+      shieldPath(1);
+      ctx.strokeStyle='#ce93d8';ctx.lineWidth=2.5;ctx.stroke();
+      ctx.shadowBlur=0;
+      // cross rune
+      ctx.strokeStyle='rgba(255,255,255,.55)';ctx.lineWidth=2.5;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(0,-h*.3);ctx.lineTo(0,h*.35);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(-h*.32,0);ctx.lineTo(h*.32,0);ctx.stroke();
+      // top shine
+      ctx.beginPath();ctx.ellipse(0,-h*.55,14,5,0,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.18)';ctx.fill();
+    }
+    return (_skIconCache[id]=c.toDataURL());
+  }catch(e){return '';}
+}
 const _twIconCache={};
 function _towerIconURL(type){
   if(_twIconCache[type]) return _twIconCache[type];
@@ -1639,7 +1754,7 @@ function renderTowerSelection(available){
         const isSel=askill===d.id;
         const stars='★'.repeat(star)+'☆'.repeat(SKILL_MAX_STAR-star);
         cards+=`<div class="ts-sk-card${isSel?' sel':''}" onclick="tsSelectSkill('${d.id}')" style="${isSel?'--sk-col:'+d.color+';border-color:'+d.color+';':'--sk-col:rgba(255,255,255,.25);'}">
-          <div class="ts-sk-ico" style="color:${isSel?d.color:'#ccc'};">${d.icon}</div>
+          <div class="ts-sk-ico"><img src="${_skillIconURL(d.id)}" style="width:28px;height:28px;object-fit:contain;${isSel?'':'filter:saturate(.4) brightness(.7);'}"></div>
           <div class="ts-sk-stars" style="color:${isSel?d.color:'#888'};">${stars}</div>
           <div class="ts-sk-name" style="color:${isSel?d.color:'#bbb'};">${d.name}</div>
         </div>`;
