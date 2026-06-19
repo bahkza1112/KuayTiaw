@@ -1239,6 +1239,7 @@ function renderStageSelect(){
           <span class="stage-pill pill-enemy">${enemyIcons} ${cleared?'ศัตรู':'???'}</span>
           <span class="stage-pill pill-unlock">🏰 ${s.unlockedTowers.length} ป้อม</span>
         </div>
+        ${unlocked?`<div class="stage-rewards">${[10,20,30].map((g,i)=>{const got=stars>i;return`<span class="srw${got?' srw-got':''}">${'★'.repeat(i+1)} <span class="srw-gem">💎${g}</span>${got?' ✓':''}</span>`;}).join('')}</div>`:''}
       </div>
       ${unlocked&&starStr?`<div class="stage-stars" style="color:${starColor}">${starStr}</div>`:''}
       ${!unlocked?'<div class="stage-lock-icon">🔒</div>':''}

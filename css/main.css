@@ -86,6 +86,10 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .pill-enemy{background:rgba(244,67,54,.2);color:#ef9a9a;border:1px solid rgba(244,67,54,.3);}
 .pill-unlock{background:rgba(255,224,130,.15);color:#ffe082;border:1px solid rgba(255,224,130,.3);}
 .stage-stars{font-size:16px;position:absolute;top:10px;right:12px;letter-spacing:2px;}
+.stage-rewards{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px;}
+.srw{font-size:9px;padding:2px 6px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.45);display:inline-flex;align-items:center;gap:2px;white-space:nowrap;}
+.srw-gem{color:#80d8ff;}
+.srw-got{background:rgba(128,216,255,.12);border-color:rgba(128,216,255,.35);color:#b3e5fc;}
 .stage-lock-icon{font-size:24px;position:absolute;top:50%;right:14px;transform:translateY(-50%);opacity:.5;}
 .ss-unlock-note{background:rgba(255,224,130,.08);border:1px solid rgba(255,224,130,.2);border-radius:10px;padding:10px 14px;font-size:11px;color:#aaa;text-align:center;}
 .ss-unlock-note strong{color:#ffe082;}
