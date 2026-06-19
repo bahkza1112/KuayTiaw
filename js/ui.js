@@ -291,7 +291,7 @@ const PATCH_NOTES=[
   ]},
   {ver:'1.12.0',date:'2026-06-14',title:'💎 Soul Gems, Workshop และป้อมมนตราโมฆะ!',notes:[
     'เพิ่มสกุลเงินใหม่ 💎 มณีวิญญาณ (Soul Gems) — ได้รับเมื่อทำดาวในด่านเนื้อเรื่องเพิ่มขึ้นเป็นครั้งแรก และเมื่อจบเกม Endgame',
-    'Endgame: เคลียร์เวฟจะมีโอกาสดรอปวัสดุพิเศษ 🪨 เศษหินมืด, 🔘 แกนเวทอสูร, 🌟 ดาวตก (โอกาสคงที่ตามความยาก)',
+    'Endgame: เคลียร์เวฟจะมีโอกาสดรอปวัสดุพิเศษ 🪨 หินมืด, 🔘 แกนเวทอสูร, 🌟 ดาวตก (โอกาสคงที่ตามความยาก)',
     'เพิ่มหน้า 🛠️ Workshop ในเมนูหลัก — ใช้ 💎 และวัสดุปลดล็อกป้อมใหม่ถาวร',
     'เพิ่มป้อมที่ 9: 🌑 ป้อมมนตราโมฆะ — มีโอกาสติด "Void Mark" ให้ศัตรู เพิ่มดาเมจที่รับจากป้อมทุกชนิด ใช้ได้เฉพาะ Endgame',
     'Endgame ตอนนี้ต้องเลือกป้อมก่อนเริ่มเกม จำนวนป้อมที่เลือกได้ขึ้นกับความยาก (ง่าย 7 / ปกติ 6 / ยาก 5)'
@@ -539,7 +539,7 @@ function updateMenuStats(){
 /* ══ WORKSHOP ══ */
 const VOID_RECIPE={gems:800,mats:{0:30,1:15,2:8}};
 const MAT_ICONS=['🪨','🔘','🌟'];
-const MAT_NAMES=['เศษหินมืด','แกนเวทอสูร','ดาวตก'];
+const MAT_NAMES=['หินมืด','แกนเวทอสูร','ดาวตก'];
 /* ══ BAG SCREEN ══ */
 let _bagTab=0;
 function openBag(){showScreen('bag',true);clearBagNew();_updateBagBadge();renderBag();}
@@ -827,7 +827,7 @@ function toggleSkillOdds(){
 }
 function switchBagTab(t){
   _bagTab=t;
-  [0,1,2,3].forEach(i=>{const b=document.getElementById('bagTab'+i);if(b)b.classList.toggle('active',i===t);});
+  [0,1,2].forEach(i=>{const b=document.getElementById('bagTab'+i);if(b)b.classList.toggle('active',i===t);});
   renderBag();
 }
 function renderBag(){
@@ -835,7 +835,7 @@ function renderBag(){
   if(!body) return;
   const mats=loadMaterials(),bag=loadBag(),abuff=loadActiveBuff(),newSet=loadBagNew();
   if(_bagTab===0){
-    // วัสดุ
+    // วัสดุ + เศษสะสม
     const gems=loadGems();
     const matDefs=[
       {icon:'💎',name:'มณีวิญญาณ',col:'#80d8ff',qty:gems,desc:'ใช้คราฟป้อมมนตราโมฆะใน Workshop'},
@@ -843,6 +843,20 @@ function renderBag(){
       {icon:MAT_ICONS[1],name:MAT_NAMES[1],col:'#ce93d8',qty:mats[1]||0,desc:'วัสดุหายากจากการเล่น'},
       {icon:MAT_ICONS[2],name:MAT_NAMES[2],col:'#ffe082',qty:mats[2]||0,desc:'วัสดุพิเศษจากการเล่น'},
     ];
+    const shards=BAG_ITEM_DEFS.filter(d=>d.type==='shard');
+    const shardRows=shards.map(d=>{
+      const qty=bag[d.id]||0;
+      const isNew=newSet.has(d.id);
+      return `<div class="bag-item${isNew?' bag-item-new':''}" style="border-color:${isNew?'rgba(239,83,80,.55)':'rgba(255,255,255,.1)'};">
+        ${isNew?'<div class="bag-new-dot">ใหม่</div>':''}
+        <div class="bag-ico" style="font-size:22px;">${d.icon}</div>
+        <div class="bag-info">
+          <div class="bag-name" style="color:${d.color};">${d.name}</div>
+          <div class="bag-desc">${d.desc}</div>
+        </div>
+        <div class="bag-qty">${qty}</div>
+      </div>`;
+    }).join('');
     body.innerHTML=matDefs.map(m=>`<div class="bag-item">
         <div class="bag-ico" style="font-size:24px;">${m.icon}</div>
         <div class="bag-info">
@@ -850,7 +864,8 @@ function renderBag(){
           <div class="bag-desc">${m.desc}</div>
         </div>
         <div class="bag-qty">${m.qty}</div>
-      </div>`).join('');
+      </div>`).join('')
+      +(shards.length?`<div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.35);margin:10px 0 4px;padding-left:2px;">เศษสะสม (แลกที่ Workshop)</div>`+shardRows:'');
   } else if(_bagTab===1){
     // บัฟ
     const buffs=BAG_ITEM_DEFS.filter(d=>d.type==='buff'&&(bag[d.id]||0)>0);
@@ -874,22 +889,6 @@ function renderBag(){
         </div>`;
       }).join('');
   } else if(_bagTab===2){
-    // สะสม
-    const shards=BAG_ITEM_DEFS.filter(d=>d.type==='shard'&&(bag[d.id]||0)>0);
-    if(!shards.length){body.innerHTML='<div class="bag-empty">ยังไม่มีชิ้นส่วนสะสม<br>ได้รับจากกล่องรางวัลหลังจบด่าน</div>';return;}
-    body.innerHTML=shards.map(d=>{
-      const isNew=newSet.has(d.id);
-      return `<div class="bag-item${isNew?' bag-item-new':''}" style="border-color:${isNew?'rgba(239,83,80,.55)':'rgba(255,255,255,.1)'};">
-        ${isNew?'<div class="bag-new-dot">ใหม่</div>':''}
-        <div class="bag-ico" style="font-size:22px;">${d.icon}</div>
-        <div class="bag-info">
-          <div class="bag-name" style="color:${d.color};">${d.name}</div>
-          <div class="bag-desc">${d.desc}</div>
-          <div class="bag-qty">มี ${bag[d.id]} ชิ้น</div>
-        </div>
-      </div>`;
-    }).join('');
-  } else {
     // ⭐ สกิล — การ์ดกดเอง (เลือกใส่ 1 ใบ/รัน)
     body.innerHTML='<div class="bag-hint">คอลเลกชันการ์ดสกิล · เลือกการ์ดที่จะใช้ในหน้าเลือกป้อม · ได้การ์ดจากตู้สุ่มสกิล</div>'
       +SKILL_DEFS.map(d=>{
@@ -1049,7 +1048,7 @@ function renderWorkshop(){
 const SHARD_EXCHANGE=[
   {shardId:'shard_c',shardIcon:'🔹',shardName:'เศษสีน้ำเงิน',cost:10,matIdx:0},
   {shardId:'shard_r',shardIcon:'💜',shardName:'เศษสีม่วง',   cost:5,  matIdx:1},
-  {shardId:'shard_e',shardIcon:'🌟',shardName:'เศษสีทอง',    cost:3,  matIdx:2},
+  {shardId:'shard_e',shardIcon:'🌟',shardName:'เศษดวงดาว',    cost:3,  matIdx:2},
 ];
 function exchangeShards(shardId){
   const ex=SHARD_EXCHANGE.find(e=>e.shardId===shardId);
@@ -2062,7 +2061,7 @@ function renderDevCheat(){
   </div></div>
   <div class="dev-section"><div class="dev-section-title">🪨 วัสดุคราฟ</div>
   <div class="dev-cheat-grid">
-    <div class="dev-cheat-btn green" onclick="cheat('mat0_10')">+10 เศษหินมืด</div>
+    <div class="dev-cheat-btn green" onclick="cheat('mat0_10')">+10 หินมืด</div>
     <div class="dev-cheat-btn green" onclick="cheat('mat1_10')">+10 แกนเวทอสูร</div>
     <div class="dev-cheat-btn green" onclick="cheat('mat2_5')">+5 ดาวตก</div>
     <div class="dev-cheat-btn" onclick="cheat('mat_reset')">รีเซ็ตวัสดุ</div>
@@ -2173,7 +2172,7 @@ function cheat(cmd){
     case 'gem999': saveGems(loadGems()+999);showToast('💎 +999 มณีวิญญาณ!');break;
     case 'gem0': saveGems(0);showToast('💎 ตั้งมณีเป็น 0 แล้ว');break;
     case 'pity0': saveGachaPity(0);showToast('🔄 รีเซ็ต Pity แล้ว');break;
-    case 'mat0_10':{const m=loadMaterials();m[0]=(m[0]||0)+10;saveMaterials(m);showToast('🪨 +10 เศษหินมืด!');break;}
+    case 'mat0_10':{const m=loadMaterials();m[0]=(m[0]||0)+10;saveMaterials(m);showToast('🪨 +10 หินมืด!');break;}
     case 'mat1_10':{const m=loadMaterials();m[1]=(m[1]||0)+10;saveMaterials(m);showToast('🔘 +10 แกนเวทอสูร!');break;}
     case 'mat2_5':{const m=loadMaterials();m[2]=(m[2]||0)+5;saveMaterials(m);showToast('🌟 +5 ดาวตก!');break;}
     case 'mat_reset': saveMaterials([0,0,0]);showToast('↺ รีเซ็ตวัสดุแล้ว!');break;

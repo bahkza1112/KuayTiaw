@@ -33,7 +33,7 @@ const BAG_ITEM_DEFS=[
   {id:'dmg_pot', icon:'⚔️',name:'ยาเข้มแข็ง',  desc:'ดาเมจป้อมทั้งหมด +10% เมื่อเริ่มด่าน',color:'#ff8a65',type:'buff'},
   {id:'shard_c', icon:'🔹',name:'เศษสีน้ำเงิน', desc:'ชิ้นส่วนสะสมสามัญจากกล่องบรอนซ์',   color:'#64b5f6',type:'shard'},
   {id:'shard_r', icon:'💜',name:'เศษสีม่วง',    desc:'ชิ้นส่วนสะสมหายากจากกล่องเงิน',     color:'#ab47bc',type:'shard'},
-  {id:'shard_e', icon:'🌟',name:'เศษสีทอง',    desc:'ชิ้นส่วนสะสมพิเศษจากกล่องทอง',     color:'#ff8f00',type:'shard'},
+  {id:'shard_e', icon:'🌟',name:'เศษดวงดาว',    desc:'ชิ้นส่วนสะสมพิเศษจากกล่องทอง',     color:'#ff8f00',type:'shard'},
 ];
 function loadBag(){try{return JSON.parse(localStorage.getItem('tq_bag')||'{}');}catch(e){return{};}}
 function saveBag(b){localStorage.setItem('tq_bag',JSON.stringify(b));}
@@ -71,7 +71,7 @@ const GACHA_POOL=[
    apply(){addMaterial(1,3);}},
   {code:'005',icon:'🔘',name:'แกนเวทอสูร x1', rarity:'rare',   color:'#ce93d8',w:30,
    apply(){addMaterial(1,1);}},
-  {code:'006',icon:'🪨',name:'เศษหินมืด x5',  rarity:'uncommon',color:'#90caf9',w:30,
+  {code:'006',icon:'🪨',name:'หินมืด x5',  rarity:'uncommon',color:'#90caf9',w:30,
    apply(){addMaterial(0,5);}},
   {code:'007',icon:'⚔️',name:'ยาเข้มแข็ง',    rarity:'uncommon',color:'#ff8a65',w:30,
    apply(){addBagItem('dmg_pot',1);}},
