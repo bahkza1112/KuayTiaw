@@ -816,7 +816,7 @@ function toggleSkillOdds(){
   if(show&&!document.getElementById('skillOddsPool').innerHTML){
     document.getElementById('skillOddsPool').innerHTML=SKILL_DEFS.map(d=>`
       <div class="gacha-odds-row">
-        <span style="color:${d.color};">${d.icon} ${d.name}</span>
+        <span style="display:inline-flex;align-items:center;gap:4px;color:${d.color};"><img src="${_skillIconURL(d.id)}" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;"> ${d.name}</span>
         <span class="gacha-rarity-tag rarity-${d.rarity}" style="font-size:7px;">${d.rarity}</span>
         <span style="color:#aaa;">${SKILL_CARD_RATE}%</span>
       </div>`).join('')+`
