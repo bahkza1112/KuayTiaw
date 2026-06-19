@@ -575,3 +575,40 @@ function sellTowerFromPopup(){
   G.selTowerInfo=null; hideTowerPopup();
 }
 
+function _twRemain(tw){
+  if(tw.dmgLv===undefined){tw.dmgLv=tw.lv||1;tw.rngLv=tw.lv||1;tw.rateLv=tw.lv||1;}
+  if(tw.star===undefined) tw.star=1;
+  const tr=trackDefs(tw.type);
+  return (tw.star||1)-((tw[tr[0].key]-1)+(tw[tr[1].key]-1));
+}
+function upgradeAllTowers(){
+  if(!G||G.over||G.win) return;
+  let total=0;
+  G.towers.forEach(tw=>{
+    if(tw.awakened) return;
+    const tr=trackDefs(tw.type);
+    const t0=tr[0].key,t1=tr[1].key;
+    let rem=_twRemain(tw);
+    if(rem<=0) return;
+    while(rem>0){
+      if((tw[t0]||1)<=(tw[t1]||1)) tw[t0]=(tw[t0]||1)+1; else tw[t1]=(tw[t1]||1)+1;
+      rem--;total++;
+    }
+    tw.lv=(tw.rngLv-1)+(tw.rateLv-1)+1;
+    const ux=tw.col*CS+CS/2,uy=tw.row*CS+CS/2;
+    G.fxRings.push({x:ux,y:uy,r:0,maxR:CS*1.3,life:.7,col:'#ffe234',lw:2});
+    for(let k=0;k<4;k++){const a=k/4*Math.PI*2;G.particles.push({x:ux,y:uy,txt:'⬆',col:'#ffe234',life:.7,vy:Math.sin(a)*1.4,vx:Math.cos(a)*1.4,decay:2});}
+  });
+  updateHUD();
+  if(total>0) showToast('⬆ อัพสกิลป้อมทั้งหมด +'+total+' แต้ม!');
+  else showToast('⚠️ ป้อมทุกตัวใช้แต้มเต็มแล้ว');
+}
+function updateUpgradeAllBtn(){
+  const btn=document.getElementById('upgradeAllBtn');
+  if(!btn||!G) return;
+  const pending=G.towers.filter(tw=>!tw.awakened&&_twRemain(tw)>0).length;
+  const badge=document.getElementById('upgradeAllBadge');
+  if(badge){badge.textContent=pending;badge.style.display=pending>0?'inline':'none';}
+  btn.disabled=pending===0;
+}
+

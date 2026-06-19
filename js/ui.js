@@ -1,6 +1,12 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.10.4';
+const GAME_VERSION='3.10.5';
 const PATCH_NOTES=[
+  {ver:'3.10.5',date:'2026-06-19',title:'⬆ ปุ่มอัพสกิลป้อมทั้งหมดในคลิกเดียว',notes:[
+    'ปุ่ม "⬆ All" ในแถบด้านล่าง — กดครั้งเดียวเพื่อแจกแต้มสกิลที่ค้างอยู่ให้ป้อมทุกตัวในสนามอัตโนมัติ',
+    'badge สีแดงแสดงจำนวนป้อมที่ยังมีแต้มค้าง — หายไปเองเมื่ออัพครบ',
+    'แจกแต้มแบบสมดุล: สายระยะและสายความเร็วสลับกัน (ใช้แต้มแต่ละจุดกับสายที่ต่ำกว่า)',
+    'ปุ่ม disabled อัตโนมัติเมื่อป้อมทุกตัวใช้แต้มครบแล้ว',
+  ]},
   {ver:'3.10.4',date:'2026-06-19',title:'✨ ดาวป้อมลอยเหนือป้อม ไม่มีกรอบ',notes:[
     'ดาวระดับป้อม (★★ / ★★★ / ★★★★) ลอยเหนือตัวป้อมโดยตรง แทนที่จะเป็น badge มุมซ้ายบน',
     'ไม่มีกล่องพื้นหลัง — ตัวอักษรมีเงาให้อ่านง่ายบนทุกพื้นหลัง',
@@ -1902,6 +1908,7 @@ function updateHUD(){
   document.getElementById('hpBar').style.width=Math.max(0,G.hp/G.maxHp*100)+'%';
   // 📈 ราคาป้อมเปลี่ยนตามจำนวนป้อมบนกระดาน — รีเฟรชแถบราคาทุกครั้งที่ HUD อัปเดต
   for(let i=0;i<9;i++){const c=document.getElementById('tc'+i);if(c)c.textContent='💰'+getTowerCost(i);}
+  if(typeof updateUpgradeAllBtn==='function') updateUpgradeAllBtn();
 }
 function addParticle(x,y,txt,col){
   if(!G) return;

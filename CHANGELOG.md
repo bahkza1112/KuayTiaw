@@ -2,6 +2,22 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.10.5 — Upgrade All button
+
+### Added
+- **`upgradeAllTowers()`** (`js/tower.js`): iterates all non-awakened towers, distributes
+  remaining free skill points by always giving the next point to whichever track (rngLv /
+  rateLv) is currently lower — balanced split. Shows upgrade FX rings + ⬆ particles on
+  each tower upgraded.
+- **`updateUpgradeAllBtn()`** (`js/tower.js`): counts towers with pending points, updates
+  red badge count and disables the button when all towers are maxed. Called from `updateHUD()`.
+- **`_twRemain(tw)`** helper: returns remaining skill points for a tower.
+- **`#upgradeAllBtn`** (`Tower Quest 🏰.html`): "⬆ All" button in the bottom tpanel row,
+  next to speed button. Red badge (`#upgradeAllBadge`) shows pending-tower count.
+- **`.upall-btn` / `.upall-badge`** (`css/main.css`): styles for the new button and badge.
+
+---
+
 ## v3.10.4 — Floating star indicator (no badge box)
 
 ### Changed
