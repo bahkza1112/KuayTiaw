@@ -192,6 +192,8 @@ function mkState(){
     selTowerInfo:null,gmTimers:{},shakeT:0,hitStopT:0,waveBanner:null,bossWarning:null,
     kills:0,comboN:0,comboT:0,maxCombo:0,dmgBuff:1,
     dmgByType:{},battleT:0,egMilestones:{}, /* สถิติจบเกม + หมุดหมาย Endgame */
+    skillId:null,skillCd:0,skillCdMax:0,skillAiming:false, /* ⭐ การ์ดสกิลกดเอง */
+    skillDmgMult:1,skillRateMult:1,skillDmgT:0,skillGoldMult:0,skillGoldT:0,skillBlockT:0,
     weather:mkWeatherState()};
 }
 /* ══ WEATHER SYSTEM ══ */
@@ -328,6 +330,7 @@ function initGame(){
   updateTowerPanel();
   updateHUD();
   updateMenuStats();
+  _initRunSkill(); // ⭐ ตั้งค่าการ์ดสกิลที่ใส่ไว้ (อ่าน tq_askill; ไม่ consume)
   startBgm();
   let last=performance.now();
   function loop(ts){
@@ -744,6 +747,7 @@ function _launchFinalVictoryFX(){
 function update(dt){
   if(!G||G.over||G.win) return;
   if(G.waveActive) G.battleT=(G.battleT||0)+dt; // เวลาสู้จริง (สำหรับ DPS จบเกม)
+  _tickSkill(dt); // ⭐ cooldown + บัฟสกิล
   // weather: lightning re-shuffle timer
   if(G.weather&&G.weather.active==='lightning'){
     G.weather.lightningTimer=(G.weather.lightningTimer||0)+dt;
@@ -775,8 +779,12 @@ function update(dt){
       if(e.pi>=plen-1){
         unlockMonster(e.ti);
         e.alive=false; G.enemies.splice(i,1);
-        G.hp=Math.max(0,G.hp-1); updateHUD(); G.shakeT=Math.min(.55,G.shakeT+.2);
-        if(G.hp<=0){endGame(false);return;}
+        if(G.skillBlockT>0){ // 🛡️ กำแพงวิญญาณ: กันดาเมจเข้าปราสาท
+          addParticle(e.x,e.y,'🛡️ กันไว้!','#b388ff');
+        } else {
+          G.hp=Math.max(0,G.hp-1); updateHUD(); G.shakeT=Math.min(.55,G.shakeT+.2);
+          if(G.hp<=0){endGame(false);return;}
+        }
         break;
       }
     }
@@ -942,7 +950,7 @@ function update(dt){
     if(best) tw.angle=Math.atan2(best.y/CS-cy,best.x/CS-cx);
     if(best&&tw.cd<=0){
       const _rateMultW=(tw.type===1&&G.weather&&G.weather.iceRateMult)?G.weather.iceRateMult:1;
-      tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.rateLv||tw.lv)*_rateMultW);
+      tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.rateLv||tw.lv)*_rateMultW*(G.skillRateMult||1));
       // ⚡ สายความเร็ว Lv.4+ ปลดล็อก "ยิงรัว" — มีโอกาสคูลดาวน์สั้นลงทันที
       if((tw.rateLv||tw.lv)>=4&&Math.random()<0.2){
         tw.cd*=0.45;
@@ -950,7 +958,7 @@ function update(dt){
       }
       const fx=tw.col*CS+CS/2, fy=tw.row*CS+CS/2;
       const _aw=tw.awakened&&!(tw._drainT>0); // ⚡ ป้อมตื่นแล้วและไม่ได้ถูกดูดพลัง
-      let _rdmg=getTowerDmg(tw.type,tw.dmgLv||tw.lv,tw.star)*getBuffMult(tw.col,tw.row)*(G.dmgBuff||1);
+      let _rdmg=getTowerDmg(tw.type,tw.dmgLv||tw.lv,tw.star)*getBuffMult(tw.col,tw.row)*(G.dmgBuff||1)*(G.skillDmgMult||1);
       // 🎯 สไนเปอร์: โอกาสคริติคอล x2 ดาเมจ
       let _rIsCrit=false;
       if(tw.type===3){
@@ -2080,6 +2088,7 @@ function onCanvasClick(e){
   const col=Math.floor((e.clientX-rect.left)*cv.width/rect.width/CS);
   const row=Math.floor((e.clientY-rect.top)*cv.height/rect.height/CS);
   if(col<0||col>=COLS||row<0||row>=ROWS) return;
+  if(G.skillAiming){_castMeteorAt(col,row);return;} // ☄️ เล็งอุกกาบาต → ทิ้งตรงจุด
   G.selTowerInfo=null; hideTowerPopup(); // deselect range on any click
   if(G.selTwr>=0){
     tryPlaceTower(G.selTwr,col,row);
@@ -2179,6 +2188,7 @@ let _twrDragTw=null,_twrDragging=false,_twrDragSX=0,_twrDragSY=0,_suppressNextCl
 let _twrDragHoverCol=-1,_twrDragHoverRow=-1;
 function onCanvasPointerDown(e){
   if(!G||G.over||G.win||paused) return;
+  if(G.skillAiming) return; // ☄️ กำลังเล็งอุกกาบาต — ปล่อยให้ click จัดการ
   if(G.selTwr>=0) return; // กำลังวางป้อมใหม่จาก toolbar อยู่ — ไม่เกี่ยวกับการลากรวม
   const rect=cv.getBoundingClientRect();
   const col=Math.floor((e.clientX-rect.left)*cv.width/rect.width/CS);
@@ -2280,6 +2290,100 @@ function tryMoveTower(tw,col,row){
   return true;
 }
 
+/* ══ ⭐ ACTIVE SKILL RUNTIME (v4.0.0 — Phase 3) ══
+   อ่านการ์ดที่ใส่ (tq_askill) ตอนเข้าด่าน → ปุ่ม HUD + cooldown + เอฟเฟกต์.
+   ใช้ได้ทั้ง story (update) และ endgame (updateEg). เริ่มรันด้วย cooldown เต็ม. */
+function _initRunSkill(){
+  if(!G) return;
+  const id=(typeof loadActiveSkill==='function')?loadActiveSkill():null;
+  const star=id?getSkillStar(id):0;
+  G.skillId=(id&&star>0)?id:null;
+  if(G.skillId){const st=getSkillStat(G.skillId,star);G.skillCdMax=st.cd;G.skillCd=st.cd;} // เริ่ม cooldown เต็ม
+  else{G.skillCdMax=0;G.skillCd=0;}
+  G.skillDmgMult=1;G.skillRateMult=1;G.skillDmgT=0;G.skillGoldMult=0;G.skillGoldT=0;G.skillBlockT=0;G.skillAiming=false;
+  _setupSkillBtn();
+}
+function _setupSkillBtn(){
+  const btn=document.getElementById('skillBtn');if(!btn)return;
+  if(!G||!G.skillId){btn.style.display='none';return;}
+  const d=getSkillDef(G.skillId), star=getSkillStar(G.skillId);
+  btn.style.display='flex';
+  document.getElementById('skillFabIco').textContent=d.icon;
+  document.getElementById('skillFabStar').textContent='★'+star;
+  btn.style.setProperty('--skc',d.color);
+  _renderSkillBtn();
+}
+function _renderSkillBtn(){
+  const btn=document.getElementById('skillBtn');if(!btn||!G||!G.skillId)return;
+  const cd=Math.max(0,G.skillCd), ready=cd<=0;
+  const ov=document.getElementById('skillFabCd');
+  if(ov) ov.style.height=(G.skillCdMax>0?(cd/G.skillCdMax*100):0)+'%';
+  const sec=document.getElementById('skillFabSec');
+  if(sec) sec.textContent=ready?'':Math.ceil(cd);
+  btn.classList.toggle('ready',ready);
+  btn.classList.toggle('aiming',!!G.skillAiming);
+}
+function _tickSkill(dt){
+  if(!G||!G.skillId) return;
+  if(G.skillCd>0) G.skillCd=Math.max(0,G.skillCd-dt);
+  if(G.skillDmgT>0){G.skillDmgT-=dt;if(G.skillDmgT<=0){G.skillDmgT=0;G.skillDmgMult=1;G.skillRateMult=1;}}
+  if(G.skillGoldT>0){G.skillGoldT-=dt;if(G.skillGoldT<=0){G.skillGoldT=0;G.skillGoldMult=0;}}
+  if(G.skillBlockT>0) G.skillBlockT=Math.max(0,G.skillBlockT-dt);
+  _renderSkillBtn();
+}
+function activateSkill(){
+  if(!G||!G.skillId||G.over||G.win) return;
+  if(G.skillAiming){G.skillAiming=false;_renderSkillBtn();return;} // กดซ้ำตอนเล็ง=ยกเลิก
+  if(G.skillCd>0){showToast('⏳ สกิลยังไม่พร้อม ('+Math.ceil(G.skillCd)+'s)');return;}
+  if(G.skillId==='meteor'){G.skillAiming=true;showToast('🎯 แตะตำแหน่งที่จะทิ้งอุกกาบาต');_renderSkillBtn();return;}
+  const st=getSkillStat(G.skillId,getSkillStar(G.skillId));
+  if(G.skillId==='freeze') _castFreeze(st);
+  else if(G.skillId==='goldrush') _castGoldrush(st);
+  else if(G.skillId==='overdrive') _castOverdrive(st);
+  else if(G.skillId==='barrier') _castBarrier(st);
+  _startSkillCd();
+}
+function _startSkillCd(){if(G){G.skillCd=G.skillCdMax;_renderSkillBtn();}}
+function _castMeteorAt(col,row){
+  const st=getSkillStat('meteor',getSkillStar('meteor'));
+  const cx=col*CS+CS/2, cy=row*CS+CS/2, rad=st.radius*CS;
+  G.enemies.forEach(e=>{if(e.alive&&Math.hypot(e.x-cx,e.y-cy)<=rad) applyDmg(e,st.dmg,null,true);});
+  // FX: วงระเบิด + เขย่าจอ + สะเก็ดไฟ
+  G.fxRings.push({x:cx,y:cy,r:4,maxR:rad*1.1,life:.8,lw:4,col:'#ff7043',delay:0});
+  G.fxRings.push({x:cx,y:cy,r:2,maxR:rad*.7,life:.6,lw:6,col:'#ffd54f',delay:.05});
+  for(let k=0;k<22;k++){const a=k/22*Math.PI*2,sp=2.5+Math.random()*3.5;
+    G.particles.push({x:cx,y:cy,txt:'●',col:k%2?'#ff7043':'#ffd54f',life:.7+Math.random()*.4,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:2.2,scale:.7+Math.random()*.5});}
+  G.particles.push({x:cx,y:cy-CS*.5,txt:'☄️ BOOM!',col:'#ff7043',life:1.1,vy:-1.4,vx:0,decay:1.1,scale:1.3});
+  G.shakeT=Math.min(.7,G.shakeT+.45);
+  if(typeof _playSound==='function') _playSound('boss_spawn');
+  G.skillAiming=false; _startSkillCd();
+}
+function _castFreeze(st){
+  let n=0;G.enemies.forEach(e=>{if(e.alive){e.slow=0;e.slowT=Math.max(e.slowT||0,st.dur);n++;
+    G.particles.push({x:e.x,y:e.y-ESIZES[e.ti]-6,txt:'❄',col:'#80d8ff',life:.9,vy:-1,vx:0,decay:1.4,scale:.9});}});
+  G.fxFlash.push({x:COLS*CS/2,y:ROWS*CS/2,r:Math.max(COLS,ROWS)*CS,life:.4,col:'rgba(128,216,255,.25)'});
+  addParticle(COLS*CS/2,ROWS*CS/2,'❄️ แช่แข็งสนาม '+st.dur+'s','#80d8ff');
+  if(typeof _playSound==='function') _playSound('ice');
+}
+function _castGoldrush(st){
+  G.gold+=st.gold; G.skillGoldMult=st.bonus; G.skillGoldT=st.dur; updateHUD();
+  addParticle(COLS*CS/2,ROWS*CS/2,'💰 +'+st.gold+' · ทอง/ฆ่า +'+Math.round(st.bonus*100)+'%','#ffd54f');
+  for(let k=0;k<10;k++) G.particles.push({x:COLS*CS/2+(Math.random()-.5)*CS*2,y:ROWS*CS*.5,txt:'🪙',col:'#ffd54f',life:1.2,vy:-1.6-Math.random(),vx:(Math.random()-.5),decay:.9,scale:.9});
+  if(typeof _playSound==='function') _playSound('gacha_small');
+}
+function _castOverdrive(st){
+  G.skillDmgMult=1+st.dmg; G.skillRateMult=1+st.rate; G.skillDmgT=st.dur;
+  addParticle(COLS*CS/2,ROWS*CS/2,'⚡ พลังโจมตี +'+Math.round(st.dmg*100)+'% / ยิงเร็ว +'+Math.round(st.rate*100)+'%','#ffca28');
+  G.towers.forEach(tw=>{G.fxRings.push({x:tw.col*CS+CS/2,y:tw.row*CS+CS/2,r:2,maxR:CS*.8,life:.6,lw:2,col:'#ffca28',delay:Math.random()*.2});});
+  if(typeof _playSound==='function') _playSound('gacha_small');
+}
+function _castBarrier(st){
+  G.hp=Math.min(G.maxHp,G.hp+st.heal); G.skillBlockT=st.block; updateHUD();
+  addParticle(COLS*CS/2,ROWS*CS/2,'🛡️ +'+st.heal+' HP · กันดาเมจ '+st.block+'s','#b388ff');
+  G.fxRings.push({x:COLS*CS/2,y:ROWS*CS/2,r:4,maxR:Math.max(COLS,ROWS)*CS*.6,life:.9,lw:4,col:'#b388ff',delay:0});
+  if(typeof _playSound==='function') _playSound('shield_break');
+}
+
 /* ══ ENDGAME MENU ══ */
 function openEgMenu(){
   showScreen('egmenu',true);
@@ -2350,6 +2454,7 @@ function initEgGame(){
   G.gold=CFG.startGold+egRound*35; // bonus gold per round
   G.hp=CFG.baseHP; G.maxHp=CFG.baseHP;
   if(typeof applyTalents==='function') applyTalents(); // 🌳 talent tree (gold/HP/dmg/goldMult)
+  _initRunSkill(); // ⭐ ตั้งค่าการ์ดสกิลที่ใส่ไว้
   document.getElementById('endOverlay').style.display='none';
   document.getElementById('pauseScreen').style.display='none';
   document.getElementById('waveBtn').disabled=false;
@@ -2438,6 +2543,7 @@ function startEgWave(){
 function updateEg(dt){
   if(!G||G.over) return;
   if(G.waveActive) G.battleT=(G.battleT||0)+dt; // เวลาสู้จริง (สำหรับ DPS จบเกม)
+  _tickSkill(dt); // ⭐ cooldown + บัฟสกิล
   if(G.waveActive&&G.queue.length>0){
     G.spawnT-=dt;
     if(G.spawnT<=0){spawnEgEnemy(G.queue.shift());G.spawnT=CFG.spawnInterval*.8;}
@@ -2462,8 +2568,12 @@ function updateEg(dt){
       e.prog-=CS; e.pi++;
       if(e.pi>=plen-1){
         unlockMonster(e.ti); e.alive=false; G.enemies.splice(i,1);
-        G.hp=Math.max(0,G.hp-1); updateHUD(); G.shakeT=Math.min(.55,G.shakeT+.2);
-        if(G.hp<=0){endEgGame();return;}
+        if(G.skillBlockT>0){ // 🛡️ กำแพงวิญญาณ: กันดาเมจเข้าปราสาท
+          addParticle(e.x,e.y,'🛡️ กันไว้!','#b388ff');
+        } else {
+          G.hp=Math.max(0,G.hp-1); updateHUD(); G.shakeT=Math.min(.55,G.shakeT+.2);
+          if(G.hp<=0){endEgGame();return;}
+        }
         break;
       }
     }
@@ -2563,7 +2673,7 @@ function updateEg(dt){
     if(best) tw.angle=Math.atan2(best.y/CS-cy,best.x/CS-cx);
     if(best&&tw.cd<=0){
       const _rateMultW2=(tw.type===1&&G.weather&&G.weather.iceRateMult)?G.weather.iceRateMult:1;
-      tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.rateLv||tw.lv)*_rateMultW2);
+      tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.rateLv||tw.lv)*_rateMultW2*(G.skillRateMult||1));
       // ⚡ สายความเร็ว Lv.4+ ปลดล็อก "ยิงรัว" — มีโอกาสคูลดาวน์สั้นลงทันที
       if((tw.rateLv||tw.lv)>=4&&Math.random()<0.2){
         tw.cd*=0.45;
@@ -2571,7 +2681,7 @@ function updateEg(dt){
       }
       const fx=tw.col*CS+CS/2,fy=tw.row*CS+CS/2;
       const _aw2=tw.awakened&&!(tw._drainT>0);
-      let _rdmg2=getTowerDmg(tw.type,tw.dmgLv||tw.lv,tw.star)*getBuffMult(tw.col,tw.row)*(G.dmgBuff||1);
+      let _rdmg2=getTowerDmg(tw.type,tw.dmgLv||tw.lv,tw.star)*getBuffMult(tw.col,tw.row)*(G.dmgBuff||1)*(G.skillDmgMult||1);
       // 🎯 สไนเปอร์: โอกาสคริติคอล x2 ดาเมจ
       let _rIsCrit2=false;
       if(tw.type===3){

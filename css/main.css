@@ -546,6 +546,17 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .sk-stars{font-size:12px;letter-spacing:1px;margin-top:2px;}
 .bag-item.sk-locked{opacity:.7;}
 .bag-item.sk-locked .bag-name{color:#777;}
+/* ⭐ ปุ่มสกิลกดเอง (FAB ลอยซ้ายกลางจอเล่น) */
+.skill-fab{position:absolute;left:12px;top:52%;transform:translateY(-50%);width:58px;height:58px;border-radius:50%;border:2.5px solid var(--skc,#b388ff);background:radial-gradient(circle at 50% 35%,rgba(40,20,60,.95),rgba(8,4,16,.96));box-shadow:0 4px 14px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:30;overflow:hidden;padding:0;transition:transform .15s,box-shadow .2s;}
+.skill-fab-ico{font-size:26px;position:relative;z-index:2;filter:drop-shadow(0 1px 2px #000);}
+.skill-fab-cd{position:absolute;left:0;top:0;width:100%;height:0;background:rgba(0,0,0,.62);z-index:3;transition:height .12s linear;}
+.skill-fab-sec{position:absolute;z-index:4;font-size:18px;font-weight:900;color:#fff;text-shadow:0 1px 3px #000;}
+.skill-fab-star{position:absolute;bottom:-2px;right:-3px;z-index:5;font-size:10px;font-weight:800;color:#ffd54f;background:rgba(0,0,0,.72);border-radius:8px;padding:1px 4px;text-shadow:0 0 3px #000;}
+.skill-fab.ready{animation:skillReady 1.4s ease-in-out infinite;}
+.skill-fab.ready:hover{transform:translateY(-50%) scale(1.08);}
+.skill-fab.aiming{animation:skillAim .6s ease-in-out infinite;}
+@keyframes skillReady{0%,100%{border-color:var(--skc,#b388ff);box-shadow:0 0 6px var(--skc,#b388ff),0 4px 14px rgba(0,0,0,.5);}50%{border-color:#fff;box-shadow:0 0 18px var(--skc,#b388ff),0 4px 14px rgba(0,0,0,.5);}}
+@keyframes skillAim{0%,100%{box-shadow:0 0 8px #ff7043;}50%{box-shadow:0 0 24px #ff7043;}}
 /* ── GACHA SCREEN ── */
 #gacha{background:linear-gradient(160deg,#120824 0%,#0a0418 55%,#050010 100%);min-height:600px;border-radius:16px;overflow:hidden;position:relative;}
 .gacha-gem-bar{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 14px;font-size:12px;color:#ccc;}

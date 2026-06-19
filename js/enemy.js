@@ -202,7 +202,7 @@ function killEnemy(e){
     G.particles.push({x:e.x,y:e.y-ESIZES[e.ti]-20,txt:'⚡'+ct,col:'#ffe234',
       life:1.2,vy:-1.6,vx:0,decay:.9,scale:1.3});
   }
-  const _gr=Math.round(e.reward*(G.goldMult||1)); // 🌳 talent: gold from kills
+  const _gr=Math.round(e.reward*(G.goldMult||1)*(1+((G.skillGoldT>0)?G.skillGoldMult:0))); // 🌳 talent + 💰 โกลด์รัช
   G.gold+=_gr;
   addParticle(e.x,e.y,'+'+_gr+'💰','#ffe082');
   // 📅 daily quest tracking
