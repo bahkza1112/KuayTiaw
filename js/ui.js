@@ -575,10 +575,11 @@ function _cardBackHTML(result){
       <div class="gacha-rarity-tag rarity-${p.rarity}">${p.rarity}</div>
       ${p.code==='001'?'<div style="font-size:9px;color:#9575cd;margin-top:3px;">🔥 ใช้ได้เฉพาะ Endgame</div>':''}`;
   }
+  const sd=BAG_ITEM_DEFS.find(d=>d.id===(result.shardId||'shard_c'));
   return `<div class="gc-num gc-num-dud">${num}</div>
-    <div class="gc-ico">🔹</div>
-    <div class="gc-name" style="color:#64b5f6;">เศษสีน้ำเงิน</div>
-    <div class="gacha-rarity-tag rarity-common">common</div>`;
+    <div class="gc-ico">${sd.icon}</div>
+    <div class="gc-name" style="color:${sd.color};">${sd.name}</div>
+    <div class="gacha-rarity-tag rarity-common">ปลอบใจ</div>`;
 }
 function startGacha(n){
   if(_gachaBusy) return;
@@ -703,7 +704,7 @@ function toggleGachaOdds(){
       </div>`).join('')+`
       <div class="gacha-odds-row">
         <span style="font-family:monospace;color:rgba(179,136,255,.6);">dud</span>
-        <span style="color:#888;">🔹 เศษสีน้ำเงิน ×1</span>
+        <span style="color:#888;">เศษ ×1 (🔹70% · 💜22% · 🌟8%)</span>
         <span class="gacha-rarity-tag" style="font-size:7px;background:rgba(255,255,255,.08);color:#888;">ปลอบใจ</span>
         <span style="color:#aaa;">74.9%</span>
       </div>`;
@@ -735,12 +736,13 @@ function _renderSkillGachaUI(){
 const _SKILL_STAR_LABEL={true:'✨ ปลดล็อกใหม่!'};
 function _skillCardBackHTML(result){
   const d=result.def, res=result.res;
-  if(!d){ // เกลือ — ได้เศษสีน้ำเงินไปแลกของ
-    return `<div class="gc-ico">🔹</div>
-      <div class="gc-name" style="color:#64b5f6;">เศษสีน้ำเงิน</div>
+  if(!d){ // เกลือ — ได้เศษสะสมไปแลกของ
+    const sd=BAG_ITEM_DEFS.find(b=>b.id===(result.shardId||'shard_c'));
+    return `<div class="gc-ico">${sd.icon}</div>
+      <div class="gc-name" style="color:${sd.color};">${sd.name}</div>
       <div class="sk-stars" style="color:#666;">ไม่ได้การ์ด</div>
-      <div class="gacha-rarity-tag rarity-common">เกลือ</div>
-      <div style="font-size:9px;margin-top:3px;color:#90caf9;">🔹 ×1 · เอาไปแลกของได้</div>`;
+      <div class="gacha-rarity-tag rarity-common">ปลอบใจ</div>
+      <div style="font-size:9px;margin-top:3px;color:#90caf9;">${sd.icon} ×1 · เอาไปแลกของได้</div>`;
   }
   const stars='★'.repeat(res.star)+'☆'.repeat(SKILL_MAX_STAR-res.star);
   let status;
@@ -819,7 +821,7 @@ function toggleSkillOdds(){
         <span style="color:#aaa;">${SKILL_CARD_RATE}%</span>
       </div>`).join('')+`
       <div class="gacha-odds-row">
-        <span style="color:#888;">🔹 เกลือ (เศษสีน้ำเงิน ×1)</span>
+        <span style="color:#888;">เศษ ×1 (🔹70% · 💜22% · 🌟8%)</span>
         <span class="gacha-rarity-tag" style="font-size:7px;background:rgba(255,255,255,.08);color:#888;">ปลอบใจ</span>
         <span style="color:#aaa;">${100-SKILL_DEFS.length*SKILL_CARD_RATE}%</span>
       </div>`;

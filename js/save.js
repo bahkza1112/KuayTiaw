@@ -96,6 +96,15 @@ function _gachaRoll(){
 }
 function loadGachaPity(){try{return Number(localStorage.getItem('tq_gpity'))||0;}catch(e){return 0;}}
 function saveGachaPity(n){localStorage.setItem('tq_gpity',String(n));}
+function _addDudShard(){
+  const r=Math.random();
+  let id;
+  if(r<0.70) id='shard_c';
+  else if(r<0.92) id='shard_r';
+  else id='shard_e';
+  addBagItem(id,1);
+  return id;
+}
 function doGachaPulls(n){
   const gems=loadGems();
   const cost=gachaCost(n);
@@ -109,9 +118,10 @@ function doGachaPulls(n){
     if(pity>=GACHA_PITY){roll={prizeIdx:0,num:1};pity=0;} // guaranteed 001
     else if(roll.prizeIdx===0){pity=0;}
     const prize=roll.prizeIdx>=0?GACHA_POOL[roll.prizeIdx]:null;
+    let shardId=null;
     if(prize) prize.apply();
-    else addBagItem('shard_c',1); // 🔹 dud pull → consolation เศษสีน้ำเงิน (v3.5.5)
-    results.push({num:roll.num, prize});
+    else shardId=_addDudShard();
+    results.push({num:roll.num, prize, shardId});
   }
   saveGachaPity(pity);
   return results;
@@ -259,8 +269,8 @@ function doSkillPulls(n){
       const res=addSkillCard(def.id); // อัพดาว/ปลดล็อก
       results.push({def,res});
     } else {
-      addBagItem('shard_c',1); // 🔹 เกลือ → เศษสีน้ำเงิน (เอาไปแลกของใน Workshop)
-      results.push({def:null,res:null});
+      const shardId=_addDudShard();
+      results.push({def:null,res:null,shardId});
     }
   }
   saveSkillPity(pity);
