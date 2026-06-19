@@ -897,7 +897,7 @@ function renderBag(){
         const shardLine=owned&&star<SKILL_MAX_STAR?`<span style="color:#90caf9;font-size:9px;">ซ้ำ ${shards}/${needed} → ★${star+1}</span>`:
           owned?'<span style="color:#ffd54f;font-size:9px;">★ MAX</span>':'';
         return `<div class="bag-item${owned?'':' sk-locked'}" style="border-color:rgba(255,255,255,.1);">
-          <div class="bag-ico" style="background:${owned?d.color+'33':'rgba(255,255,255,.04)'};${owned?'':'filter:grayscale(1);opacity:.5;'};cursor:pointer;" onclick="_showSkillInfo('${d.id}')"><img src="${_skillIconURL(d.id)}" style="width:100%;height:100%;object-fit:contain;"></div>
+          <div class="bag-ico" style="background:${owned?d.color+'22':'rgba(255,255,255,.04)'};cursor:pointer;" onclick="_showSkillInfo('${d.id}')"><img src="${_skillIconURL(d.id)}" style="width:100%;height:100%;object-fit:contain;${owned?'filter:brightness(1.25);':'filter:grayscale(1) brightness(.4);'}"></div>
           <div class="bag-info" style="cursor:pointer;" onclick="_showSkillInfo('${d.id}')">
             <div class="bag-name" style="color:${owned?d.color:'#777'};">${d.name} <span class="gacha-rarity-tag rarity-${d.rarity}" style="font-size:7px;">${d.rarity}</span> <span style="font-size:9px;color:#9fa8da;">ℹ️ ข้อมูล</span></div>
             <div class="bag-desc">${d.desc}</div>
@@ -1817,7 +1817,7 @@ function _showSkillInfo(id){
   el.id='skInfoModal';
   el.innerHTML=`<div class="tsim-backdrop" onclick="_closeSkillInfo()"></div>
     <div class="tsim-card">
-      <div class="tsim-header"><span class="tsim-ico">${d.icon}</span><span class="tsim-name" style="color:${d.color};">${d.name}</span><button class="tsim-close" onclick="_closeSkillInfo()">✕</button></div>
+      <div class="tsim-header"><span class="tsim-ico"><img src="${_skillIconURL(d.id)}" style="width:100%;height:100%;object-fit:contain;"></span><span class="tsim-name" style="color:${d.color};">${d.name}</span><button class="tsim-close" onclick="_closeSkillInfo()">✕</button></div>
       <div class="tsim-section"><div class="tsim-label"><span class="gacha-rarity-tag rarity-${d.rarity}" style="font-size:8px;">${d.rarity}</span> ${star>0?'มีอยู่ ★'+star:'🔒 ยังไม่ปลดล็อก'}</div><div class="tsim-body">${d.desc}</div></div>
       <div class="tsim-section"><div class="tsim-label">📊 สเกลตามดาว</div>
         <div class="sktbl" style="--cols:${cols};"><div class="sktbl-row sktbl-head">${head}</div>${rows}</div>
