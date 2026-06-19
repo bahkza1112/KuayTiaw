@@ -1578,11 +1578,11 @@ function openEgTowerSelection(){
 const _twIconCache={};
 function _towerIconURL(type){
   if(_twIconCache[type]) return _twIconCache[type];
-  const sz=56,c=document.createElement('canvas');
+  const sz=120,c=document.createElement('canvas');
   c.width=sz;c.height=sz;
   const ctx=c.getContext('2d');
   ctx.translate(sz/2,sz/2);
-  drawTowerIcon(ctx,type,sz*.85,0,0);
+  drawTowerIcon(ctx,type,sz*.82,0,0);
   return (_twIconCache[type]=c.toDataURL());
 }
 function renderTowerSelection(available){
@@ -1609,10 +1609,12 @@ function renderTowerSelection(available){
     if(TCHAIN[ti]) badges.push('<span class="ts-card-badge badge-air">⚡ Chain</span>');
     grid+=`<div class="ts-card${isSel?' selected':''}" onclick="toggleTowerSelection(${ti})">
       ${badges.length?`<div class="ts-card-badges">${badges.join('')}</div>`:''}
-      <div class="ts-card-ico"><img src="${_towerIconURL(ti)}" style="width:52px;height:52px;image-rendering:pixelated;"></div>
-      <div class="ts-card-name">${TNAMES[ti]}</div>
-      <div class="ts-card-cost">💰${CFG.t_cost[ti]}</div>
-      <div class="ts-card-desc">${TSTRENGTH[ti].join(' · ')}</div>
+      <div class="ts-card-art"><img src="${_towerIconURL(ti)}"></div>
+      <div class="ts-card-info">
+        <div class="ts-card-name">${TNAMES[ti]}</div>
+        <div class="ts-card-cost">💰${CFG.t_cost[ti]}</div>
+        <div class="ts-card-desc">${TSTRENGTH[ti].join(' · ')}</div>
+      </div>
     </div>`;
   });
   document.getElementById('tsGrid').innerHTML=grid;
