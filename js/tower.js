@@ -89,7 +89,8 @@ function getSupportResist(col,row){
   return resist;
 }
 // 📈 ราคาป้อมชนิดนี้ถัดไปแพงขึ้นตามจำนวนป้อมชนิดนี้ที่วางอยู่บนกระดาน (+15 ทอง/ป้อม)
-function getTowerCost(t){return CFG.t_cost[t]+(G?G.towers.filter(tw=>tw.type===t).length:0)*15;}
+const FIXED_COST_TYPES=new Set([4]);// ป้อมที่ราคาคงที่ไม่ขึ้นตามจำนวน (ชัพพอร์ด)
+function getTowerCost(t){return CFG.t_cost[t]+(FIXED_COST_TYPES.has(t)||!G?0:G.towers.filter(tw=>tw.type===t).length*15);}
 function getBuffMult(col,row){
   if(!G) return 1;
   const self=G.towers.find(t=>t.col===col&&t.row===row);
