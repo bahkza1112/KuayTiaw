@@ -845,14 +845,22 @@ function renderBag(){
       {icon:MAT_ICONS[1],name:MAT_NAMES[1],col:'#ce93d8',qty:mats[1]||0,desc:'วัสดุหายากจากการเล่น'},
       {icon:MAT_ICONS[2],name:MAT_NAMES[2],col:'#ffe082',qty:mats[2]||0,desc:'วัสดุพิเศษจากการเล่น'},
     ];
-    body.innerHTML=matDefs.map(m=>`<div class="bag-item">
+    const shardDefs=[
+      {id:'shard_c',icon:'🔹',name:'เศษสีน้ำเงิน',col:'#64b5f6',desc:'เศษสะสมสามัญ · แลกได้ที่ Workshop'},
+      {id:'shard_r',icon:'💜',name:'เศษสีม่วง',   col:'#ce93d8',desc:'เศษสะสมหายาก · แลกได้ที่ Workshop'},
+      {id:'shard_e',icon:'🌟',name:'เศษดวงดาว',   col:'#ffe082',desc:'เศษสะสมพิเศษ · แลกได้ที่ Workshop'},
+    ];
+    const rowHtml=m=>`<div class="bag-item">
         <div class="bag-ico" style="font-size:24px;">${m.icon}</div>
         <div class="bag-info">
           <div class="bag-name" style="color:${m.col};">${m.name}</div>
           <div class="bag-desc">${m.desc}</div>
         </div>
         <div class="bag-qty">${m.qty}</div>
-      </div>`).join('');
+      </div>`;
+    body.innerHTML=matDefs.map(rowHtml).join('')
+      +'<div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.3);margin:10px 0 4px;padding-left:2px;letter-spacing:.5px;">เศษสะสม</div>'
+      +shardDefs.map(s=>rowHtml({...s,qty:bag[s.id]||0})).join('');
   } else if(_bagTab===1){
     // บัฟ
     const buffs=BAG_ITEM_DEFS.filter(d=>d.type==='buff'&&(bag[d.id]||0)>0);
