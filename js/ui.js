@@ -957,6 +957,26 @@ function useSkillCard(id){
 function useBuffItem(id){
   setActiveBuff(loadActiveBuff()===id?'':id); // toggle
   renderBag();
+  _renderTsBuff();
+}
+function _renderTsBuff(){
+  const p=document.getElementById('tsBuff');
+  if(!p) return;
+  const bag=loadBag(),abuff=loadActiveBuff();
+  const buffs=BAG_ITEM_DEFS.filter(d=>d.type==='buff'&&(bag[d.id]||0)>0);
+  if(!buffs.length){
+    p.innerHTML='<div class="ts-buff-title">ไอเท็มใช้บัพ</div><div class="ts-buff-empty">ไม่มีไอเท็ม</div>';
+    return;
+  }
+  p.innerHTML='<div class="ts-buff-title">ไอเท็มใช้บัพ</div>'
+    +buffs.map(d=>{
+      const isActive=abuff===d.id;
+      return `<div class="ts-buff-item${isActive?' ts-buff-active':''}" onclick="useBuffItem('${d.id}')" style="--bc:${d.color};--bc-bg:${d.color}22;">
+        <div class="ts-buff-ico"><img src="${_skillIconURL(d.id)}"></div>
+        <div><div class="ts-buff-name" style="color:${d.color};">${d.name}</div>
+        <div class="ts-buff-qty">มี ${bag[d.id]} ชิ้น${isActive?` <span style="color:${d.color};font-weight:700">● จะใช้</span>`:''}</div></div>
+      </div>`;
+    }).join('');
 }
 function _updateBagBadge(){
   const b=document.getElementById('bagBadge');
@@ -1870,6 +1890,7 @@ function _skillIconURL(id){
       ctx.beginPath();ctx.roundRect(-22,-22,44,66,10);ctx.strokeStyle='rgba(230,74,25,.55)';ctx.lineWidth=2;ctx.stroke();
       ctx.beginPath();ctx.moveTo(-14,-18);ctx.lineTo(-10,10);ctx.strokeStyle='rgba(255,255,255,.4)';ctx.lineWidth=3;ctx.lineCap='round';ctx.stroke();
     }
+    return (_skIconCache[id]=c.toDataURL());
   }catch(e){return '';}
 }
 const _twIconCache={};
@@ -1946,6 +1967,7 @@ function renderTowerSelection(available){
       skillPicker.innerHTML='';
     }
   }
+  _renderTsBuff();
   // long-press to show tower info
   document.querySelectorAll('#tsGrid .ts-card').forEach((card,idx)=>{
     const ti=available[idx];
