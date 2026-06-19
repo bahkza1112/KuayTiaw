@@ -2,6 +2,42 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.10.2 — Canvas art UI overhaul (tower cards + skill icons)
+
+### Added
+- **Canvas-drawn tower art** (`js/ui.js` `_towerIconURL`): tower selection cards now render
+  real tower art via offscreen canvas (`drawTowerIcon`) instead of emoji. 240 px offscreen
+  canvas, displayed at `aspect-ratio:4/3` with smooth scaling.
+- **Canvas-drawn skill icons** (`js/ui.js` `_skillIconURL` / `_drawSkillIcon`): all 5 skill
+  cards (goldrush/freeze/meteor/overdrive/barrier) replaced emoji with bespoke canvas drawings
+  matching each skill's theme. Icons appear in bag tab, gacha odds list, tower-select skill
+  picker, and skill info popup.
+- **Skill icon states**: owned skills render bright (`brightness(1.25)`); locked skills render
+  dark grayscale (`grayscale(1) brightness(.4)`).
+
+### Changed
+- **Item renames** (`js/save.js`): ผงดาวตก→ดาวตก · เศษสีทอง→เศษดวงดาว · เศษหินมืด→หินมืด ·
+  แกนเวทอสูร→เศษแกนเวท · gacha pool "เศษแกนเวท x3/x1"→"แกนเวท x3/x1"
+- **Bag restructure** (`Tower Quest 🏰.html`, `js/ui.js`): removed ✨สะสม tab; shard counts
+  now live in the วัสดุ tab. Remaining tabs: วัสดุ(0) / บัฟ(1) / สกิล(2).
+- **Gacha dud** (`js/save.js` `_addDudShard`): consolation prize now randomly gives all 3
+  shard types (🔹70% / 💜22% / 🌟8%) instead of always blue.
+- **Shard exchange UI** (`js/ui.js` `_renderShardExchange`): shows shard name so players know
+  what they are spending.
+- **Skill card star size** (`css/main.css`): `.ts-sk-stars` font-size 7px → 11px.
+- **Tower card art proportions** (`css/main.css`): `.ts-card-art` aspect-ratio 1/1 → 4/3.
+
+### Fixed
+- **Strip slot overflow** (`js/ui.js` `renderTowerSelection`): stages without `maxTowers` used
+  default 99, creating 99 empty strip slots that overflowed and covered grid cards. Now capped
+  to `available.length` for noLimit stages.
+- **`_towerIconURL` crash guard** (`js/ui.js`): wrapped in try/catch so a `drawTowerIcon`
+  failure returns `''` instead of breaking the entire card grid render.
+- **`TSTRENGTH` null guard** (`js/ui.js`): `(TSTRENGTH[ti]||[]).join()` prevents crash for
+  any tower type without a strength entry.
+
+---
+
 ## v3.10.1 — Workshop tab split (craft vs talent)
 
 ### Changed
