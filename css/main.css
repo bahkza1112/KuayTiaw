@@ -421,19 +421,19 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .ts-body{flex:1;overflow-y:auto;padding:14px;}
 .ts-info{background:rgba(0,0,0,.3);border:1px solid #2a4a2a;border-radius:10px;padding:10px 13px;margin-bottom:12px;font-size:11px;color:#aaa;line-height:1.6;}
 .ts-info strong{color:#ffe082;}
-.ts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
-.ts-card{background:linear-gradient(175deg,#1a2a1a,#0d180d);border:2px solid #2a3a2a;border-radius:12px;overflow:hidden;text-align:center;cursor:pointer;transition:all .2s;position:relative;display:flex;flex-direction:column;}
-.ts-card:hover{border-color:#8bc34a;transform:translateY(-3px);box-shadow:0 6px 18px rgba(139,195,74,.3);}
+.ts-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px;}
+.ts-card{background:linear-gradient(175deg,#1a2a1a,#0d180d);border:2px solid #2a3a2a;border-radius:10px;overflow:hidden;text-align:center;cursor:pointer;transition:all .2s;position:relative;display:flex;flex-direction:column;}
+.ts-card:hover{border-color:#8bc34a;transform:translateY(-2px);box-shadow:0 4px 14px rgba(139,195,74,.3);}
 .ts-card:active{transform:scale(.96);}
-.ts-card.selected{border-color:#ffe234;box-shadow:0 0 16px rgba(255,226,52,.5);}
+.ts-card.selected{border-color:#ffe234;box-shadow:0 0 12px rgba(255,226,52,.5);}
 .ts-card.locked-card{opacity:.35;cursor:not-allowed;filter:grayscale(1);}
 .ts-card-art{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 60%,rgba(255,255,255,.06) 0%,rgba(0,0,0,.3) 100%);overflow:hidden;}
 .ts-card-art img{width:88%;height:88%;object-fit:contain;image-rendering:auto;}
-.ts-card-info{padding:5px 5px 7px;border-top:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.35);}
+.ts-card-info{padding:3px 4px 5px;border-top:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.35);}
 .ts-card-ico{display:none;}
-.ts-card-name{font-size:11px;color:#fff;font-weight:700;}
-.ts-card-cost{font-size:9px;color:#ffe082;margin-top:2px;}
-.ts-card-desc{font-size:8px;color:#9e9e9e;margin-top:3px;line-height:1.4;}
+.ts-card-name{font-size:10px;color:#fff;font-weight:700;}
+.ts-card-cost{font-size:8px;color:#ffe082;margin-top:1px;}
+.ts-card-desc{font-size:7px;color:#9e9e9e;margin-top:2px;line-height:1.3;}
 .ts-card-badges{position:absolute;top:4px;right:4px;display:flex;flex-direction:column;gap:2px;align-items:flex-end;}
 .ts-card-badge{font-size:8px;padding:1px 5px;border-radius:6px;font-weight:700;}
 .badge-air{background:rgba(33,150,243,.3);color:#90caf9;border:1px solid rgba(33,150,243,.4);}
