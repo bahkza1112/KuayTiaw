@@ -1526,6 +1526,13 @@ function render(){
   });
 
   // towers — sprite style (stone base + body)
+  // precompute merge-eligible set (for rarity frame: only show on towers that can merge)
+  const _mergeableSet=new Set();
+  G.towers.forEach(a=>{
+    if(a.awakened||(a.star||1)>=4)return;
+    if(G.towers.some(b=>b!==a&&!b.awakened&&b.type===a.type&&(b.star||1)===(a.star||1)&&(b.star||1)<4))
+      _mergeableSet.add(a);
+  });
   G.towers.forEach(tw=>{
     const bounce=tw.spawnAnim>0?1+Math.sin(tw.spawnAnim*Math.PI)*.25:1;
     const x=tw.col*CS,y=tw.row*CS,cx2=x+CS/2,cy2=y+CS/2;
@@ -1625,7 +1632,7 @@ function render(){
       ctx.fillText('Lv'+tw.lv,x+CS-13,y+9);
     }
     // 🌟 Rarity frame — กรอบสีรอบป้อมตามดาว (ไม่แสดงถ้า Awakened เพราะมีออร่าทองของตัวเองแล้ว)
-    if(!tw.awakened&&tw.star>1){
+    if(_mergeableSet.has(tw)){
       const _rc=RARITY_COLORS[tw.star];
       ctx.save();
       ctx.shadowBlur=8;ctx.shadowColor=_rc;

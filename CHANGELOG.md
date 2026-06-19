@@ -2,6 +2,12 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.5 — Merge-hint rarity frame
+
+### Changed
+- `js/game.js`: precompute `_mergeableSet` before tower render loop — a tower is mergeable if another tower of the same type + same star (both not awakened, star < 4) exists on the board
+- Rarity frame condition changed from `!tw.awakened&&tw.star>1` → `_mergeableSet.has(tw)` — frame now acts as a "Merge available" indicator instead of a static rarity display
+
 ## v3.11.1 — Collapsible talent tree
 
 ### Changed
