@@ -250,20 +250,21 @@
     <button class="surrender-btn" id="surrenderBtn" style="display:none" onclick="surrender()">🏳 ยอมแพ้</button>
   </div>
   <canvas id="cv"></canvas>
-  <button id="skillBtn" class="skill-fab" style="display:none">
-    <span class="skill-fab-cd" id="skillFabCd"></span>
-    <span class="skill-fab-ico" id="skillFabIco">⭐</span>
-    <span class="skill-fab-sec" id="skillFabSec"></span>
-    <span class="skill-fab-star" id="skillFabStar"></span>
-  </button>
   <div class="tpanel-wrap">
     <div class="wave-preview" id="wavePreview">
       <div class="wave-preview-title">⚠️ คลื่นต่อไป...</div>
       <div class="wave-preview-enemies" id="wavePreviewEnemies"></div>
     </div>
     <div class="range-info" id="rangeInfo"></div>
+    <button id="skillBtn" class="skill-fab" style="display:none">
+      <span class="skill-fab-cd" id="skillFabCd"></span>
+      <span class="skill-fab-ico" id="skillFabIco">⭐</span>
+      <span class="skill-fab-sec" id="skillFabSec"></span>
+      <span class="skill-fab-star" id="skillFabStar"></span>
+    </button>
     <div id="dragGhost"></div>
     <div class="tpanel">
+      <button class="upall-card" id="upgradeAllBtn" onclick="upgradeAllTowers()" disabled title="อัพสกิลป้อมทุกตัวในสนาม"><div class="upall-card-icon">⬆</div><div class="upall-card-label">อัพสกิล<br>ทั้งหมด</div><span id="upgradeAllBadge" class="upall-badge" style="display:none;"></span></button>
       <div style="display:flex;gap:5px;flex:1;flex-wrap:wrap;">
         <div class="tbtn" id="tb0" onclick="selTower(0)"><div class="ticon">💣</div><div>ปืนใหญ่</div><div class="tcost" id="tc0">💰50</div></div>
         <div class="tbtn" id="tb1" onclick="selTower(1)"><div class="ticon">❄️</div><div>น้ำแข็ง</div><div class="tcost" id="tc1">💰60</div></div>
@@ -275,7 +276,6 @@
         <div class="tbtn" id="tb7" onclick="selTower(7)" style="display:none;"><div class="ticon">⚡</div><div>สายฟ้า</div><div class="tcost" id="tc7">💰85</div></div>
         <div class="tbtn" id="tb8" onclick="selTower(8)" style="display:none;"><div class="ticon">🌑</div><div>มนตราโมฆะ</div><div class="tcost" id="tc8">💰90</div></div>
       </div>
-      <button class="upall-card" id="upgradeAllBtn" onclick="upgradeAllTowers()" disabled title="อัพสกิลป้อมทุกตัวในสนาม"><div class="upall-card-icon">⬆</div><div class="upall-card-label">อัพสกิล<br>ทั้งหมด</div><span id="upgradeAllBadge" class="upall-badge" style="display:none;"></span></button>
       <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0;margin-left:4px;">
         <div style="position:relative;">
           <button class="wavebtn" id="waveBtn" onclick="startWave()" onmouseenter="showWavePreview()" onmouseleave="hideWavePreview()">▶ ส่งคลื่น</button>
