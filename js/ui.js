@@ -291,7 +291,7 @@ const PATCH_NOTES=[
   ]},
   {ver:'1.12.0',date:'2026-06-14',title:'💎 Soul Gems, Workshop และป้อมมนตราโมฆะ!',notes:[
     'เพิ่มสกุลเงินใหม่ 💎 มณีวิญญาณ (Soul Gems) — ได้รับเมื่อทำดาวในด่านเนื้อเรื่องเพิ่มขึ้นเป็นครั้งแรก และเมื่อจบเกม Endgame',
-    'Endgame: เคลียร์เวฟจะมีโอกาสดรอปวัสดุพิเศษ 🪨 หินมืด, 🔘 แกนเวทอสูร, 🌟 ดาวตก (โอกาสคงที่ตามความยาก)',
+    'Endgame: เคลียร์เวฟจะมีโอกาสดรอปวัสดุพิเศษ 🪨 หินมืด, 🔘 เศษแกนเวท, 🌟 ดาวตก (โอกาสคงที่ตามความยาก)',
     'เพิ่มหน้า 🛠️ Workshop ในเมนูหลัก — ใช้ 💎 และวัสดุปลดล็อกป้อมใหม่ถาวร',
     'เพิ่มป้อมที่ 9: 🌑 ป้อมมนตราโมฆะ — มีโอกาสติด "Void Mark" ให้ศัตรู เพิ่มดาเมจที่รับจากป้อมทุกชนิด ใช้ได้เฉพาะ Endgame',
     'Endgame ตอนนี้ต้องเลือกป้อมก่อนเริ่มเกม จำนวนป้อมที่เลือกได้ขึ้นกับความยาก (ง่าย 7 / ปกติ 6 / ยาก 5)'
@@ -539,7 +539,7 @@ function updateMenuStats(){
 /* ══ WORKSHOP ══ */
 const VOID_RECIPE={gems:800,mats:{0:30,1:15,2:8}};
 const MAT_ICONS=['🪨','🔘','🌟'];
-const MAT_NAMES=['หินมืด','แกนเวทอสูร','ดาวตก'];
+const MAT_NAMES=['หินมืด','เศษแกนเวท','ดาวตก'];
 /* ══ BAG SCREEN ══ */
 let _bagTab=0;
 function openBag(){showScreen('bag',true);clearBagNew();_updateBagBadge();renderBag();}
@@ -2047,7 +2047,7 @@ function renderDevCheat(){
   <div class="dev-section"><div class="dev-section-title">🪨 วัสดุคราฟ</div>
   <div class="dev-cheat-grid">
     <div class="dev-cheat-btn green" onclick="cheat('mat0_10')">+10 หินมืด</div>
-    <div class="dev-cheat-btn green" onclick="cheat('mat1_10')">+10 แกนเวทอสูร</div>
+    <div class="dev-cheat-btn green" onclick="cheat('mat1_10')">+10 เศษแกนเวท</div>
     <div class="dev-cheat-btn green" onclick="cheat('mat2_5')">+5 ดาวตก</div>
     <div class="dev-cheat-btn" onclick="cheat('mat_reset')">รีเซ็ตวัสดุ</div>
   </div></div>
@@ -2158,7 +2158,7 @@ function cheat(cmd){
     case 'gem0': saveGems(0);showToast('💎 ตั้งมณีเป็น 0 แล้ว');break;
     case 'pity0': saveGachaPity(0);showToast('🔄 รีเซ็ต Pity แล้ว');break;
     case 'mat0_10':{const m=loadMaterials();m[0]=(m[0]||0)+10;saveMaterials(m);showToast('🪨 +10 หินมืด!');break;}
-    case 'mat1_10':{const m=loadMaterials();m[1]=(m[1]||0)+10;saveMaterials(m);showToast('🔘 +10 แกนเวทอสูร!');break;}
+    case 'mat1_10':{const m=loadMaterials();m[1]=(m[1]||0)+10;saveMaterials(m);showToast('🔘 +10 เศษแกนเวท!');break;}
     case 'mat2_5':{const m=loadMaterials();m[2]=(m[2]||0)+5;saveMaterials(m);showToast('🌟 +5 ดาวตก!');break;}
     case 'mat_reset': saveMaterials([0,0,0]);showToast('↺ รีเซ็ตวัสดุแล้ว!');break;
   }
