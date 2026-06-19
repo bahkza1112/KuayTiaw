@@ -129,7 +129,7 @@ const PATCH_NOTES=[
   {ver:'3.5.5',date:'2026-06-16',title:'⚖️ บาลานซ์กาชา + ระบบแลกเศษสะสม',notes:[
     'กาชา: pull ที่ไม่ได้รางวัลหลักจะได้ 🔹 เศษสีน้ำเงิน 1 ชิ้นทุกครั้ง (ไม่มือเปล่าอีกต่อไป)',
     'Workshop ใหม่: ส่วน "แลกเศษสะสม" — เศษจากกาชาแลกเป็นวัสดุคราฟได้ (🔹×10→🪨 / 💜×5→🔘 / 🌟×3→⭐)',
-    'ปรับ drop rate ผงดาวตก (Endgame): ง่าย 2%→4%, ปกติ 4%→5%, ยาก 6%→8% (เดิมเป็น bottleneck ที่เกินไป)',
+    'ปรับ drop rate ดาวตก (Endgame): ง่าย 2%→4%, ปกติ 4%→5%, ยาก 6%→8% (เดิมเป็น bottleneck ที่เกินไป)',
     'กาชา: การ์ด Void Tower (001) แสดงหมายเหตุ "🔥 ใช้ได้เฉพาะ Endgame" เพื่อไม่ให้ผู้เล่นสับสน',
   ]},
   {ver:'3.5.4',date:'2026-06-16',title:'🃏 กาชา: เปิดการ์ดไพ่ด้วยตัวเอง',notes:[
@@ -291,7 +291,7 @@ const PATCH_NOTES=[
   ]},
   {ver:'1.12.0',date:'2026-06-14',title:'💎 Soul Gems, Workshop และป้อมมนตราโมฆะ!',notes:[
     'เพิ่มสกุลเงินใหม่ 💎 มณีวิญญาณ (Soul Gems) — ได้รับเมื่อทำดาวในด่านเนื้อเรื่องเพิ่มขึ้นเป็นครั้งแรก และเมื่อจบเกม Endgame',
-    'Endgame: เคลียร์เวฟจะมีโอกาสดรอปวัสดุพิเศษ 🪨 เศษหินมืด, 🔘 แกนเวทอสูร, 🌟 ผงดาวตก (โอกาสคงที่ตามความยาก)',
+    'Endgame: เคลียร์เวฟจะมีโอกาสดรอปวัสดุพิเศษ 🪨 เศษหินมืด, 🔘 แกนเวทอสูร, 🌟 ดาวตก (โอกาสคงที่ตามความยาก)',
     'เพิ่มหน้า 🛠️ Workshop ในเมนูหลัก — ใช้ 💎 และวัสดุปลดล็อกป้อมใหม่ถาวร',
     'เพิ่มป้อมที่ 9: 🌑 ป้อมมนตราโมฆะ — มีโอกาสติด "Void Mark" ให้ศัตรู เพิ่มดาเมจที่รับจากป้อมทุกชนิด ใช้ได้เฉพาะ Endgame',
     'Endgame ตอนนี้ต้องเลือกป้อมก่อนเริ่มเกม จำนวนป้อมที่เลือกได้ขึ้นกับความยาก (ง่าย 7 / ปกติ 6 / ยาก 5)'
@@ -539,7 +539,7 @@ function updateMenuStats(){
 /* ══ WORKSHOP ══ */
 const VOID_RECIPE={gems:800,mats:{0:30,1:15,2:8}};
 const MAT_ICONS=['🪨','🔘','🌟'];
-const MAT_NAMES=['เศษหินมืด','แกนเวทอสูร','ผงดาวตก'];
+const MAT_NAMES=['เศษหินมืด','แกนเวทอสูร','ดาวตก'];
 /* ══ BAG SCREEN ══ */
 let _bagTab=0;
 function openBag(){showScreen('bag',true);clearBagNew();_updateBagBadge();renderBag();}
@@ -2064,7 +2064,7 @@ function renderDevCheat(){
   <div class="dev-cheat-grid">
     <div class="dev-cheat-btn green" onclick="cheat('mat0_10')">+10 เศษหินมืด</div>
     <div class="dev-cheat-btn green" onclick="cheat('mat1_10')">+10 แกนเวทอสูร</div>
-    <div class="dev-cheat-btn green" onclick="cheat('mat2_5')">+5 ผงดาวตก</div>
+    <div class="dev-cheat-btn green" onclick="cheat('mat2_5')">+5 ดาวตก</div>
     <div class="dev-cheat-btn" onclick="cheat('mat_reset')">รีเซ็ตวัสดุ</div>
   </div></div>
   <div class="dev-section"><div class="dev-section-title">🌊 Wave Control</div>
@@ -2175,7 +2175,7 @@ function cheat(cmd){
     case 'pity0': saveGachaPity(0);showToast('🔄 รีเซ็ต Pity แล้ว');break;
     case 'mat0_10':{const m=loadMaterials();m[0]=(m[0]||0)+10;saveMaterials(m);showToast('🪨 +10 เศษหินมืด!');break;}
     case 'mat1_10':{const m=loadMaterials();m[1]=(m[1]||0)+10;saveMaterials(m);showToast('🔘 +10 แกนเวทอสูร!');break;}
-    case 'mat2_5':{const m=loadMaterials();m[2]=(m[2]||0)+5;saveMaterials(m);showToast('🌟 +5 ผงดาวตก!');break;}
+    case 'mat2_5':{const m=loadMaterials();m[2]=(m[2]||0)+5;saveMaterials(m);showToast('🌟 +5 ดาวตก!');break;}
     case 'mat_reset': saveMaterials([0,0,0]);showToast('↺ รีเซ็ตวัสดุแล้ว!');break;
   }
 }

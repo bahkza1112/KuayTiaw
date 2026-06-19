@@ -63,9 +63,9 @@ const GACHA_PITY=100; // รับ 001 guaranteed ทุก 100 pull
 const GACHA_POOL=[
   {code:'001',icon:'🌑',name:'ป้อมมนตราโมฆะ', rarity:'legendary',color:'#b388ff',w:1,
    apply(){setVoidUnlocked();}},
-  {code:'002',icon:'🌟',name:'ผงดาวตก x3',    rarity:'epic',   color:'#ff8f00',w:10,
+  {code:'002',icon:'🌟',name:'ดาวตก x3',    rarity:'epic',   color:'#ff8f00',w:10,
    apply(){addMaterial(2,3);}},
-  {code:'003',icon:'🌟',name:'ผงดาวตก x1',    rarity:'epic',   color:'#ffe082',w:20,
+  {code:'003',icon:'🌟',name:'ดาวตก x1',    rarity:'epic',   color:'#ffe082',w:20,
    apply(){addMaterial(2,1);}},
   {code:'004',icon:'🔘',name:'แกนเวทอสูร x3', rarity:'rare',   color:'#ce93d8',w:20,
    apply(){addMaterial(1,3);}},
