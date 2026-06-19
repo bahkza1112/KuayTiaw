@@ -766,11 +766,14 @@ function update(dt){
     if(e.slowT>0){e.slowT-=dt;if(e.slowT<=0)e.slow=1;}
     if(e._enrageT>0) e._enrageT-=dt;
     if(e._dodgeFlash>0) e._dodgeFlash-=dt;
-    // 👺 โกบลิน: Pack Rush — โกบลินที่อยู่ใกล้กัน (<1.2 ช่อง) ได้บัฟความเร็ว +20%
-    e._packBoost=false;
+    // 👺 โกบลิน: Pack Rush — throttle O(n²) เป็นทุก 0.25s
     if(e.ti===0){
-      for(const o of G.enemies){
-        if(o!==e&&o.alive&&o.ti===0&&Math.hypot(o.x-e.x,o.y-e.y)<CS*1.2){e._packBoost=true;break;}
+      e._packT=(e._packT||0)-dt;
+      if(e._packT<=0){
+        e._packT=0.25; e._packBoost=false;
+        for(const o of G.enemies){
+          if(o!==e&&o.alive&&o.ti===0&&Math.hypot(o.x-e.x,o.y-e.y)<CS*1.2){e._packBoost=true;break;}
+        }
       }
     }
     e.prog+=e.spd*e.slow*((e._enrageT>0)?(e._enrageMult||1):1)*((e._diveT>0)?1.5:1)*(e._packBoost?1.2:1)*((G&&G.weather&&G.weather.spdMult)?G.weather.spdMult:1)*CS*dt;
@@ -987,35 +990,35 @@ function update(dt){
         const _extra=_aw?2:1;
         for(let _m=0;_m<_extra;_m++) G.projs.push(Object.assign({},_rp));
       }
-      // muzzle flash ring per tower type
+      // muzzle flash ring per tower type (cap rings ไม่เกิน 40)
       const mCol=TPROJ[tw.type];
-      G.fxRings.push({x:fx,y:fy,r:2,maxR:tw.type===3?CS*.8:CS*.4,
+      if(G.fxRings.length<40) G.fxRings.push({x:fx,y:fy,r:2,maxR:tw.type===3?CS*.8:CS*.4,
         life:.5,lw:tw.type===3?2:1.5,col:mCol,delay:0});
       // sniper: laser line flash
       if(tw.type===3){
-        G.fxRings.push({x:fx,y:fy,r:1,maxR:CS*.3,life:.35,lw:3,col:'#fffde7',delay:0});
-        if(_rIsCrit) G.particles.push({x:fx,y:fy-CS*.5,txt:'💥 CRIT!',col:'#ff5252',life:.6,vy:-1.4,vx:0,decay:2,scale:1});
+        if(G.fxRings.length<40) G.fxRings.push({x:fx,y:fy,r:1,maxR:CS*.3,life:.35,lw:3,col:'#fffde7',delay:0});
+        if(_rIsCrit&&G.particles.length<120) G.particles.push({x:fx,y:fy-CS*.5,txt:'💥 CRIT!',col:'#ff5252',life:.6,vy:-1.4,vx:0,decay:2,scale:1});
       }
       // magic: extra sparkle burst
-      if(tw.type===2){
-        for(let k=0;k<5;k++){
-          const ang=k/5*Math.PI*2;
+      if(tw.type===2&&G.particles.length<120){
+        for(let k=0;k<3;k++){
+          const ang=k/3*Math.PI*2;
           G.particles.push({x:fx,y:fy,txt:'·',col:'#ea80fc',
             life:.5,vy:Math.sin(ang)*.9,vx:Math.cos(ang)*.9,decay:3,scale:.8});
         }
       }
       // ice: freeze sparkle
-      if(tw.type===1){
-        for(let k=0;k<4;k++){
-          const ang=k/4*Math.PI*2;
+      if(tw.type===1&&G.particles.length<120){
+        for(let k=0;k<2;k++){
+          const ang=k/2*Math.PI*2;
           G.particles.push({x:fx,y:fy,txt:'❄',col:'#80d8ff',
             life:.4,vy:Math.sin(ang)*.6,vx:Math.cos(ang)*.6,decay:3.5,scale:.7});
         }
       }
       // thunder: electric spark burst at muzzle
       if(tw.type===7){
-        for(let k=0;k<6;k++){
-          const ang=k/6*Math.PI*2;
+        for(let k=0;k<4;k++){
+          const ang=k/4*Math.PI*2;
           G.particles.push({x:fx,y:fy,txt:'·',col:'#ffe57f',
             life:.35,vy:Math.sin(ang)*1.4,vx:Math.cos(ang)*1.4,decay:4,scale:.9});
         }
@@ -1050,11 +1053,13 @@ function update(dt){
       const goldAmt=Math.round(getGoldMineAmt(tw.rngLv)*((G.weather&&G.weather.goldMineMult)?G.weather.goldMineMult:1)*(tw.awakened?2:1));
       G.gold+=goldAmt; updateHUD();
       addParticle(tw.col*CS+CS/2,tw.row*CS+CS/2,'+'+goldAmt+'💰','#ffd54f');
-      // V6: flying coin particles
-      for(let _k=0;_k<3;_k++){
-        G.particles.push({x:tw.col*CS+CS/2+(Math.random()-.5)*CS*.45,y:tw.row*CS+CS*.42,
-          txt:'🪙',col:'#ffd54f',life:1.1+Math.random()*.4,
-          vy:-1.7-Math.random()*1.1,vx:(Math.random()-.5)*.9,decay:.85,scale:.85+Math.random()*.25});
+      // flying coin particles — skip when particle pool is busy
+      if(G.particles.length<100){
+        for(let _k=0;_k<2;_k++){
+          G.particles.push({x:tw.col*CS+CS/2+(Math.random()-.5)*CS*.45,y:tw.row*CS+CS*.42,
+            txt:'🪙',col:'#ffd54f',life:1.0+Math.random()*.3,
+            vy:-1.5-Math.random()*.8,vx:(Math.random()-.5)*.8,decay:.9,scale:.8+Math.random()*.2});
+        }
       }
     }
   });
@@ -2621,11 +2626,14 @@ function updateEg(dt){
     if(e.slowT>0){e.slowT-=dt;if(e.slowT<=0)e.slow=1;}
     if(e._enrageT>0) e._enrageT-=dt;
     if(e._dodgeFlash>0) e._dodgeFlash-=dt;
-    // 👺 โกบลิน: Pack Rush — โกบลินที่อยู่ใกล้กัน (<1.2 ช่อง) ได้บัฟความเร็ว +20%
-    e._packBoost=false;
+    // 👺 โกบลิน: Pack Rush — throttle O(n²) เป็นทุก 0.25s
     if(e.ti===0){
-      for(const o of G.enemies){
-        if(o!==e&&o.alive&&o.ti===0&&Math.hypot(o.x-e.x,o.y-e.y)<CS*1.2){e._packBoost=true;break;}
+      e._packT=(e._packT||0)-dt;
+      if(e._packT<=0){
+        e._packT=0.25; e._packBoost=false;
+        for(const o of G.enemies){
+          if(o!==e&&o.alive&&o.ti===0&&Math.hypot(o.x-e.x,o.y-e.y)<CS*1.2){e._packBoost=true;break;}
+        }
       }
     }
     e.prog+=e.spd*e.slow*((e._enrageT>0)?(e._enrageMult||1):1)*((e._diveT>0)?1.5:1)*(e._packBoost?1.2:1)*((G&&G.weather&&G.weather.spdMult)?G.weather.spdMult:1)*CS*dt;
