@@ -744,7 +744,7 @@ function _skillCardBackHTML(result){
   if(res.isNew) status='<span style="color:#69f0ae;">✨ ปลดล็อกใหม่!</span>';
   else if(res.maxed) status='<span style="color:#ffd54f;">MAX · คืน 🎫1</span>';
   else if(res.upgraded) status=`<span style="color:#69f0ae;">★${res.star-1} → ★${res.star} ✨</span>`;
-  else status=`<span style="color:#90caf9;">เศษ ${res.shards}/${res.shardsNeeded} → ★${res.star+1}</span>`;
+  else status=`<span style="color:#90caf9;">ซ้ำ ${res.shards}/${res.shardsNeeded} → ★${res.star+1}</span>`;
   return `<div class="gc-ico">${d.icon}</div>
     <div class="gc-name" style="color:${d.color};">${d.name}</div>
     <div class="sk-stars">${stars}</div>
@@ -897,7 +897,7 @@ function renderBag(){
         const nextS=owned&&star<SKILL_MAX_STAR?getSkillStat(d.id,star+1):null;
         const starStr=owned?('★'.repeat(star)+'☆'.repeat(SKILL_MAX_STAR-star)):'🔒 ยังไม่ปลดล็อก';
         const cdLine=owned?`Cooldown ${cur.cd}s`+(nextS?` <span style="opacity:.6;">→ ★${star+1}: ${nextS.cd}s</span>`:' (★MAX)'):'';
-        const shardLine=owned&&star<SKILL_MAX_STAR?`<span style="color:#90caf9;font-size:9px;">เศษ ${shards}/${needed} → ★${star+1}</span>`:
+        const shardLine=owned&&star<SKILL_MAX_STAR?`<span style="color:#90caf9;font-size:9px;">ซ้ำ ${shards}/${needed} → ★${star+1}</span>`:
           owned?'<span style="color:#ffd54f;font-size:9px;">★ MAX</span>':'';
         return `<div class="bag-item${owned?'':' sk-locked'}" style="border-color:rgba(255,255,255,.1);">
           <div class="bag-ico" style="background:${owned?d.color+'33':'rgba(255,255,255,.04)'};${owned?'':'filter:grayscale(1);opacity:.5;'};cursor:pointer;" onclick="_showSkillInfo('${d.id}')">${d.icon}</div>
