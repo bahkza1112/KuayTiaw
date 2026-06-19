@@ -1724,8 +1724,147 @@ function _skillIconURL(id){
       ctx.beginPath();ctx.moveTo(-h*.32,0);ctx.lineTo(h*.32,0);ctx.stroke();
       // top shine
       ctx.beginPath();ctx.ellipse(0,-h*.55,14,5,0,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.18)';ctx.fill();
+    } else if(id==='gold_pot'){
+      // === ยาเพิ่มทอง — ขวดแก้วบรรจุของเหลวทอง ===
+      // shadow
+      ctx.beginPath();ctx.ellipse(2,44,14,5,0,0,Math.PI*2);ctx.fillStyle='rgba(0,0,0,.25)';ctx.fill();
+      // stopper cork
+      const corkG=ctx.createLinearGradient(-8,-52,8,-38);
+      corkG.addColorStop(0,'#d7aa5a');corkG.addColorStop(1,'#8b6914');
+      ctx.beginPath();ctx.roundRect(-7,-52,14,16,3);ctx.fillStyle=corkG;ctx.fill();
+      ctx.strokeStyle='#6b4f0e';ctx.lineWidth=1.2;ctx.stroke();
+      // neck
+      const neckG=ctx.createLinearGradient(-6,-36,6,-24);
+      neckG.addColorStop(0,'#d4edda');neckG.addColorStop(1,'#9dc6a8');
+      ctx.beginPath();ctx.roundRect(-6,-36,12,14,2);ctx.fillStyle=neckG;ctx.fill();
+      // bottle body gradient (glass)
+      const bottleG=ctx.createLinearGradient(-22,-22,22,44);
+      bottleG.addColorStop(0,'#e8f5e9');bottleG.addColorStop(0.3,'#c8e6c9');bottleG.addColorStop(1,'#81c784');
+      ctx.beginPath();ctx.roundRect(-22,-22,44,66,10);ctx.fillStyle=bottleG;ctx.fill();
+      // liquid fill (gold)
+      ctx.save();
+      ctx.beginPath();ctx.roundRect(-22,-22,44,66,10);ctx.clip();
+      const liqG=ctx.createLinearGradient(0,4,0,44);
+      liqG.addColorStop(0,'#fff176');liqG.addColorStop(0.4,'#ffd600');liqG.addColorStop(1,'#f9a825');
+      ctx.beginPath();ctx.rect(-22,4,44,40);ctx.fillStyle=liqG;ctx.fill();
+      // liquid surface shimmer
+      ctx.beginPath();ctx.ellipse(0,4,20,5,0,0,Math.PI*2);ctx.fillStyle='rgba(255,255,200,.6)';ctx.fill();
+      // bubble 1
+      ctx.beginPath();ctx.arc(-8,18,4,0,Math.PI*2);ctx.strokeStyle='rgba(255,255,255,.55)';ctx.lineWidth=1.5;ctx.stroke();
+      // bubble 2
+      ctx.beginPath();ctx.arc(7,30,2.5,0,Math.PI*2);ctx.stroke();
+      ctx.restore();
+      // coin symbol center
+      ctx.shadowColor='#ffd700';ctx.shadowBlur=10;
+      ctx.beginPath();ctx.arc(0,24,12,0,Math.PI*2);
+      const coinG=ctx.createRadialGradient(-3,-3+24,1,0,24,12);
+      coinG.addColorStop(0,'#fffde7');coinG.addColorStop(0.5,'#ffd700');coinG.addColorStop(1,'#c8a000');
+      ctx.fillStyle=coinG;ctx.fill();
+      ctx.strokeStyle='#9e7c00';ctx.lineWidth=1.5;ctx.stroke();
+      ctx.shadowBlur=0;
+      ctx.fillStyle='#7a5900';ctx.font='bold 13px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText('฿',0,24);
+      // bottle outline
+      ctx.beginPath();ctx.roundRect(-22,-22,44,66,10);ctx.strokeStyle='rgba(100,160,100,.6)';ctx.lineWidth=2;ctx.stroke();
+      // glass shine streak
+      ctx.beginPath();ctx.moveTo(-14,-18);ctx.lineTo(-10,10);ctx.strokeStyle='rgba(255,255,255,.5)';ctx.lineWidth=3;ctx.lineCap='round';ctx.stroke();
+    } else if(id==='hp_pot'){
+      // === ยาเพิ่ม HP — ขวดสีแดงใสมีหัวใจ ===
+      ctx.beginPath();ctx.ellipse(2,44,14,5,0,0,Math.PI*2);ctx.fillStyle='rgba(0,0,0,.25)';ctx.fill();
+      // cork
+      const hCork=ctx.createLinearGradient(-8,-52,8,-38);
+      hCork.addColorStop(0,'#bcaaa4');hCork.addColorStop(1,'#6d4c41');
+      ctx.beginPath();ctx.roundRect(-7,-52,14,16,3);ctx.fillStyle=hCork;ctx.fill();
+      ctx.strokeStyle='#4e342e';ctx.lineWidth=1.2;ctx.stroke();
+      // neck
+      const hNeck=ctx.createLinearGradient(-6,-36,6,-24);
+      hNeck.addColorStop(0,'#ffcdd2');hNeck.addColorStop(1,'#ef9a9a');
+      ctx.beginPath();ctx.roundRect(-6,-36,12,14,2);ctx.fillStyle=hNeck;ctx.fill();
+      // bottle glass
+      const hBottle=ctx.createLinearGradient(-22,-22,22,44);
+      hBottle.addColorStop(0,'#fce4ec');hBottle.addColorStop(0.3,'#f48fb1');hBottle.addColorStop(1,'#e91e63');
+      ctx.beginPath();ctx.roundRect(-22,-22,44,66,10);ctx.fillStyle=hBottle;ctx.fill();
+      // liquid
+      ctx.save();
+      ctx.beginPath();ctx.roundRect(-22,-22,44,66,10);ctx.clip();
+      const hLiq=ctx.createLinearGradient(0,0,0,44);
+      hLiq.addColorStop(0,'#ff8a80');hLiq.addColorStop(0.5,'#f44336');hLiq.addColorStop(1,'#b71c1c');
+      ctx.beginPath();ctx.rect(-22,0,44,44);ctx.fillStyle=hLiq;ctx.fill();
+      ctx.beginPath();ctx.ellipse(0,0,20,5,0,0,Math.PI*2);ctx.fillStyle='rgba(255,180,180,.5)';ctx.fill();
+      ctx.restore();
+      // heart
+      ctx.shadowColor='#ff1744';ctx.shadowBlur=12;
+      ctx.fillStyle='#fff';
+      ctx.beginPath();
+      const hx=0,hy=22,hs=13;
+      ctx.moveTo(hx,hy+hs*.6);
+      ctx.bezierCurveTo(hx-hs*1.6,hy-hs*.5, hx-hs*1.6,hy-hs*1.6, hx,hy-hs*.5);
+      ctx.bezierCurveTo(hx+hs*1.6,hy-hs*1.6, hx+hs*1.6,hy-hs*.5, hx,hy+hs*.6);
+      ctx.fill();
+      // inner heart tint
+      const htG=ctx.createRadialGradient(0,hy-4,1,0,hy,hs);
+      htG.addColorStop(0,'#ffcdd2');htG.addColorStop(1,'rgba(255,255,255,0)');
+      ctx.fillStyle=htG;ctx.fill();
+      ctx.shadowBlur=0;
+      ctx.beginPath();ctx.roundRect(-22,-22,44,66,10);ctx.strokeStyle='rgba(194,24,91,.5)';ctx.lineWidth=2;ctx.stroke();
+      ctx.beginPath();ctx.moveTo(-14,-18);ctx.lineTo(-10,10);ctx.strokeStyle='rgba(255,255,255,.45)';ctx.lineWidth=3;ctx.lineCap='round';ctx.stroke();
+    } else if(id==='dmg_pot'){
+      // === ยาเข้มแข็ง — ขวดส้มแดงมีดาบ ===
+      ctx.beginPath();ctx.ellipse(2,44,14,5,0,0,Math.PI*2);ctx.fillStyle='rgba(0,0,0,.25)';ctx.fill();
+      // cork
+      const dCork=ctx.createLinearGradient(-8,-52,8,-38);
+      dCork.addColorStop(0,'#ff8f00');dCork.addColorStop(1,'#bf360c');
+      ctx.beginPath();ctx.roundRect(-7,-52,14,16,3);ctx.fillStyle=dCork;ctx.fill();
+      ctx.strokeStyle='#6d1f00';ctx.lineWidth=1.2;ctx.stroke();
+      // neck
+      ctx.beginPath();ctx.roundRect(-6,-36,12,14,2);ctx.fillStyle='#ffcc80';ctx.fill();
+      // bottle
+      const dBottle=ctx.createLinearGradient(-22,-22,22,44);
+      dBottle.addColorStop(0,'#fff3e0');dBottle.addColorStop(0.3,'#ffab40');dBottle.addColorStop(1,'#e64a19');
+      ctx.beginPath();ctx.roundRect(-22,-22,44,66,10);ctx.fillStyle=dBottle;ctx.fill();
+      // liquid
+      ctx.save();
+      ctx.beginPath();ctx.roundRect(-22,-22,44,66,10);ctx.clip();
+      const dLiq=ctx.createLinearGradient(0,-4,0,44);
+      dLiq.addColorStop(0,'#ff8a50');dLiq.addColorStop(0.5,'#f4511e');dLiq.addColorStop(1,'#b71c1c');
+      ctx.beginPath();ctx.rect(-22,-4,44,48);ctx.fillStyle=dLiq;ctx.fill();
+      ctx.beginPath();ctx.ellipse(0,-4,20,5,0,0,Math.PI*2);ctx.fillStyle='rgba(255,200,120,.5)';ctx.fill();
+      // embers
+      ['rgba(255,255,100,.7)','rgba(255,160,0,.6)','rgba(255,80,0,.5)'].forEach((col,i)=>{
+        ctx.beginPath();ctx.arc([-6,5,-2][i],[8,18,30][i],3-i*.5,0,Math.PI*2);ctx.fillStyle=col;ctx.fill();
+      });
+      ctx.restore();
+      // sword
+      ctx.shadowColor='#ff6d00';ctx.shadowBlur=14;
+      // blade
+      const sbG=ctx.createLinearGradient(-3,30,3,-16);
+      sbG.addColorStop(0,'#fff');sbG.addColorStop(0.5,'#ffe0b2');sbG.addColorStop(1,'#bdbdbd');
+      ctx.beginPath();ctx.moveTo(0,-20);ctx.lineTo(3,26);ctx.lineTo(0,32);ctx.lineTo(-3,26);ctx.closePath();
+      ctx.fillStyle=sbG;ctx.fill();
+      ctx.strokeStyle='rgba(255,255,255,.4)';ctx.lineWidth=1;ctx.stroke();
+      // crossguard
+      ctx.beginPath();ctx.roundRect(-14,22,28,5,2);
+      const cgG=ctx.createLinearGradient(-14,22,14,27);
+      cgG.addColorStop(0,'#ff8f00');cgG.addColorStop(0.5,'#ffd54f');cgG.addColorStop(1,'#ff8f00');
+      ctx.fillStyle=cgG;ctx.fill();
+      ctx.strokeStyle='#bf6000';ctx.lineWidth=1;ctx.stroke();
+      // handle
+      const hgG=ctx.createLinearGradient(-4,27,4,42);
+      hgG.addColorStop(0,'#8d4600');hgG.addColorStop(1,'#4e2500');
+      ctx.beginPath();ctx.roundRect(-4,27,8,16,2);ctx.fillStyle=hgG;ctx.fill();
+      ctx.strokeStyle='#6d1f00';ctx.lineWidth=1;ctx.stroke();
+      // pommel
+      ctx.beginPath();ctx.arc(0,43,5,0,Math.PI*2);
+      const pmG=ctx.createRadialGradient(-1,42,1,0,43,5);
+      pmG.addColorStop(0,'#ffd54f');pmG.addColorStop(1,'#ff6f00');
+      ctx.fillStyle=pmG;ctx.fill();
+      ctx.strokeStyle='#bf6000';ctx.lineWidth=1;ctx.stroke();
+      // blade shine
+      ctx.beginPath();ctx.moveTo(-1,-14);ctx.lineTo(-1,20);ctx.strokeStyle='rgba(255,255,255,.6)';ctx.lineWidth=1.5;ctx.lineCap='round';ctx.stroke();
+      ctx.shadowBlur=0;
+      ctx.beginPath();ctx.roundRect(-22,-22,44,66,10);ctx.strokeStyle='rgba(230,74,25,.55)';ctx.lineWidth=2;ctx.stroke();
+      ctx.beginPath();ctx.moveTo(-14,-18);ctx.lineTo(-10,10);ctx.strokeStyle='rgba(255,255,255,.4)';ctx.lineWidth=3;ctx.lineCap='round';ctx.stroke();
     }
-    return (_skIconCache[id]=c.toDataURL());
   }catch(e){return '';}
 }
 const _twIconCache={};
