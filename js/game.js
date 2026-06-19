@@ -2390,7 +2390,7 @@ function _renderSkillBtn(){
 }
 function _tickSkill(dt){
   if(!G||!G.skillId) return;
-  if(G.skillCd>0) G.skillCd=Math.max(0,G.skillCd-dt);
+  if(G.skillCd>0&&G.waveActive) G.skillCd=Math.max(0,G.skillCd-dt);
   if(G.skillDmgT>0){G.skillDmgT-=dt;if(G.skillDmgT<=0){G.skillDmgT=0;G.skillDmgMult=1;G.skillRateMult=1;}}
   if(G.skillGoldT>0){G.skillGoldT-=dt;if(G.skillGoldT<=0){G.skillGoldT=0;G.skillGoldMult=0;}}
   if(G.skillBlockT>0) G.skillBlockT=Math.max(0,G.skillBlockT-dt);
