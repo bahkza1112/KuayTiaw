@@ -1615,13 +1615,21 @@ function renderTowerSelection(available){
     if(ownedDefs.length>0){
       const askill=loadActiveSkill();
       const noSkillSel=!askill||!skills[askill];
-      let chips=`<div class="ts-skill-chip${noSkillSel?' sel':''}" onclick="tsSelectSkill(null)">✕ ไม่ใช้</div>`;
+      let cards=`<div class="ts-sk-card ts-sk-none${noSkillSel?' sel':''}" onclick="tsSelectSkill(null)">
+        <div class="ts-sk-ico">✕</div>
+        <div class="ts-sk-name">ไม่ใช้</div>
+      </div>`;
       ownedDefs.forEach(d=>{
         const star=skills[d.id].star;
         const isSel=askill===d.id;
-        chips+=`<div class="ts-skill-chip${isSel?' sel':''}" onclick="tsSelectSkill('${d.id}')" style="${isSel?'border-color:'+d.color+';color:'+d.color+';':''}">${d.icon} ★${star} ${d.name}</div>`;
+        const stars='★'.repeat(star)+'☆'.repeat(SKILL_MAX_STAR-star);
+        cards+=`<div class="ts-sk-card${isSel?' sel':''}" onclick="tsSelectSkill('${d.id}')" style="${isSel?'--sk-col:'+d.color+';border-color:'+d.color+';':'--sk-col:rgba(255,255,255,.25);'}">
+          <div class="ts-sk-ico" style="color:${isSel?d.color:'#ccc'};">${d.icon}</div>
+          <div class="ts-sk-stars" style="color:${isSel?d.color:'#888'};">${stars}</div>
+          <div class="ts-sk-name" style="color:${isSel?d.color:'#bbb'};">${d.name}</div>
+        </div>`;
       });
-      skillPicker.innerHTML=`<div class="ts-skill-section"><div class="ts-skill-title">⭐ การ์ดสกิล — เลือก 1 ใบ (หรือไม่ใช้)</div><div class="ts-skill-row">${chips}</div></div>`;
+      skillPicker.innerHTML=`<div class="ts-skill-section"><div class="ts-skill-title">⭐ การ์ดสกิล — เลือก 1 ใบ (หรือไม่ใช้)</div><div class="ts-sk-row">${cards}</div></div>`;
     } else {
       skillPicker.innerHTML='';
     }

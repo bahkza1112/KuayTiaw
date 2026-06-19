@@ -426,11 +426,15 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .badge-gold{background:rgba(255,193,7,.2);color:#ffe082;border:1px solid rgba(255,193,7,.3);}
 /* ── Skill picker (tower select screen) ── */
 .ts-skill-section{margin:0 0 12px;border-top:1px solid rgba(255,255,255,.1);padding-top:10px;}
-.ts-skill-title{font-size:10px;color:#b388ff;font-weight:700;margin-bottom:6px;letter-spacing:.5px;}
-.ts-skill-row{display:flex;flex-wrap:wrap;gap:6px;}
-.ts-skill-chip{font-size:11px;padding:5px 10px;border-radius:20px;border:1.5px solid rgba(255,255,255,.2);color:#aaa;cursor:pointer;transition:all .15s;background:rgba(0,0,0,.3);}
-.ts-skill-chip:active{transform:scale(.95);}
-.ts-skill-chip.sel{border-color:#b388ff;color:#b388ff;background:rgba(179,136,255,.12);font-weight:700;}
+.ts-skill-title{font-size:10px;color:#b388ff;font-weight:700;margin-bottom:8px;letter-spacing:.5px;}
+.ts-sk-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;}
+.ts-sk-card{flex-shrink:0;width:76px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 6px 7px;border-radius:10px;border:1.5px solid rgba(255,255,255,.15);background:rgba(0,0,0,.35);cursor:pointer;transition:all .15s;text-align:center;}
+.ts-sk-card:active{transform:scale(.93);}
+.ts-sk-card.sel{background:rgba(var(--sk-col-rgb,179,136,255),.1);box-shadow:0 0 10px rgba(var(--sk-col-rgb,179,136,255),.35);}
+.ts-sk-none{width:56px;border-style:dashed;}
+.ts-sk-ico{font-size:24px;line-height:1;}
+.ts-sk-stars{font-size:7px;letter-spacing:1px;line-height:1;}
+.ts-sk-name{font-size:9px;font-weight:700;line-height:1.2;word-break:break-all;}
 /* ── Tower info modal (long-press) ── */
 #tsInfoModal{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;}
 .tsim-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.7);}
