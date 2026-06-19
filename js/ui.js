@@ -568,7 +568,7 @@ function updateMenuStats(){
 /* ══ WORKSHOP ══ */
 const VOID_RECIPE={gems:800,mats:{0:30,1:15,2:8}};
 const MAT_ICONS=['🪨','🔘','🌟'];
-const MAT_NAMES=['หินมืด','เศษแกนเวท','ดาวตก'];
+const MAT_NAMES=['หินมืด','แกนเวทย์','ดาวตก'];
 /* ══ BAG SCREEN ══ */
 let _bagTab=0;
 function openBag(){showScreen('bag',true);clearBagNew();_updateBagBadge();renderBag();}
@@ -876,7 +876,7 @@ function renderBag(){
     ];
     const shardDefs=[
       {id:'shard_c',icon:'🔹',name:'เศษสีน้ำเงิน',col:'#64b5f6',desc:'เศษสะสมสามัญ · แลกได้ที่ Workshop'},
-      {id:'shard_r',icon:'💜',name:'เศษสีม่วง',   col:'#ce93d8',desc:'เศษสะสมหายาก · แลกได้ที่ Workshop'},
+      {id:'shard_r',icon:'💜',name:'เศษแกนเวทย์',   col:'#ce93d8',desc:'เศษสะสมหายาก · แลกได้ที่ Workshop'},
       {id:'shard_e',icon:'🌟',name:'เศษดวงดาว',   col:'#ffe082',desc:'เศษสะสมพิเศษ · แลกได้ที่ Workshop'},
     ];
     const rowHtml=m=>`<div class="bag-item">
@@ -1071,7 +1071,7 @@ function renderWorkshop(){
 /* ── Shard Exchange (v3.5.5) ── */
 const SHARD_EXCHANGE=[
   {shardId:'shard_c',shardIcon:'🔹',shardName:'เศษสีน้ำเงิน',cost:10,matIdx:0},
-  {shardId:'shard_r',shardIcon:'💜',shardName:'เศษสีม่วง',   cost:5,  matIdx:1},
+  {shardId:'shard_r',shardIcon:'💜',shardName:'เศษแกนเวทย์',   cost:5,  matIdx:1},
   {shardId:'shard_e',shardIcon:'🌟',shardName:'เศษดวงดาว',    cost:3,  matIdx:2},
 ];
 function exchangeShards(shardId){

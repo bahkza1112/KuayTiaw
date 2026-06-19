@@ -32,7 +32,7 @@ const BAG_ITEM_DEFS=[
   {id:'hp_pot',  icon:'💊',name:'ยาเพิ่ม HP',   desc:'HP ปราสาทเพิ่ม +3 เมื่อเริ่มด่าน',  color:'#ef5350',type:'buff'},
   {id:'dmg_pot', icon:'⚔️',name:'ยาเข้มแข็ง',  desc:'ดาเมจป้อมทั้งหมด +10% เมื่อเริ่มด่าน',color:'#ff8a65',type:'buff'},
   {id:'shard_c', icon:'🔹',name:'เศษสีน้ำเงิน', desc:'ชิ้นส่วนสะสมสามัญจากกล่องบรอนซ์',   color:'#64b5f6',type:'shard'},
-  {id:'shard_r', icon:'💜',name:'เศษสีม่วง',    desc:'ชิ้นส่วนสะสมหายากจากกล่องเงิน',     color:'#ab47bc',type:'shard'},
+  {id:'shard_r', icon:'💜',name:'เศษแกนเวทย์',    desc:'ชิ้นส่วนสะสมหายากจากกล่องเงิน',     color:'#ab47bc',type:'shard'},
   {id:'shard_e', icon:'🌟',name:'เศษดวงดาว',    desc:'ชิ้นส่วนสะสมพิเศษจากกล่องทอง',     color:'#ff8f00',type:'shard'},
 ];
 function loadBag(){try{return JSON.parse(localStorage.getItem('tq_bag')||'{}');}catch(e){return{};}}
@@ -353,7 +353,7 @@ const LOGIN_REWARDS=[
   {icon:'🔹',label:'เศษสีน้ำเงิน ×3',      grant(){addBagItem('shard_c',3);}},
   {icon:'🪙',label:'ทองถาวร 60',           grant(){addPGold(60);}},
   {icon:'🎫',label:'80 มณี + ตั๋วสกิล ×2', grant(){addGems(80);addTickets(2);}},
-  {icon:'💜',label:'เศษสีม่วง ×2',         grant(){addBagItem('shard_r',2);}},
+  {icon:'💜',label:'เศษแกนเวทย์ ×2',         grant(){addBagItem('shard_r',2);}},
   {icon:'🎁',label:'120 มณีวิญญาณ',        grant(){addGems(120);}},
   {icon:'🌟',label:'เศษทอง ×2 + 150 มณี + 🎫3', grant(){addBagItem('shard_e',2);addGems(150);addTickets(3);}},
 ];
