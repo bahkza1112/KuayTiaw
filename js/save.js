@@ -186,9 +186,15 @@ function hasSkill(id){return getSkillStar(id)>0;}
 function addSkillCard(id){
   const d=getSkillDef(id); if(!d) return null;
   const o=loadSkills();
-  if(!o[id]){o[id]={star:1};saveSkills(o);return{id,star:1,isNew:true,maxed:false,refund:0};}
-  if(o[id].star>=SKILL_MAX_STAR){addTickets(1);return{id,star:SKILL_MAX_STAR,isNew:false,maxed:true,refund:1};}
-  o[id].star++;saveSkills(o);return{id,star:o[id].star,isNew:false,maxed:false,refund:0};
+  let result;
+  if(!o[id]){o[id]={star:1};saveSkills(o);result={id,star:1,isNew:true,maxed:false,refund:0};}
+  else if(o[id].star>=SKILL_MAX_STAR){addTickets(1);result={id,star:SKILL_MAX_STAR,isNew:false,maxed:true,refund:1};}
+  else{o[id].star++;saveSkills(o);result={id,star:o[id].star,isNew:false,maxed:false,refund:0};}
+  // achievement checks
+  const s2=loadSkills();
+  if(Object.keys(s2).length>=SKILL_DEFS.length) unlockAchievement('sk_all5');
+  if(Object.values(s2).some(c=>c.star>=SKILL_MAX_STAR)) unlockAchievement('sk_max');
+  return result;
 }
 /* ตั๋วสกิล */
 function loadTickets(){try{return Number(localStorage.getItem('tq_tickets'))||0;}catch(e){return 0;}}
@@ -430,6 +436,8 @@ const ACHIEVEMENTS=[
   {id:'cdx_t',icon:'🏗️',cat:'collect',name:'สถาปนิก',       desc:'ปลดล็อก Tower ทุกแบบ',           reward:100},
   {id:'gem1k',icon:'💎',cat:'collect',name:'นักสะสมมณีวิญญาณ',desc:'สะสม Soul Gems รวม 1,000',     reward:50},
   {id:'void1',icon:'🌑',cat:'collect',name:'ผู้เชี่ยวชาญโมฆะ', desc:'ปลดล็อกป้อมมนตราโมฆะที่เวิร์กชอป',reward:100},
+  {id:'sk_all5',icon:'🃏',cat:'collect',name:'นักสะสมการ์ด', desc:'เก็บการ์ดสกิลครบทั้ง 5 ใบ',      reward:100},
+  {id:'sk_max', icon:'⭐',cat:'collect',name:'สกิลสูงสุด',   desc:'อัพการ์ดสกิลใบใดก็ได้ถึง ★5',   reward:150},
 ];
 const ACH_CATS={story:'📜 เนื้อเรื่อง',combat:'⚔️ การต่อสู้',skill:'🎯 ทักษะ',endgame:'🔥 Endgame',collect:'📚 สะสม'};
 
@@ -514,6 +522,9 @@ function checkAchievements(){
   if(unlTowers.size>=TNAMES.length) unlockAchievement('cdx_t');
   if(loadGems()>=1000) unlockAchievement('gem1k');
   if(isVoidUnlocked()) unlockAchievement('void1');
+  const sk=loadSkills();
+  if(Object.keys(sk).length>=SKILL_DEFS.length) unlockAchievement('sk_all5');
+  if(Object.values(sk).some(c=>c.star>=SKILL_MAX_STAR)) unlockAchievement('sk_max');
   // Endgame
   try{
     const runs=JSON.parse(localStorage.getItem('tq_runs')||'[]');

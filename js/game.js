@@ -2315,7 +2315,56 @@ function _setupSkillBtn(){
   document.getElementById('skillFabIco').textContent=d.icon;
   document.getElementById('skillFabStar').textContent='★'+star;
   btn.style.setProperty('--skc',d.color);
+  // restore saved drag position
+  try{
+    const p=JSON.parse(localStorage.getItem('tq_fabpos')||'null');
+    if(p){btn.style.left=p.l+'%';btn.style.top=p.t+'%';btn.style.transform='translate(-50%,-50%)';}
+    else{btn.style.left='';btn.style.top='';btn.style.transform='';}
+  }catch(e){}
+  _initFabDrag();
   _renderSkillBtn();
+}
+function _initFabDrag(){
+  const btn=document.getElementById('skillBtn');
+  if(!btn||btn._dragInit) return;
+  btn._dragInit=true;
+  let dragging=false,sx=0,sy=0,ox=0,oy=0,didMove=false;
+  btn.addEventListener('pointerdown',e=>{
+    if(e.button!==0) return;
+    dragging=true; didMove=false;
+    sx=e.clientX; sy=e.clientY;
+    const par=btn.offsetParent||document.body;
+    const r=btn.getBoundingClientRect(), pr=par.getBoundingClientRect();
+    ox=(r.left+r.width/2-pr.left)/pr.width*100;
+    oy=(r.top+r.height/2-pr.top)/pr.height*100;
+    btn.setPointerCapture(e.pointerId);
+    btn.classList.add('dragging');
+  },{passive:true});
+  btn.addEventListener('pointermove',e=>{
+    if(!dragging) return;
+    const dx=e.clientX-sx, dy=e.clientY-sy;
+    if(!didMove&&(Math.abs(dx)>5||Math.abs(dy)>5)) didMove=true;
+    if(!didMove) return;
+    const par=btn.offsetParent||document.body;
+    const pr=par.getBoundingClientRect();
+    const hw=btn.offsetWidth/2/pr.width*100, hh=btn.offsetHeight/2/pr.height*100;
+    const nx=Math.max(hw,Math.min(100-hw, ox+dx/pr.width*100));
+    const ny=Math.max(hh,Math.min(100-hh, oy+dy/pr.height*100));
+    btn.style.left=nx+'%'; btn.style.top=ny+'%'; btn.style.transform='translate(-50%,-50%)';
+  });
+  btn.addEventListener('pointerup',()=>{
+    if(!dragging) return;
+    dragging=false;
+    btn.classList.remove('dragging');
+    if(didMove){
+      const par=btn.offsetParent||document.body;
+      const pr=par.getBoundingClientRect(), r=btn.getBoundingClientRect();
+      const l=(r.left+r.width/2-pr.left)/pr.width*100;
+      const t=(r.top+r.height/2-pr.top)/pr.height*100;
+      localStorage.setItem('tq_fabpos',JSON.stringify({l,t}));
+    }
+  });
+  btn.addEventListener('click',e=>{if(didMove)return; activateSkill();});
 }
 function _renderSkillBtn(){
   const btn=document.getElementById('skillBtn');if(!btn||!G||!G.skillId)return;

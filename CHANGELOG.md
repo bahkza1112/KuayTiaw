@@ -2,6 +2,27 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.9.4 — Draggable skill FAB + skill achievements
+
+### Added
+- **Draggable skill FAB** (`js/game.js`, `css/main.css`): `_initFabDrag()` attaches
+  `pointerdown/pointermove/pointerup` listeners to `#skillBtn`; drag >5 px moves
+  it anywhere on the game canvas, saves position to `tq_fabpos` as % of container.
+  On next session the button restores to the saved position. Removed inline
+  `onclick` from HTML; `click` listener inside `_initFabDrag` suppresses activation
+  when a drag occurred. `touch-action:none` added for mobile compatibility.
+- **Achievement — 🃏 นักสะสมการ์ด** (`js/save.js`): unlocked when all 5 skill card
+  IDs are in `tq_skills` (id `sk_all5`, reward 💎100, cat `collect`).
+- **Achievement — ⭐ สกิลสูงสุด** (`js/save.js`): unlocked when any card reaches
+  ★5 (id `sk_max`, reward 💎150, cat `collect`). Both checked in `addSkillCard()`
+  and `checkAchievements()`.
+
+### Changed
+- `css/main.css`: `.skill-fab` cursor changed to `grab`; added `.skill-fab.dragging`
+  rule (`cursor:grabbing`, elevated shadow); removed `transform` from `.skill-fab.ready:hover`
+  to avoid conflict with drag-positioned transform.
+- `GAME_VERSION` bumped to `3.9.4`.
+
 ## v3.9.3 — Skill gacha rate rework (1% cards + 95% dud)
 
 ### Changed
