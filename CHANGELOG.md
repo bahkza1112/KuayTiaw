@@ -2,6 +2,12 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.0 — Support tower fixed cost
+
+### Changed
+- `FIXED_COST_TYPES` (`js/tower.js`): type 4 (ชัพพอร์ด) exempt from +15/tower cost scaling — always costs 35 gold
+- Other towers keep existing scaling behavior
+
 ## v3.10.9 — Buff item panel in tower selection
 
 ### Added
