@@ -2,7 +2,7 @@
 <html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Tower Quest 🏰 v3.10.0</title>
+<title>Tower Quest 🏰 v3.10.1</title>
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -43,7 +43,7 @@
   <div class="island" id="logoIsland">🏰</div>
   <div class="gtitle">TOWER QUEST</div>
   <div class="gsub">⚔️ ปกป้องอาณาจักรของคุณ!</div>
-  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v3.10.0 — มีอะไรใหม่<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
+  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v3.10.1 — มีอะไรใหม่<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
 
   <!-- battle buttons -->
   <button class="bbattle" id="startBtn">⚔️ โหมดเนื้อเรื่อง</button>
@@ -501,57 +501,67 @@
     <button class="bback" id="workshopBackBtn">← กลับ</button>
     <div class="eg-hd-title">🛠️ เวิร์กชอป</div>
   </div>
+  <!-- Workshop Tab Bar -->
+  <div class="ws-tab-bar">
+    <button id="wsTabBtnCraft" class="ws-tab-btn ws-tab-active" onclick="wsTab('craft')">🛠️ คราฟ</button>
+    <button id="wsTabBtnTalent" class="ws-tab-btn" onclick="wsTab('talent')">🌳 ทาเลนต์</button>
+  </div>
   <div class="eg-body">
-    <div class="ws-hero" style="flex-direction:column;gap:0;">
-      <!-- ── ส่วนหัว: ไอคอน + ชื่อ + สถิติ ── -->
-      <div style="display:flex;gap:14px;align-items:flex-start;width:100%;">
-        <div class="ws-hero-icon">🌑</div>
-        <div style="flex:1;min-width:0;">
-          <div class="ws-hero-name">ป้อมมนตราโมฆะ</div>
-          <div class="ws-hero-tag">✦ ป้อมลับที่ 9 — ปลดล็อกได้ที่เวิร์กชอปเท่านั้น</div>
-          <div class="ws-hero-stats">
-            <span class="ws-stat">⚔️ ดาเมจ 42</span>
-            <span class="ws-stat">📡 ระยะ 3.0</span>
-            <span class="ws-stat">⚡ 0.6 วิ/นัด</span>
-            <span class="ws-stat">💰 ราคา 90</span>
+    <!-- ── แท็บ คราฟ ── -->
+    <div id="wsTabCraft">
+      <div class="ws-hero" style="flex-direction:column;gap:0;">
+        <!-- ── ส่วนหัว: ไอคอน + ชื่อ + สถิติ ── -->
+        <div style="display:flex;gap:14px;align-items:flex-start;width:100%;">
+          <div class="ws-hero-icon">🌑</div>
+          <div style="flex:1;min-width:0;">
+            <div class="ws-hero-name">ป้อมมนตราโมฆะ</div>
+            <div class="ws-hero-tag">✦ ป้อมลับที่ 9 — ปลดล็อกได้ที่เวิร์กชอปเท่านั้น</div>
+            <div class="ws-hero-stats">
+              <span class="ws-stat">⚔️ ดาเมจ 42</span>
+              <span class="ws-stat">📡 ระยะ 3.0</span>
+              <span class="ws-stat">⚡ 0.6 วิ/นัด</span>
+              <span class="ws-stat">💰 ราคา 90</span>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- ── สกิล (กดขยาย) ── -->
-      <div style="width:100%;margin-top:10px;border-top:1px solid rgba(179,136,255,.15);padding-top:10px;cursor:pointer;" onclick="toggleWsSkill()">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-size:12px;font-weight:700;color:#ce93d8;">✨ พลังมนตราโมฆะ</span>
-          <span id="wsSkillArrow" style="font-size:10px;color:#9575cd;">▼ รายละเอียด</span>
-        </div>
-        <div id="wsSkillDetail" style="display:none;margin-top:8px;">
-          <div class="eg-info-txt" style="margin:0;">
-            ปล่อยพลังโมฆะใส่ศัตรู มีโอกาสติด <strong>Void Mark</strong> ทำให้ศัตรูตัวนั้นรับดาเมจเพิ่มจากป้อมทุกชนิด<br>
-            🌙 Awaken: โอกาสติดมาร์กเพิ่มเป็น 50% และเพิ่มดาเมจที่รับเป็น +40%<br>
-            🔥 ใช้ได้เฉพาะโหมด Endgame เท่านั้น
+        <!-- ── สกิล (กดขยาย) ── -->
+        <div style="width:100%;margin-top:10px;border-top:1px solid rgba(179,136,255,.15);padding-top:10px;cursor:pointer;" onclick="toggleWsSkill()">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;font-weight:700;color:#ce93d8;">✨ พลังมนตราโมฆะ</span>
+            <span id="wsSkillArrow" style="font-size:10px;color:#9575cd;">▼ รายละเอียด</span>
+          </div>
+          <div id="wsSkillDetail" style="display:none;margin-top:8px;">
+            <div class="eg-info-txt" style="margin:0;">
+              ปล่อยพลังโมฆะใส่ศัตรู มีโอกาสติด <strong>Void Mark</strong> ทำให้ศัตรูตัวนั้นรับดาเมจเพิ่มจากป้อมทุกชนิด<br>
+              🌙 Awaken: โอกาสติดมาร์กเพิ่มเป็น 50% และเพิ่มดาเมจที่รับเป็น +40%<br>
+              🔥 ใช้ได้เฉพาะโหมด Endgame เท่านั้น
+            </div>
           </div>
         </div>
+        <!-- ── ส่วนคราฟ / สถานะ ── -->
+        <div id="wsCraftSection" style="width:100%;margin-top:10px;border-top:1px solid rgba(179,136,255,.15);padding-top:10px;">
+          <div id="wsRecipeBox" style="display:none;"><div class="ws-recipe-grid" id="wsRecipeGrid"></div></div>
+          <div id="wsLockBadge" style="display:none;font-size:11px;color:#ffab40;">🔒 ผ่านด่านสุดท้ายก่อนจึงจะคราฟได้</div>
+          <div id="wsAlreadyUnlocked" style="display:none;font-size:11px;color:#b388ff;">🌑 ปลดล็อกแล้ว — เลือกใช้ในโหมด Endgame ได้เลย</div>
+          <div id="wsCraftReqNote" style="display:none;font-size:11px;color:#aaa;line-height:1.7;margin-bottom:8px;"></div>
+          <button class="eg-start-btn" id="wsCraftBtn" style="background:linear-gradient(180deg,#7e57c2,#311b92);width:100%;display:none;">🛠️ คราฟป้อมมนตราโมฆะ</button>
+        </div>
       </div>
-      <!-- ── ส่วนคราฟ / สถานะ ── -->
-      <div id="wsCraftSection" style="width:100%;margin-top:10px;border-top:1px solid rgba(179,136,255,.15);padding-top:10px;">
-        <div id="wsRecipeBox" style="display:none;"><div class="ws-recipe-grid" id="wsRecipeGrid"></div></div>
-        <div id="wsLockBadge" style="display:none;font-size:11px;color:#ffab40;">🔒 ผ่านด่านสุดท้ายก่อนจึงจะคราฟได้</div>
-        <div id="wsAlreadyUnlocked" style="display:none;font-size:11px;color:#b388ff;">🌑 ปลดล็อกแล้ว — เลือกใช้ในโหมด Endgame ได้เลย</div>
-        <div id="wsCraftReqNote" style="display:none;font-size:11px;color:#aaa;line-height:1.7;margin-bottom:8px;"></div>
-        <button class="eg-start-btn" id="wsCraftBtn" style="background:linear-gradient(180deg,#7e57c2,#311b92);width:100%;display:none;">🛠️ คราฟป้อมมนตราโมฆะ</button>
+      <!-- 🔹 แลกเศษสะสม (Shard Exchange) -->
+      <div class="eg-info-box" style="margin-top:12px;">
+        <div class="eg-info-title">🔹 แลกเศษสะสม</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.4);margin:4px 0 8px;">เศษสะสมจากกาชา → วัสดุคราฟ</div>
+        <div id="wsShardExchange" style="display:flex;flex-direction:column;gap:6px;"></div>
       </div>
     </div>
-    <!-- 🔹 แลกเศษสะสม (Shard Exchange) -->
-    <div class="eg-info-box" style="margin-top:12px;">
-      <div class="eg-info-title">🔹 แลกเศษสะสม</div>
-      <div style="font-size:10px;color:rgba(255,255,255,.4);margin:4px 0 8px;">เศษสะสมจากกาชา → วัสดุคราฟ</div>
-      <div id="wsShardExchange" style="display:flex;flex-direction:column;gap:6px;"></div>
-    </div>
-    <!-- 🌳 ต้นไม้ทาเลนต์ (อัพเกรดถาวรด้วยทองถาวร) -->
-    <div id="wsPUpSection" style="margin-top:16px;">
-      <div class="eg-info-box">
-        <div class="eg-info-title">🌳 ต้นไม้ทาเลนต์ <span id="wsPGoldBadge" style="font-size:11px;font-weight:400;color:#ffd54f;margin-left:6px;"></span></div>
-        <div style="font-size:10px;color:rgba(255,255,255,.4);margin:4px 0 2px;">ปลดทาเลนต์ถาวรด้วยทองถาวร — ใช้ได้ทั้งโหมดเนื้อเรื่องและเอนด์เกม</div>
-        <div id="wsPUpGrid" style="display:flex;flex-direction:column;gap:12px;margin-top:10px;"></div>
+    <!-- ── แท็บ ทาเลนต์ ── -->
+    <div id="wsTabTalent" style="display:none;">
+      <div id="wsPUpSection">
+        <div class="eg-info-box">
+          <div class="eg-info-title">🌳 ต้นไม้ทาเลนต์ <span id="wsPGoldBadge" style="font-size:11px;font-weight:400;color:#ffd54f;margin-left:6px;"></span></div>
+          <div style="font-size:10px;color:rgba(255,255,255,.4);margin:4px 0 2px;">ปลดทาเลนต์ถาวรด้วยทองถาวร — ใช้ได้ทั้งโหมดเนื้อเรื่องและเอนด์เกม</div>
+          <div id="wsPUpGrid" style="display:flex;flex-direction:column;gap:12px;margin-top:10px;"></div>
+        </div>
       </div>
     </div>
     <!-- 🌑 popup ฉลองคราฟ Void Tower สำเร็จ (สไตล์เดียวกับ #endOverlay) -->

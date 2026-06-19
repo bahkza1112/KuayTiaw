@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.10.1 — Workshop tab split (craft vs talent)
+
+### Changed
+- **Workshop UI** (`Tower Quest 🏰.html`, `js/ui.js`, `css/main.css`): split into
+  two tabs — 🛠️ **คราฟ** (Void Tower craft + shard exchange) and 🌳 **ทาเลนต์**
+  (permanent talent tree). Added `wsTab(t)` function; `openWorkshop()` now resets
+  to the craft tab on open.
+
+---
+
 ## v3.10.0 — Skill shard upgrade system + pre-stage skill selection
 
 ### Changed

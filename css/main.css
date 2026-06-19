@@ -505,6 +505,10 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 #workshop::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 18%,rgba(179,136,255,.2),transparent 55%);pointer-events:none;}
 .void-mote{position:absolute;border-radius:50%;background:radial-gradient(circle,#e1bee7,#7e57c2 60%,transparent);pointer-events:none;animation:voidDrift linear infinite;}
 @keyframes voidDrift{0%{transform:translate(0,0) scale(1);opacity:0}10%{opacity:.8}55%{transform:translate(-10px,-150px) scale(1.3);opacity:.6}100%{transform:translate(6px,-280px) scale(.5);opacity:0}}
+.ws-tab-bar{display:flex;gap:0;border-bottom:2px solid rgba(179,136,255,.2);background:rgba(0,0,0,.25);}
+.ws-tab-btn{flex:1;padding:11px 0;font-size:13px;font-weight:700;color:rgba(255,255,255,.45);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;letter-spacing:.3px;transition:color .2s,border-color .2s;}
+.ws-tab-btn:hover{color:rgba(255,255,255,.75);}
+.ws-tab-active{color:#ce93d8!important;border-bottom-color:#9c27b0!important;}
 @keyframes wsIconGlow{0%,100%{box-shadow:0 0 14px rgba(126,87,194,.5),inset 0 0 14px rgba(126,87,194,.25);}50%{box-shadow:0 0 28px rgba(179,136,255,.85),inset 0 0 18px rgba(179,136,255,.4);}}
 @keyframes wsHeroGlow{0%,100%{box-shadow:0 0 16px rgba(126,87,194,.25);}50%{box-shadow:0 0 28px rgba(126,87,194,.45);}}
 .ws-hero{display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,rgba(126,87,194,.16),rgba(49,27,146,.22));border:1px solid rgba(179,136,255,.35);border-radius:14px;padding:14px;animation:wsHeroGlow 3.5s ease-in-out infinite;}

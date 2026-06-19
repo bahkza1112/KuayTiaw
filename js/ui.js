@@ -1,6 +1,9 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.10.0';
+const GAME_VERSION='3.10.1';
 const PATCH_NOTES=[
+  {ver:'3.10.1',date:'2026-06-19',title:'🛠️ เวิร์กชอปแยกแท็บคราฟ/ทาเลนต์',notes:[
+    'เวิร์กชอปแยกเป็น 2 แท็บ: 🛠️ คราฟ (ป้อมมนตราโมฆะ + แลกเศษ) และ 🌳 ทาเลนต์ (ต้นไม้อัพเกรดถาวร)',
+  ]},
   {ver:'3.10.0',date:'2026-06-19',title:'⭐ อัพเกรดการ์ดสกิลด้วยเศษ + เลือกสกิลตอนเลือกป้อม',notes:[
     'ระบบอัพดาวใหม่: ใบซ้ำสะสมเป็น "เศษ" — ★1→★2 ใช้ 2 เศษ · ★2→★3 ใช้ 4 · ★3→★4 ใช้ 6 · ★4→★5 ใช้ 10',
     'เลือกการ์ดสกิลที่จะใช้ได้ตอนหน้าเลือกป้อม (ก่อนเข้าด่านทุกครั้ง) ไม่ต้องไปเลือกที่กระเป๋าแล้ว',
@@ -983,7 +986,13 @@ function _renderTalentTree(){
     </div>`;
   }).join('');
 }
-function openWorkshop(){ showScreen('workshop',true); renderWorkshop(); }
+function wsTab(t){
+  document.getElementById('wsTabCraft').style.display=t==='craft'?'':'none';
+  document.getElementById('wsTabTalent').style.display=t==='talent'?'':'none';
+  document.getElementById('wsTabBtnCraft').className='ws-tab-btn'+(t==='craft'?' ws-tab-active':'');
+  document.getElementById('wsTabBtnTalent').className='ws-tab-btn'+(t==='talent'?' ws-tab-active':'');
+}
+function openWorkshop(){ showScreen('workshop',true); wsTab('craft'); renderWorkshop(); }
 function toggleWsSkill(){
   const d=document.getElementById('wsSkillDetail');
   const a=document.getElementById('wsSkillArrow');
@@ -1533,7 +1542,6 @@ function showStoryScreen(si){
 }
 
 /* ══ TOWER SELECTION ══ */
-let _tsAvailable=[];
 function showTowerSelection(si){
   towerSelMode='story';
   const s=STAGES[si];
@@ -1574,7 +1582,6 @@ function openEgTowerSelection(){
   renderTowerSelection(available);
 }
 function renderTowerSelection(available){
-  _tsAvailable=available;
   const max=stageMaxTowers;
   document.getElementById('tsSlotCount').textContent=selectedTowersForStage.length+'/'+max;
   // strip
@@ -1719,7 +1726,7 @@ function removeTowerFromSelection(slotIdx){
 }
 function tsSelectSkill(id){
   setActiveSkill(id);
-  renderTowerSelection(_tsAvailable);
+  renderTowerSelection(_tsAvailable());
 }
 function confirmTowerSelection(){
   if(selectedTowersForStage.length===0) return;
