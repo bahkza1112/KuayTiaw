@@ -1578,12 +1578,14 @@ function openEgTowerSelection(){
 const _twIconCache={};
 function _towerIconURL(type){
   if(_twIconCache[type]) return _twIconCache[type];
-  const sz=240,c=document.createElement('canvas');
-  c.width=sz;c.height=sz;
-  const ctx=c.getContext('2d');
-  ctx.translate(sz/2,sz/2);
-  drawTowerIcon(ctx,type,sz*.50,0,0);
-  return (_twIconCache[type]=c.toDataURL());
+  try{
+    const sz=240,c=document.createElement('canvas');
+    c.width=sz;c.height=sz;
+    const ctx=c.getContext('2d');
+    ctx.translate(sz/2,sz/2);
+    drawTowerIcon(ctx,type,sz*.50,0,0);
+    return (_twIconCache[type]=c.toDataURL());
+  }catch(e){return '';}
 }
 function renderTowerSelection(available){
   const max=stageMaxTowers;
