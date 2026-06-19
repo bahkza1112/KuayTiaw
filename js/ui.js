@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.9.1';
+const GAME_VERSION='3.9.2';
 const PATCH_NOTES=[
+  {ver:'3.9.2',date:'2026-06-19',title:'🎫 แก้ตู้กาชาให้ชัดเจนขึ้น',notes:[
+    'เพิ่มแท็บสลับ "💎 ตู้รางวัล" / "⭐ ตู้การ์ดสกิล" ที่หัวทั้งสองหน้า — แยกตู้ชัด ไม่งง',
+    'แก้ไอคอนตั๋ว 🎫 ที่บางเครื่องขึ้นเป็นกล่องสี่เหลี่ยม',
+    'ปุ่มแลกตั๋ว: โชว์จำนวนมณีปัจจุบัน + จางลงเมื่อมณีไม่พอ (ต้องมี 💎50)',
+  ]},
   {ver:'3.9.1',date:'2026-06-19',title:'⭐ หน้าข้อมูลสกิล + ปรับสมดุล',notes:[
     'เพิ่มหน้าข้อมูลการ์ดสกิล — แตะการ์ดในแท็บ "⭐ สกิล" เพื่อดูตารางสเกลทุกดาว ★1–★5',
     'ปรับสมดุล 🛡️ กำแพงวิญญาณ: เวลากันดาเมจ ★4 8→7s, ★5 10→8s (ลดภูมิคุ้มกันอัตโนมัติให้พอดี)',
@@ -8,8 +13,8 @@ const PATCH_NOTES=[
   {ver:'3.9.0',date:'2026-06-19',title:'⭐ การ์ดสกิลกดเอง! (ระบบใหม่)',notes:[
     'ระบบใหม่: การ์ดสกิลกดใช้เองตอนเล่น — มีปุ่มสกิลพร้อม cooldown ในสนาม (ทั้ง Story + Endgame)',
     '5 ใบ: ☄️ อุกกาบาต · ❄️ แช่แข็งสนาม · 💰 โกลด์รัช · ⚡ พลังโจมตี · 🛡️ กำแพงวิญญาณ',
-    'สุ่มจาก "ตู้สุ่มการ์ดสกิล" ด้วย 🎟️ ตั๋วสกิล (เข้าจากหน้ากาชา) · ได้ใบซ้ำ = อัพดาว ★ สูงสุด ★5 (แรงขึ้น + cooldown ลด)',
-    'ได้ตั๋วจาก: ภารกิจรายวัน · login · เคลียร์ด่านได้ดาวใหม่ · หมุดหมาย Endgame เวฟ 15/25/35 · แลก 💎50→🎟️1',
+    'สุ่มจาก "ตู้สุ่มการ์ดสกิล" ด้วย 🎫 ตั๋วสกิล (เข้าจากหน้ากาชา) · ได้ใบซ้ำ = อัพดาว ★ สูงสุด ★5 (แรงขึ้น + cooldown ลด)',
+    'ได้ตั๋วจาก: ภารกิจรายวัน · login · เคลียร์ด่านได้ดาวใหม่ · หมุดหมาย Endgame เวฟ 15/25/35 · แลก 💎50→🎫1',
     'เลือกใส่การ์ด 1 ใบก่อนเข้าด่านที่แท็บ "⭐ สกิล" ในกระเป๋า',
     'ทาเลนต์สายใหม่ ⭐ สกิล: ลด cooldown สกิลสูงสุด −20%',
   ]},
@@ -531,8 +536,8 @@ function openGacha(){
 function _renderGachaUI(){
   document.getElementById('gachaGemCount').textContent=loadGems().toLocaleString();
   document.getElementById('gachaPityInfo').textContent=`สะสม ${loadGachaPity()}/100 ครั้ง`;
-  const sbl=document.getElementById('skillBannerLink');
-  if(sbl) sbl.textContent=`⭐ ตู้สุ่มการ์ดสกิล · มี 🎟️${loadTickets()} ตั๋ว →`;
+  const sbl=document.getElementById('gachaTabSkill');
+  if(sbl) sbl.textContent=`⭐ ตู้การ์ดสกิล (🎫${loadTickets()})`;
   const canAfford1=loadGems()>=GACHA_COST;
   const canAfford10=loadGems()>=gachaCost(10);
   document.getElementById('gachaPull1').disabled=!canAfford1;
@@ -696,6 +701,14 @@ function _renderSkillGachaUI(){
   document.getElementById('skillGachaPityInfo').textContent=`สะสม ${loadSkillPity()}/${SKILL_PITY} ครั้ง`;
   document.getElementById('skillPull1').disabled=loadTickets()<skillPullCost(1);
   document.getElementById('skillPull10').disabled=loadTickets()<skillPullCost(10);
+  // ปุ่มแลกตั๋ว: โชว์มณีปัจจุบัน + dim เมื่อมณีไม่พอ (ต้องการ GEM_PER_TICKET)
+  const exb=document.getElementById('skillExchangeBtn');
+  if(exb){
+    const g=loadGems(), ok=g>=GEM_PER_TICKET;
+    exb.textContent=`🔁 แลก 💎${GEM_PER_TICKET} → 🎫1  (มี 💎${g})`;
+    exb.style.opacity=ok?'1':'.45';
+    exb.style.cursor=ok?'pointer':'not-allowed';
+  }
   if(!_skBusy){
     document.getElementById('skillGachaGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;color:#444;padding:40px 0;font-size:13px;">กดสุ่มเพื่อเริ่ม ⭐</div>';
     document.getElementById('skillGachaSkipRow').style.display='none';
@@ -708,7 +721,7 @@ function _skillCardBackHTML(result){
   const stars='★'.repeat(res.star)+'☆'.repeat(SKILL_MAX_STAR-res.star);
   let status;
   if(res.isNew) status='<span style="color:#69f0ae;">✨ ปลดล็อกใหม่!</span>';
-  else if(res.maxed) status='<span style="color:#ffd54f;">MAX · คืน 🎟️1</span>';
+  else if(res.maxed) status='<span style="color:#ffd54f;">MAX · คืน 🎫1</span>';
   else status=`<span style="color:#fff;">★${res.star-1} → ★${res.star}</span>`;
   return `<div class="gc-ico">${d.icon}</div>
     <div class="gc-name" style="color:${d.color};">${d.name}</div>
@@ -719,7 +732,7 @@ function _skillCardBackHTML(result){
 function startSkillGacha(n){
   if(_skBusy) return;
   const results=doSkillPulls(n);
-  if(!results){showToast('🎟️ ตั๋วสกิลไม่พอ!');return;}
+  if(!results){showToast('🎫 ตั๋วสกิลไม่พอ!');return;}
   _skResults=results;
   _skFlipped=new Array(n).fill(false);
   _skBusy=true;
@@ -1090,7 +1103,7 @@ function renderDaily(){
       const barCol=q.claimed?'#9e9e9e':q.done?'#69f0ae':'#42a5f5';
       const btn=q.claimed
         ?`<button disabled style="background:rgba(255,255,255,.06);color:rgba(255,255,255,.3);border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;flex-shrink:0;">✅ รับแล้ว</button>`
-        :`<button onclick="_claimQuestUI('${q.id}')" ${ready?'':'disabled'} style="background:${ready?'linear-gradient(180deg,#43a047,#1b5e20)':'rgba(255,255,255,.06)'};color:${ready?'#fff':'rgba(255,255,255,.3)'};border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;cursor:${ready?'pointer':'not-allowed'};flex-shrink:0;${ready?'box-shadow:0 0 10px rgba(67,160,71,.6);':''}">${q.rwTxt} · 🎟️1</button>`;
+        :`<button onclick="_claimQuestUI('${q.id}')" ${ready?'':'disabled'} style="background:${ready?'linear-gradient(180deg,#43a047,#1b5e20)':'rgba(255,255,255,.06)'};color:${ready?'#fff':'rgba(255,255,255,.3)'};border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;cursor:${ready?'pointer':'not-allowed'};flex-shrink:0;${ready?'box-shadow:0 0 10px rgba(67,160,71,.6);':''}">${q.rwTxt} · 🎫1</button>`;
       return `<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,${ready?'.18':'.07'});border-radius:10px;padding:9px 11px;display:flex;align-items:center;gap:10px;">
         <div style="font-size:20px;flex-shrink:0;">${q.icon}</div>
         <div style="flex:1;min-width:0;">
@@ -1114,7 +1127,7 @@ function _claimDailyLoginUI(){
 function _claimQuestUI(id){
   const q=claimDailyQuest(id);
   if(!q){showToast('❌ ยังทำเควสต์ไม่สำเร็จ');return;}
-  showToast('✅ '+q.icon+' '+q.desc+' สำเร็จ! รับ '+q.rwTxt+' · 🎟️1');
+  showToast('✅ '+q.icon+' '+q.desc+' สำเร็จ! รับ '+q.rwTxt+' · 🎫1');
   renderDaily(); updateMenuStats();
 }
 function _updateDailyBadge(){

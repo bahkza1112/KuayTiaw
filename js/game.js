@@ -2859,15 +2859,15 @@ function updateEg(dt){
         addParticle(COLS*CS/2,ROWS*CS/2-30,'💎 +'+mg,'#b388ff');
       }
     }
-    // 🎟️ หมุดหมายตั๋วสกิล: เวฟ 15/25/35… (สลับกับหมุดหมายมณี)
+    // 🎫 หมุดหมายตั๋วสกิล: เวฟ 15/25/35… (สลับกับหมุดหมายมณี)
     if(G.wave>=15&&G.wave%10===5){
       if(!G.egMilestones)G.egMilestones={};
       const tkey='t'+G.wave;
       if(!G.egMilestones[tkey]){
         G.egMilestones[tkey]=1;
         if(typeof addTickets==='function') addTickets(1);
-        showToast('🎟️ หมุดหมาย Wave '+G.wave+'! +1 ตั๋วสกิล');
-        addParticle(COLS*CS/2,ROWS*CS/2-30,'🎟️ +1','#b388ff');
+        showToast('🎫 หมุดหมาย Wave '+G.wave+'! +1 ตั๋วสกิล');
+        addParticle(COLS*CS/2,ROWS*CS/2-30,'🎫 +1','#b388ff');
       }
     }
     // heal 1 HP per wave clear

@@ -2,6 +2,20 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.9.2 — Gacha clarity + ticket icon fix
+
+### Changed
+- **Two clearly-separated gacha banners**: both `#gacha` and `#skillgacha` now
+  have a segmented tab switcher at the top (💎 ตู้รางวัล / ⭐ ตู้การ์ดสกิล,
+  `.gacha-tabs`/`.gacha-tab`), replacing the easy-to-miss inline banner link.
+  The skill tab on the gem screen shows the live ticket count.
+- **Ticket icon** swapped 🎟️ (U+1F39F, rendered as a tofu box on some Windows
+  emoji fonts) → 🎫 (U+1F3AB) everywhere (`js/save.js`, `js/game.js`,
+  `js/ui.js`, HTML).
+- **Exchange button** (`#skillExchangeBtn`, `_renderSkillGachaUI`) now shows the
+  current gem balance and dims (opacity .45, not-allowed cursor) when the player
+  can't afford the 💎50 cost, instead of silently failing on click.
+
 ## v3.9.1 — Skill info page + barrier balance
 
 ### Added
