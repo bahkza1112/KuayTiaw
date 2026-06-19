@@ -2,6 +2,20 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.10.3 — Stage 8 balance fix
+
+### Fixed
+- **Boss spawn bug** (`js/game.js`): type 4 (Boss) was still listed in Stage 8's `enemyTypes`
+  array. The normal random-index path could select it at waves 11–12 (~17% per enemy),
+  ignoring `bossChance:0`. Removed type 4 from the array entirely.
+
+### Changed
+- **Stage 8 enemy order**: `[6,10,2,3,5,4]` → `[10,6,2,3,5]`. Stage now opens with Shaman
+  (waves 1–2) so players immediately learn the core mechanic, rather than Bat which punished
+  players who didn't bring air-capable towers.
+- **Stage 8 enemy count**: added `enemyMult:0.85` — reduces per-wave enemy count by 15%
+  (wave 9: 22 → 19 enemies). Golem still introduced at wave 9.
+
 ## v3.10.2 — Canvas art UI overhaul (tower cards + skill icons)
 
 ### Added
