@@ -2333,8 +2333,7 @@ function _initRunSkill(){
   G.skillId=(id&&star>0)?id:null;
   if(G.skillId){
     const st=getSkillStat(G.skillId,star);
-    // 🌳 ทาเลนต์ ⭐ สกิล: ลด cooldown −10%/−10% (id 12,13)
-    const red=(typeof hasPUpgrade==='function')?((hasPUpgrade(12)?.1:0)+(hasPUpgrade(13)?.1:0)):0;
+    const red=(typeof loadTalentLv==='function')?(loadTalentLv('skcool')*0.005):0;
     G.skillCdMax=st.cd*(1-red); G.skillCd=0; // พร้อมใช้ตั้งแต่ต้น
   } else{G.skillCdMax=0;G.skillCd=0;}
   G.skillDmgMult=1;G.skillRateMult=1;G.skillDmgT=0;G.skillGoldMult=0;G.skillGoldT=0;G.skillBlockT=0;G.skillAiming=false;

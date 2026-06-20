@@ -2,6 +2,18 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.23 — Talent branches consolidated to leveled (100-level) talents
+
+### Changed
+- `js/ui.js` `TALENT_TREE`: branches atk/def/skl now each have a single `leveled` node instead of 2–4 fixed-cost nodes
+  - `atk` → `tdmg` leveled: +0.5%/lv, max +50% tower damage
+  - `def` → `hpmax` leveled: +0.5/lv, max +50 castle HP
+  - `skl` → `skcool` leveled: −0.5%/lv, max −50% skill cooldown
+- `js/save.js` `LEVELED_TALENTS`: added `tdmg`, `hpmax`, `skcool` entries with `migrate()` functions for backward compat
+- `js/save.js` `applyTalents()`: uses `loadTalentLv('tdmg'/'hpmax')` instead of `hasPUpgrade(8–11)`
+- `js/game.js` skill cooldown: uses `loadTalentLv('skcool')*0.005` instead of `hasPUpgrade(12/13)`
+- `css/main.css` `.talent-lock`: improved visibility (orange, bold, 85% opacity)
+
 ## v3.11.15 — Gold mine base cost reduced
 
 ### Changed

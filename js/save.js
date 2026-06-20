@@ -305,7 +305,10 @@ function buyPUpgrade(idx,cost){
    ต้นทุนไต่ขึ้น 10 + lv*2 (L1=10 … L100=208 · รวม ~10,900 ทองถาวร).
    - sgold  (ทองเริ่มต้น): +3 ทอง/เลเวล (สูงสุด +300) · 🎁 Lv.100 แถมทองจากฆ่า +10%
    - gkill  (ทองจากศัตรู): +0.2%/เลเวล (สูงสุด +20%)
-   - awaken (ลดราคาอเวค): −2.5/เลเวล (อเวค 350 → เหลือ 100 ที่ Lv.100) */
+   - awaken (ลดราคาอเวค): −2.5/เลเวล (อเวค 350 → เหลือ 100 ที่ Lv.100)
+   - tdmg   (ดาเมจป้อม): +0.5%/เลเวล (สูงสุด +50%)
+   - hpmax  (HP ปราสาท): +0.5/เลเวล (สูงสุด +50)
+   - skcool (คูลดาวน์สกิล): −0.5%/เลเวล (สูงสุด −50%) */
 const AWAKEN_BASE_COST=350, AWAKEN_MIN_COST=100;
 const LEVELED_TALENTS={
   sgold:{key:'tq_sgoldlv', perLv:3,  maxLv:100, bonusGm:.10, fmtEff:lv=>'+'+(lv*3)+' ทอง',
@@ -315,6 +318,12 @@ const LEVELED_TALENTS={
     migrate(){ let p=0; if(hasPUpgrade(4))p+=5; if(hasPUpgrade(5))p+=5; return Math.round(p/.2); }}, // +5%=Lv25 · +10%=Lv50
   awaken:{key:'tq_awakenlv', perLv:2.5, maxLv:100, fmtEff:lv=>'อเวคเหลือ '+(AWAKEN_BASE_COST-Math.round(lv*2.5))+' ทอง',
     migrate(){ return hasPUpgrade(2)?20:0; }}, // เดิม −50 (350→300) = Lv20
+  tdmg:{key:'tq_tdmglv', perLv:.5, maxLv:100, fmtEff:lv=>'+'+(lv*.5).toFixed(0)+'% ดาเมจป้อม',
+    migrate(){ let p=0; if(hasPUpgrade(8))p+=10; if(hasPUpgrade(9))p+=10; if(hasPUpgrade(10))p+=10; return Math.round(p/.5); }},
+  hpmax:{key:'tq_hpmaxlv', perLv:.5, maxLv:100, fmtEff:lv=>'+'+(lv*.5).toFixed(0)+' HP ปราสาท',
+    migrate(){ let h=0; if(hasPUpgrade(1))h+=5; if(hasPUpgrade(6))h+=3; if(hasPUpgrade(7))h+=2; if(hasPUpgrade(11))h+=2; return Math.round(h/.5); }},
+  skcool:{key:'tq_skcoolv', perLv:.5, maxLv:100, fmtEff:lv=>'-'+(lv*.5).toFixed(0)+'% cooldown สกิล',
+    migrate(){ let r=0; if(hasPUpgrade(12))r+=10; if(hasPUpgrade(13))r+=10; return Math.round(r/.5); }},
 };
 /* ราคาอเวคป้อมหลังลดด้วยทาเลนต์ awaken (350 → เหลือต่ำสุด 100) */
 function awakenCost(){ return Math.max(AWAKEN_MIN_COST, AWAKEN_BASE_COST-Math.round(loadTalentLv('awaken')*2.5)); }
@@ -349,10 +358,10 @@ function applyTalents(){
   if(typeof G==='undefined'||!G) return;
   const h=hasPUpgrade;
   const sgLv=loadTalentLv('sgold'), gkLv=loadTalentLv('gkill');
-  const gold=sgLv*LEVELED_TALENTS.sgold.perLv;                 // 💰 starting gold (เลเวล 0–100)
-  const hp  =(h(1)?5:0)+(h(6)?3:0)+(h(7)?2:0)+(h(11)?2:0);     // 🛡️ castle HP (max +12)
-  const dmg =1+(h(8)?.05:0)+(h(9)?.05:0)+(h(10)?.05:0);        // ⚔️ tower damage (max +15%)
-  // 💰 gold from kills: ทาเลนต์ gkill (+0.2%/lv, สูงสุด +20%) + โบนัสทองเริ่มต้น Lv.100 (+10%) → รวมสูงสุด +30%
+  const hpLv=loadTalentLv('hpmax'), dmgLv=loadTalentLv('tdmg');
+  const gold=sgLv*LEVELED_TALENTS.sgold.perLv;
+  const hp  =Math.floor(hpLv*LEVELED_TALENTS.hpmax.perLv);     // 🛡️ castle HP (สูงสุด +50)
+  const dmg =1+dmgLv*LEVELED_TALENTS.tdmg.perLv/100;           // ⚔️ tower damage (สูงสุด +50%)
   const gm  =1+gkLv*LEVELED_TALENTS.gkill.perLv/100+(sgLv>=LEVELED_TALENTS.sgold.maxLv?LEVELED_TALENTS.sgold.bonusGm:0);
   if(gold){ G.gold+=gold; }
   if(hp){ G.maxHp+=hp; G.hp+=hp; }
