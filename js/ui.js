@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.29';
+const GAME_VERSION='3.11.30';
 const PATCH_NOTES=[
+  {ver:'3.11.30',date:'2026-06-21',title:'🛠️ Dev Console — redesign Cheat tab',notes:[
+    'รวม 6 section → 4 section: ทรัพยากร / วัสดุ / Combat / Progress',
+    'เพิ่มปุ่ม +ทองถาวร 🪙 และ +ตั๋วสกิล 🎫 ใน cheat tab',
+    'ปรับ layout เป็น 3-column grid ลดความรก',
+  ]},
   {ver:'3.11.29',date:'2026-06-21',title:'📚 UI — ย้ายปุ่มสารานุกรมไปมุมขวาบน',notes:[
     'ย้ายปุ่ม "สารานุกรม" ออกจาก bottom nav ไปอยู่มุมขวาบนของหน้าหลัก',
     'ตำแหน่งใหม่อยู่ใต้ปุ่มภารกิจ สะดวกเข้าถึงได้เร็วกว่าเดิม',
@@ -2551,47 +2556,75 @@ function renderDevTower(){
     ${dSlide('t_cost_'+i,'Cost','ทอง',CFG.t_cost[i],10,300,5,true)}</div>`).join('');
 }
 function renderDevCheat(){
-  return `<div class="dev-section"><div class="dev-section-title">💰 ทองในด่าน</div>
-  <div class="dev-cheat-grid">
-    <div class="dev-cheat-btn green" onclick="cheat('gold500')">+500 ทอง</div>
-    <div class="dev-cheat-btn green" onclick="cheat('gold9999')">+9999 ทอง</div>
-    <div class="dev-cheat-btn green" onclick="cheat('hp_full')">❤️ HP เต็ม</div>
-    <div class="dev-cheat-btn" onclick="cheat('hp10')">ตั้ง HP=10</div>
-  </div></div>
-  <div class="dev-section"><div class="dev-section-title">💎 มณีวิญญาณ</div>
-  <div class="dev-cheat-grid">
-    <div class="dev-cheat-btn green" onclick="cheat('gem100')">+100 💎</div>
-    <div class="dev-cheat-btn green" onclick="cheat('gem999')">+999 💎</div>
-    <div class="dev-cheat-btn" onclick="cheat('gem0')">ตั้ง 0 💎</div>
-    <div class="dev-cheat-btn" onclick="cheat('pity0')">รีเซ็ต Pity</div>
-  </div></div>
-  <div class="dev-section"><div class="dev-section-title">🪨 วัสดุคราฟ</div>
-  <div class="dev-cheat-grid">
-    <div class="dev-cheat-btn green" onclick="cheat('mat0_10')">+10 หินมืด</div>
-    <div class="dev-cheat-btn green" onclick="cheat('mat1_10')">+10 เศษแกนเวท</div>
-    <div class="dev-cheat-btn green" onclick="cheat('mat2_5')">+5 ดาวตก</div>
-    <div class="dev-cheat-btn" onclick="cheat('mat_reset')">รีเซ็ตวัสดุ</div>
-  </div></div>
-  <div class="dev-section"><div class="dev-section-title">🌊 Wave Control</div>
-  <div class="dev-cheat-grid">
-    <div class="dev-cheat-btn" onclick="cheat('skip_wave')">⏭ ข้ามคลื่น</div>
-    <div class="dev-cheat-btn" onclick="cheat('kill_all')">💀 ฆ่าทั้งหมด</div>
-    <div class="dev-cheat-btn red" onclick="cheat('wave_1')">↩ รีเซ็ตคลื่น</div>
-    <div class="dev-cheat-btn red" onclick="cheat('clear_towers')">🗑 ลบป้อมทั้งหมด</div>
-  </div></div>
-  <div class="dev-section"><div class="dev-section-title">🗺️ Stage Progress</div>
-  <div class="dev-cheat-grid">
-    <div class="dev-cheat-btn green" onclick="cheat('unlock_stages')">🔓 Unlock All</div>
-    <div class="dev-cheat-btn red" onclick="cheat('reset_stages')">↺ Reset Progress</div>
-    <div class="dev-cheat-btn" onclick="cheat('unlock_codex')">📖 Unlock Codex</div>
-    <div class="dev-cheat-btn red" onclick="cheat('lock_codex')">🔒 Lock Codex</div>
-    <div class="dev-cheat-btn green" onclick="cheat('unlock_ach')">🎖️ Unlock Ach</div>
-    <div class="dev-cheat-btn red" onclick="cheat('reset_ach')">↺ Reset Ach</div>
-  </div></div>
-  <div class="dev-section"><div class="dev-section-title">⚙️ Game Settings</div>
-    ${dSlide('startGold','ทองเริ่มต้น','ทอง',CFG.startGold,50,1000,25)}
-    ${dSlide('baseHP','HP ปราสาท','',CFG.baseHP,1,50,1)}
-    ${dSlide('spawnInterval','ช่วงเวลา Spawn','s',CFG.spawnInterval,.1,3,.05)}</div>`;
+  return `
+  <div class="dev-section">
+    <div class="dev-section-title">💰 ทรัพยากร</div>
+    <div class="dev-cheat-sub">ทองในด่าน</div>
+    <div class="dev-cheat-grid dev-cheat-3">
+      <div class="dev-cheat-btn green" onclick="cheat('gold500')">+500 💰</div>
+      <div class="dev-cheat-btn green" onclick="cheat('gold9999')">+9999 💰</div>
+      <div class="dev-cheat-btn green" onclick="cheat('hp_full')">❤️ เต็ม</div>
+    </div>
+    <div class="dev-cheat-sub" style="margin-top:10px;">ทองถาวร 🪙</div>
+    <div class="dev-cheat-grid dev-cheat-3">
+      <div class="dev-cheat-btn green" onclick="cheat('pgold500')">+500 🪙</div>
+      <div class="dev-cheat-btn green" onclick="cheat('pgold9999')">+9999 🪙</div>
+      <div class="dev-cheat-btn" onclick="cheat('hp10')">HP=10</div>
+    </div>
+    <div class="dev-cheat-sub" style="margin-top:10px;">มณี 💎 & ตั๋ว 🎫</div>
+    <div class="dev-cheat-grid dev-cheat-3">
+      <div class="dev-cheat-btn green" onclick="cheat('gem100')">+100 💎</div>
+      <div class="dev-cheat-btn green" onclick="cheat('gem999')">+999 💎</div>
+      <div class="dev-cheat-btn" onclick="cheat('gem0')">💎=0</div>
+    </div>
+    <div class="dev-cheat-grid dev-cheat-3" style="margin-top:9px;">
+      <div class="dev-cheat-btn green" onclick="cheat('ticket10')">+10 🎫</div>
+      <div class="dev-cheat-btn" onclick="cheat('pity0')">รีเซ็ต Pity</div>
+      <div></div>
+    </div>
+  </div>
+  <div class="dev-section">
+    <div class="dev-section-title">🧱 วัสดุ</div>
+    <div class="dev-cheat-grid dev-cheat-3">
+      <div class="dev-cheat-btn green" onclick="cheat('mat0_10')">+10 🪨</div>
+      <div class="dev-cheat-btn green" onclick="cheat('mat1_10')">+10 🔘</div>
+      <div class="dev-cheat-btn green" onclick="cheat('mat2_5')">+5 🌟</div>
+    </div>
+    <div class="dev-cheat-grid" style="margin-top:9px;">
+      <div class="dev-cheat-btn red" onclick="cheat('mat_reset')">↺ รีเซ็ตวัสดุทั้งหมด</div>
+    </div>
+  </div>
+  <div class="dev-section">
+    <div class="dev-section-title">⚔️ Combat</div>
+    <div class="dev-cheat-grid">
+      <div class="dev-cheat-btn" onclick="cheat('skip_wave')">⏭ ข้ามคลื่น</div>
+      <div class="dev-cheat-btn" onclick="cheat('kill_all')">💀 ฆ่าทั้งหมด</div>
+    </div>
+    <div class="dev-cheat-grid" style="margin-top:9px;">
+      <div class="dev-cheat-btn red" onclick="cheat('wave_1')">↩ รีเซ็ตคลื่น</div>
+      <div class="dev-cheat-btn red" onclick="cheat('clear_towers')">🗑 ลบป้อม</div>
+    </div>
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);">
+      ${dSlide('startGold','ทองเริ่มต้น','ทอง',CFG.startGold,50,1000,25)}
+      ${dSlide('baseHP','HP ปราสาท','hp',CFG.baseHP,1,50,1)}
+      ${dSlide('spawnInterval','Spawn Interval','s',CFG.spawnInterval,.1,3,.05)}
+    </div>
+  </div>
+  <div class="dev-section">
+    <div class="dev-section-title">📁 Progress</div>
+    <div class="dev-cheat-grid">
+      <div class="dev-cheat-btn green" onclick="cheat('unlock_stages')">🔓 Unlock All</div>
+      <div class="dev-cheat-btn red" onclick="cheat('reset_stages')">↺ Reset</div>
+    </div>
+    <div class="dev-cheat-grid" style="margin-top:9px;">
+      <div class="dev-cheat-btn" onclick="cheat('unlock_codex')">📖 Codex ✓</div>
+      <div class="dev-cheat-btn red" onclick="cheat('lock_codex')">🔒 Codex ✗</div>
+    </div>
+    <div class="dev-cheat-grid" style="margin-top:9px;">
+      <div class="dev-cheat-btn green" onclick="cheat('unlock_ach')">🎖️ Ach ✓</div>
+      <div class="dev-cheat-btn red" onclick="cheat('reset_ach')">↺ Ach ✗</div>
+    </div>
+  </div>`;
 }
 function dSlide(key,label,sub,val,min,max,step,isArr){
   const disp=step>=1?parseInt(val):parseFloat(val).toFixed(step<.1?2:1);
@@ -2678,6 +2711,9 @@ function cheat(cmd){
     case 'gem999': saveGems(loadGems()+999);showToast('💎 +999 มณีวิญญาณ!');break;
     case 'gem0': saveGems(0);showToast('💎 ตั้งมณีเป็น 0 แล้ว');break;
     case 'pity0': saveGachaPity(0);showToast('🔄 รีเซ็ต Pity แล้ว');break;
+    case 'pgold500': addPGold(500);showToast('🪙 +500 ทองถาวร!');break;
+    case 'pgold9999': addPGold(9999);showToast('🪙 +9999 ทองถาวร!');break;
+    case 'ticket10': addTickets(10);showToast('🎫 +10 ตั๋วสกิล!');break;
     case 'mat0_10':{const m=loadMaterials();m[0]=(m[0]||0)+10;saveMaterials(m);showToast('🪨 +10 หินมืด!');break;}
     case 'mat1_10':{const m=loadMaterials();m[1]=(m[1]||0)+10;saveMaterials(m);showToast('🔘 +10 เศษแกนเวท!');break;}
     case 'mat2_5':{const m=loadMaterials();m[2]=(m[2]||0)+5;saveMaterials(m);showToast('🌟 +5 ดาวตก!');break;}

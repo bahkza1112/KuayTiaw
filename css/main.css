@@ -286,6 +286,8 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .dev-val{font-size:13px;color:#ffe082;font-weight:800;min-width:48px;text-align:center;flex-shrink:0;font-family:monospace;background:rgba(255,179,0,.1);border:1px solid rgba(255,179,0,.25);border-radius:8px;padding:3px 4px;}
 /* cheat grid */
 .dev-cheat-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.dev-cheat-3{grid-template-columns:1fr 1fr 1fr;}
+.dev-cheat-sub{font-size:10px;color:#64748b;letter-spacing:.5px;font-weight:600;margin-bottom:6px;}
 .dev-cheat-btn{position:relative;background:linear-gradient(180deg,rgba(255,179,0,.16),rgba(255,179,0,.05));border:1px solid rgba(255,179,0,.4);border-radius:11px;padding:11px 8px;color:#ffd24d;font-size:11px;font-weight:800;cursor:pointer;text-align:center;transition:all .15s;-webkit-tap-highlight-color:transparent;}
 .dev-cheat-btn:hover{background:linear-gradient(180deg,rgba(255,179,0,.3),rgba(255,179,0,.12));box-shadow:0 0 16px rgba(255,179,0,.3);transform:translateY(-1px);}
 .dev-cheat-btn:active{transform:translateY(1px) scale(.98);}
