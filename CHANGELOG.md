@@ -2,6 +2,32 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.6 — Endgame round system fix (egRound never advanced)
+
+### Fixed
+- **`egRound` never incremented** (`js/game.js`): the Endgame "round" variable was
+  initialised to `0` and never advanced anywhere in the codebase, leaving the entire
+  round-progression system dead. Consequences (all confirmed live):
+  - Enemy pool frozen at `[0,1,2,3,4]` — Golem/Bat/Wyvern/Shield Knight/Shaman/Demon
+    Lord never appeared in Endless.
+  - `getEgRewardBonus()` stuck at ×1 → reward never scaled while wave-based HP rose,
+    collapsing the gold economy in late waves.
+  - HP round-bonus, per-round bonus gold (`startGold+egRound*35`), and the
+    `🔥 Round N` HUD/leaderboard label were all stuck at round 1.
+  - Fix: `startEgWave()` now derives `egRound = Math.floor((G.wave-1)/EG_WAVES_PER_ROUND)`
+    (new const, 5 waves/round), refreshes `currentStage.enemyTypes` from
+    `_getEgEnemyPool()`, and updates the round badge each wave. Enemies unlock at
+    waves 6/11/16/21/26/31; round ~20 reached around wave 100 (matching the cap-tuning
+    comment in `getEgEnemyHP`).
+
+### Changed
+- **Endgame enemy count formula** (`js/game.js` `startEgWave`): was
+  `enemyPerWaveBase + wave*enemyPerWaveInc*(1+egRound*0.2)`. The `(1+egRound*0.2)`
+  factor was always `1` while `egRound` was stuck at 0; with the fix above it would
+  turn the count quadratic (~960 enemies at wave 100, a guaranteed stall). Dropped the
+  `egRound` factor so count stays linear in wave (6 → 204 across waves 1–100), matching
+  the curve players effectively had before.
+
 ## v3.11.5 — Merge-hint rarity frame
 
 ### Changed

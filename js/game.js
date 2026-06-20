@@ -152,6 +152,7 @@ let autoWave=false;
 let isEndgame=false;
 let egDiff=1; // 0=easy,1=normal,2=hard
 let egRound=0;
+const EG_WAVES_PER_ROUND=5; // Endgame: เลื่อน round ทุก 5 เวฟ → round = floor((wave-1)/5) (ดีไซน์ตั้งใจให้ไปถึง ~round 20)
 const EG_DIFF_MULT=[0.7,1.0,1.8];
 const EG_DIFF_NAMES=['ง่าย','ปกติ','ยาก'];
 const MAT_DROP_RATES=[
@@ -2593,10 +2594,15 @@ function startEgWave(){
   hideWavePreview();
   G.wave++;
   document.getElementById('waveTxt').textContent=G.wave;
+  // 🔥 เลื่อน Endgame round ตามเวฟ — ปลดล็อกศัตรู + เปิดสเกล HP/reward/ทอง (เดิม egRound ค้างที่ 0 ระบบ round ตายสนิท)
+  egRound=Math.floor((G.wave-1)/EG_WAVES_PER_ROUND);
+  currentStage.enemyTypes=_getEgEnemyPool();
+  document.getElementById('stageBadge').textContent='🔥 Round '+(egRound+1);
   document.getElementById('waveBtn').disabled=true;
   G.waveActive=true; G.queue=[]; G.spawnT=0;
   rollWeather(currentStage.id); // 🌦 roll random weather for this Endgame wave
-  const n=Math.floor(CFG.enemyPerWaveBase+G.wave*CFG.enemyPerWaveInc*(1+egRound*.2));
+  // count สเกลเชิงเส้นตามเวฟเท่านั้น — เดิมคูณ (1+egRound*.2) ด้วย แต่ egRound ค้าง 0 เลยไม่เคยมีผล; พอ egRound โตจริงจะระเบิดเป็น quadratic (เวฟ100 = ~960 ตัว) จึงตัด term นี้ออก
+  const n=Math.floor(CFG.enemyPerWaveBase+G.wave*CFG.enemyPerWaveInc);
   const avail=_getEgEnemyPool();
   const bChance=0.08+egRound*.015;
   for(let i=0;i<n;i++){
