@@ -975,16 +975,15 @@ function toggleSkillOdds(){
   body.style.display=show?'':'none';
   arrow.textContent=show?'▲ ซ่อน':'▼ ดูรายละเอียด';
   if(show&&!document.getElementById('skillOddsPool').innerHTML){
-    const _rndNums=(()=>{const used=new Set();const r=()=>{let n;do{n=11+Math.floor(Math.random()*989);}while(used.has(n));used.add(n);return n;};return ()=>String(r()).padStart(3,'0');})();
-    document.getElementById('skillOddsPool').innerHTML=SKILL_DEFS.map((d)=>`
+    document.getElementById('skillOddsPool').innerHTML=SKILL_DEFS.map((d,i)=>`
       <div class="gacha-odds-row" onclick="_showSkillInfo('${d.id}')" style="cursor:pointer;">
-        <span style="font-family:monospace;color:rgba(179,136,255,.6);">${_rndNums()}</span>
+        <span style="font-family:monospace;color:rgba(179,136,255,.6);">${String(i+1).padStart(3,'0')}</span>
         <span style="color:${d.color};">${d.icon} ${d.name}</span>
         <span class="gacha-rarity-tag rarity-${d.rarity}" style="font-size:7px;">${d.rarity}</span>
         <span style="color:#aaa;">${skillCardRate(d)}%</span>
       </div>`).join('')+`
       <div class="gacha-odds-row">
-        <span style="font-family:monospace;color:rgba(179,136,255,.6);">${_rndNums()}</span>
+        <span style="font-family:monospace;color:rgba(179,136,255,.6);">dud</span>
         <span style="color:#888;">เศษ ×1 (🔹70% · 💜22% · 🌟8%)</span>
         <span class="gacha-rarity-tag" style="font-size:7px;background:rgba(255,255,255,.08);color:#888;">ปลอบใจ</span>
         <span style="color:#aaa;">${100-skillTotalRate()}%</span>
