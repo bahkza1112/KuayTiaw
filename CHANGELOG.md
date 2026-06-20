@@ -2,6 +2,19 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.13 — Awaken-discount moved to Economy, now a 100-level talent
+
+### Changed
+- **Awaken discount → leveled, in Economy** (`js/save.js`, `js/ui.js`): the binary
+  `Awaken ลดราคา 50` node (id2) in the Attack branch is replaced by a leveled `awaken`
+  talent in the **Economy** branch: `−2.5` gold per level, dropping awaken cost from
+  `350` to a floor of `100` at Lv100 (`AWAKEN_BASE_COST`/`AWAKEN_MIN_COST`). Migration
+  seeds Lv20 (the old `−50`) for players who owned id2. Stored in `tq_awakenlv`.
+- **Awaken cost source** (`js/tower.js`): both awaken-cost reads (`hasPUpgrade(2)?300:350`)
+  now call `awakenCost()` = `max(100, 350 - round(Lv*2.5))`.
+- The Attack branch now starts at the damage nodes (id8/9/10); the Economy branch holds
+  three leveled talents (starting gold / gold-from-kills / awaken discount).
+
 ## v3.11.12 — Gold-from-kills merged into one 100-level talent
 
 ### Changed

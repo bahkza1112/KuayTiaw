@@ -303,15 +303,21 @@ function buyPUpgrade(idx,cost){
 }
 /* 🌳 LEVELED TALENTS — ทาเลนต์แบบเลเวล (1–100) เก็บเลเวลตรงๆ ใน localStorage
    ต้นทุนไต่ขึ้น 10 + lv*2 (L1=10 … L100=208 · รวม ~10,900 ทองถาวร).
-   - sgold (ทองเริ่มต้น): +3 ทอง/เลเวล (สูงสุด +300) · 🎁 Lv.100 แถมทองจากฆ่า +10%
-   - gkill (ทองจากศัตรู): +0.2%/เลเวล (สูงสุด +20%) */
+   - sgold  (ทองเริ่มต้น): +3 ทอง/เลเวล (สูงสุด +300) · 🎁 Lv.100 แถมทองจากฆ่า +10%
+   - gkill  (ทองจากศัตรู): +0.2%/เลเวล (สูงสุด +20%)
+   - awaken (ลดราคาอเวค): −2.5/เลเวล (อเวค 350 → เหลือ 100 ที่ Lv.100) */
+const AWAKEN_BASE_COST=350, AWAKEN_MIN_COST=100;
 const LEVELED_TALENTS={
   sgold:{key:'tq_sgoldlv', perLv:3,  maxLv:100, bonusGm:.10, fmtEff:lv=>'+'+(lv*3)+' ทอง',
     migrate(){ let g=0; const ok=localStorage.getItem('tq_sgold_lv'); if(ok!=null)g=(Number(ok)||0)*25;
       else{ if(hasPUpgrade(0))g+=100; if(hasPUpgrade(3))g+=150; } return Math.round(g/3); }},
   gkill:{key:'tq_gkilllv', perLv:.2, maxLv:100, fmtEff:lv=>'+'+(lv*.2).toFixed(1)+'% ทองจากฆ่า',
     migrate(){ let p=0; if(hasPUpgrade(4))p+=5; if(hasPUpgrade(5))p+=5; return Math.round(p/.2); }}, // +5%=Lv25 · +10%=Lv50
+  awaken:{key:'tq_awakenlv', perLv:2.5, maxLv:100, fmtEff:lv=>'อเวคเหลือ '+(AWAKEN_BASE_COST-Math.round(lv*2.5))+' ทอง',
+    migrate(){ return hasPUpgrade(2)?20:0; }}, // เดิม −50 (350→300) = Lv20
 };
+/* ราคาอเวคป้อมหลังลดด้วยทาเลนต์ awaken (350 → เหลือต่ำสุด 100) */
+function awakenCost(){ return Math.max(AWAKEN_MIN_COST, AWAKEN_BASE_COST-Math.round(loadTalentLv('awaken')*2.5)); }
 function talentLvCost(lv){return 10+lv*2;} // ราคาเลื่อนจาก lv → lv+1 (lv=0..99) เหมือนกันทุกทาเลนต์เลเวล
 function loadTalentLv(id){
   const t=LEVELED_TALENTS[id]; if(!t) return 0;

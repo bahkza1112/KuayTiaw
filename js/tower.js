@@ -386,7 +386,7 @@ function showTowerPopup(tw,px,py){
   const used=(tw.rngLv-1)+(tw.rateLv-1);
   const remain=tw.star-used;
   const refund=Math.floor(CFG.t_cost[tw.type]*tw.lv*.6);
-  const _awCost=hasPUpgrade(2)?300:350;
+  const _awCost=awakenCost();
   const canAwaken=tw.star>=3&&!tw.awakened&&G.gold>=_awCost;
   const showAwakenBtn=tw.star>=3&&!tw.awakened;
   const starStr='★'.repeat(tw.star);
@@ -508,7 +508,7 @@ function awakenTowerFromPopup(){
   const tw=_popupTw;
   if(tw.awakened){showToast('⚡ อเวคแล้ว!');return;}
   if((tw.star||1)<3){showToast('⚡ ต้องรวมป้อมให้ถึง 3★ ก่อนถึงจะ Awaken ได้!');return;}
-  const _awC=hasPUpgrade(2)?300:350;
+  const _awC=awakenCost();
   if(G.gold<_awC){showToast('💰 ต้องการ '+_awC+' ทอง!');hideTowerPopup();return;}
   G.gold-=_awC; tw.awakened=true;
   tw.spawnAnim=0.8;
