@@ -3162,11 +3162,13 @@ function spinSlot(){
     while(display[0]===display[1]||display[1]===display[2]||display[0]===display[2])
       display=[...SLOT_SPIN_SYMS].sort(()=>Math.random()-.5).slice(0,3);
   }
-  // animate cycle
+  // animate cycle — stopped set tracks which reels have locked in
   let f=0;
-  const iv=setInterval(()=>{syms.forEach(s=>{if(s)s.textContent=SLOT_SPIN_SYMS[f%SLOT_SPIN_SYMS.length];f++;});},80);
+  const stopped=new Set();
+  const iv=setInterval(()=>{let changed=false;syms.forEach((s,i)=>{if(s&&!stopped.has(i)){s.textContent=SLOT_SPIN_SYMS[f%SLOT_SPIN_SYMS.length];changed=true;}});if(changed)f++;},80);
   // stop one by one
   const stopReel=(idx,delay)=>setTimeout(()=>{
+    stopped.add(idx);
     if(syms[idx])syms[idx].textContent=display[idx];
     if(reels[idx]){reels[idx].classList.remove('spinning');}
     if(idx===2){
