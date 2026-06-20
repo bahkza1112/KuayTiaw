@@ -1,6 +1,9 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.20';
+const GAME_VERSION='3.11.21';
 const PATCH_NOTES=[
+  {ver:'3.11.21',date:'2026-06-21',title:'🔧 เวิร์กชอป: ทาเลนต์แสดงถูกต้อง',notes:[
+    'แก้บัก: แท็บทาเลนต์ใน Workshop ไม่แสดงต้นไม้ทาเลนต์เมื่อปลดล็อก Void Tower แล้ว',
+  ]},
   {ver:'3.11.20',date:'2026-06-21',title:'🔢 ตารางอัตราสกิล: เพิ่มเลข 001-006',notes:[
     'ตารางอัตราการออกในตู้การ์ดสกิลแสดงเลข 001, 002... หน้าแต่ละรายการเหมือนตู้รางวัล',
   ]},
@@ -1205,8 +1208,8 @@ function renderWorkshop(){
   document.getElementById('wsRecipeBox').style.display='none';
   const craftBtn=document.getElementById('wsCraftBtn');
   const reqNote=document.getElementById('wsCraftReqNote');
-  if(unlocked){craftBtn.style.display='none';if(reqNote)reqNote.style.display='none';return;}
-  if(finalCleared){
+  if(unlocked){craftBtn.style.display='none';if(reqNote)reqNote.style.display='none';}
+  else if(finalCleared){
     const reqs=[
       {icon:'💎',name:'มณีวิญญาณ',have:gems,need:VOID_RECIPE.gems},
       {icon:MAT_ICONS[0],name:MAT_NAMES[0],have:mats[0]||0,need:VOID_RECIPE.mats[0]},
