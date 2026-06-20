@@ -31,7 +31,7 @@ const BAG_ITEM_DEFS=[
   {id:'gold_pot',icon:'🧪',name:'ยาเพิ่มทอง',  desc:'ได้ทองเพิ่ม +100 เมื่อเริ่มด่าน',   color:'#ffd54f',type:'buff'},
   {id:'hp_pot',  icon:'💊',name:'ยาเพิ่ม HP',   desc:'HP ปราสาทเพิ่ม +3 เมื่อเริ่มด่าน',  color:'#ef5350',type:'buff'},
   {id:'dmg_pot', icon:'⚔️',name:'ยาเข้มแข็ง',  desc:'ดาเมจป้อมทั้งหมด +10% เมื่อเริ่มด่าน',color:'#ff8a65',type:'buff'},
-  {id:'shard_c', icon:'🔹',name:'เศษหินมืด', desc:'ชิ้นส่วนสะสมสามัญจากกล่องบรอนซ์',   color:'#64b5f6',type:'shard'},
+  {id:'shard_c', icon:'<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polygon points="10,1 18,7 16,17 9,19 2,14 3,5" fill="#37474f" stroke="#1a2327" stroke-width="1" stroke-linejoin="round"/><polygon points="10,1 18,7 13,4 7,2" fill="#546e7a"/><polygon points="10,1 7,2 2,14 3,5" fill="#263238"/><polyline points="11,8 9,12 13,15" fill="none" stroke="#1a2327" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/><line x1="10" y1="1" x2="18" y2="7" stroke="#78909c" stroke-width="1.2" stroke-linecap="round"/></svg>',name:'เศษหินมืด', desc:'ชิ้นส่วนสะสมสามัญจากกล่องบรอนซ์',   color:'#64b5f6',type:'shard'},
   {id:'shard_r', icon:'💜',name:'เศษแกนเวทย์',    desc:'ชิ้นส่วนสะสมหายากจากกล่องเงิน',     color:'#ab47bc',type:'shard'},
   {id:'shard_e', icon:'🌟',name:'เศษดวงดาว',    desc:'ชิ้นส่วนสะสมพิเศษจากกล่องทอง',     color:'#ff8f00',type:'shard'},
 ];

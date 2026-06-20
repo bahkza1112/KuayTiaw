@@ -998,7 +998,7 @@ function renderBag(){
       {icon:MAT_ICONS[2],name:MAT_NAMES[2],col:'#ffe082',qty:mats[2]||0,desc:'วัสดุพิเศษจากการเล่น'},
     ];
     const shardDefs=[
-      {id:'shard_c',icon:'🔹',name:'เศษหินมืด',col:'#64b5f6',desc:'เศษสะสมสามัญ · แลกได้ที่ Workshop'},
+      {id:'shard_c',icon:SHARD_C_SVG,name:'เศษหินมืด',col:'#64b5f6',desc:'เศษสะสมสามัญ · แลกได้ที่ Workshop'},
       {id:'shard_r',icon:'💜',name:'เศษแกนเวทย์',   col:'#ce93d8',desc:'เศษสะสมหายาก · แลกได้ที่ Workshop'},
       {id:'shard_e',icon:'🌟',name:'เศษดวงดาว',   col:'#ffe082',desc:'เศษสะสมพิเศษ · แลกได้ที่ Workshop'},
     ];
@@ -1250,8 +1250,9 @@ function renderWorkshop(){
   if(grid) grid.innerHTML=_renderTalentTree();
 }
 /* ── Shard Exchange (v3.5.5) ── */
+const SHARD_C_SVG='<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polygon points="10,1 18,7 16,17 9,19 2,14 3,5" fill="#37474f" stroke="#1a2327" stroke-width="1" stroke-linejoin="round"/><polygon points="10,1 18,7 13,4 7,2" fill="#546e7a"/><polygon points="10,1 7,2 2,14 3,5" fill="#263238"/><polyline points="11,8 9,12 13,15" fill="none" stroke="#1a2327" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/><line x1="10" y1="1" x2="18" y2="7" stroke="#78909c" stroke-width="1.2" stroke-linecap="round"/></svg>';
 const SHARD_EXCHANGE=[
-  {shardId:'shard_c',shardIcon:'🔹',shardName:'เศษหินมืด',cost:10,matIdx:0},
+  {shardId:'shard_c',shardIcon:SHARD_C_SVG,shardName:'เศษหินมืด',cost:10,matIdx:0},
   {shardId:'shard_r',shardIcon:'💜',shardName:'เศษแกนเวทย์',   cost:5,  matIdx:1},
   {shardId:'shard_e',shardIcon:'🌟',shardName:'เศษดวงดาว',    cost:3,  matIdx:2},
 ];
