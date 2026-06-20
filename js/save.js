@@ -301,48 +301,53 @@ function buyPUpgrade(idx,cost){
   if(typeof renderWorkshop==='function') renderWorkshop();
   if(typeof updateMenuGold==='function') updateMenuGold();
 }
-/* 💰 ทองเริ่มต้น — talent แบบเลเวล (1–100): +3 ทอง/เลเวล (สูงสุด +300). เก็บใน tq_sgoldlv.
-   ต้นทุนไต่ขึ้น: เลเวลถัดไป = 10 + lv*2 (L1=10 … L100=208 · รวม ~10,900 ทองถาวร).
-   โบนัส Lv.100: ฆ่าศัตรูได้ทอง +10% เพิ่ม. */
-const SGOLD_PER_LV=3, SGOLD_MAX_LV=100, SGOLD_BONUS_GM=.10;
-function sgoldLevelCost(lv){return 10+lv*2;} // ราคาเลื่อนจาก lv → lv+1 (lv=0..99)
-function loadSGoldLv(){
-  const raw=localStorage.getItem('tq_sgoldlv');
-  if(raw!=null) return Math.max(0,Math.min(SGOLD_MAX_LV,Number(raw)||0));
-  // migrate: รักษามูลค่าทองเริ่มต้นเดิม (คีย์เก่าสเกล 0–10 หรือ node binary id0/id3) แล้วแปลงเป็นสเกลใหม่ +3/เลเวล
-  let oldGold=0;
-  const oldKey=localStorage.getItem('tq_sgold_lv');
-  if(oldKey!=null) oldGold=(Number(oldKey)||0)*25;
-  else { try{ if(hasPUpgrade(0))oldGold+=100; if(hasPUpgrade(3))oldGold+=150; }catch(e){} }
-  const lv=Math.min(SGOLD_MAX_LV,Math.round(oldGold/SGOLD_PER_LV));
-  localStorage.setItem('tq_sgoldlv',String(lv));
+/* 🌳 LEVELED TALENTS — ทาเลนต์แบบเลเวล (1–100) เก็บเลเวลตรงๆ ใน localStorage
+   ต้นทุนไต่ขึ้น 10 + lv*2 (L1=10 … L100=208 · รวม ~10,900 ทองถาวร).
+   - sgold (ทองเริ่มต้น): +3 ทอง/เลเวล (สูงสุด +300) · 🎁 Lv.100 แถมทองจากฆ่า +10%
+   - gkill (ทองจากศัตรู): +0.2%/เลเวล (สูงสุด +20%) */
+const LEVELED_TALENTS={
+  sgold:{key:'tq_sgoldlv', perLv:3,  maxLv:100, bonusGm:.10, fmtEff:lv=>'+'+(lv*3)+' ทอง',
+    migrate(){ let g=0; const ok=localStorage.getItem('tq_sgold_lv'); if(ok!=null)g=(Number(ok)||0)*25;
+      else{ if(hasPUpgrade(0))g+=100; if(hasPUpgrade(3))g+=150; } return Math.round(g/3); }},
+  gkill:{key:'tq_gkilllv', perLv:.2, maxLv:100, fmtEff:lv=>'+'+(lv*.2).toFixed(1)+'% ทองจากฆ่า',
+    migrate(){ let p=0; if(hasPUpgrade(4))p+=5; if(hasPUpgrade(5))p+=5; return Math.round(p/.2); }}, // +5%=Lv25 · +10%=Lv50
+};
+function talentLvCost(lv){return 10+lv*2;} // ราคาเลื่อนจาก lv → lv+1 (lv=0..99) เหมือนกันทุกทาเลนต์เลเวล
+function loadTalentLv(id){
+  const t=LEVELED_TALENTS[id]; if(!t) return 0;
+  const raw=localStorage.getItem(t.key);
+  if(raw!=null) return Math.max(0,Math.min(t.maxLv,Number(raw)||0));
+  let lv=0; try{ lv=t.migrate?t.migrate():0; }catch(e){}
+  lv=Math.max(0,Math.min(t.maxLv,lv));
+  localStorage.setItem(t.key,String(lv));
   return lv;
 }
-function buySGoldLevel(n){
+function buyTalentLv(id,n){
+  const t=LEVELED_TALENTS[id]; if(!t) return;
   n=Math.max(1,n||1);
-  let lv=loadSGoldLv(), bought=0;
-  while(bought<n && lv<SGOLD_MAX_LV){
-    const cost=sgoldLevelCost(lv);
-    if(loadPGold()<cost) break;
-    savePGold(loadPGold()-cost); lv++; bought++;
-  }
-  if(bought===0){ showToast(lv>=SGOLD_MAX_LV?'✅ อัปเต็มแล้ว!':'🪙 ทองถาวรไม่พอ!'); return; }
-  localStorage.setItem('tq_sgoldlv',String(lv));
-  showToast('✅ อัปทองเริ่มต้น Lv.'+lv+(bought>1?' (+'+bought+')':'')+'!');
+  let lv=loadTalentLv(id), bought=0;
+  while(bought<n && lv<t.maxLv){ const c=talentLvCost(lv); if(loadPGold()<c) break; savePGold(loadPGold()-c); lv++; bought++; }
+  if(bought===0){ showToast(lv>=t.maxLv?'✅ อัปเต็มแล้ว!':'🪙 ทองถาวรไม่พอ!'); return; }
+  localStorage.setItem(t.key,String(lv));
+  showToast('✅ อัปทาเลนต์ Lv.'+lv+(bought>1?' (+'+bought+')':'')+'!');
   if(typeof renderWorkshop==='function') renderWorkshop();
   if(typeof updateMenuGold==='function') updateMenuGold();
 }
-/* 🌳 apply talent-tree effects onto current game state G (story + endgame).
-   Talent node ids map to tq_pups entries; ทองเริ่มต้นแยกเป็นระบบเลเวล (tq_sgold_lv). */
+/* backward-compat wrappers (ทองเริ่มต้น) */
+const SGOLD_PER_LV=3, SGOLD_MAX_LV=100;
+function loadSGoldLv(){return loadTalentLv('sgold');}
+function buySGoldLevel(n){return buyTalentLv('sgold',n);}
+function sgoldLevelCost(lv){return talentLvCost(lv);}
+/* 🌳 apply talent-tree effects onto current game state G (story + endgame). */
 function applyTalents(){
   if(typeof G==='undefined'||!G) return;
   const h=hasPUpgrade;
-  const sgLv=loadSGoldLv();
-  const gold=sgLv*SGOLD_PER_LV;                               // 💰 starting gold (เลเวล 0–10)
+  const sgLv=loadTalentLv('sgold'), gkLv=loadTalentLv('gkill');
+  const gold=sgLv*LEVELED_TALENTS.sgold.perLv;                 // 💰 starting gold (เลเวล 0–100)
   const hp  =(h(1)?5:0)+(h(6)?3:0)+(h(7)?2:0)+(h(11)?2:0);     // 🛡️ castle HP (max +12)
   const dmg =1+(h(8)?.05:0)+(h(9)?.05:0)+(h(10)?.05:0);        // ⚔️ tower damage (max +15%)
-  // 💰 gold from kills: node 4/5 (+5%/+5%) + โบนัสตอน "ทองเริ่มต้น" Lv10 (+10%) → รวมสูงสุด +20%
-  const gm  =1+(h(4)?.05:0)+(h(5)?.05:0)+(sgLv>=SGOLD_MAX_LV?SGOLD_BONUS_GM:0);
+  // 💰 gold from kills: ทาเลนต์ gkill (+0.2%/lv, สูงสุด +20%) + โบนัสทองเริ่มต้น Lv.100 (+10%) → รวมสูงสุด +30%
+  const gm  =1+gkLv*LEVELED_TALENTS.gkill.perLv/100+(sgLv>=LEVELED_TALENTS.sgold.maxLv?LEVELED_TALENTS.sgold.bonusGm:0);
   if(gold){ G.gold+=gold; }
   if(hp){ G.maxHp+=hp; G.hp+=hp; }
   G.dmgBuff=dmg;

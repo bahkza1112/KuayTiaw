@@ -2,6 +2,23 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.12 — Gold-from-kills merged into one 100-level talent
+
+### Changed
+- **Generic leveled-talent system** (`js/save.js`): refactored the bespoke starting-gold
+  functions into a `LEVELED_TALENTS` registry + generic `loadTalentLv` / `buyTalentLv` /
+  `talentLvCost`, so any talent can be a 1–100 leveled node. Kept `loadSGoldLv` /
+  `buySGoldLevel` / `sgoldLevelCost` as thin wrappers.
+- **Gold-from-kills → one leveled node** (`js/save.js`, `js/ui.js`): the two binary
+  `ทองจากศัตรู +5%` nodes (id4/id5) are replaced by a single leveled talent `gkill`:
+  `+0.2%` per level (max **+20%** at Lv100), same `10 + lv*2` cost curve (~10,900 total).
+  Migration preserves value — old `+5%` → Lv25, `+10%` → Lv50. Stored in `tq_gkilllv`.
+  `applyTalents` now computes `gm = 1 + gkLv*0.002 + (sgold Lv100 ? 0.10 : 0)`
+  (kill-gold cap +30% with both maxed).
+- **Talent render generalized** (`js/ui.js` `_renderTalentTree`): the leveled-node path is
+  no longer hardcoded to starting-gold — it reads level/cost/effect text from
+  `LEVELED_TALENTS[nd.leveled]`, so both eco nodes share the Lv.X/100 + ×1/×10 UI.
+
 ## v3.11.11 — Starting-gold talent extended to 100 levels (max +300)
 
 ### Changed
