@@ -1,5 +1,5 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.30';
+const GAME_VERSION='3.11.31';
 const PATCH_NOTES=[
   {ver:'3.11.30',date:'2026-06-21',title:'🛠️ Dev Console — redesign Cheat tab',notes:[
     'รวม 6 section → 4 section: ทรัพยากร / วัสดุ / Combat / Progress',
@@ -2806,23 +2806,15 @@ function renderDevDebug(){
   </div>`;
 }
 
-function devSave(){
-  localStorage.setItem('tq_cfg',JSON.stringify(CFG));
+function devCopyConfig(){
   const json=JSON.stringify(CFG,null,2);
-  // show copy modal instead of file download (blocked in sandbox)
-  const overlay=document.createElement('div');
-  overlay.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
-  overlay.innerHTML=`<div style="background:#1a1a0a;border:2px solid #ff9800;border-radius:14px;padding:20px;width:100%;max-width:500px;max-height:80vh;display:flex;flex-direction:column;gap:12px;">
-    <div style="display:flex;justify-content:space-between;align-items:center;">
-      <span style="color:#ff9800;font-weight:700;font-size:14px;">💾 คอนฟิก — คัดลอกและบันทึก</span>
-      <button onclick="this.closest('div[style]').remove()" style="background:rgba(255,255,255,.15);border:1px solid #555;border-radius:6px;color:#fff;padding:4px 10px;cursor:pointer;font-size:12px;">✕ ปิด</button>
-    </div>
-    <textarea readonly style="flex:1;min-height:260px;background:#0a0a0a;border:1px solid #333;border-radius:8px;color:#ffe082;font-family:monospace;font-size:11px;padding:10px;resize:none;line-height:1.5;">${json}</textarea>
-    <button onclick="navigator.clipboard.writeText(this.previousElementSibling.value).then(()=>{this.textContent='✅ คัดลอกแล้ว!';setTimeout(()=>this.textContent='📋 คัดลอก',1500)})" style="background:rgba(255,152,0,.2);border:1px solid #ff9800;border-radius:8px;color:#ff9800;padding:9px;font-weight:700;font-size:13px;cursor:pointer;">📋 คัดลอก</button>
-    <div style="font-size:10px;color:#555;text-align:center;">วาง JSON นี้ลงไฟล์ tq_config.json เพื่อเก็บ config ไว้ใช้ทีหลัง</div>
-  </div>`;
-  document.body.appendChild(overlay);
-  showToast('💾 Saveค่าแล้ว!');
+  const btn=document.getElementById('devCopyBtn');
+  navigator.clipboard.writeText(json).then(()=>{
+    if(btn){btn.textContent='✅ Copied!';setTimeout(()=>{btn.textContent='📋 Copy CFG JSON';},1800);}
+    showToast('📋 Copy CFG JSON แล้ว — วางใน js/game.js ได้เลย!');
+  }).catch(()=>{
+    prompt('คัดลอก JSON ด้านล่าง:',json);
+  });
 }
 
 
