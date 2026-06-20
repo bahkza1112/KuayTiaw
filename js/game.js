@@ -1996,37 +1996,6 @@ function render(){
   const vg=ctx.createRadialGradient(cv.width/2,cv.height/2,cv.height*.25,cv.width/2,cv.height/2,cv.height*.75);
   vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,0.30)');
   ctx.fillStyle=vg;ctx.fillRect(0,0,cv.width,cv.height);
-  // G4: boss health bar (type 4 and type 9 Final Boss)
-  const _boss=G.enemies.find(e=>e.alive&&(e.ti===4||e.ti===9));
-  if(_boss){
-    const isFinalBoss=_boss.ti===9;
-    const bw=Math.min(cv.width*.68,400),bh=isFinalBoss?16:13,bx=cv.width/2-bw/2,by=cv.height-26;
-    ctx.save();
-    ctx.fillStyle=isFinalBoss?'rgba(20,0,40,.92)':'rgba(0,0,0,.82)';
-    if(ctx.roundRect)ctx.roundRect(bx-6,by-22,bw+12,bh+32,8);else ctx.rect(bx-6,by-22,bw+12,bh+32);ctx.fill();
-    if(isFinalBoss){
-      ctx.strokeStyle='rgba(150,0,200,.6)';ctx.lineWidth=1.5;
-      if(ctx.roundRect)ctx.roundRect(bx-6,by-22,bw+12,bh+32,8);else ctx.rect(bx-6,by-22,bw+12,bh+32);ctx.stroke();
-    }
-    ctx.fillStyle=isFinalBoss?'#0d0020':'#1a0000';
-    if(ctx.roundRect)ctx.roundRect(bx,by,bw,bh,5);else ctx.rect(bx,by,bw,bh);ctx.fill();
-    const _bpct=Math.max(0,_boss.hp/_boss.mhp);
-    ctx.fillStyle=isFinalBoss?(_bpct>.5?'#9c27b0':_bpct>.25?'#e040fb':'#ff1744'):(_bpct>.5?'#f44336':_bpct>.25?'#ff9800':'#ff1744');
-    if(ctx.roundRect)ctx.roundRect(bx,by,bw*_bpct,bh,5);else ctx.rect(bx,by,bw*_bpct,bh);ctx.fill();
-    /* shield bar overlay for Final Boss */
-    if(isFinalBoss&&_boss.maxShieldHp>0&&_boss.shieldHp>0){
-      const _sp=_boss.shieldHp/_boss.maxShieldHp;
-      ctx.fillStyle=`rgba(144,202,249,${.3+.2*Math.sin(Date.now()*.004)})`;
-      if(ctx.roundRect)ctx.roundRect(bx,by,bw*_sp,bh,5);else ctx.rect(bx,by,bw*_sp,bh);ctx.fill();
-    }
-    ctx.strokeStyle=isFinalBoss?'rgba(150,0,200,.7)':'rgba(183,28,28,.7)';ctx.lineWidth=1.5;
-    if(ctx.roundRect)ctx.roundRect(bx,by,bw,bh,5);else ctx.rect(bx,by,bw,bh);ctx.stroke();
-    ctx.fillStyle=isFinalBoss?'#e040fb':'#ff8a80';ctx.font=`bold ${isFinalBoss?11:10}px Arial`;
-    ctx.textAlign='center';ctx.textBaseline='bottom';
-    const _bShieldTxt=isFinalBoss&&_boss.shieldHp>0?`  🛡️ ${Math.ceil(_boss.shieldHp)}`:'';
-    ctx.fillText((isFinalBoss?'👁️ ':' 👹 ')+ENAMES[_boss.ti]+'  ❤️ '+Math.ceil(_boss.hp)+' / '+Math.ceil(_boss.mhp)+_bShieldTxt,cv.width/2,by-3);
-    ctx.restore();
-  }
   // V5: wave incoming banner
   if(G.waveBanner&&G.waveBanner.t>0){
     const bmax=1.5,bt=G.waveBanner.t,prog=1-bt/bmax;

@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.14 — Remove boss HP bar
+
+### Changed
+- `js/game.js`: removed boss health bar rendering block (was drawn at bottom of canvas) — reduces screen clutter
+
 ## v3.11.13 — Awaken-discount moved to Economy, now a 100-level talent
 
 ### Changed
