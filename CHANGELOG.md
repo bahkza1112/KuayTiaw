@@ -2,6 +2,22 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.9 — Leveled "starting gold" talent (1–10)
+
+### Changed
+- **Starting-gold talent → leveled** (`js/save.js`, `js/ui.js`): the economy branch's two
+  binary starting-gold nodes (`+100` / `+150`) are replaced by a single 10-level talent:
+  `+25` gold per level (max `+250`, same ceiling as before). Cost ramps `80 + lv*40` per
+  level (L1=80 … L10=440, total 2,600 permanent gold). New storage key `tq_sgold_lv`;
+  `applyTalents` now reads `loadSGoldLv()*25` instead of `hasPUpgrade(0/3)`. Added
+  `loadSGoldLv` / `buySGoldLevel` / `sgoldLevelCost` and `SGOLD_PER_LV` / `SGOLD_MAX_LV`.
+- **Migration**: existing saves auto-convert on first read — owning the old `+100` node
+  seeds Lv4, owning both (`+250`) seeds Lv10, so prior permanent-gold investment carries
+  over without loss.
+- **Talent tree render** (`js/ui.js` `_renderTalentTree`): handles a `leveled` node type —
+  shows `Lv.X/10`, the current `+gold` value, and a per-level upgrade button; downstream
+  eco nodes (gold-from-kills) unlock once the leveled node is at Lv1+.
+
 ## v3.11.8 — Rarity-weighted skill gacha odds
 
 ### Changed

@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.8';
+const GAME_VERSION='3.11.9';
 const PATCH_NOTES=[
+  {ver:'3.11.9',date:'2026-06-20',title:'💰 ทาเลนต์ "ทองเริ่มต้น" อัปได้ 10 เลเวล',notes:[
+    'เปลี่ยน "ทองเริ่มต้น" จากปุ่มเดียวจบ เป็นอัปได้ 10 เลเวล — เลเวลละ +25 ทอง (สูงสุด +250)',
+    'ราคาไต่ขึ้นเรื่อยๆ: Lv1 = 80 ทองถาวร เพิ่มทีละ 40 จนถึง Lv10 = 440 (รวม 2,600)',
+    'ผู้เล่นเดิมที่ปลดไว้แล้วจะถูกแปลงเป็นเลเวลให้อัตโนมัติ (เคยปลด +100 = Lv4, +250 = Lv10)',
+  ]},
   {ver:'3.11.8',date:'2026-06-20',title:'🎴 ปรับอัตราตู้การ์ดสกิลใหม่ — ออกตามความหายาก',notes:[
     'เดิมทุกใบ 1% เท่ากันหมด (รวม 5% · เกลือ 95%) ทั้งที่ความหายากต่างกัน',
     'ใหม่: ออกตามความหายาก — Uncommon 6% · Rare 4% · Epic 3% · Legendary 1% (รวม 17% · ปลอบใจ 83%)',
@@ -1035,8 +1040,7 @@ function _updateBagBadge(){
    (legacy ids 0/1/2 kept as tier-1 nodes so old purchases carry over). */
 const TALENT_TREE=[
   {key:'eco',icon:'💰',name:'เศรษฐกิจ',color:'#ffd54f',nodes:[
-    {id:0, name:'ทองเริ่มต้น +100', desc:'เริ่มด่านมีทอง +100',            cost:200},
-    {id:3, name:'ทองเริ่มต้น +150', desc:'เริ่มด่านมีทอง +150 (รวม +250)', cost:450},
+    {leveled:'sgold', name:'ทองเริ่มต้น', desc:'เริ่มด่านมีทอง +25 ต่อเลเวล (สูงสุด +250)'},
     {id:4, name:'ทองจากศัตรู +5%',  desc:'ฆ่าศัตรูได้ทอง +5%',             cost:750},
     {id:5, name:'ทองจากศัตรู +5%',  desc:'ฆ่าศัตรูได้ทอง +5% (รวม +10%)',  cost:1150},
   ]},
@@ -1071,16 +1075,34 @@ function _toggleTalentBranch(key){
 }
 function _renderTalentTree(){
   const pg=loadPGold();
+  /* node "เสร็จ" สำหรับ unlock ขั้นถัดไป: leveled = มี ≥1 เลเวล, ปกติ = ซื้อแล้ว */
+  const _ndDone=nd=>nd.leveled?(loadSGoldLv()>=1):hasPUpgrade(nd.id);
   return TALENT_TREE.map(br=>{
-    const ownedCount=br.nodes.filter(nd=>hasPUpgrade(nd.id)).length;
+    const ownedCount=br.nodes.filter(nd=>nd.leveled?(loadSGoldLv()>=SGOLD_MAX_LV):hasPUpgrade(nd.id)).length;
     const total=br.nodes.length;
     const allDone=ownedCount===total;
     const open=_talentOpen[br.key]!==false;// default open
     _talentOpen[br.key]=open;
     const nodes=br.nodes.map((nd,t)=>{
+      const prereqOk=t===0||_ndDone(br.nodes[t-1]);
+      if(nd.leveled){ // 💰 ทองเริ่มต้น — node แบบเลเวล 0–10
+        const lv=loadSGoldLv(), maxed=lv>=SGOLD_MAX_LV;
+        const cost=maxed?0:sgoldLevelCost(lv);
+        const buyable=!maxed&&prereqOk&&pg>=cost;
+        const state=maxed?'owned':(!prereqOk?'locked':buyable?'buyable':'tooexp');
+        const act=maxed
+          ?`<div class="talent-owned">✓ MAX</div>`
+          :(!prereqOk
+            ?`<div class="talent-lock">🔒</div>`
+            :`<button class="talent-buy${buyable?'':' dim'}" ${buyable?'onclick="buySGoldLevel();renderWorkshop()"':'disabled'}><span class="tb-gold">${cost}</span><span class="tb-label">ทองถาวร</span></button>`);
+        return `<div class="talent-node ${state}">
+          <div class="talent-tier">${maxed?'✓':'Lv'}</div>
+          <div class="talent-info"><div class="talent-name">${nd.name} <span style="color:var(--bc);font-weight:800;">Lv.${lv}/${SGOLD_MAX_LV}</span></div><div class="talent-desc">${nd.desc} · ตอนนี้ +${lv*SGOLD_PER_LV}</div></div>
+          <div class="talent-act">${act}</div>
+        </div>`;
+      }
       const owned=hasPUpgrade(nd.id);
-      const prereqId=t>0?br.nodes[t-1].id:null;
-      const prereqOk=t===0||hasPUpgrade(prereqId);
+      const prereqId=t>0?(br.nodes[t-1].id):null;
       const buyable=!owned&&prereqOk&&pg>=nd.cost;
       const state=owned?'owned':(!prereqOk?'locked':buyable?'buyable':'tooexp');
       const act=owned

@@ -301,12 +301,36 @@ function buyPUpgrade(idx,cost){
   if(typeof renderWorkshop==='function') renderWorkshop();
   if(typeof updateMenuGold==='function') updateMenuGold();
 }
+/* 💰 ทองเริ่มต้น — talent แบบเลเวล (1–10): +25 ทอง/เลเวล (สูงสุด +250). เก็บใน tq_sgold_lv.
+   ต้นทุนไต่ขึ้น: เลเวลถัดไป = 80 + lv*40 (L1=80 … L10=440 · รวม 2,600 ทองถาวร). */
+const SGOLD_PER_LV=25, SGOLD_MAX_LV=10;
+function sgoldLevelCost(lv){return 80+lv*40;} // ราคาเลื่อนจาก lv → lv+1 (lv=0..9)
+function loadSGoldLv(){
+  const raw=localStorage.getItem('tq_sgold_lv');
+  if(raw!=null) return Math.max(0,Math.min(SGOLD_MAX_LV,Number(raw)||0));
+  // migrate ของเก่า: id0 (+100)=Lv4, id3 (+150)=Lv10
+  let lv=0; try{ if(hasPUpgrade(0))lv+=4; if(hasPUpgrade(3))lv+=6; }catch(e){}
+  lv=Math.min(SGOLD_MAX_LV,lv);
+  localStorage.setItem('tq_sgold_lv',String(lv));
+  return lv;
+}
+function buySGoldLevel(){
+  const lv=loadSGoldLv();
+  if(lv>=SGOLD_MAX_LV){showToast('✅ อัปเต็มแล้ว!');return;}
+  const cost=sgoldLevelCost(lv), g=loadPGold();
+  if(g<cost){showToast('🪙 ทองถาวรไม่พอ!');return;}
+  savePGold(g-cost);
+  localStorage.setItem('tq_sgold_lv',String(lv+1));
+  showToast('✅ อัปทองเริ่มต้น Lv.'+(lv+1)+'!');
+  if(typeof renderWorkshop==='function') renderWorkshop();
+  if(typeof updateMenuGold==='function') updateMenuGold();
+}
 /* 🌳 apply talent-tree effects onto current game state G (story + endgame).
-   Talent node ids map to tq_pups entries (legacy 0/1/2 preserved as tier-1 nodes). */
+   Talent node ids map to tq_pups entries; ทองเริ่มต้นแยกเป็นระบบเลเวล (tq_sgold_lv). */
 function applyTalents(){
   if(typeof G==='undefined'||!G) return;
   const h=hasPUpgrade;
-  const gold=(h(0)?100:0)+(h(3)?150:0);                       // 💰 starting gold
+  const gold=loadSGoldLv()*SGOLD_PER_LV;                      // 💰 starting gold (เลเวล 0–10)
   const hp  =(h(1)?5:0)+(h(6)?3:0)+(h(7)?2:0)+(h(11)?2:0);     // 🛡️ castle HP (max +12)
   const dmg =1+(h(8)?.05:0)+(h(9)?.05:0)+(h(10)?.05:0);        // ⚔️ tower damage (max +15%)
   const gm  =1+(h(4)?.05:0)+(h(5)?.05:0);                      // 💰 gold from kills (max +10%)
