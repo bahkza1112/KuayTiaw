@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.15 — Gold mine base cost reduced
+
+### Changed
+- `js/game.js` `t_cost[6]`: 75 → 50 gold
+
 ## v3.11.14 — Remove boss HP bar
 
 ### Changed

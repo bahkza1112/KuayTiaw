@@ -133,7 +133,7 @@ const DEFAULT_CFG={
   t_dmg:[24,12,44,65,0,20,0,20,42],   // [cannon,ice,magic,sniper,support,archer,goldmine,thunder,void] — cannon 28→24, magic 38→44, void 38→42 (v3.0.1)
   t_rng:[2.2,2.0,2.5,4.5,1.5,2.8,0,2.4,3.0], // support: 2.8→1.5 (v3.0.0 ลดระยะเยอะ)
   t_rate:[1.2,1.5,.8,.4,0,1.8,0,1.8,0.6], // archer 2.0→1.8 (v3.1.0 — DPS/Cost สูงสุดในเกมที่ ★4lv5)
-  t_cost:[50,55,75,65,35,60,75,85,90], // thunder: 85 gold, void: 90 gold
+  t_cost:[50,55,75,65,35,60,50,85,90], // gold mine: 50, thunder: 85 gold, void: 90 gold
   t_goldrate:5,t_goldamt:[2,4,6,8],
   // Game settings
   startGold:200,    // เดิม 150 — ให้ซื้อป้อมได้ 4-5 ตัวก่อน wave 1
