@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.9';
+const GAME_VERSION='3.11.10';
 const PATCH_NOTES=[
+  {ver:'3.11.10',date:'2026-06-20',title:'🎁 ทองเริ่มต้น Lv.10 แถมทองจากฆ่า +10%',notes:[
+    'อัป "ทองเริ่มต้น" ถึง Lv.10 รับโบนัสพิเศษ: ฆ่าศัตรูได้ทอง +10% เพิ่มอีก',
+    'รวมกับ node ทองจากศัตรู (+5%/+5%) ได้สูงสุด +20% ทองจากการฆ่า',
+  ]},
   {ver:'3.11.9',date:'2026-06-20',title:'💰 ทาเลนต์ "ทองเริ่มต้น" อัปได้ 10 เลเวล',notes:[
     'เปลี่ยน "ทองเริ่มต้น" จากปุ่มเดียวจบ เป็นอัปได้ 10 เลเวล — เลเวลละ +25 ทอง (สูงสุด +250)',
     'ราคาไต่ขึ้นเรื่อยๆ: Lv1 = 80 ทองถาวร เพิ่มทีละ 40 จนถึง Lv10 = 440 (รวม 2,600)',
@@ -1040,7 +1044,7 @@ function _updateBagBadge(){
    (legacy ids 0/1/2 kept as tier-1 nodes so old purchases carry over). */
 const TALENT_TREE=[
   {key:'eco',icon:'💰',name:'เศรษฐกิจ',color:'#ffd54f',nodes:[
-    {leveled:'sgold', name:'ทองเริ่มต้น', desc:'เริ่มด่านมีทอง +25 ต่อเลเวล (สูงสุด +250)'},
+    {leveled:'sgold', name:'ทองเริ่มต้น', desc:'เริ่มด่านมีทอง +25 ต่อเลเวล (สูงสุด +250) · 🎁 Lv.10 แถมทองจากฆ่า +10%'},
     {id:4, name:'ทองจากศัตรู +5%',  desc:'ฆ่าศัตรูได้ทอง +5%',             cost:750},
     {id:5, name:'ทองจากศัตรู +5%',  desc:'ฆ่าศัตรูได้ทอง +5% (รวม +10%)',  cost:1150},
   ]},
@@ -1097,7 +1101,7 @@ function _renderTalentTree(){
             :`<button class="talent-buy${buyable?'':' dim'}" ${buyable?'onclick="buySGoldLevel();renderWorkshop()"':'disabled'}><span class="tb-gold">${cost}</span><span class="tb-label">ทองถาวร</span></button>`);
         return `<div class="talent-node ${state}">
           <div class="talent-tier">${maxed?'✓':'Lv'}</div>
-          <div class="talent-info"><div class="talent-name">${nd.name} <span style="color:var(--bc);font-weight:800;">Lv.${lv}/${SGOLD_MAX_LV}</span></div><div class="talent-desc">${nd.desc} · ตอนนี้ +${lv*SGOLD_PER_LV}</div></div>
+          <div class="talent-info"><div class="talent-name">${nd.name} <span style="color:var(--bc);font-weight:800;">Lv.${lv}/${SGOLD_MAX_LV}</span></div><div class="talent-desc">${nd.desc} · ตอนนี้ +${lv*SGOLD_PER_LV}${maxed?' · 🎁 +10% ทองจากฆ่า':''}</div></div>
           <div class="talent-act">${act}</div>
         </div>`;
       }

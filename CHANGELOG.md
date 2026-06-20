@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.10 — Starting-gold Lv10 bonus (+10% gold from kills)
+
+### Changed
+- **Starting-gold Lv10 perk** (`js/save.js` `applyTalents`): maxing the leveled
+  starting-gold talent now also grants `+10%` gold-from-kills. Combined with the two
+  `ทองจากศัตรู +5%` nodes this caps gold-from-kills at `+20%`
+  (`gm = 1 + h(4)*.05 + h(5)*.05 + (sgLv>=10 ? .10 : 0)`).
+- **Talent desc** (`js/ui.js`): the starting-gold node now advertises the Lv10 bonus,
+  and its live line shows `🎁 +10% ทองจากฆ่า` once maxed.
+
 ## v3.11.9 — Leveled "starting gold" talent (1–10)
 
 ### Changed

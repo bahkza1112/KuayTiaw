@@ -330,10 +330,12 @@ function buySGoldLevel(){
 function applyTalents(){
   if(typeof G==='undefined'||!G) return;
   const h=hasPUpgrade;
-  const gold=loadSGoldLv()*SGOLD_PER_LV;                      // 💰 starting gold (เลเวล 0–10)
+  const sgLv=loadSGoldLv();
+  const gold=sgLv*SGOLD_PER_LV;                               // 💰 starting gold (เลเวล 0–10)
   const hp  =(h(1)?5:0)+(h(6)?3:0)+(h(7)?2:0)+(h(11)?2:0);     // 🛡️ castle HP (max +12)
   const dmg =1+(h(8)?.05:0)+(h(9)?.05:0)+(h(10)?.05:0);        // ⚔️ tower damage (max +15%)
-  const gm  =1+(h(4)?.05:0)+(h(5)?.05:0);                      // 💰 gold from kills (max +10%)
+  // 💰 gold from kills: node 4/5 (+5%/+5%) + โบนัสตอน "ทองเริ่มต้น" Lv10 (+10%) → รวมสูงสุด +20%
+  const gm  =1+(h(4)?.05:0)+(h(5)?.05:0)+(sgLv>=SGOLD_MAX_LV?.10:0);
   if(gold){ G.gold+=gold; }
   if(hp){ G.maxHp+=hp; G.hp+=hp; }
   G.dmgBuff=dmg;
