@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.21';
+const GAME_VERSION='3.11.22';
 const PATCH_NOTES=[
+  {ver:'3.11.22',date:'2026-06-21',title:'🌳 ทาเลนต์: ปลดชั้น 2 ที่ Lv.20 / ชั้น 3 ที่ Lv.40',notes:[
+    'ชั้นที่ 2 ในแต่ละสายทาเลนต์ปลดล็อกเมื่อชั้น 1 ถึง Lv.20',
+    'ชั้นที่ 3 ปลดล็อกเมื่อชั้น 2 ถึง Lv.40 — ต้องลงทุนในสายก่อนจึงจะขยายสายได้',
+  ]},
   {ver:'3.11.21',date:'2026-06-21',title:'🔧 เวิร์กชอป: ทาเลนต์แสดงถูกต้อง',notes:[
     'แก้บัก: แท็บทาเลนต์ใน Workshop ไม่แสดงต้นไม้ทาเลนต์เมื่อปลดล็อก Void Tower แล้ว',
   ]},
@@ -1121,7 +1125,8 @@ function _toggleTalentBranch(key){
 function _renderTalentTree(){
   const pg=loadPGold();
   /* node "เสร็จ" สำหรับ unlock ขั้นถัดไป: leveled = มี ≥1 เลเวล, ปกติ = ซื้อแล้ว */
-  const _ndDone=nd=>nd.leveled?(loadTalentLv(nd.leveled)>=1):hasPUpgrade(nd.id);
+  const PREREQ_LVS=[0,20,40]; // ชั้นที่ t ต้องการชั้นก่อนถึง Lv นี้ก่อนปลดล็อก
+  const _ndDone=(nd,reqLv=1)=>nd.leveled?(loadTalentLv(nd.leveled)>=reqLv):hasPUpgrade(nd.id);
   return TALENT_TREE.map(br=>{
     const ownedCount=br.nodes.filter(nd=>nd.leveled?(loadTalentLv(nd.leveled)>=LEVELED_TALENTS[nd.leveled].maxLv):hasPUpgrade(nd.id)).length;
     const total=br.nodes.length;
@@ -1129,7 +1134,7 @@ function _renderTalentTree(){
     const open=_talentOpen[br.key]!==false;// default open
     _talentOpen[br.key]=open;
     const nodes=br.nodes.map((nd,t)=>{
-      const prereqOk=t===0||_ndDone(br.nodes[t-1]);
+      const prereqOk=t===0||_ndDone(br.nodes[t-1],PREREQ_LVS[t]||1);
       if(nd.leveled){ // node แบบเลเวล 0–100 (sgold / gkill)
         const tdef=LEVELED_TALENTS[nd.leveled], maxLv=tdef.maxLv;
         const lv=loadTalentLv(nd.leveled), maxed=lv>=maxLv;
@@ -1141,7 +1146,7 @@ function _renderTalentTree(){
         const act=maxed
           ?`<div class="talent-owned">✓ MAX</div>`
           :(!prereqOk
-            ?`<div class="talent-lock">🔒</div>`
+            ?`<div class="talent-lock">🔒 ต้อง Lv.${PREREQ_LVS[t]} ก่อน</div>`
             :`<div style="display:flex;flex-direction:column;gap:3px;align-items:stretch;">
                 <button class="talent-buy${can1?'':' dim'}" ${can1?`onclick="buyTalentLv('${nd.leveled}',1)"`:'disabled'}><span class="tb-gold">${cost}</span><span class="tb-label">ทองถาวร</span></button>
                 <button class="talent-buy${can10?'':' dim'}" ${can10?`onclick="buyTalentLv('${nd.leveled}',10)"`:'disabled'} style="padding:2px 8px;"><span class="tb-gold" style="font-size:11px;">${cost10}</span><span class="tb-label">×${cnt10}</span></button>
@@ -1159,7 +1164,7 @@ function _renderTalentTree(){
       const act=owned
         ?`<div class="talent-owned">✓ ปลดแล้ว</div>`
         :(!prereqOk
-          ?`<div class="talent-lock">🔒</div>`
+          ?`<div class="talent-lock">🔒 ต้อง Lv.${PREREQ_LVS[t]} ก่อน</div>`
           :`<button class="talent-buy${buyable?'':' dim'}" ${buyable?`onclick="buyTalent(${nd.id},${nd.cost},${prereqId})"`:'disabled'}><span class="tb-gold">${nd.cost}</span><span class="tb-label">ทองถาวร</span></button>`);
       return `<div class="talent-node ${state}">
         <div class="talent-tier">${owned?'✓':(t+1)}</div>
