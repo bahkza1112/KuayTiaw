@@ -647,6 +647,7 @@ function getUnlockedTowers(){
       s.unlockedTowers.forEach(t=>unlocked.add(t));
     }
   });
+  if(isVoidUnlocked()) unlocked.add(8); // Void Tower ปลดล็อกผ่าน Workshop
   return unlocked;
 }
 function unlockMonster(ti){
