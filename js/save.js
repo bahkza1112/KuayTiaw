@@ -301,27 +301,34 @@ function buyPUpgrade(idx,cost){
   if(typeof renderWorkshop==='function') renderWorkshop();
   if(typeof updateMenuGold==='function') updateMenuGold();
 }
-/* 💰 ทองเริ่มต้น — talent แบบเลเวล (1–10): +25 ทอง/เลเวล (สูงสุด +250). เก็บใน tq_sgold_lv.
-   ต้นทุนไต่ขึ้น: เลเวลถัดไป = 80 + lv*40 (L1=80 … L10=440 · รวม 2,600 ทองถาวร). */
-const SGOLD_PER_LV=25, SGOLD_MAX_LV=10;
-function sgoldLevelCost(lv){return 80+lv*40;} // ราคาเลื่อนจาก lv → lv+1 (lv=0..9)
+/* 💰 ทองเริ่มต้น — talent แบบเลเวล (1–100): +3 ทอง/เลเวล (สูงสุด +300). เก็บใน tq_sgoldlv.
+   ต้นทุนไต่ขึ้น: เลเวลถัดไป = 10 + lv*2 (L1=10 … L100=208 · รวม ~10,900 ทองถาวร).
+   โบนัส Lv.100: ฆ่าศัตรูได้ทอง +10% เพิ่ม. */
+const SGOLD_PER_LV=3, SGOLD_MAX_LV=100, SGOLD_BONUS_GM=.10;
+function sgoldLevelCost(lv){return 10+lv*2;} // ราคาเลื่อนจาก lv → lv+1 (lv=0..99)
 function loadSGoldLv(){
-  const raw=localStorage.getItem('tq_sgold_lv');
+  const raw=localStorage.getItem('tq_sgoldlv');
   if(raw!=null) return Math.max(0,Math.min(SGOLD_MAX_LV,Number(raw)||0));
-  // migrate ของเก่า: id0 (+100)=Lv4, id3 (+150)=Lv10
-  let lv=0; try{ if(hasPUpgrade(0))lv+=4; if(hasPUpgrade(3))lv+=6; }catch(e){}
-  lv=Math.min(SGOLD_MAX_LV,lv);
-  localStorage.setItem('tq_sgold_lv',String(lv));
+  // migrate: รักษามูลค่าทองเริ่มต้นเดิม (คีย์เก่าสเกล 0–10 หรือ node binary id0/id3) แล้วแปลงเป็นสเกลใหม่ +3/เลเวล
+  let oldGold=0;
+  const oldKey=localStorage.getItem('tq_sgold_lv');
+  if(oldKey!=null) oldGold=(Number(oldKey)||0)*25;
+  else { try{ if(hasPUpgrade(0))oldGold+=100; if(hasPUpgrade(3))oldGold+=150; }catch(e){} }
+  const lv=Math.min(SGOLD_MAX_LV,Math.round(oldGold/SGOLD_PER_LV));
+  localStorage.setItem('tq_sgoldlv',String(lv));
   return lv;
 }
-function buySGoldLevel(){
-  const lv=loadSGoldLv();
-  if(lv>=SGOLD_MAX_LV){showToast('✅ อัปเต็มแล้ว!');return;}
-  const cost=sgoldLevelCost(lv), g=loadPGold();
-  if(g<cost){showToast('🪙 ทองถาวรไม่พอ!');return;}
-  savePGold(g-cost);
-  localStorage.setItem('tq_sgold_lv',String(lv+1));
-  showToast('✅ อัปทองเริ่มต้น Lv.'+(lv+1)+'!');
+function buySGoldLevel(n){
+  n=Math.max(1,n||1);
+  let lv=loadSGoldLv(), bought=0;
+  while(bought<n && lv<SGOLD_MAX_LV){
+    const cost=sgoldLevelCost(lv);
+    if(loadPGold()<cost) break;
+    savePGold(loadPGold()-cost); lv++; bought++;
+  }
+  if(bought===0){ showToast(lv>=SGOLD_MAX_LV?'✅ อัปเต็มแล้ว!':'🪙 ทองถาวรไม่พอ!'); return; }
+  localStorage.setItem('tq_sgoldlv',String(lv));
+  showToast('✅ อัปทองเริ่มต้น Lv.'+lv+(bought>1?' (+'+bought+')':'')+'!');
   if(typeof renderWorkshop==='function') renderWorkshop();
   if(typeof updateMenuGold==='function') updateMenuGold();
 }
@@ -335,7 +342,7 @@ function applyTalents(){
   const hp  =(h(1)?5:0)+(h(6)?3:0)+(h(7)?2:0)+(h(11)?2:0);     // 🛡️ castle HP (max +12)
   const dmg =1+(h(8)?.05:0)+(h(9)?.05:0)+(h(10)?.05:0);        // ⚔️ tower damage (max +15%)
   // 💰 gold from kills: node 4/5 (+5%/+5%) + โบนัสตอน "ทองเริ่มต้น" Lv10 (+10%) → รวมสูงสุด +20%
-  const gm  =1+(h(4)?.05:0)+(h(5)?.05:0)+(sgLv>=SGOLD_MAX_LV?.10:0);
+  const gm  =1+(h(4)?.05:0)+(h(5)?.05:0)+(sgLv>=SGOLD_MAX_LV?SGOLD_BONUS_GM:0);
   if(gold){ G.gold+=gold; }
   if(hp){ G.maxHp+=hp; G.hp+=hp; }
   G.dmgBuff=dmg;

@@ -1,6 +1,12 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.10';
+const GAME_VERSION='3.11.11';
 const PATCH_NOTES=[
+  {ver:'3.11.11',date:'2026-06-20',title:'💰 ทองเริ่มต้นอัปได้ถึง 100 เลเวล (สูงสุด +300)',notes:[
+    'ขยาย "ทองเริ่มต้น" เป็น 100 เลเวล — เลเวลละ +3 ทอง (สูงสุด +300)',
+    'โบนัส +10% ทองจากฆ่า ย้ายไปรับที่ Lv.100 (เลเวลสุดท้าย)',
+    'ราคาไต่ขึ้น: Lv1 = 10 ทองถาวร เพิ่มทีละ 2 จนถึง Lv100 = 208 (รวม ~10,900)',
+    'มีปุ่มอัปทีละ 10 เลเวลให้กดสะดวกขึ้น · ผู้เล่นเดิมถูกแปลงเลเวลให้รักษามูลค่าทองเท่าเดิม',
+  ]},
   {ver:'3.11.10',date:'2026-06-20',title:'🎁 ทองเริ่มต้น Lv.10 แถมทองจากฆ่า +10%',notes:[
     'อัป "ทองเริ่มต้น" ถึง Lv.10 รับโบนัสพิเศษ: ฆ่าศัตรูได้ทอง +10% เพิ่มอีก',
     'รวมกับ node ทองจากศัตรู (+5%/+5%) ได้สูงสุด +20% ทองจากการฆ่า',
@@ -1044,7 +1050,7 @@ function _updateBagBadge(){
    (legacy ids 0/1/2 kept as tier-1 nodes so old purchases carry over). */
 const TALENT_TREE=[
   {key:'eco',icon:'💰',name:'เศรษฐกิจ',color:'#ffd54f',nodes:[
-    {leveled:'sgold', name:'ทองเริ่มต้น', desc:'เริ่มด่านมีทอง +25 ต่อเลเวล (สูงสุด +250) · 🎁 Lv.10 แถมทองจากฆ่า +10%'},
+    {leveled:'sgold', name:'ทองเริ่มต้น', desc:'เริ่มด่านมีทอง +3 ต่อเลเวล (สูงสุด +300) · 🎁 Lv.100 แถมทองจากฆ่า +10%'},
     {id:4, name:'ทองจากศัตรู +5%',  desc:'ฆ่าศัตรูได้ทอง +5%',             cost:750},
     {id:5, name:'ทองจากศัตรู +5%',  desc:'ฆ่าศัตรูได้ทอง +5% (รวม +10%)',  cost:1150},
   ]},
@@ -1089,16 +1095,21 @@ function _renderTalentTree(){
     _talentOpen[br.key]=open;
     const nodes=br.nodes.map((nd,t)=>{
       const prereqOk=t===0||_ndDone(br.nodes[t-1]);
-      if(nd.leveled){ // 💰 ทองเริ่มต้น — node แบบเลเวล 0–10
+      if(nd.leveled){ // 💰 ทองเริ่มต้น — node แบบเลเวล 0–100
         const lv=loadSGoldLv(), maxed=lv>=SGOLD_MAX_LV;
         const cost=maxed?0:sgoldLevelCost(lv);
-        const buyable=!maxed&&prereqOk&&pg>=cost;
+        let cost10=0,cnt10=0; for(let i=lv;i<Math.min(lv+10,SGOLD_MAX_LV);i++){cost10+=sgoldLevelCost(i);cnt10++;}
+        const can1=!maxed&&prereqOk&&pg>=cost, can10=!maxed&&prereqOk&&cnt10>0&&pg>=cost10;
+        const buyable=can1;
         const state=maxed?'owned':(!prereqOk?'locked':buyable?'buyable':'tooexp');
         const act=maxed
           ?`<div class="talent-owned">✓ MAX</div>`
           :(!prereqOk
             ?`<div class="talent-lock">🔒</div>`
-            :`<button class="talent-buy${buyable?'':' dim'}" ${buyable?'onclick="buySGoldLevel();renderWorkshop()"':'disabled'}><span class="tb-gold">${cost}</span><span class="tb-label">ทองถาวร</span></button>`);
+            :`<div style="display:flex;flex-direction:column;gap:3px;align-items:stretch;">
+                <button class="talent-buy${can1?'':' dim'}" ${can1?'onclick="buySGoldLevel(1)"':'disabled'}><span class="tb-gold">${cost}</span><span class="tb-label">ทองถาวร</span></button>
+                <button class="talent-buy${can10?'':' dim'}" ${can10?'onclick="buySGoldLevel(10)"':'disabled'} style="padding:2px 8px;"><span class="tb-gold" style="font-size:11px;">${cost10}</span><span class="tb-label">×${cnt10}</span></button>
+              </div>`);
         return `<div class="talent-node ${state}">
           <div class="talent-tier">${maxed?'✓':'Lv'}</div>
           <div class="talent-info"><div class="talent-name">${nd.name} <span style="color:var(--bc);font-weight:800;">Lv.${lv}/${SGOLD_MAX_LV}</span></div><div class="talent-desc">${nd.desc} · ตอนนี้ +${lv*SGOLD_PER_LV}${maxed?' · 🎁 +10% ทองจากฆ่า':''}</div></div>

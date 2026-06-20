@@ -2,6 +2,22 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.11 — Starting-gold talent extended to 100 levels (max +300)
+
+### Changed
+- **Starting-gold scale → 1–100** (`js/save.js`): `SGOLD_PER_LV` 25→3, `SGOLD_MAX_LV`
+  10→100 (max bonus +250 → **+300**). The Lv-max `+10% gold-from-kills` perk now lands at
+  **Lv100** (still capping total kill-gold at +20% with the two eco nodes). Cost curve
+  retuned for 100 levels: `10 + lv*2` (L1=10 … L100=208, total ≈10,900 permanent gold) —
+  the old `80+lv*40` would have totalled ~206k.
+- **New storage key** `tq_sgoldlv` (was `tq_sgold_lv`); `loadSGoldLv` migrates by
+  preserving prior starting-gold *value* — old 0–10 level (×25) or legacy binary nodes
+  (id0 +100 / id3 +150) are converted to the nearest new level (`round(oldGold/3)`), so no
+  permanent-gold investment is lost across the rescale.
+- **Bulk buy** (`js/save.js` `buySGoldLevel(n)`, `js/ui.js`): the upgrade now accepts a
+  count and the talent card offers a ×10 button alongside ×1, since clicking 100 single
+  levels would be tedious.
+
 ## v3.11.10 — Starting-gold Lv10 bonus (+10% gold from kills)
 
 ### Changed
