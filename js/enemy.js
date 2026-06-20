@@ -60,7 +60,10 @@ const MWEAKNESS=[
 const MTYPE=[0,0,0,0,1,0,0,0,0,1,0];
 const MISAIR=[false,false,false,false,false,false,true,true,false,false,false]; /* บินได้ */
 const MSHIELD=[0,0,0,0,0,0,0,0,86,250,0]; /* shield HP เริ่มต้น (0=ไม่มีโล่); v1.7.2: Shield Knight 80→86 ตาม HP ใหม่ */
-function getEnemyHP(ti,si,wave){return CFG.m_hp[ti]*(1+si*CFG.stageMult)*(1+wave*CFG.waveMult);}
+// ด่าน 8-11 (si>=7) มี stage-mult สูง (×2.5–3.2) อัดเต็มตั้งแต่เวฟ 1 ทำให้เปิดมาโหดไม่มีจังหวะฟาร์ม
+// _earlyEase ลด HP เวฟ 1-6 ลงแล้วไต่ขึ้นเต็มที่เวฟ 7 (เวฟ1 ×0.45 → เวฟ7 ×1.0) ให้ผู้เล่นสร้างป้อม/เก็บทองก่อนเจอของหนัก
+function _earlyEase(si,wave){return (si>=7&&wave<7)?(0.45+0.55*((wave-1)/6)):1;}
+function getEnemyHP(ti,si,wave){return CFG.m_hp[ti]*(1+si*CFG.stageMult)*(1+wave*CFG.waveMult)*_earlyEase(si,wave);}
 function getEnemySpd(ti,si){return Math.min(CFG.m_spd[ti]*(1+si*CFG.spdStageMult),CFG.spdCap);}
 
 /* damage number colors per tower type */

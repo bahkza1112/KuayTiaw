@@ -2,6 +2,19 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.7 — Stages 8-11 early-wave ease (farm window)
+
+### Changed
+- **Early-wave HP ramp for late stages** (`js/enemy.js`): stages 8-11 (`si>=7`) carry a
+  high stage HP multiplier (`1+si*0.22` ≈ ×2.5–3.2) that applied at full strength from
+  wave 1, leaving no room to farm gold or build/merge before heavy enemies hit (an
+  automated lower-bound playthrough lost at stage 8 despite reaching the final wave, and
+  at stage 11 wave 3 against an opening air rush). Added `_earlyEase(si,wave)`: for
+  `si>=7` and `wave<7`, enemy HP is scaled by `0.45 + 0.55*((wave-1)/6)` — wave 1 ≈ 45%,
+  ramping linearly to 100% at wave 7. Later waves are unchanged, so the late-stage
+  challenge wall is preserved; only the opening is softened to give a farm/build window.
+  Story mode only (`getEgEnemyHP` for Endgame is untouched).
+
 ## v3.11.6 — Endgame round system fix (egRound never advanced)
 
 ### Fixed
