@@ -469,7 +469,10 @@
     <div style="text-align:center;font-size:10px;color:#555;margin-top:2px;">
       🔒 ค้ำประกัน Legendary (🛡️ กำแพงวิญญาณ) ทุก 30 ครั้ง — <span id="skillGachaPityInfo"></span>
     </div>
-    <button class="skill-banner-link" id="skillExchangeBtn" style="background:linear-gradient(90deg,rgba(0,150,136,.25),rgba(0,77,64,.15));border-color:rgba(128,216,255,.4);color:#80d8ff;" onclick="_doExchangeTicket()">🔁 แลก 💎50 → 🎫1 ตั๋วสกิล</button>
+    <div style="display:flex;gap:6px;">
+      <button class="skill-banner-link" id="skillExchangeBtn" style="flex:1;background:linear-gradient(90deg,rgba(0,150,136,.25),rgba(0,77,64,.15));border-color:rgba(128,216,255,.4);color:#80d8ff;" onclick="_doExchangeTicket(1)">🔁 แลก 💎50 → 🎫1</button>
+      <button class="skill-banner-link" id="skillExchangeBtn10" style="flex:1;background:linear-gradient(90deg,rgba(0,150,136,.25),rgba(0,77,64,.15));border-color:rgba(128,216,255,.4);color:#80d8ff;" onclick="_doExchangeTicket(10)">🔁 แลก 💎500 → 🎫10</button>
+    </div>
     <div class="gacha-odds-toggle" onclick="toggleSkillOdds()">
       <span>📋 อัตราการออก</span><span id="skillOddsArrow">▼ ดูรายละเอียด</span>
     </div>

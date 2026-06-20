@@ -230,12 +230,13 @@ function addTickets(n){
   if(typeof updateMenuStats==='function') updateMenuStats();
 }
 const GEM_PER_TICKET=50; // 💎 แลกตั๋วสกิล
-function exchangeGemForTicket(){
-  const g=loadGems();
-  if(g<GEM_PER_TICKET){showToast('💎 มณีไม่พอ (ต้องการ '+GEM_PER_TICKET+')');return false;}
-  saveGems(g-GEM_PER_TICKET); addTickets(1);
+function exchangeGemForTicket(n){
+  n=Math.max(1,Math.floor(n||1));
+  const need=GEM_PER_TICKET*n, g=loadGems();
+  if(g<need){showToast('💎 มณีไม่พอ (ต้องการ 💎'+need+')');return false;}
+  saveGems(g-need); addTickets(n);
   if(typeof updateMenuStats==='function') updateMenuStats();
-  showToast('🔁 แลก 💎'+GEM_PER_TICKET+' → 🎫1 สำเร็จ!');
+  showToast('🔁 แลก 💎'+need+' → 🎫'+n+' สำเร็จ!');
   return true;
 }
 /* การ์ดที่ใส่ใช้ในรัน (1 ใบ) */

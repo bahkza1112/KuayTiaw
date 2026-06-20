@@ -861,20 +861,18 @@ function toggleGachaOdds(){
 /* ══ SKILL GACHA (v4.0.0 — Phase 2 UI) ══ */
 let _skResults=[],_skFlipped=[],_skBusy=false;
 function openSkillGacha(){showScreen('skillgacha',true);_renderSkillGachaUI();}
-function _doExchangeTicket(){if(exchangeGemForTicket())_renderSkillGachaUI();}
+function _doExchangeTicket(n){if(exchangeGemForTicket(n||1))_renderSkillGachaUI();}
 function _renderSkillGachaUI(){
   document.getElementById('skillTicketCount').textContent=loadTickets().toLocaleString();
   document.getElementById('skillGachaPityInfo').textContent=`สะสม ${loadSkillPity()}/${SKILL_PITY} ครั้ง`;
   document.getElementById('skillPull1').disabled=loadTickets()<skillPullCost(1);
   document.getElementById('skillPull10').disabled=loadTickets()<skillPullCost(10);
   // ปุ่มแลกตั๋ว: โชว์มณีปัจจุบัน + dim เมื่อมณีไม่พอ (ต้องการ GEM_PER_TICKET)
+  const g=loadGems();
   const exb=document.getElementById('skillExchangeBtn');
-  if(exb){
-    const g=loadGems(), ok=g>=GEM_PER_TICKET;
-    exb.textContent=`🔁 แลก 💎${GEM_PER_TICKET} → 🎫1  (มี 💎${g})`;
-    exb.style.opacity=ok?'1':'.45';
-    exb.style.cursor=ok?'pointer':'not-allowed';
-  }
+  if(exb){const ok=g>=GEM_PER_TICKET;exb.textContent=`🔁 แลก 💎${GEM_PER_TICKET} → 🎫1  (มี 💎${g})`;exb.style.opacity=ok?'1':'.45';exb.style.cursor=ok?'pointer':'not-allowed';}
+  const exb10=document.getElementById('skillExchangeBtn10');
+  if(exb10){const ok10=g>=GEM_PER_TICKET*10;exb10.textContent=`🔁 แลก 💎${GEM_PER_TICKET*10} → 🎫10`;exb10.style.opacity=ok10?'1':'.45';exb10.style.cursor=ok10?'pointer':'not-allowed';}
   if(!_skBusy){
     document.getElementById('skillGachaGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;color:#444;padding:40px 0;font-size:13px;">กดสุ่มเพื่อเริ่ม ⭐</div>';
     document.getElementById('skillGachaSkipRow').style.display='none';
