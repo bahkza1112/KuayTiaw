@@ -617,7 +617,7 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .sktbl-row{display:grid;grid-template-columns:repeat(var(--cols,3),1fr);gap:4px;font-size:11px;text-align:center;padding:3px 4px;border-radius:5px;align-items:center;}
 .sktbl-row>span:first-child{text-align:left;}
 .sktbl-head{font-size:9px;color:#9fa8da;border-bottom:1px solid rgba(255,255,255,.1);border-radius:0;}
-.sktbl-row.cur{background:rgba(179,136,255,.18);border:1px solid rgba(179,136,255,.4);}
+.sktbl-row.cur{background:rgba(179,136,255,.18);border:1px solid rgba(179,136,255,.4);color:#fff;font-weight:bold;}
 .sktbl-star{color:#ffd54f;font-weight:700;}
 /* ── GACHA SCREEN ── */
 #gacha{background:linear-gradient(160deg,#120824 0%,#0a0418 55%,#050010 100%);min-height:600px;border-radius:16px;overflow:hidden;position:relative;}
