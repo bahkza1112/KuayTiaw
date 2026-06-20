@@ -296,6 +296,20 @@ body{background:#0d1117;display:flex;align-items:center;justify-content:center;m
 .talent-buy.dim{background:rgba(255,255,255,.06);color:rgba(255,255,255,.25);cursor:not-allowed;}
 .talent-buy.dim:hover{box-shadow:none;transform:none;}
 
+/* ── SLOT MACHINE ── */
+.slot-machine{background:rgba(0,0,0,.45);border:2px solid rgba(255,215,0,.25);border-radius:20px;padding:20px 16px;text-align:center;margin:4px 0;}
+.slot-title{font-size:20px;font-weight:900;color:#ffd54f;letter-spacing:1px;margin-bottom:4px;}
+.slot-cost-info{font-size:11px;color:rgba(255,255,255,.4);margin-bottom:16px;}
+.slot-reels-wrap{display:flex;justify-content:center;gap:14px;margin:0 0 18px;}
+.slot-reel{width:76px;height:76px;background:linear-gradient(180deg,#1a1a2e,#0d0d1a);border:2px solid rgba(255,215,0,.35);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:38px;box-shadow:inset 0 0 16px rgba(0,0,0,.6),0 0 8px rgba(255,215,0,.1);transition:border-color .3s;}
+.slot-reel.win{border-color:#ffd54f;box-shadow:inset 0 0 16px rgba(0,0,0,.6),0 0 18px rgba(255,215,0,.5);}
+.slot-reel.spinning span{display:inline-block;animation:slotBlur .08s linear infinite;}
+@keyframes slotBlur{0%{transform:translateY(-6px);opacity:.5}50%{transform:translateY(0);opacity:1}100%{transform:translateY(6px);opacity:.5}}
+.slot-result{min-height:36px;font-size:14px;font-weight:700;color:#ffd54f;padding:6px 0 10px;letter-spacing:.3px;}
+.slot-spin-btn{background:linear-gradient(180deg,#ffd54f,#f9a825);color:#3e2000;border:none;border-radius:50px;padding:14px 52px;font-size:17px;font-weight:900;cursor:pointer;letter-spacing:1px;box-shadow:0 4px 20px rgba(255,215,0,.4);transition:all .15s;}
+.slot-spin-btn:hover:not(:disabled){box-shadow:0 4px 28px rgba(255,215,0,.65);transform:translateY(-1px);}
+.slot-spin-btn:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+
 /* ── CUTSCENE ── */
 #cutscene{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:100;
   background:#000;flex-direction:column;align-items:center;justify-content:center;}

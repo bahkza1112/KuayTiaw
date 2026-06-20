@@ -1,6 +1,12 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.25';
+const GAME_VERSION='3.11.26';
 const PATCH_NOTES=[
+  {ver:'3.11.26',date:'2026-06-21',title:'🎰 คาสิโน — สล็อตแมชชีน',notes:[
+    'เพิ่มหน้าคาสิโน เข้าได้จากปุ่ม "คาสิโน" ใน bottom nav',
+    'สล็อตแมชชีน: ใช้ 50 ทองถาวร/สปิน · แอนิเมชันหมุนรีล 3 ช่อง',
+    'รางวัล: 💎×3=+🎫50+💰5000+💎3000 · ⭐×3=+🎫25+💰2500+💎1500 · 🔮×3=+💰2000+💎1000 · 💰×3=+💰500+💎500 · คู่=+💰30 · ไม่ตรง=เศษหินมืด',
+    'ตารางรางวัลพร้อม % แสดงในหน้าเดียวกัน',
+  ]},
   {ver:'3.11.25',date:'2026-06-21',title:'🎨 ไอคอน SVG เศษหินมืด + ตารางอัตราการ์ดสกิล',notes:[
     'ไอคอน "เศษหินมืด" เปลี่ยนเป็นรูป SVG วาดขึ้นเอง ไม่ใช้อีโมจิ',
     'ตารางอัตราการ์ดสกิลหน้าตาเหมือนตู้รางวัล — เลขสุ่ม สีม่วง monospace',
@@ -667,7 +673,7 @@ function renderAchievTab(){
 }
 
 /* ══ SCREEN MANAGEMENT ══ */
-function hideAll(){['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','whatsnew','towersel','storyscr','workshop','bag','gacha','skillgacha','daily'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const cs=document.getElementById('cutscene');if(cs)cs.style.display='none';}
+function hideAll(){['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','whatsnew','towersel','storyscr','workshop','bag','gacha','skillgacha','daily','casino'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const cs=document.getElementById('cutscene');if(cs)cs.style.display='none';}
 function showScreen(id,flex){
   hideAll();
   const el=document.getElementById(id);
@@ -3092,6 +3098,93 @@ document.getElementById('gachaBackBtn').addEventListener('click',()=>{
 });
 document.getElementById('skillGachaBackBtn').addEventListener('click',()=>{
   _skResults=[];_skFlipped=[];_skBusy=false;
-  openGacha(); // กลับไปหน้ากาชาหลัก
+  openGacha();
 });
+document.getElementById('casinoNavBtn').addEventListener('click',openCasino);
+document.getElementById('casinoBackBtn').addEventListener('click',()=>showScreen('mm',true));
 updateMenuStats();
+
+/* ══ SLOT MACHINE ══ */
+const SLOT_COST=50;
+const SLOT_SPIN_SYMS=['💎','⭐','🔮','💰','🔷','🌙','🎯','🌸'];
+const SLOT_OUTCOMES=[
+  {w:5,  s:['💎','💎','💎'], gold:5000,gems:3000,tickets:50, label:'💎 JACKPOT! +🎫50 +💰5000 +💎3000'},
+  {w:15, s:['⭐','⭐','⭐'], gold:2500,gems:1500,tickets:25, label:'⭐ SUPER!  +🎫25 +💰2500 +💎1500'},
+  {w:30, s:['🔮','🔮','🔮'],gold:2000,gems:1000,tickets:0,  label:'🔮 GREAT! +💰2000 +💎1000'},
+  {w:60, s:['💰','💰','💰'],gold:500, gems:500, tickets:0,  label:'💰 NICE!  +💰500 +💎500'},
+  {w:250,s:null,pair:true,  gold:30,  gems:0,   tickets:0,  label:'คู่! +💰30'},
+  {w:640,s:null,miss:true,  gold:0,   gems:0,   tickets:0,  shardC:1,label:'เศษหินมืด ×1'},
+];
+let _slotBusy=false;
+
+function openCasino(){
+  showScreen('casino',true);
+  _renderCasinoUI();
+}
+function _renderCasinoUI(){
+  const pg=loadPGold();
+  const el=document.getElementById('slotGoldDisplay');if(el) el.textContent=pg.toLocaleString();
+  const btn=document.getElementById('slotSpinBtn');if(btn) btn.disabled=_slotBusy||pg<SLOT_COST;
+  const ot=document.getElementById('slotOddsTable');
+  if(ot&&!ot.innerHTML){
+    const names={5:'💎💎💎',15:'⭐⭐⭐',30:'🔮🔮🔮',60:'💰💰💰',250:'คู่ใดก็ได้',640:'ไม่ตรง'};
+    ot.innerHTML=SLOT_OUTCOMES.map(o=>`
+      <div class="gacha-odds-row">
+        <span style="font-family:monospace;color:rgba(179,136,255,.6);">${String(o.w/10).padStart(4,' ')}%</span>
+        <span style="color:#ffd54f;">${names[o.w]}</span>
+        <span style="color:#aaa;font-size:10px;">${o.label.replace(/^[^\s]+\s/,'')}</span>
+      </div>`).join('');
+  }
+}
+function spinSlot(){
+  if(_slotBusy) return;
+  const pg=loadPGold();
+  if(pg<SLOT_COST){showToast('💰 ทองถาวรไม่พอ (ต้องการ '+SLOT_COST+')');return;}
+  savePGold(pg-SLOT_COST);
+  _slotBusy=true;
+  const btn=document.getElementById('slotSpinBtn');if(btn)btn.disabled=true;
+  const res=document.getElementById('slotResult');if(res)res.textContent='🎰 กำลังหมุน...';
+  const syms=[0,1,2].map(i=>document.getElementById('slotSym'+i));
+  const reels=[0,1,2].map(i=>document.getElementById('slotReel'+i));
+  reels.forEach(r=>{if(r){r.classList.remove('win');r.classList.add('spinning');}});
+  // pick outcome
+  const roll=Math.random()*1000;
+  let cum=0,outcome=SLOT_OUTCOMES[SLOT_OUTCOMES.length-1];
+  for(const o of SLOT_OUTCOMES){cum+=o.w;if(roll<cum){outcome=o;break;}}
+  // build display
+  let display;
+  if(outcome.s){display=[...outcome.s];}
+  else if(outcome.pair){
+    const base=SLOT_SPIN_SYMS[Math.floor(Math.random()*4)];
+    const other=SLOT_SPIN_SYMS.filter(s=>s!==base)[Math.floor(Math.random()*3)];
+    display=[base,base,other];display.sort(()=>Math.random()-.5);
+  } else {
+    display=[...SLOT_SPIN_SYMS].sort(()=>Math.random()-.5).slice(0,3);
+    while(display[0]===display[1]||display[1]===display[2]||display[0]===display[2])
+      display=[...SLOT_SPIN_SYMS].sort(()=>Math.random()-.5).slice(0,3);
+  }
+  // animate cycle
+  let f=0;
+  const iv=setInterval(()=>{syms.forEach(s=>{if(s)s.textContent=SLOT_SPIN_SYMS[f%SLOT_SPIN_SYMS.length];f++;});},80);
+  // stop one by one
+  const stopReel=(idx,delay)=>setTimeout(()=>{
+    if(syms[idx])syms[idx].textContent=display[idx];
+    if(reels[idx]){reels[idx].classList.remove('spinning');}
+    if(idx===2){
+      clearInterval(iv);
+      const won=outcome.w<=60;
+      if(won)reels.forEach(r=>{if(r)r.classList.add('win');});
+      if(outcome.gold)addPGold(outcome.gold);
+      if(outcome.gems)addGems(outcome.gems);
+      if(outcome.tickets)addTickets(outcome.tickets);
+      if(outcome.shardC)addBagItem('shard_c',outcome.shardC);
+      if(res)res.innerHTML=`<span style="color:${won?'#ffd54f':'#888'};">${outcome.label}</span>`;
+      if(won)showToast('🎉 '+outcome.label);
+      _slotBusy=false;
+      _renderCasinoUI();
+    }
+  },delay);
+  stopReel(0,1200);
+  stopReel(1,1600);
+  stopReel(2,2000);
+}
