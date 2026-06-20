@@ -1089,6 +1089,16 @@ function update(dt){
             applyDmg(p.target,p.dmg,p.type,p._rngPierce);
           }
         }
+        // 🌑 Void Mark (story mode)
+        if(p.type===8&&p.target&&p.target.alive){
+          const procChance=p._awakened?0.5:0.3;
+          const markBonus=p._awakened?0.40:0.25;
+          if(Math.random()<procChance){
+            const e=p.target;
+            e._voidMarkT=4;e._voidMarkBonus=Math.max(e._voidMarkBonus||0,markBonus);
+            G.fxRings.push({x:e.x,y:e.y,r:2,maxR:ESIZES[e.ti]*1.6,life:.5,lw:2,col:'#9575cd',delay:0});
+          }
+        }
       }
       if(p.slow>0&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)&&!(G.weather&&G.weather.iceImmune&&p.type===1)){
         // ❄️ Ice Awaken: ติดแข็ง (หยุดสนิท) 3 วินาที — Support ตื่นใกล้เคียงเพิ่มเป็น 6 วินาที
@@ -1184,8 +1194,8 @@ function update(dt){
       const s2=p.spd*dt/d; p.x+=dx*s2; p.y+=dy*s2;
     }
   }
-  // hitFlash decay
-  G.enemies.forEach(e=>{ if(e.hitFlash>0) e.hitFlash=Math.max(0,e.hitFlash-dt*4); });
+  // hitFlash + voidMark decay (story)
+  G.enemies.forEach(e=>{ if(e.hitFlash>0) e.hitFlash=Math.max(0,e.hitFlash-dt*4); if(e._voidMarkT>0){e._voidMarkT-=dt;if(e._voidMarkT<=0){e._voidMarkT=0;e._voidMarkBonus=0;}} });
   // tower spawn bounce anim
   G.towers.forEach(tw=>{ if(tw.spawnAnim>0) tw.spawnAnim=Math.max(0,tw.spawnAnim-dt*3); });
   // FX rings

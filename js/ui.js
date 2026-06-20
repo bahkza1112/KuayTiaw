@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.17';
+const GAME_VERSION='3.11.18';
 const PATCH_NOTES=[
+  {ver:'3.11.18',date:'2026-06-21',title:'🌑 ป้อมมนตราโมฆะใช้ได้ในโหมดเนื้อเรื่องแล้ว',notes:[
+    'ถ้าปลดล็อกจาก Workshop แล้ว ป้อมมนตราโมฆะจะปรากฏในหน้าเลือกป้อมทุกด่าน',
+    'Void Mark (ติดมาร์กศัตรูเพิ่มดาเมจ) ทำงานได้ทั้งโหมดเนื้อเรื่องและ Endgame',
+  ]},
   {ver:'3.11.17',date:'2026-06-21',title:'🔧 Codex: ป้อมมนตราโมฆะแสดงถูกต้อง',notes:[
     'ป้อมมนตราโมฆะที่ปลดล็อกจาก Workshop แสดงในหน้าสารานุกรมแท็บป้อมแล้ว',
   ]},
@@ -1727,7 +1731,7 @@ function showStoryScreen(si){
 function showTowerSelection(si){
   towerSelMode='story';
   const s=STAGES[si];
-  const available=s.unlockedTowers||[0,1,2,3,4,5,6];
+  const available=(s.unlockedTowers||[0,1,2,3,4,5,6]).concat(isVoidUnlocked()&&!(s.unlockedTowers||[]).includes(8)?[8]:[]);
   stageMaxTowers=s.maxTowers||99;
   const hasSkills=Object.keys(loadSkills()).length>0;
   setActiveSkill(null); // รีเซ็ต — เลือกใหม่ทุกด่าน
@@ -2159,7 +2163,7 @@ function _closeSkillInfo(){const el=document.getElementById('skInfoModal');if(el
 function _tsAvailable(){
   return towerSelMode==='endgame'
     ? [0,1,2,3,4,5,6,7].concat(isVoidUnlocked()?[8]:[])
-    : (STAGES[pendingStageIndex].unlockedTowers||[0,1,2,3,4]);
+    : (STAGES[pendingStageIndex].unlockedTowers||[0,1,2,3,4]).concat(isVoidUnlocked()&&!(STAGES[pendingStageIndex].unlockedTowers||[]).includes(8)?[8]:[]);
 }
 function _tsSaveKey(){
   return towerSelMode==='endgame' ? 'tq_sel_endgame_'+egDiff : 'tq_sel_'+pendingStageIndex;
