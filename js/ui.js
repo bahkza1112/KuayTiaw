@@ -1,5 +1,5 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.26';
+const GAME_VERSION='3.11.27';
 const PATCH_NOTES=[
   {ver:'3.11.26',date:'2026-06-21',title:'🎰 คาสิโน — สล็อตแมชชีน',notes:[
     'เพิ่มหน้าคาสิโน เข้าได้จากปุ่ม "คาสิโน" ใน bottom nav',
