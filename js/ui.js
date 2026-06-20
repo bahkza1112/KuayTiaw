@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.18';
+const GAME_VERSION='3.11.19';
 const PATCH_NOTES=[
+  {ver:'3.11.19',date:'2026-06-21',title:'🎴 ตารางอัตราสกิล: icon+ชื่อตรงกับการ์ดจริง',notes:[
+    'ตารางอัตราการออกในตู้การ์ดสกิลใช้ icon emoji เหมือนกับการ์ดที่ดึงได้จริง',
+    'กดชื่อสกิลในตารางเพื่อดูรายละเอียดสกิลได้เลย',
+  ]},
   {ver:'3.11.18',date:'2026-06-21',title:'🌑 ป้อมมนตราโมฆะใช้ได้ในโหมดเนื้อเรื่องแล้ว',notes:[
     'ถ้าปลดล็อกจาก Workshop แล้ว ป้อมมนตราโมฆะจะปรากฏในหน้าเลือกป้อมทุกด่าน',
     'Void Mark (ติดมาร์กศัตรูเพิ่มดาเมจ) ทำงานได้ทั้งโหมดเนื้อเรื่องและ Endgame',
@@ -943,8 +947,8 @@ function toggleSkillOdds(){
   arrow.textContent=show?'▲ ซ่อน':'▼ ดูรายละเอียด';
   if(show&&!document.getElementById('skillOddsPool').innerHTML){
     document.getElementById('skillOddsPool').innerHTML=SKILL_DEFS.map(d=>`
-      <div class="gacha-odds-row">
-        <span style="display:inline-flex;align-items:center;gap:4px;color:${d.color};"><img src="${_skillIconURL(d.id)}" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;"> ${d.name}</span>
+      <div class="gacha-odds-row" onclick="_showSkillInfo('${d.id}')" style="cursor:pointer;">
+        <span style="display:inline-flex;align-items:center;gap:5px;color:${d.color};">${d.icon} ${d.name}</span>
         <span class="gacha-rarity-tag rarity-${d.rarity}" style="font-size:7px;">${d.rarity}</span>
         <span style="color:#aaa;">${skillCardRate(d)}%</span>
       </div>`).join('')+`
