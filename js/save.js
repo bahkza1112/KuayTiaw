@@ -31,7 +31,7 @@ const BAG_ITEM_DEFS=[
   {id:'gold_pot',icon:'🧪',name:'ยาเพิ่มทอง',  desc:'ได้ทองเพิ่ม +100 เมื่อเริ่มด่าน',   color:'#ffd54f',type:'buff'},
   {id:'hp_pot',  icon:'💊',name:'ยาเพิ่ม HP',   desc:'HP ปราสาทเพิ่ม +3 เมื่อเริ่มด่าน',  color:'#ef5350',type:'buff'},
   {id:'dmg_pot', icon:'⚔️',name:'ยาเข้มแข็ง',  desc:'ดาเมจป้อมทั้งหมด +10% เมื่อเริ่มด่าน',color:'#ff8a65',type:'buff'},
-  {id:'shard_c', icon:'🔹',name:'เศษสีน้ำเงิน', desc:'ชิ้นส่วนสะสมสามัญจากกล่องบรอนซ์',   color:'#64b5f6',type:'shard'},
+  {id:'shard_c', icon:'🔹',name:'เศษหินมืด', desc:'ชิ้นส่วนสะสมสามัญจากกล่องบรอนซ์',   color:'#64b5f6',type:'shard'},
   {id:'shard_r', icon:'💜',name:'เศษแกนเวทย์',    desc:'ชิ้นส่วนสะสมหายากจากกล่องเงิน',     color:'#ab47bc',type:'shard'},
   {id:'shard_e', icon:'🌟',name:'เศษดวงดาว',    desc:'ชิ้นส่วนสะสมพิเศษจากกล่องทอง',     color:'#ff8f00',type:'shard'},
 ];
