@@ -407,7 +407,7 @@ function _daysBetween(a,b){return Math.round((Date.parse(b)-Date.parse(a))/86400
 /* 7-day login reward cycle */
 const LOGIN_REWARDS=[
   {icon:'💎',label:'40 มณีวิญญาณ',         grant(){addGems(40);}},
-  {icon:'🔹',label:'เศษสีน้ำเงิน ×3',      grant(){addBagItem('shard_c',3);}},
+  {icon:'🔹',label:'เศษหินมืด ×3',      grant(){addBagItem('shard_c',3);}},
   {icon:'🪙',label:'ทองถาวร 60',           grant(){addPGold(60);}},
   {icon:'🎫',label:'80 มณี + ตั๋วสกิล ×2', grant(){addGems(80);addTickets(2);}},
   {icon:'💜',label:'เศษแกนเวทย์ ×2',         grant(){addBagItem('shard_r',2);}},
