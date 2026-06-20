@@ -241,16 +241,19 @@ function exchangeGemForTicket(){
 /* การ์ดที่ใส่ใช้ในรัน (1 ใบ) */
 function loadActiveSkill(){return localStorage.getItem('tq_askill')||null;}
 function setActiveSkill(id){if(id)localStorage.setItem('tq_askill',id);else localStorage.removeItem('tq_askill');}
-/* ตู้สกิล: ×1=🎫1, ×10=🎫9. การ์ดละ 1% (5 ใบ=5%), ที่เหลือ 95%=เกลือ (ได้ 🔹 เศษไปแลกของ).
+/* ตู้สกิล: ×1=🎫1, ×10=🎫9. อัตราการ์ดตามความหายาก (รวม 17%), ที่เหลือ 83%=เกลือ (ได้ 🔹 เศษไปแลกของ).
    Pity 30 → การันตี legendary (กันซวยยาว). */
 const SKILL_PITY=30;
-const SKILL_CARD_RATE=1; // % ต่อการ์ด 1 ใบ
+const SKILL_RARITY_RATE={uncommon:6,rare:4,epic:3,legendary:1}; // % ต่อใบตามความหายาก
+function skillCardRate(d){return SKILL_RARITY_RATE[d.rarity]||1;}
+function skillTotalRate(){return SKILL_DEFS.reduce((s,d)=>s+skillCardRate(d),0);} // รวมโอกาสได้การ์ด
 function skillPullCost(n){return n===10?9:n;}
 function loadSkillPity(){try{return Number(localStorage.getItem('tq_spity'))||0;}catch(e){return 0;}}
 function saveSkillPity(n){localStorage.setItem('tq_spity',String(n));}
-function _skillRoll(){ // คืน def การ์ด หรือ null (เกลือ)
-  const r=Math.random()*100;
-  return (r<SKILL_DEFS.length*SKILL_CARD_RATE)?SKILL_DEFS[Math.floor(r/SKILL_CARD_RATE)]:null;
+function _skillRoll(){ // คืน def การ์ด (สุ่มถ่วงน้ำหนักตามความหายาก) หรือ null (เกลือ)
+  const r=Math.random()*100; let acc=0;
+  for(const d of SKILL_DEFS){ acc+=skillCardRate(d); if(r<acc) return d; }
+  return null;
 }
 function doSkillPulls(n){
   const tix=loadTickets();

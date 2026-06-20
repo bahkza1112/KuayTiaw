@@ -2,6 +2,18 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.8 — Rarity-weighted skill gacha odds
+
+### Changed
+- **Skill gacha pull rates** (`js/save.js`): every card was a flat `SKILL_CARD_RATE=1%`
+  (5 cards = 5% total, 95% dud) regardless of rarity — an Uncommon had the same odds as
+  a Legendary, and the latent per-skill weight (`gw` field) was never wired in. Replaced
+  with `SKILL_RARITY_RATE` (uncommon 6 / rare 4 / epic 3 / legendary 1 %) and a weighted
+  cumulative `_skillRoll`. Total card chance 5% → 17% (dud 95% → 83%); rarer cards stay
+  rarer. Added `skillCardRate(d)` / `skillTotalRate()` helpers.
+- **Odds display** (`js/ui.js`): the skill-gacha odds list now shows each card's
+  rarity-specific rate and the recomputed dud %, instead of a flat 1% / 95%.
+
 ## v3.11.7 — Stages 8-11 early-wave ease (farm window)
 
 ### Changed

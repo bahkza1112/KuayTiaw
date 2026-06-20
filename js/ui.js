@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.7';
+const GAME_VERSION='3.11.8';
 const PATCH_NOTES=[
+  {ver:'3.11.8',date:'2026-06-20',title:'🎴 ปรับอัตราตู้การ์ดสกิลใหม่ — ออกตามความหายาก',notes:[
+    'เดิมทุกใบ 1% เท่ากันหมด (รวม 5% · เกลือ 95%) ทั้งที่ความหายากต่างกัน',
+    'ใหม่: ออกตามความหายาก — Uncommon 6% · Rare 4% · Epic 3% · Legendary 1% (รวม 17% · ปลอบใจ 83%)',
+    'โอกาสได้การ์ดรวมเพิ่มจาก 5% → 17% และใบหายากก็ยังหายากสมความรารีตี้',
+  ]},
   {ver:'3.11.7',date:'2026-06-20',title:'🌅 ด่าน 8-11 เปิดมานุ่มขึ้น — มีจังหวะฟาร์มก่อนของหนัก',notes:[
     'ด่าน 8-11 เดิมอัดศัตรู HP เต็มตั้งแต่เวฟ 1 (×2.5–3.2) ทำให้เปิดมาโหดไม่มีจังหวะตั้งตัว',
     'ตอนนี้ HP เวฟ 1-6 ของด่าน 8-11 จะเบาลงแล้วค่อยๆ ไต่ขึ้นเต็มที่ที่เวฟ 7 (เวฟ1 ~45% → เวฟ7 100%)',
@@ -900,12 +905,12 @@ function toggleSkillOdds(){
       <div class="gacha-odds-row">
         <span style="display:inline-flex;align-items:center;gap:4px;color:${d.color};"><img src="${_skillIconURL(d.id)}" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;"> ${d.name}</span>
         <span class="gacha-rarity-tag rarity-${d.rarity}" style="font-size:7px;">${d.rarity}</span>
-        <span style="color:#aaa;">${SKILL_CARD_RATE}%</span>
+        <span style="color:#aaa;">${skillCardRate(d)}%</span>
       </div>`).join('')+`
       <div class="gacha-odds-row">
         <span style="color:#888;">เศษ ×1 (🔹70% · 💜22% · 🌟8%)</span>
         <span class="gacha-rarity-tag" style="font-size:7px;background:rgba(255,255,255,.08);color:#888;">ปลอบใจ</span>
-        <span style="color:#aaa;">${100-SKILL_DEFS.length*SKILL_CARD_RATE}%</span>
+        <span style="color:#aaa;">${100-skillTotalRate()}%</span>
       </div>`;
   }
 }
