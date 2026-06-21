@@ -2549,7 +2549,7 @@ function getEgRewardBonus(){
   // ก่อนหน้านี้ reward เพิ่มแบบ flat (+2/round) ทำให้ reward/HP ร่วงหนักในรอบหลังๆ
   // ตอนนี้สเกลแบบ capped multiplier ให้ตามทันการสเกล HP ได้บางส่วน
   // v3.1.0: ขยาย cap 3.0→4.0 ให้สอดคล้องกับ HP cap ที่ขยายเป็น 7.0/4.6 (แบนราบที่ round ~20 แทน ~14)
-  return Math.min(1+egRound*0.15, 4.0);
+  return Math.min(1+egRound*0.08, 2.0);
 }
 
 function spawnEgEnemy(ti){
@@ -2899,7 +2899,7 @@ function updateEg(dt){
     G.waveActive=false;
     if(egDiff===2&&G.weather&&G.weather.active) unlockAchievement('eghw'); // 🌩️ Hard + weather wave clear
     clearWeather(); // 🌦 clear weather when Endgame wave ends
-    const bonus=30+G.wave*8+egRound*15; G.gold+=bonus; updateHUD();
+    const bonus=20+G.wave*3+egRound*6; G.gold+=bonus; updateHUD();
     if(typeof questProgress==='function') questProgress('wave',G.wave); // 📅 daily quest: reach wave
     // 💎 หมุดหมาย Endgame: ทุก 10 เวฟ ได้มณีวิญญาณก้อนใหญ่ (รับครั้งเดียวต่อรัน)
     if(G.wave>0&&G.wave%10===0){
