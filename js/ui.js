@@ -1,6 +1,17 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.31';
+const GAME_VERSION='3.11.32';
 const PATCH_NOTES=[
+  {ver:'3.11.32',date:'2026-06-21',title:'👤 Cloud Save + โปรไฟล์ผู้เล่น',notes:[
+    'เพิ่มระบบ Cloud Save — เข้าสู่ระบบด้วย Google เพื่อ sync ข้อมูลข้ามเครื่อง',
+    'เพิ่มหน้าโปรไฟล์ — เลือก Avatar emoji และตั้งชื่อที่แสดงในอันดับ',
+    'สามารถเล่นแบบ Guest (ไม่ sync) ได้โดยไม่ต้อง login',
+    'ปรับ UI มุมซ้ายบน — รวมทอง 🪙 และเพชร 💎 ไว้ใน resource bar เดียว',
+    'ลบ energy bar (สายฟ้า) ออก',
+  ]},
+  {ver:'3.11.31',date:'2026-06-21',title:'📋 Dev Console — Copy CFG JSON',notes:[
+    'เปลี่ยนปุ่ม Save ใน dev console เป็น Copy CFG JSON',
+    'กดแล้ว copy ค่า CFG ไปยัง clipboard ได้เลย',
+  ]},
   {ver:'3.11.30',date:'2026-06-21',title:'🛠️ Dev Console — redesign Cheat tab',notes:[
     'รวม 6 section → 4 section: ทรัพยากร / วัสดุ / Combat / Progress',
     'เพิ่มปุ่ม +ทองถาวร 🪙 และ +ตั๋วสกิล 🎫 ใน cheat tab',
@@ -686,7 +697,7 @@ function renderAchievTab(){
 }
 
 /* ══ SCREEN MANAGEMENT ══ */
-function hideAll(){['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','whatsnew','towersel','storyscr','workshop','bag','gacha','skillgacha','daily','casino'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const cs=document.getElementById('cutscene');if(cs)cs.style.display='none';}
+function hideAll(){['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','whatsnew','towersel','storyscr','workshop','bag','gacha','skillgacha','daily','casino','profile'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const cs=document.getElementById('cutscene');if(cs)cs.style.display='none';}
 function showScreen(id,flex){
   hideAll();
   const el=document.getElementById(id);
@@ -2939,6 +2950,54 @@ const CUTSCENES = [
   },
 ];
 
+/* ══ PROFILE ══ */
+const PROFILE_AVATARS=['⚔️','🛡️','🧙','🏹','🗡️','🔥','❄️','⚡','🌑','💎','👑','🐉','🦅','🐺','🦁','🌟','💀','🎯','🌊','🏰'];
+function openProfile(){
+  showScreen('profile',true);
+  const av=localStorage.getItem('tq_avatar')||'⚔️';
+  const nm=localStorage.getItem('tq_displayName')||localStorage.getItem('tq_last_name')||'';
+  // Google pic
+  const gPic=document.getElementById('profileGooglePic');
+  const gName=document.getElementById('profileGoogleName');
+  const avBig=document.getElementById('profileAvatarBig');
+  const logoutWrap=document.getElementById('profileLogoutWrap');
+  if(window.cloudUser){
+    if(gPic&&cloudUser.picture){gPic.src=cloudUser.picture;gPic.style.display='block';avBig.style.display='none';}
+    if(gName) gName.textContent=cloudUser.email||cloudUser.name;
+    if(logoutWrap) logoutWrap.style.display='block';
+  } else {
+    if(gPic) gPic.style.display='none';
+    if(avBig){avBig.style.display='flex';avBig.textContent=av;}
+    if(logoutWrap) logoutWrap.style.display='none';
+  }
+  // avatar grid
+  const grid=document.getElementById('profileAvatarGrid');
+  if(grid){
+    grid.innerHTML=PROFILE_AVATARS.map(e=>`<button class="profile-avatar-btn${e===av?' selected':''}" onclick="selectAvatar('${e}')" data-av="${e}">${e}</button>`).join('');
+  }
+  // name input
+  const inp=document.getElementById('profileNameInput');
+  if(inp) inp.value=nm;
+  const msg=document.getElementById('profileSaveMsg');
+  if(msg) msg.style.display='none';
+}
+function selectAvatar(e){
+  localStorage.setItem('tq_avatar',e);
+  document.querySelectorAll('.profile-avatar-btn').forEach(b=>b.classList.toggle('selected',b.dataset.av===e));
+  const avBig=document.getElementById('profileAvatarBig');
+  if(avBig) avBig.textContent=e;
+}
+function saveProfile(){
+  const inp=document.getElementById('profileNameInput');
+  const nm=(inp?inp.value.trim():'')||'ผู้เล่น';
+  localStorage.setItem('tq_displayName',nm);
+  localStorage.setItem('tq_last_name',nm);
+  if(window.cloudSave) cloudSave();
+  const msg=document.getElementById('profileSaveMsg');
+  if(msg){msg.style.display='block';setTimeout(()=>msg.style.display='none',2000);}
+  showToast('💾 บันทึกโปรไฟล์แล้ว!');
+}
+
 /* ══ LEADERBOARD ══ */
 let lbTab=0;
 function openLeaderboard(){
@@ -3110,6 +3169,7 @@ document.getElementById('egMenuBtn').addEventListener('click',openEgMenu);
 document.getElementById('egBackBtn').addEventListener('click',()=>showScreen('mm',true));
 document.getElementById('lbNavBtn').addEventListener('click',openLeaderboard);
 document.getElementById('lbBackBtn').addEventListener('click',()=>showScreen('mm',true));
+document.getElementById('profileBackBtn').addEventListener('click',()=>showScreen('mm',true));
 document.getElementById('verBtn').addEventListener('click',openWhatsNew);
 document.getElementById('whatsnewBackBtn').addEventListener('click',()=>showScreen('mm',true));
 document.getElementById('ssBackBtn').addEventListener('click',()=>showScreen('mm',true));

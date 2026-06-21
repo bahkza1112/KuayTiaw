@@ -1,0 +1,6 @@
+# Server secrets - ห้าม commit เด็ดขาด
+.env
+node_modules/
+
+# Save data - เก็บบน server ไม่ใช่ใน git
+data/

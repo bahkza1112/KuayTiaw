@@ -2,10 +2,24 @@
 <html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Tower Quest 🏰 v3.11.31</title>
-<link rel="stylesheet" href="css/main.css?v=3.11.31">
+<title>Tower Quest 🏰 v3.11.32</title>
+<link rel="stylesheet" href="css/main.css?v=3.11.32">
 </head>
 <body>
+
+<!-- CLOUD LOGIN SCREEN -->
+<div id="cloudLoginScreen" style="display:none;position:fixed;inset:0;z-index:99999;background:linear-gradient(160deg,#0a0a1a,#0d0d2e);flex-direction:column;align-items:center;justify-content:center;gap:24px;font-family:'Segoe UI',Arial,sans-serif;">
+  <div style="font-size:56px;">🏰</div>
+  <div style="color:#ffd24d;font-size:24px;font-weight:900;letter-spacing:2px;">TOWER QUEST</div>
+  <div style="color:rgba(255,255,255,.5);font-size:13px;">เข้าสู่ระบบเพื่อ sync ข้อมูลของคุณ</div>
+  <a href="/auth/google" style="display:flex;align-items:center;gap:12px;background:#fff;color:#1a1a1a;font-size:15px;font-weight:700;padding:13px 28px;border-radius:50px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,.4);transition:transform .15s;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform=''">
+    <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+    เข้าสู่ระบบด้วย Google
+  </a>
+  <div style="color:rgba(255,255,255,.25);font-size:11px;">ข้อมูลจะถูกบันทึกไว้บน server ใช้ได้ทุกเครื่อง</div>
+  <button onclick="document.getElementById('cloudLoginScreen').style.display='none';document.getElementById('gr').style.display='';var g=document.getElementById('guestProfileBtn');if(g)g.style.display='block';" style="background:none;border:none;color:rgba(255,255,255,.35);font-size:12px;cursor:pointer;margin-top:-8px;text-decoration:underline;">เล่นแบบ Guest (ไม่ sync)</button>
+</div>
+
 <div id="gr">
 
 <!-- MAIN MENU -->
@@ -27,25 +41,25 @@
   <div class="star far" style="width:1px;height:1px;top:30%;left:8%;animation-delay:1.5s"></div>
   <div class="star far" style="width:2px;height:2px;top:4%;left:90%;animation-delay:.9s"></div>
   <div class="star far" style="width:1px;height:1px;top:16%;left:30%;animation-delay:2s"></div>
-  <div class="topbar">
-    <div class="curr"><div class="gemico"></div><span id="mmGemsDisplay">0</span></div>
-    <div class="energy-row">
-      <svg class="energy-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
-      <svg class="energy-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
-      <svg class="energy-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
-      <svg class="energy-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
-      <svg class="energy-ico dim" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
-    </div>
+  <div class="mm-resource-bar" onclick="openWorkshop()">
+    <div class="mm-res-item"><div class="coinico"></div><span id="mmGoldDisplay">0</span></div>
+    <div class="mm-res-divider"></div>
+    <div class="mm-res-item"><div class="gemico"></div><span id="mmGemsDisplay">0</span></div>
   </div>
-  <div class="curr mm-gold-corner" id="mmGoldBtn" onclick="openWorkshop()"><div class="coinico"></div><span id="mmGoldDisplay">0</span></div>
   <div class="mm-daily-corner" id="dailyNavBtn" onclick="openDaily()"><span class="mm-daily-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span class="mm-daily-label">ภารกิจ</span><span id="dailyBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:#ef5350;color:#fff;font-size:10px;font-weight:900;border-radius:50%;width:16px;height:16px;line-height:16px;text-align:center;box-shadow:0 0 8px rgba(239,83,80,.8);">!</span></div>
   <div class="mm-codex-corner" id="codexNavBtn" onclick="openCodex()"><span class="mm-codex-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5c-2-1.3-5-1.7-9-1.3v15c4-.4 7 0 9 1.3 2-1.3 5-1.7 9-1.3v-15c-4-.4-7 0-9 1.3Z"/><line x1="12" y1="4.5" x2="12" y2="19.5"/></svg></span><span class="mm-codex-label">สารานุกรม</span><span id="achBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:#ffe082;color:#6d2900;font-size:9px;font-weight:900;border-radius:50%;width:16px;height:16px;line-height:16px;text-align:center;box-shadow:0 0 8px rgba(255,224,130,.8);">!</span></div>
+  <div id="cloudUserBar" style="display:none;position:absolute;top:146px;right:14px;align-items:center;gap:7px;background:rgba(0,0,0,.35);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:5px 10px 5px 8px;cursor:pointer;" onclick="openProfile()" title="โปรไฟล์">
+    <img id="cloudUserPic" src="" style="display:none;width:20px;height:20px;border-radius:50%;object-fit:cover;">
+    <span id="cloudUserName" style="color:#fff;font-size:11px;font-weight:700;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+    <span style="color:rgba(255,255,255,.4);font-size:11px;">✏️</span>
+  </div>
+  <div id="guestProfileBtn" style="display:none;position:absolute;top:14px;left:14px;cursor:pointer;z-index:10;background:rgba(0,0,0,.35);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:6px 12px;color:rgba(255,255,255,.6);font-size:12px;font-weight:700;" onclick="openProfile()">👤 โปรไฟล์</div>
 
   <!-- logo -->
   <div class="island" id="logoIsland">🏰</div>
   <div class="gtitle">TOWER QUEST</div>
   <div class="gsub">⚔️ ปกป้องอาณาจักรของคุณ!</div>
-  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v3.11.31 — มีอะไรใหม่<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
+  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v3.11.32 — มีอะไรใหม่<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
 
   <!-- battle buttons -->
   <button class="bbattle" id="startBtn">⚔️ โหมดเนื้อเรื่อง</button>
@@ -603,6 +617,34 @@
   </div>
 </div>
 
+<!-- PROFILE -->
+<div id="profile" style="display:none;">
+  <div class="lb-hd">
+    <button class="bback" id="profileBackBtn">← กลับ</button>
+    <div class="lb-hd-title">👤 โปรไฟล์</div>
+  </div>
+  <div class="lb-body" style="padding:20px 16px;display:flex;flex-direction:column;gap:18px;align-items:center;">
+    <div id="profilePicWrap" style="position:relative;width:80px;height:80px;">
+      <img id="profileGooglePic" src="" style="display:none;width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,224,130,.4);">
+      <div id="profileAvatarBig" style="width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.07);border:3px solid rgba(255,224,130,.4);display:flex;align-items:center;justify-content:center;font-size:40px;"></div>
+    </div>
+    <div style="text-align:center;">
+      <div id="profileGoogleName" style="color:rgba(255,255,255,.4);font-size:11px;margin-bottom:4px;"></div>
+      <div style="color:#ffd24d;font-size:13px;font-weight:700;">เลือก Avatar</div>
+    </div>
+    <div id="profileAvatarGrid" style="display:grid;grid-template-columns:repeat(6,44px);gap:8px;"></div>
+    <div style="width:100%;max-width:280px;">
+      <div style="color:rgba(255,255,255,.6);font-size:12px;margin-bottom:6px;">ชื่อในอันดับ</div>
+      <input id="profileNameInput" type="text" maxlength="20" placeholder="ใส่ชื่อ..." style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;font-size:14px;padding:10px 12px;outline:none;">
+    </div>
+    <button onclick="saveProfile()" style="background:linear-gradient(135deg,#ffd24d,#ff9800);color:#1a0a00;font-size:14px;font-weight:900;padding:12px 40px;border:none;border-radius:50px;cursor:pointer;box-shadow:0 4px 16px rgba(255,152,0,.4);">💾 บันทึกโปรไฟล์</button>
+    <div id="profileSaveMsg" style="color:#69f0ae;font-size:12px;display:none;">✅ บันทึกแล้ว!</div>
+    <div id="profileLogoutWrap" style="display:none;margin-top:4px;">
+      <button onclick="cloudLogout()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.5);font-size:12px;padding:8px 20px;border-radius:50px;cursor:pointer;">ออกจากระบบ Google</button>
+    </div>
+  </div>
+</div>
+
 <!-- LEADERBOARD -->
 <div id="leaderboard" style="display: none;">
   <div class="lb-hd">
@@ -687,11 +729,12 @@
 </div>
 
 </div>
-<script src="js/save.js?v=3.11.31"></script>
-<script src="js/enemy.js?v=3.11.31"></script>
-<script src="js/tower.js?v=3.11.31"></script>
-<script src="js/game.js?v=3.11.31"></script>
-<script src="js/ui.js?v=3.11.31"></script>
+<script src="js/cloud-save.js?v=3.11.32"></script>
+<script src="js/save.js?v=3.11.32"></script>
+<script src="js/enemy.js?v=3.11.32"></script>
+<script src="js/tower.js?v=3.11.32"></script>
+<script src="js/game.js?v=3.11.32"></script>
+<script src="js/ui.js?v=3.11.32"></script>
 
 
 </body></html>
