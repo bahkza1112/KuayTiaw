@@ -59,9 +59,11 @@ async function cloudInit() {
       if (screen) screen.style.display = 'none';
       if (game)   game.style.display   = '';
     } else {
-      // ยังไม่ login → แสดงหน้า login
-      if (screen) screen.style.display = 'flex';
-      if (game)   game.style.display   = 'none';
+      // ยังไม่ login → เข้าเกมโดยตรง (login ได้จากหน้าโปรไฟล์)
+      if (screen) screen.style.display = 'none';
+      if (game)   game.style.display   = '';
+      const bar = document.getElementById('cloudUserBar');
+      if (bar) { bar.style.display = 'flex'; updateAvatarDisplay(); }
     }
   } catch (e) {
     // server ไม่ตอบสนอง → เล่น offline ได้เลย

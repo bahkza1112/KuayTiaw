@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.60';
+const GAME_VERSION='3.11.61';
 const PATCH_NOTES=[
+  {ver:'3.11.61',date:'2026-06-22',title:'🔑 ย้าย Login Google ไปหน้าโปรไฟล์',notes:[
+    'เปิดเกมเข้าได้เลยโดยไม่มีหน้า login บังคับ',
+    'ปุ่ม "เข้าสู่ระบบด้วย Google" ย้ายไปอยู่ในหน้าโปรไฟล์',
+  ]},
   {ver:'3.11.60',date:'2026-06-22',title:'🎰 สล็อต: ลดเรท + ไม่ตรง=ไม่ได้อะไร',notes:[
     'JACKPOT 0.2% / SUPER 0.6% / GREAT 1.8% / NICE 4% / ไม่ตรง 93.4%',
     'ลบ "คู่" ออก — ถ้าไม่ตรงไม่ได้รางวัลใดๆ เลย',
@@ -3182,10 +3186,12 @@ function openProfile(){
   const gName=document.getElementById('profileGoogleName');
   const avBig=document.getElementById('profileAvatarBig');
   const logoutWrap=document.getElementById('profileLogoutWrap');
+  const loginWrap=document.getElementById('profileLoginWrap');
   if(window.cloudUser){
     if(gPic&&cloudUser.picture){gPic.src=cloudUser.picture;gPic.style.display='block';avBig.style.display='none';}
     if(gName) gName.textContent=cloudUser.email||cloudUser.name;
     if(logoutWrap) logoutWrap.style.display='block';
+    if(loginWrap) loginWrap.style.display='none';
   } else {
     if(gPic) gPic.style.display='none';
     if(avBig){
@@ -3201,6 +3207,7 @@ function openProfile(){
       }
     }
     if(logoutWrap) logoutWrap.style.display='none';
+    if(loginWrap) loginWrap.style.display='block';
   }
   // avatar grid
   const grid=document.getElementById('profileAvatarGrid');
