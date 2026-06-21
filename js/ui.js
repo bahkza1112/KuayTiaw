@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.35';
+const GAME_VERSION='3.11.36';
 const PATCH_NOTES=[
+  {ver:'3.11.36',date:'2026-06-21',title:'🏆 ปรับอันดับให้ชัดขึ้น',notes:[
+    'อันดับ tab "คะแนนสูงสุด" และ "เวฟสูงสุด" ตอนนี้แสดงเฉพาะเอนด์เกม',
+    'เนื้อเรื่องไม่มีคะแนนในอันดับ — วัดผลด้วยดาวในหน้าด่านแทน',
+  ]},
   {ver:'3.11.35',date:'2026-06-21',title:'📐 ปรับขนาดหน้าจอให้มาตรฐาน',notes:[
     'ทุกหน้า (เมนู, เลือกด่าน, กระเป๋า, อันดับ ฯลฯ) มีขนาดเท่ากันเป็นมาตรฐาน',
     'แต่ละหน้าตอนนี้เต็มจอเหมือนกันทุกจอ ไม่สูง-ต่ำต่างกัน',
@@ -3180,24 +3184,25 @@ function renderLb(){
     }
     body.innerHTML=html;
   } else if(lbTab===1){
-    // รวมทุกคน — table format
-    const allRuns=[...runs].sort((a,b)=>b.score-a.score);
-    if(!allRuns.length){ body.innerHTML='<div class="lb-empty">ยังไม่มีข้อมูล</div>'; return; }
+    // คะแนนสูงสุด — endgame only sorted by score
+    const allRuns=[...runs].filter(r=>r.mode==='endgame').sort((a,b)=>b.score-a.score);
+    if(!allRuns.length){ body.innerHTML='<div class="lb-empty">ยังไม่มีข้อมูลเอนด์เกม</div>'; return; }
     const myName=lastName;
     let myRank=-1;
     allRuns.forEach((r,i)=>{ if(r.name===myName&&myRank<0) myRank=i+1; });
-    let html=`<div class="lbt-subtitle">อันดับตามคะแนนสูงสุด</div>`;
+    let html=`<div class="lbt-subtitle">🔥 เอนด์เกม — เรียงตามคะแนนสูงสุด</div>`;
     if(myRank>0) html+=`<div class="lbt-myrank">อันดับของคุณ: <span>#${myRank}</span></div>`;
-    html+=`<div class="lbt-header"><span>#</span><span>ชื่อ</span><span>แมพ</span><span>คะแนน</span><span></span></div>`;
+    html+=`<div class="lbt-header"><span>#</span><span>ชื่อ</span><span>เวฟ</span><span>คะแนน</span><span></span></div>`;
     allRuns.slice(0,50).forEach((r,i)=>{
       const isMe=r.name===myName;
       const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+      const origIdx=runs.indexOf(r);
       html+=`<div class="lbt-row${isMe?' lbt-me':''}">
         <span class="lbt-rank">${medal||i+1}</span>
         <span class="lbt-name">${r.name}</span>
-        <span class="lbt-wave">${r.mode==='endgame'?r.wave:'-'}</span>
+        <span class="lbt-wave">${r.wave}</span>
         <span class="lbt-score">${r.score.toLocaleString()}</span>
-        <span><button class="lbt-del" onclick="deleteRun(${runs.indexOf(r)})">×</button></span>
+        <span><button class="lbt-del" onclick="deleteRun(${origIdx})">×</button></span>
       </div>`;
     });
     body.innerHTML=html;
@@ -3208,9 +3213,9 @@ function renderLb(){
     const myName=lastName;
     let myRank=-1;
     egOnly.forEach((r,i)=>{ if(r.name===myName&&myRank<0) myRank=i+1; });
-    let html=`<div class="lbt-subtitle">อันดับตามคะแนนสูงสุด</div>`;
+    let html=`<div class="lbt-subtitle">🔥 เอนด์เกม — เรียงตามเวฟสูงสุด</div>`;
     if(myRank>0) html+=`<div class="lbt-myrank">อันดับของคุณ: <span>#${myRank}</span></div>`;
-    html+=`<div class="lbt-header"><span>#</span><span>ชื่อ</span><span>แมพ</span><span>คะแนน</span><span></span></div>`;
+    html+=`<div class="lbt-header"><span>#</span><span>ชื่อ</span><span>เวฟ</span><span>คะแนน</span><span></span></div>`;
     egOnly.slice(0,50).forEach((r,i)=>{
       const isMe=r.name===myName;
       const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
