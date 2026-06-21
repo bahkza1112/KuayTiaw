@@ -23,6 +23,8 @@ function saveProgress(si,stars){
     }
   }
   checkAchievements(); // ตรวจ achievement ทุกครั้งที่ clear ด่าน
+  // ส่ง story leaderboard ไปเซิฟ (fire-and-forget)
+  _submitStoryLb();
   return gain;
 }
 
@@ -399,6 +401,17 @@ function isStageUnlocked(si){
   if(si===0) return true;
   if(si>=STAGES.length||STAGES[si].comingSoon) return false;
   return (loadProgress()[si-1]||0)>=1;
+}
+
+function _submitStoryLb(){
+  const name=localStorage.getItem('tq_displayName')||localStorage.getItem('tq_last_name')||''; if(!name) return;
+  const p=loadProgress();
+  const totalStars=Object.values(p).reduce((a,b)=>a+b,0);
+  const stagesCleared=Object.keys(p).filter(k=>(p[k]||0)>=1).length;
+  fetch('/api/story-leaderboard',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({name,totalStars,stagesCleared,date:new Date().toLocaleDateString('th-TH')})})
+    .then(r=>r.json()).then(d=>{ if(d.rank&&d.rank<=10) showToast('⭐ ติด TOP '+d.rank+' กระดานดาว!'); })
+    .catch(()=>{});
 }
 
 /* ══ DAILY LOGIN + DAILY QUESTS (v3.6.0) ══ */

@@ -138,6 +138,33 @@ app.post('/api/leaderboard', (req, res) => {
   res.json({ ok: true, rank });
 });
 
+// ── Story Leaderboard ─────────────────────────────
+const SLB_FILE = path.join(__dirname, 'data', 'story_lb.json');
+function loadSlb() { try { return JSON.parse(fs.readFileSync(SLB_FILE,'utf8')); } catch { return []; } }
+function writeSlb(d) { fs.writeFileSync(SLB_FILE, JSON.stringify(d,null,2),'utf8'); }
+if (!fs.existsSync(SLB_FILE)) fs.writeFileSync(SLB_FILE,'[]','utf8');
+
+app.get('/api/story-leaderboard', (req, res) => {
+  const lb = loadSlb().sort((a,b)=>b.totalStars-a.totalStars||b.stagesCleared-a.stagesCleared).slice(0,10);
+  res.json({ entries: lb });
+});
+
+app.post('/api/story-leaderboard', (req, res) => {
+  const { name, totalStars, stagesCleared, date } = req.body;
+  if (!name || typeof totalStars !== 'number') return res.status(400).json({ error:'invalid' });
+  const lb = loadSlb();
+  // keep best entry per name
+  const idx = lb.findIndex(e=>e.name===name);
+  const entry = { name:String(name).slice(0,30), totalStars, stagesCleared:stagesCleared||0, date:date||new Date().toLocaleDateString('th-TH'), ts:Date.now() };
+  if (idx>=0) { if (totalStars>lb[idx].totalStars||(totalStars===lb[idx].totalStars&&stagesCleared>lb[idx].stagesCleared)) lb[idx]=entry; }
+  else lb.push(entry);
+  lb.sort((a,b)=>b.totalStars-a.totalStars||b.stagesCleared-a.stagesCleared);
+  if (lb.length > 100) lb.length = 100;
+  writeSlb(lb);
+  const rank = lb.findIndex(e=>e.name===entry.name)+1;
+  res.json({ ok:true, rank });
+});
+
 app.listen(PORT, () => {
   console.log(`✅ Tower Quest server: http://localhost:${PORT}`);
 });

@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.45';
+const GAME_VERSION='3.11.46';
 const PATCH_NOTES=[
+  {ver:'3.11.46',date:'2026-06-21',title:'⭐ กระดานดาว — TOP 10 เนื้อเรื่อง',notes:[
+    'แท็บ "กระดาน" → "กระดานดาว" แสดง TOP 10 ผู้เล่นที่ได้ดาวรวมสูงสุด',
+    'ส่งดาวไปเซิฟอัตโนมัติทุกครั้งที่ผ่านด่าน',
+    'แสดง: อันดับ / ชื่อ / ด่านที่ผ่าน / ดาวรวม',
+  ]},
   {ver:'3.11.45',date:'2026-06-21',title:'🏆 TOP 10 เซิฟ: แยก คะแนน + เวฟ',notes:[
     'แท็บ "รวมทุกคน" → "TOP 10 เซิฟ"',
     'แสดง 2 ตาราง: ⭐ TOP 10 คะแนน และ 🌊 TOP 10 เวฟ แยกกัน',
@@ -3429,28 +3434,33 @@ function renderLb(){
       });
     return; // async
   } else if(lbTab===2){
-    // กระดานผู้นำ — endgame table
-    const egOnly=[...runs].filter(r=>r.mode==='endgame').sort((a,b)=>b.wave-a.wave||b.score-a.score);
-    if(!egOnly.length){ body.innerHTML='<div class="lb-empty">ยังไม่มีข้อมูลเอนด์เกม</div>'; return; }
+    // กระดานดาว — story TOP 10 by totalStars from server
     const myName=lastName;
-    let myRank=-1;
-    egOnly.forEach((r,i)=>{ if(r.name===myName&&myRank<0) myRank=i+1; });
-    let html=`<div class="lbt-subtitle">🔥 เอนด์เกม — เรียงตามเวฟสูงสุด</div>`;
-    if(myRank>0) html+=`<div class="lbt-myrank">อันดับของคุณ: <span>#${myRank}</span></div>`;
-    html+=`<div class="lbt-header"><span>#</span><span>ชื่อ</span><span>เวฟ</span><span>คะแนน</span><span></span></div>`;
-    egOnly.slice(0,50).forEach((r,i)=>{
-      const isMe=r.name===myName;
-      const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
-      const origIdx=runs.indexOf(r);
-      html+=`<div class="lbt-row${isMe?' lbt-me':''}">
-        <span class="lbt-rank">${medal||i+1}</span>
-        <span class="lbt-name">${r.name}</span>
-        <span class="lbt-wave">${r.wave}</span>
-        <span class="lbt-score">${r.score.toLocaleString()}</span>
-        <span><button class="lbt-del" onclick="deleteRun(${origIdx})">×</button></span>
-      </div>`;
-    });
-    body.innerHTML=html;
+    const _rb=i=>i===0?'<span class="lb-rank-1">👑</span>':i===1?'<span class="lb-rank-2">🥈</span>':i===2?'<span class="lb-rank-3">🥉</span>':`<span class="lb-rank-num">${i+1}</span>`;
+    const _hd=`<div class="lb-sv-hd"><div class="lb-sv-crown">⭐</div><div class="lb-sv-title">กระดานดาว เนื้อเรื่อง</div><div class="lb-sv-sub">เรียงตามดาวรวมสูงสุด</div></div>`;
+    body.innerHTML=_hd+'<div class="lb-empty" style="color:#aaa;padding:20px;">⏳ กำลังโหลด...</div>';
+    fetch('/api/story-leaderboard',{signal:AbortSignal.timeout(5000)})
+      .then(r=>r.json())
+      .then(d=>{
+        const entries=d.entries||[];
+        let html=_hd;
+        if(!entries.length){ body.innerHTML=html+'<div class="lb-empty">ยังไม่มีข้อมูล — ผ่านด่านแล้วมาดูอันดับ!</div>'; return; }
+        html+=`<div class="lbt-header" style="grid-template-columns:44px 1fr 60px 70px;"><span>#</span><span>ชื่อ</span><span>ด่าน</span><span>⭐ ดาว</span></div>`;
+        entries.forEach((r,i)=>{
+          const isMe=r.name===myName;
+          const rc=`lbt-row${i===0?' lbt-row-1':i===1?' lbt-row-2':i===2?' lbt-row-3':''}${isMe?' lbt-me':''}`;
+          html+=`<div class="${rc}" style="grid-template-columns:44px 1fr 60px 70px;"><span class="lbt-rank">${_rb(i)}</span><span class="lbt-name">${r.name}</span><span class="lbt-wave" style="color:#80cbc4;">${r.stagesCleared}</span><span class="lbt-score" style="color:#ffd54f;">${r.totalStars}★</span></div>`;
+        });
+        body.innerHTML=html;
+      })
+      .catch(()=>{
+        // fallback: local progress only
+        const p=loadProgress();
+        const totalStars=Object.values(p).reduce((a,b)=>a+b,0);
+        const stagesCleared=Object.keys(p).filter(k=>(p[k]||0)>=1).length;
+        body.innerHTML=_hd+`<div style="text-align:center;padding:20px;"><div style="font-size:13px;color:rgba(255,255,255,.5);">📴 Offline — ข้อมูลของคุณ</div><div style="font-size:28px;font-weight:900;color:#ffd54f;margin-top:12px;">${totalStars}★</div><div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:4px;">${stagesCleared} ด่านที่ผ่าน</div></div>`;
+      });
+    return; // async
   } else if(lbTab===3){
     // ประวัติของฉัน
     const myName=lastName;
