@@ -3177,7 +3177,7 @@ function updateAvatarDisplay(){
   if(av.startsWith('data:')){
     el.innerHTML='';
     const img=document.createElement('img');
-    img.src=av; img.style.cssText='width:100%;height:100%;border-radius:50%;object-fit:cover;';
+    img.src=av; img.style.cssText='width:20px;height:20px;border-radius:50%;object-fit:cover;vertical-align:middle;';
     el.appendChild(img);
   } else { el.textContent=av; }
 }
