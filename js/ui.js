@@ -1,6 +1,9 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.53';
+const GAME_VERSION='3.11.54';
 const PATCH_NOTES=[
+  {ver:'3.11.54',date:'2026-06-22',title:'✨ Save Endgame Score UI ชัดขึ้น',notes:[
+    'กล่องบันทึกคะแนนมี contrast สูงขึ้น, label อ่านง่ายขึ้น, ค่าสถิติใหญ่และสว่างกว่าเดิม',
+  ]},
   {ver:'3.11.53',date:'2026-06-22',title:'⚡ Performance: ลดกระตุกเมื่อมอนเยอะ',notes:[
     'perfMode: เมื่อมอนสเตอร์ > 12 ตัว ข้าม shadow pass → draw calls ลด 50%',
     'ลด particle cap เหลือ 30 และ ข้าม fxRings glow ใน perf mode',
