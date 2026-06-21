@@ -1,5 +1,5 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.32';
+const GAME_VERSION='3.11.34';
 const PATCH_NOTES=[
   {ver:'3.11.32',date:'2026-06-21',title:'👤 Cloud Save + โปรไฟล์ผู้เล่น',notes:[
     'เพิ่มระบบ Cloud Save — เข้าสู่ระบบด้วย Google เพื่อ sync ข้อมูลข้ามเครื่อง',
