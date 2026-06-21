@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.68';
+const GAME_VERSION='3.11.69';
 const PATCH_NOTES=[
+  {ver:'3.11.69',date:'2026-06-22',title:'👤 โปรไฟล์: แสดง avatar+ชื่อในเกมแทน Google pic',notes:[
+    'รูปโปรไฟล์ใช้ avatar ในเกมเสมอ (ไม่แสดงรูป Google อีกต่อไป)',
+    'ชื่อที่แสดงคือชื่อที่ผู้เล่นตั้งเอง (ถ้ายังไม่ตั้งจะใช้ชื่อ Google แทน)',
+  ]},
   {ver:'3.11.68',date:'2026-06-22',title:'🔑 แก้: OAuth redirect ตรงไปที่ game URL',notes:[
     'index.html กิน hash #tqauth= ทิ้งเมื่อ redirect → login ไม่ถูกบันทึก',
     'แก้: server redirect ตรงไป /Tower Quest 🏰.html#tqauth=... ข้ามไม่ผ่าน index.html',
@@ -3215,25 +3219,27 @@ function openProfile(){
   const avBig=document.getElementById('profileAvatarBig');
   const logoutWrap=document.getElementById('profileLogoutWrap');
   const loginWrap=document.getElementById('profileLoginWrap');
+  // แสดง in-game avatar + ชื่อผู้เล่นเสมอ (ไม่ใช้ Google pic)
+  if(gPic) gPic.style.display='none';
+  if(avBig){
+    avBig.style.display='flex';
+    if(av.startsWith('data:')){
+      avBig.textContent='';
+      avBig.style.backgroundImage=`url(${av})`;
+      avBig.style.backgroundSize='cover';
+      avBig.style.backgroundPosition='center';
+    } else {
+      avBig.textContent=av;
+      avBig.style.backgroundImage='';
+    }
+  }
   if(window.cloudUser){
-    if(gPic&&cloudUser.picture){gPic.src=cloudUser.picture;gPic.style.display='block';avBig.style.display='none';}
-    if(gName) gName.textContent=cloudUser.email||cloudUser.name;
+    // ชื่อผู้เล่น (ถ้ายังไม่ตั้ง ใช้ชื่อ Google แทน)
+    if(gName) gName.textContent=nm||cloudUser.name||cloudUser.email;
     if(logoutWrap) logoutWrap.style.display='block';
     if(loginWrap) loginWrap.style.display='none';
   } else {
-    if(gPic) gPic.style.display='none';
-    if(avBig){
-      avBig.style.display='flex';
-      if(av.startsWith('data:')){
-        avBig.textContent='';
-        avBig.style.backgroundImage=`url(${av})`;
-        avBig.style.backgroundSize='cover';
-        avBig.style.backgroundPosition='center';
-      } else {
-        avBig.textContent=av;
-        avBig.style.backgroundImage='';
-      }
-    }
+    if(gName) gName.textContent='';
     if(logoutWrap) logoutWrap.style.display='none';
     if(loginWrap) loginWrap.style.display='block';
   }
