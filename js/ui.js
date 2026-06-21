@@ -3340,8 +3340,9 @@ function renderLb(){
     const displayName=lastName||'ผู้เล่น';
     const stagesCleared=Object.keys(p).filter(k=>(p[k]||0)>=1).length;
     const totalStagesAvail=STAGES.filter(s=>!s.comingSoon).length;
+    const avHtml=av.startsWith('data:')?`<img src="${av}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`:`<span>${av}</span>`;
     let html=`<div class="my-stat-hero">
-      <div class="my-stat-hero-av">${av}</div>
+      <div class="my-stat-hero-av">${avHtml}</div>
       <div class="my-stat-hero-info">
         <div class="my-stat-hero-name">${displayName}</div>
         <div class="my-stat-hero-sub">🗺️ ${stagesCleared}/${totalStagesAvail} ด่าน · 🏅 ${achCount}/${ACHIEVEMENTS.length} รางวัล</div>
