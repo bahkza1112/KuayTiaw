@@ -641,12 +641,10 @@
     <div id="profileAvatarGrid" style="display:grid;grid-template-columns:repeat(6,44px);gap:8px;"></div>
     <!-- DRAW AVATAR -->
     <div style="width:100%;max-width:280px;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-        <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
-        <span style="color:rgba(255,255,255,.35);font-size:11px;">หรือวาดเอง</span>
-        <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
-      </div>
-      <div class="draw-wrap">
+      <button onclick="toggleDrawPanel()" id="drawToggleBtn" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:rgba(255,255,255,.5);font-size:12px;font-weight:700;padding:9px 14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s;" onmouseover="this.style.background='rgba(255,255,255,.11)'" onmouseout="this.style.background='rgba(255,255,255,.06)'">
+        <span>🖌️ วาดรูป Avatar เอง</span><span id="drawToggleArrow" style="font-size:10px;opacity:.6;">▼</span>
+      </button>
+      <div class="draw-wrap" id="drawPanel" style="display:none;margin-top:8px;">
         <canvas id="drawCanvas" width="200" height="200" class="draw-canvas"></canvas>
         <div class="draw-toolbar">
           <div class="draw-colors" id="drawColors"></div>

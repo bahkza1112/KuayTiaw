@@ -3117,8 +3117,11 @@ function openProfile(){
   if(inp) inp.value=nm;
   const msg=document.getElementById('profileSaveMsg');
   if(msg) msg.style.display='none';
-  // init draw canvas
-  setTimeout(initDrawCanvas,50);
+  // reset draw panel to collapsed on open
+  const dp=document.getElementById('drawPanel');
+  const da=document.getElementById('drawToggleArrow');
+  if(dp) dp.style.display='none';
+  if(da) da.textContent='▼';
 }
 const _RN_PREFIX=['นัก','ราช','มหา','ขุน','ท้าว','พ่อ','แม่','เจ้า','จอม','ยอด','สุด','มือ','หัว','เพชร','ฟ้า','ดาว','พระ','ศึก'];
 const _RN_MID=['รบ','พิชิต','ชัย','วีร','กล้า','ฮึก','บู๊','เก่ง','เทพ','ดุ','แกร่ง','โหด','ลับ','ใจ','ฮาร์ด','สาย','ดาร์ก','ไฟ','น้ำแข็ง','สายฟ้า'];
@@ -3158,6 +3161,15 @@ function selectAvatar(e){
 const DRAW_COLORS=['#ffffff','#000000','#f44336','#ff9800','#ffeb3b','#4caf50','#2196f3','#9c27b0','#00bcd4','#ff5722','#795548','#607d8b','#e91e63','#3f51b5','#69f0ae','#ffd24d'];
 let _drawTool='brush', _drawColor=DRAW_COLORS[0], _drawDown=false, _drawCtx=null, _drawLast=null;
 
+function toggleDrawPanel(){
+  const panel=document.getElementById('drawPanel');
+  const arrow=document.getElementById('drawToggleArrow');
+  if(!panel) return;
+  const open=panel.style.display==='none';
+  panel.style.display=open?'':'none';
+  if(arrow) arrow.textContent=open?'▲':'▼';
+  if(open) initDrawCanvas();
+}
 function initDrawCanvas(){
   const cv=document.getElementById('drawCanvas'); if(!cv) return;
   _drawCtx=cv.getContext('2d');
