@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.37';
+const GAME_VERSION='3.11.38';
 const PATCH_NOTES=[
+  {ver:'3.11.38',date:'2026-06-21',title:'👑 TOP 10 เซิฟเวอร์ — ปรับ UI',notes:[
+    'หัวข้อ "TOP 10 เซิฟเวอร์" พร้อม crown banner ทอง',
+    'อันดับ 1 ใช้ 👑 พร้อม glow ทอง, 2 เงิน, 3 ทองแดง — แถวสีต่างกันตามอันดับ',
+    'อันดับ 4-10 ใช้เลขวงกลม',
+  ]},
   {ver:'3.11.37',date:'2026-06-21',title:'🌐 Server Leaderboard TOP 10',notes:[
     'อันดับ "รวมทุกคน" ตอนนี้ดึงข้อมูลจากเซิฟ — เห็นคะแนนของผู้เล่นทุกคน',
     'เมื่อบันทึกคะแนนเอนด์เกมจะส่งไปเซิฟโดยอัตโนมัติ',
@@ -3192,39 +3197,41 @@ function renderLb(){
   } else if(lbTab===1){
     // TOP 10 เซิฟ — endgame only sorted by score
     const myName=lastName;
-    body.innerHTML='<div class="lb-empty" style="color:#aaa;">⏳ กำลังโหลด...</div>';
+    const _rankBadge=i=>{
+      if(i===0) return '<span class="lb-rank-1">👑</span>';
+      if(i===1) return '<span class="lb-rank-2">🥈</span>';
+      if(i===2) return '<span class="lb-rank-3">🥉</span>';
+      return `<span class="lb-rank-num">${i+1}</span>`;
+    };
+    const _svHd=`<div class="lb-sv-hd"><div class="lb-sv-crown">👑</div><div class="lb-sv-title">TOP 10 เซิฟเวอร์</div><div class="lb-sv-sub">เรียงตามคะแนนสูงสุด</div></div>`;
+    const _svHeader=`<div class="lbt-header"><span>#</span><span>ชื่อ</span><span>เวฟ</span><span>คะแนน</span></div>`;
+    body.innerHTML=_svHd+'<div class="lb-empty" style="color:#aaa;padding:20px;">⏳ กำลังโหลด...</div>';
     fetch('/api/leaderboard',{signal:AbortSignal.timeout(5000)})
       .then(r=>r.json())
       .then(d=>{
         const entries=d.entries||[];
         let myRank=-1;
         entries.forEach((e,i)=>{ if(e.name===myName&&myRank<0) myRank=i+1; });
-        let html=`<div class="lbt-subtitle">🌐 TOP 10 ของเซิฟ — เรียงตามคะแนนสูงสุด</div>`;
+        let html=_svHd;
         if(myRank>0) html+=`<div class="lbt-myrank">อันดับของคุณ: <span>#${myRank}</span></div>`;
-        if(!entries.length){ body.innerHTML=html+'<div class="lb-empty">ยังไม่มีข้อมูล</div>'; return; }
-        html+=`<div class="lbt-header"><span>#</span><span>ชื่อ</span><span>เวฟ</span><span>คะแนน</span><span></span></div>`;
+        if(!entries.length){ body.innerHTML=html+'<div class="lb-empty">ยังไม่มีข้อมูล — เป็นคนแรกที่ติด TOP 10!</div>'; return; }
+        html+=_svHeader;
         entries.forEach((r,i)=>{
           const isMe=r.name===myName;
-          const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
-          html+=`<div class="lbt-row${isMe?' lbt-me':''}">
-            <span class="lbt-rank">${medal||i+1}</span>
-            <span class="lbt-name">${r.name}</span>
-            <span class="lbt-wave">${r.wave}</span>
-            <span class="lbt-score">${r.score.toLocaleString()}</span>
-            <span></span>
-          </div>`;
+          const rowCls=`lbt-row${i===0?' lbt-row-1':i===1?' lbt-row-2':i===2?' lbt-row-3':''}${isMe?' lbt-me':''}`;
+          html+=`<div class="${rowCls}"><span class="lbt-rank">${_rankBadge(i)}</span><span class="lbt-name">${r.name}</span><span class="lbt-wave">${r.wave}</span><span class="lbt-score">${r.score.toLocaleString()}</span></div>`;
         });
         body.innerHTML=html;
       })
       .catch(()=>{
         // fallback to local
         const allRuns=[...runs].filter(r=>r.mode==='endgame').sort((a,b)=>b.score-a.score).slice(0,10);
-        if(!allRuns.length){ body.innerHTML='<div class="lb-empty">ยังไม่มีข้อมูลเอนด์เกม</div>'; return; }
-        let html=`<div class="lbt-subtitle">📴 Offline — ข้อมูลในเครื่อง</div>`;
-        html+=`<div class="lbt-header"><span>#</span><span>ชื่อ</span><span>เวฟ</span><span>คะแนน</span><span></span></div>`;
+        let html=`<div class="lb-sv-hd"><div class="lb-sv-crown">📴</div><div class="lb-sv-title" style="color:#aaa;">Offline</div><div class="lb-sv-sub">ข้อมูลในเครื่อง</div></div>`;
+        if(!allRuns.length){ body.innerHTML=html+'<div class="lb-empty">ยังไม่มีข้อมูลเอนด์เกม</div>'; return; }
+        html+=_svHeader;
         allRuns.forEach((r,i)=>{
-          const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
-          html+=`<div class="lbt-row"><span class="lbt-rank">${medal||i+1}</span><span class="lbt-name">${r.name}</span><span class="lbt-wave">${r.wave}</span><span class="lbt-score">${r.score.toLocaleString()}</span><span></span></div>`;
+          const rowCls=`lbt-row${i===0?' lbt-row-1':i===1?' lbt-row-2':i===2?' lbt-row-3':''}`;
+          html+=`<div class="${rowCls}"><span class="lbt-rank">${_rankBadge(i)}</span><span class="lbt-name">${r.name}</span><span class="lbt-wave">${r.wave}</span><span class="lbt-score">${r.score.toLocaleString()}</span></div>`;
         });
         body.innerHTML=html;
       });
