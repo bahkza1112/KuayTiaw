@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.47';
+const GAME_VERSION='3.11.48';
 const PATCH_NOTES=[
+  {ver:'3.11.48',date:'2026-06-21',title:'🎰 Auto Spin + แก้บัคโปรไฟล์',notes:[
+    'สล็อต: เพิ่มปุ่ม Auto หมุนต่อเนื่องอัตโนมัติ, หยุดเองเมื่อทองไม่พอ',
+    'แก้บัค: avatar รูปวาดเองแสดงผิดในหน้าโปรไฟล์ (แสดงข้อความ dataURL)',
+    'ปรับปุ่ม ← กลับ ในคาสิโนให้มองเห็นชัดขึ้น',
+  ]},
   {ver:'3.11.47',date:'2026-06-21',title:'🏆 TOP 10 เซิฟ: ตารางเดียว รวม คะแนน+เวฟ',notes:[
     'TOP 10 เซิฟแสดงตารางเดียว: avatar / ชื่อ / คะแนน / เวฟ',
     'เรียงตามคะแนนสูงสุด, เวฟแสดงสีเขียวในแถวเดียวกัน',
@@ -3140,7 +3145,18 @@ function openProfile(){
     if(logoutWrap) logoutWrap.style.display='block';
   } else {
     if(gPic) gPic.style.display='none';
-    if(avBig){avBig.style.display='flex';avBig.textContent=av;}
+    if(avBig){
+      avBig.style.display='flex';
+      if(av.startsWith('data:')){
+        avBig.textContent='';
+        avBig.style.backgroundImage=`url(${av})`;
+        avBig.style.backgroundSize='cover';
+        avBig.style.backgroundPosition='center';
+      } else {
+        avBig.textContent=av;
+        avBig.style.backgroundImage='';
+      }
+    }
     if(logoutWrap) logoutWrap.style.display='none';
   }
   // avatar grid
@@ -3675,10 +3691,23 @@ function _slotWinFx(outcome,reels){
   setTimeout(()=>{ov.style.cssText='opacity:0;transition:opacity .4s;pointer-events:none;';setTimeout(()=>ov.remove(),450);},dur);
 }
 
+let _slotAutoOn=false;
+function toggleAutoSpin(){
+  _slotAutoOn=!_slotAutoOn;
+  const btn=document.getElementById('slotAutoBtn');
+  if(btn){
+    btn.textContent=_slotAutoOn?'⏹ Stop Auto':'▶ Auto';
+    btn.classList.toggle('slot-auto-active',_slotAutoOn);
+  }
+  if(_slotAutoOn&&!_slotBusy) spinSlot();
+}
 function spinSlot(){
   if(_slotBusy) return;
   const pg=loadPGold();
-  if(pg<SLOT_COST){showToast('💰 ทองถาวรไม่พอ (ต้องการ '+SLOT_COST+')');return;}
+  if(pg<SLOT_COST){
+    if(_slotAutoOn){ _slotAutoOn=false; const b=document.getElementById('slotAutoBtn'); if(b){b.textContent='▶ Auto';b.classList.remove('slot-auto-active');} }
+    showToast('💰 ทองถาวรไม่พอ (ต้องการ '+SLOT_COST+')');return;
+  }
   savePGold(pg-SLOT_COST);
   _slotBusy=true;
   const btn=document.getElementById('slotSpinBtn');if(btn)btn.disabled=true;
@@ -3722,6 +3751,7 @@ function spinSlot(){
       if(won){ _slotWinFx(outcome,reels); showToast('🎉 '+outcome.label); }
       _slotBusy=false;
       _renderCasinoUI();
+      if(_slotAutoOn) setTimeout(()=>{ if(_slotAutoOn&&!_slotBusy) spinSlot(); },600);
     }
   },delay);
   stopReel(0,1200);

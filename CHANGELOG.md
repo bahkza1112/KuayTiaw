@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.48 — Auto Spin + แก้บัคโปรไฟล์ + ปุ่มกลับคาสิโน
+
+### Added
+- `js/ui.js` `toggleAutoSpin()`: หมุนสล็อตต่อเนื่องอัตโนมัติ, หยุดเองเมื่อทองไม่พอ
+- `css/main.css` `.slot-auto-btn`, `.slot-auto-active`: สไตล์ปุ่ม Auto
+
+### Fixed
+- `js/ui.js` `openProfile()`: avatar dataURL แสดงเป็น backgroundImage แทน textContent
+- `Tower Quest 🏰.html`: casino back button เปลี่ยนจาก `eg-back` → `bback` ให้มองเห็นชัด
+
 ## v3.11.47 — TOP 10 เซิฟ: ตารางเดียว รวม avatar+คะแนน+เวฟ
 
 ### Changed
