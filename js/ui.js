@@ -1334,8 +1334,86 @@ function craftVoidTower(){
   document.getElementById('voidCraftOverlay').style.display='flex';
 }
 
+/* ══ STORY MISSIONS ══ */
+const STORY_MISSIONS=[
+  // per-stage
+  {id:'s0', type:'stage',si:0,  label:'ผ่านด่าน 1: Grassland 🌿',          gold:300,  gems:50,  tickets:10},
+  {id:'s1', type:'stage',si:1,  label:'ผ่านด่าน 2: Dark Forest 🌲',         gold:500,  gems:80,  tickets:10},
+  {id:'s2', type:'stage',si:2,  label:'ผ่านด่าน 3: Volcanic Pass 🌋',       gold:700,  gems:120, tickets:10},
+  {id:'s3', type:'stage',si:3,  label:'ผ่านด่าน 4: Desert Crossing 🏜️',    gold:1000, gems:150, tickets:10},
+  {id:'s4', type:'stage',si:4,  label:'ผ่านด่าน 5: Treasure Valley 💰',     gold:1200, gems:200, tickets:10},
+  {id:'s5', type:'stage',si:5,  label:'ผ่านด่าน 6: Thunder Cave ⚡',        gold:1500, gems:250, tickets:10},
+  {id:'s6', type:'stage',si:6,  label:'ผ่านด่าน 7: Cursed Swamp 🌿',       gold:2000, gems:300, tickets:10},
+  {id:'s7', type:'stage',si:7,  label:'ผ่านด่าน 8: Dark Fortress 🏰',      gold:2500, gems:400, tickets:10},
+  {id:'s8', type:'stage',si:8,  label:'ผ่านด่าน 9: Dark Throne 👿',        gold:3000, gems:500, tickets:20},
+  {id:'s9', type:'stage',si:9,  label:'ผ่านด่าน 10: Dark Tower Summit 💀', gold:4000, gems:600, tickets:30},
+  {id:'s10',type:'stage',si:10, label:'ผ่านด่าน 11: Shadow Remnant 🌑',   gold:5000, gems:800, tickets:50},
+  // milestones
+  {id:'m3',    type:'milestone',need:3,   label:'🏅 ผ่านด่าน 3 ด่าน',                  gold:1000, gems:200,  tickets:10},
+  {id:'m6',    type:'milestone',need:6,   label:'🏅 ผ่านด่าน 6 ด่าน',                  gold:2000, gems:400,  tickets:10},
+  {id:'mall',  type:'milestone',need:11,  label:'🏆 ผ่านครบทุกด่าน!',                  gold:5000, gems:1000, tickets:50},
+  {id:'mall3s',type:'milestone3s',need:11,label:'🌟 ผ่านทุกด่าน 3 ดาว!',              gold:5000, gems:1500, tickets:50},
+];
+function loadStoryClaimed(){try{return new Set(JSON.parse(localStorage.getItem('tq_storyclaimed')||'[]'));}catch{return new Set();}}
+function saveStoryClaimed(s){localStorage.setItem('tq_storyclaimed',JSON.stringify([...s]));}
+
+function claimStoryMission(id){
+  const m=STORY_MISSIONS.find(x=>x.id===id); if(!m) return;
+  const claimed=loadStoryClaimed(); if(claimed.has(id)) return;
+  // verify unlock
+  const p=loadProgress();
+  const cleared=Object.keys(p).filter(k=>(p[k]||0)>=1).length;
+  const all3s=Object.keys(p).filter(k=>(p[k]||0)>=3).length;
+  if(m.type==='stage'&&!(p[m.si]>=1)) return;
+  if(m.type==='milestone'&&cleared<m.need) return;
+  if(m.type==='milestone3s'&&all3s<m.need) return;
+  // give rewards
+  if(m.gold){const g=Number(localStorage.getItem('tq_pgold')||0);localStorage.setItem('tq_pgold',g+m.gold);}
+  if(m.gems){const g=Number(localStorage.getItem('tq_gems')||0);localStorage.setItem('tq_gems',g+m.gems);}
+  if(m.tickets){const t=Number(localStorage.getItem('tq_tickets')||0);localStorage.setItem('tq_tickets',t+m.tickets);}
+  claimed.add(id); saveStoryClaimed(claimed);
+  if(window.cloudSave) cloudSave();
+  showToast(`🎁 รับแล้ว! +💰${m.gold||0} +💎${m.gems||0} +🎫${m.tickets||0}`);
+  renderStoryMissions(); updateMenuStats();
+}
+
+function renderStoryMissions(){
+  const list=document.getElementById('storyMissionList'); if(!list) return;
+  const p=loadProgress();
+  const cleared=Object.keys(p).filter(k=>(p[k]||0)>=1).length;
+  const claimed=loadStoryClaimed();
+  list.innerHTML=STORY_MISSIONS.map(m=>{
+    const all3s=Object.keys(p).filter(k=>(p[k]||0)>=3).length;
+    const done=m.type==='stage'?(p[m.si]>=1):m.type==='milestone3s'?(all3s>=m.need):(cleared>=m.need);
+    const isClaimed=claimed.has(m.id);
+    const canClaim=done&&!isClaimed;
+    return `<div class="smq-row${isClaimed?' smq-claimed':canClaim?' smq-ready':''}">
+      <div class="smq-info">
+        <div class="smq-label">${m.label}</div>
+        <div class="smq-reward">💰${m.gold} · 💎${m.gems} · 🎫${m.tickets}</div>
+      </div>
+      ${isClaimed
+        ? `<div class="smq-btn smq-done">✅ รับแล้ว</div>`
+        : canClaim
+          ? `<button class="smq-btn smq-claim" onclick="claimStoryMission('${m.id}')">รับ!</button>`
+          : `<div class="smq-btn smq-lock">🔒</div>`
+      }
+    </div>`;
+  }).join('');
+}
+
+let _dailyTab=0;
+function switchDailyTab(i){
+  _dailyTab=i;
+  document.getElementById('dqt0').classList.toggle('active',i===0);
+  document.getElementById('dqt1').classList.toggle('active',i===1);
+  document.getElementById('dailyTabDaily').style.display=i===0?'':'none';
+  document.getElementById('dailyTabStory').style.display=i===1?'':'none';
+  if(i===1) renderStoryMissions();
+}
+
 /* ══ DAILY (LOGIN + QUESTS) — v3.6.0 ══ */
-function openDaily(){showScreen('daily',true);renderDaily();}
+function openDaily(){showScreen('daily',true);_dailyTab=0;switchDailyTab(0);renderDaily();}
 function renderDaily(){
   const st=getLoginState();
   // 7-day login strip
@@ -2981,11 +3059,32 @@ function openProfile(){
   const msg=document.getElementById('profileSaveMsg');
   if(msg) msg.style.display='none';
 }
+const _RN_PREFIX=['นัก','ราช','มหา','ขุน','ท้าว','พ่อ','แม่','เจ้า','จอม','ยอด','สุด','มือ','หัว','เพชร','ฟ้า','ดาว','พระ','ศึก'];
+const _RN_MID=['รบ','พิชิต','ชัย','วีร','กล้า','ฮึก','บู๊','เก่ง','เทพ','ดุ','แกร่ง','โหด','ลับ','ใจ','ฮาร์ด','สาย','ดาร์ก','ไฟ','น้ำแข็ง','สายฟ้า'];
+const _RN_SUFFIX=['เหล็ก','ทอง','เพชร','มังกร','เสือ','สิงห์','หมาป่า','อินทรี','พยัคฆ์','นักรบ','จอมทัพ','อมตะ','นิรันดร์','ตำนาน','ปีศาจ','เทวดา','สายเลือด','ผู้กล้า','ไร้พ่าย','ไม่แพ้'];
+function rollRandomName(){
+  const inp=document.getElementById('profileNameInput');
+  if(!inp) return;
+  // animate ปั่น 6 ครั้ง แล้วหยุดที่ชื่อจริง
+  const final=_RN_PREFIX[Math.random()*_RN_PREFIX.length|0]+_RN_MID[Math.random()*_RN_MID.length|0]+_RN_SUFFIX[Math.random()*_RN_SUFFIX.length|0];
+  let count=0; const total=8;
+  const timer=setInterval(()=>{
+    inp.value=_RN_PREFIX[Math.random()*_RN_PREFIX.length|0]+_RN_MID[Math.random()*_RN_MID.length|0]+_RN_SUFFIX[Math.random()*_RN_SUFFIX.length|0];
+    count++;
+    if(count>=total){ clearInterval(timer); inp.value=final; }
+  },80);
+}
+function updateAvatarDisplay(){
+  const av=localStorage.getItem('tq_avatar')||'⚔️';
+  const el=document.getElementById('cloudAvatarDisplay');
+  if(el) el.textContent=av;
+}
 function selectAvatar(e){
   localStorage.setItem('tq_avatar',e);
   document.querySelectorAll('.profile-avatar-btn').forEach(b=>b.classList.toggle('selected',b.dataset.av===e));
   const avBig=document.getElementById('profileAvatarBig');
   if(avBig) avBig.textContent=e;
+  updateAvatarDisplay();
 }
 function saveProfile(){
   const inp=document.getElementById('profileNameInput');
@@ -3006,7 +3105,7 @@ function openLeaderboard(){
 }
 function switchLbTab(i){
   lbTab=i;
-  for(let j=0;j<3;j++) document.getElementById('lbt'+j).classList.toggle('active',j===i);
+  for(let j=0;j<4;j++) document.getElementById('lbt'+j).classList.toggle('active',j===i);
   renderLb();
 }
 function renderLb(){
@@ -3025,16 +3124,33 @@ function renderLb(){
     const bestCombo=egRuns.length?Math.max(...egRuns.map(r=>r.maxCombo||1)):1;
     const totalEgKills=egRuns.reduce((a,r)=>a+(r.kills||0),0);
     const achCount=loadAchievements().size;
-    let html=`<div class="my-stat-grid">
+    const av=localStorage.getItem('tq_avatar')||'⚔️';
+    const displayName=lastName||'ผู้เล่น';
+    const stagesCleared=Object.keys(p).filter(k=>(p[k]||0)>=1).length;
+    const totalStagesAvail=STAGES.filter(s=>!s.comingSoon).length;
+    let html=`<div class="my-stat-hero">
+      <div class="my-stat-hero-av">${av}</div>
+      <div class="my-stat-hero-info">
+        <div class="my-stat-hero-name">${displayName}</div>
+        <div class="my-stat-hero-sub">🗺️ ${stagesCleared}/${totalStagesAvail} ด่าน · 🏅 ${achCount}/${ACHIEVEMENTS.length} รางวัล</div>
+      </div>
+    </div>
+    <div class="my-stat-section">🔥 เอนด์เกม</div>
+    <div class="my-stat-grid">
       <div class="my-stat-card eg"><div class="my-stat-val">${bestWave||'—'}</div><div class="my-stat-lbl">🌊 เวฟสูงสุด</div></div>
       <div class="my-stat-card eg"><div class="my-stat-val">${bestScore?bestScore.toLocaleString():'—'}</div><div class="my-stat-lbl">⭐ คะแนนสูงสุด</div></div>
       <div class="my-stat-card eg"><div class="my-stat-val">${bestKills||'—'}</div><div class="my-stat-lbl">💀 ฆ่าสูงสุด/รอบ</div></div>
       <div class="my-stat-card eg"><div class="my-stat-val">×${bestCombo}</div><div class="my-stat-lbl">⚡ คอมโบสูงสุด</div></div>
-      <div class="my-stat-card"><div class="my-stat-val">${Object.keys(p).filter(k=>(p[k]||0)>=1).length}/${STAGES.filter(s=>!s.comingSoon).length}</div><div class="my-stat-lbl">🗺️ ด่านที่ผ่าน</div></div>
-      <div class="my-stat-card"><div class="my-stat-val">${totalStars}★</div><div class="my-stat-lbl">⭐ ดาวรวม</div></div>
-      <div class="my-stat-card"><div class="my-stat-val">${totalEgKills.toLocaleString()}</div><div class="my-stat-lbl">💀 ฆ่ารวม (เอนด์เกม)</div></div>
-      <div class="my-stat-card"><div class="my-stat-val">${egRuns.length}</div><div class="my-stat-lbl">🔥 รอบเอนด์เกม</div></div>
-      <div class="my-stat-card"><div class="my-stat-val">${achCount}/${ACHIEVEMENTS.length}</div><div class="my-stat-lbl">🏅 รางวัล</div></div>
+    </div>
+    <div class="my-stat-section">📖 เนื้อเรื่อง</div>
+    <div class="my-stat-grid">
+      <div class="my-stat-card story"><div class="my-stat-val">${stagesCleared}/${totalStagesAvail}</div><div class="my-stat-lbl">🗺️ ด่านที่ผ่าน</div></div>
+      <div class="my-stat-card story"><div class="my-stat-val">${totalStars}★</div><div class="my-stat-lbl">⭐ ดาวรวม</div></div>
+    </div>
+    <div class="my-stat-section">📊 รวม</div>
+    <div class="my-stat-grid">
+      <div class="my-stat-card gen"><div class="my-stat-val">${totalEgKills.toLocaleString()}</div><div class="my-stat-lbl">💀 ฆ่ารวม (เอนด์เกม)</div></div>
+      <div class="my-stat-card gen"><div class="my-stat-val">${egRuns.length}</div><div class="my-stat-lbl">🔥 รอบเอนด์เกม</div></div>
     </div>`;
     if(myRuns.length){
       html+='<div class="run-hdr">⏱ ประวัติล่าสุด</div>';
@@ -3051,46 +3167,76 @@ function renderLb(){
     }
     body.innerHTML=html;
   } else if(lbTab===1){
-    // All runs leaderboard (mixed modes — score scales differ, see tab icons)
+    // รวมทุกคน — table format
     const allRuns=[...runs].sort((a,b)=>b.score-a.score);
-    if(!allRuns.length){ body.innerHTML='<div class="lb-empty">ยังไม่มีข้อมูล<br><span style="font-size:11px;color:#333;">เล่นเกมแล้วบันทึกชื่อก่อน</span></div>'; return; }
-    let myRank=-1;
+    if(!allRuns.length){ body.innerHTML='<div class="lb-empty">ยังไม่มีข้อมูล</div>'; return; }
     const myName=lastName;
-    let html='<div class="lb-note">🔥 อันดับคะแนนนี้ใช้ได้เฉพาะโหมดเอนด์เกม — ดูแยกในแท็บ "เอนด์เกม"</div>';
-    allRuns.slice(0,20).forEach((r,i)=>{
+    let myRank=-1;
+    allRuns.forEach((r,i)=>{ if(r.name===myName&&myRank<0) myRank=i+1; });
+    let html=`<div class="lbt-subtitle">อันดับตามคะแนนสูงสุด</div>`;
+    if(myRank>0) html+=`<div class="lbt-myrank">อันดับของคุณ: <span>#${myRank}</span></div>`;
+    html+=`<div class="lbt-header"><span>#</span><span>ชื่อ</span><span>แมพ</span><span>คะแนน</span><span></span></div>`;
+    allRuns.slice(0,50).forEach((r,i)=>{
       const isMe=r.name===myName;
-      if(isMe&&myRank<0) myRank=i+1;
-      const rankClass=i===0?'g':i===1?'s':i===2?'b':'n';
-      html+=`<div class="lb-item${isMe?' me':''}">
-        <div class="lb-rank ${rankClass}">${i+1}</div>
-        <div class="lb-avatar">${r.mode==='endgame'?'🔥':'⚔️'}</div>
-        <div class="lb-info"><div class="lb-name">${r.name}${isMe?' (ฉัน)':''}</div>
-        <div class="lb-detail">${r.mode==='endgame'?'เอนด์เกม · '+r.diff:'เนื้อเรื่อง · '+r.stage} · ${r.date}</div></div>
-        <div class="lb-score-wrap"><div class="lb-score-val">${r.score}</div>
-        <div class="lb-score-sub">${r.mode==='endgame'?'เวฟ '+r.wave:r.stage}</div></div>
+      const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+      html+=`<div class="lbt-row${isMe?' lbt-me':''}">
+        <span class="lbt-rank">${medal||i+1}</span>
+        <span class="lbt-name">${r.name}</span>
+        <span class="lbt-wave">${r.mode==='endgame'?r.wave:'-'}</span>
+        <span class="lbt-score">${r.score.toLocaleString()}</span>
+        <span><button class="lbt-del" onclick="deleteRun(${runs.indexOf(r)})">×</button></span>
       </div>`;
     });
     body.innerHTML=html;
   } else if(lbTab===2){
-    // Endgame only
+    // กระดานผู้นำ — endgame table
     const egOnly=[...runs].filter(r=>r.mode==='endgame').sort((a,b)=>b.wave-a.wave||b.score-a.score);
-    if(!egOnly.length){ body.innerHTML='<div class="lb-empty">ยังไม่มีข้อมูลเอนด์เกม<br><span style="font-size:11px;color:#333;">เล่นเอนด์เกมแล้วบันทึกชื่อ</span></div>'; return; }
+    if(!egOnly.length){ body.innerHTML='<div class="lb-empty">ยังไม่มีข้อมูลเอนด์เกม</div>'; return; }
     const myName=lastName;
-    let html='';
-    egOnly.slice(0,20).forEach((r,i)=>{
+    let myRank=-1;
+    egOnly.forEach((r,i)=>{ if(r.name===myName&&myRank<0) myRank=i+1; });
+    let html=`<div class="lbt-subtitle">อันดับตามคะแนนสูงสุด</div>`;
+    if(myRank>0) html+=`<div class="lbt-myrank">อันดับของคุณ: <span>#${myRank}</span></div>`;
+    html+=`<div class="lbt-header"><span>#</span><span>ชื่อ</span><span>แมพ</span><span>คะแนน</span><span></span></div>`;
+    egOnly.slice(0,50).forEach((r,i)=>{
       const isMe=r.name===myName;
-      const rankClass=i===0?'g':i===1?'s':i===2?'b':'n';
-      html+=`<div class="lb-item${isMe?' me':''}">
-        <div class="lb-rank ${rankClass}">${i+1}</div>
-        <div class="lb-avatar">${['💀','👹','🔥','⚔️','🌋'][i%5]}</div>
-        <div class="lb-info"><div class="lb-name">${r.name}${isMe?' (ฉัน)':''}</div>
-        <div class="lb-detail">เอนด์เกม · ${r.diff} · ${r.date}</div></div>
-        <div class="lb-score-wrap"><div class="lb-score-val">${r.score.toLocaleString()}</div>
-        <div class="lb-score-sub">🌊 เวฟ ${r.wave} · 💀 ฆ่า ${r.kills||0}</div></div>
+      const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+      const origIdx=runs.indexOf(r);
+      html+=`<div class="lbt-row${isMe?' lbt-me':''}">
+        <span class="lbt-rank">${medal||i+1}</span>
+        <span class="lbt-name">${r.name}</span>
+        <span class="lbt-wave">${r.wave}</span>
+        <span class="lbt-score">${r.score.toLocaleString()}</span>
+        <span><button class="lbt-del" onclick="deleteRun(${origIdx})">×</button></span>
+      </div>`;
+    });
+    body.innerHTML=html;
+  } else if(lbTab===3){
+    // ประวัติของฉัน
+    const myName=lastName;
+    const myRuns=runs.filter(r=>r.name===myName);
+    if(!myRuns.length){ body.innerHTML='<div class="lb-empty">ยังไม่มีประวัติ</div>'; return; }
+    let html=`<div class="lbt-subtitle">ประวัติการเล่นของคุณ</div>`;
+    html+=`<div class="lbt-header"><span>#</span><span>ชื่อ</span><span>แมพ</span><span>คะแนน</span><span></span></div>`;
+    myRuns.slice(0,50).forEach((r,i)=>{
+      const origIdx=runs.indexOf(r);
+      html+=`<div class="lbt-row lbt-me">
+        <span class="lbt-rank">${i+1}</span>
+        <span class="lbt-name">${r.mode==='endgame'?'🔥':'⚔️'} ${r.date}</span>
+        <span class="lbt-wave">${r.mode==='endgame'?r.wave:'-'}</span>
+        <span class="lbt-score">${r.score.toLocaleString()}</span>
+        <span><button class="lbt-del" onclick="deleteRun(${origIdx})">×</button></span>
       </div>`;
     });
     body.innerHTML=html;
   }
+}
+function deleteRun(idx){
+  const runs=JSON.parse(localStorage.getItem('tq_runs')||'[]');
+  if(idx<0||idx>=runs.length) return;
+  runs.splice(idx,1);
+  localStorage.setItem('tq_runs',JSON.stringify(runs));
+  renderLb();
 }
 
 /* ══ OVERRIDE startWave for EG ══ */
@@ -3205,8 +3351,8 @@ const SLOT_SPIN_SYMS=['💎','⭐','🔮','💰','🔷','🌙','🎯','🌸'];
 const SLOT_OUTCOMES=[
   {w:5,  s:['💎','💎','💎'], gold:5000,gems:3000,tickets:50, label:'💎 JACKPOT! +🎫50 +💰5000 +💎3000'},
   {w:15, s:['⭐','⭐','⭐'], gold:2500,gems:1500,tickets:25, label:'⭐ SUPER!  +🎫25 +💰2500 +💎1500'},
-  {w:30, s:['🔮','🔮','🔮'],gold:2000,gems:1000,tickets:0,  label:'🔮 GREAT! +💰2000 +💎1000'},
-  {w:60, s:['💰','💰','💰'],gold:500, gems:500, tickets:0,  label:'💰 NICE!  +💰500 +💎500'},
+  {w:30, s:['🔮','🔮','🔮'],gold:1000,gems:500, tickets:0,  label:'🔮 GREAT! +💰1000 +💎500'},
+  {w:60, s:['💰','💰','💰'],gold:500, gems:250, tickets:0,  label:'💰 NICE!  +💰500 +💎250'},
   {w:250,s:null,pair:true,  gold:30,  gems:0,   tickets:0,  label:'คู่! +💰30'},
   {w:640,s:null,miss:true,  gold:0,   gems:0,   tickets:0,  shardC:1,label:'เศษหินมืด ×1'},
 ];

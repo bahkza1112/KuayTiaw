@@ -53,12 +53,8 @@ async function cloudInit() {
       const sd = await sr.json();
       restoreSave(sd.save);
       // อัปเดต UI ชื่อผู้เล่น
-      const nameEl = document.getElementById('cloudUserName');
-      const picEl  = document.getElementById('cloudUserPic');
-      const bar    = document.getElementById('cloudUserBar');
-      if (nameEl) nameEl.textContent = cloudUser.name;
-      if (picEl && cloudUser.picture) { picEl.src = cloudUser.picture; picEl.style.display = 'inline'; }
-      if (bar) bar.style.display = 'flex';
+      const bar = document.getElementById('cloudUserBar');
+      if (bar) { bar.style.display = 'flex'; updateAvatarDisplay(); }
       // แสดงเกม
       if (screen) screen.style.display = 'none';
       if (game)   game.style.display   = '';
@@ -72,8 +68,8 @@ async function cloudInit() {
     cloudAvailable = false;
     if (screen) screen.style.display = 'none';
     if (game)   game.style.display   = '';
-    const gb = document.getElementById('guestProfileBtn');
-    if (gb) gb.style.display = 'block';
+    const bar = document.getElementById('cloudUserBar');
+    if (bar) { bar.style.display = 'flex'; updateAvatarDisplay(); }
   }
 
   // auto-save ทุก 60 วิ

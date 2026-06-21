@@ -17,7 +17,7 @@
     เข้าสู่ระบบด้วย Google
   </a>
   <div style="color:rgba(255,255,255,.25);font-size:11px;">ข้อมูลจะถูกบันทึกไว้บน server ใช้ได้ทุกเครื่อง</div>
-  <button onclick="document.getElementById('cloudLoginScreen').style.display='none';document.getElementById('gr').style.display='';var g=document.getElementById('guestProfileBtn');if(g)g.style.display='block';" style="background:none;border:none;color:rgba(255,255,255,.35);font-size:12px;cursor:pointer;margin-top:-8px;text-decoration:underline;">เล่นแบบ Guest (ไม่ sync)</button>
+  <button onclick="document.getElementById('cloudLoginScreen').style.display='none';document.getElementById('gr').style.display='';var b=document.getElementById('cloudUserBar');if(b){b.style.display='flex';updateAvatarDisplay();}" style="background:none;border:none;color:rgba(255,255,255,.35);font-size:12px;cursor:pointer;margin-top:-8px;text-decoration:underline;">เล่นแบบ Guest (ไม่ sync)</button>
 </div>
 
 <div id="gr">
@@ -48,12 +48,10 @@
   </div>
   <div class="mm-daily-corner" id="dailyNavBtn" onclick="openDaily()"><span class="mm-daily-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span class="mm-daily-label">ภารกิจ</span><span id="dailyBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:#ef5350;color:#fff;font-size:10px;font-weight:900;border-radius:50%;width:16px;height:16px;line-height:16px;text-align:center;box-shadow:0 0 8px rgba(239,83,80,.8);">!</span></div>
   <div class="mm-codex-corner" id="codexNavBtn" onclick="openCodex()"><span class="mm-codex-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5c-2-1.3-5-1.7-9-1.3v15c4-.4 7 0 9 1.3 2-1.3 5-1.7 9-1.3v-15c-4-.4-7 0-9 1.3Z"/><line x1="12" y1="4.5" x2="12" y2="19.5"/></svg></span><span class="mm-codex-label">สารานุกรม</span><span id="achBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:#ffe082;color:#6d2900;font-size:9px;font-weight:900;border-radius:50%;width:16px;height:16px;line-height:16px;text-align:center;box-shadow:0 0 8px rgba(255,224,130,.8);">!</span></div>
-  <div id="cloudUserBar" style="display:none;position:absolute;top:146px;right:14px;align-items:center;gap:7px;background:rgba(0,0,0,.35);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:5px 10px 5px 8px;cursor:pointer;" onclick="openProfile()" title="โปรไฟล์">
-    <img id="cloudUserPic" src="" style="display:none;width:20px;height:20px;border-radius:50%;object-fit:cover;">
-    <span id="cloudUserName" style="color:#fff;font-size:11px;font-weight:700;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
-    <span style="color:rgba(255,255,255,.4);font-size:11px;">✏️</span>
+  <div id="cloudUserBar" style="display:none;position:absolute;top:58px;left:14px;z-index:10;align-items:center;gap:8px;background:rgba(0,0,0,.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:6px 14px 6px 8px;cursor:pointer;transition:transform .15s,box-shadow .15s;" onclick="openProfile()" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform=''">
+    <span id="cloudAvatarDisplay" style="font-size:20px;line-height:1;">⚔️</span>
+    <span style="color:#fff;font-size:12px;font-weight:700;">โปรไฟล์</span>
   </div>
-  <div id="guestProfileBtn" style="display:none;position:absolute;top:14px;left:14px;cursor:pointer;z-index:10;background:rgba(0,0,0,.35);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:6px 12px;color:rgba(255,255,255,.6);font-size:12px;font-weight:700;" onclick="openProfile()">👤 โปรไฟล์</div>
 
   <!-- logo -->
   <div class="island" id="logoIsland">🏰</div>
@@ -601,9 +599,13 @@
 <div id="daily" style="display:none;flex-direction:column;min-height:100%;">
   <div class="eg-hd" style="background:linear-gradient(90deg,#1b5e20,#0d3010);">
     <button class="bback" id="dailyBackBtn">← กลับ</button>
-    <div class="eg-hd-title">📅 ภารกิจประจำวัน</div>
+    <div class="eg-hd-title">📅 ภารกิจ</div>
   </div>
-  <div class="eg-body" style="gap:14px;">
+  <div class="lb-tabs" style="background:rgba(0,0,0,.4);border-bottom:2px solid rgba(255,255,255,.07);">
+    <div class="lb-tab active" id="dqt0" onclick="switchDailyTab(0)">📋 ประจำวัน</div>
+    <div class="lb-tab" id="dqt1" onclick="switchDailyTab(1)">📖 เนื้อเรื่อง</div>
+  </div>
+  <div id="dailyTabDaily" class="eg-body" style="gap:14px;">
     <div class="eg-info-box">
       <div class="eg-info-title">🎁 รางวัลล็อกอิน 7 วัน</div>
       <div style="font-size:10px;color:rgba(255,255,255,.4);margin:4px 0 10px;">ล็อกอินต่อเนื่องเพื่อรับรางวัลใหญ่ขึ้น</div>
@@ -614,6 +616,10 @@
       <div class="eg-info-title">📋 เควสต์ประจำวัน <span id="dailyResetNote" style="font-size:10px;font-weight:400;color:rgba(255,255,255,.4);margin-left:6px;">รีเซ็ตเที่ยงคืน</span></div>
       <div id="dailyQuestList" style="display:flex;flex-direction:column;gap:8px;margin-top:8px;"></div>
     </div>
+  </div>
+  <div id="dailyTabStory" class="eg-body" style="gap:10px;display:none;">
+    <div style="font-size:11px;color:rgba(255,255,255,.4);text-align:center;padding:4px 0 8px;">รับรางวัลครั้งเดียวเมื่อผ่านด่าน — กดรับเองได้เลย</div>
+    <div id="storyMissionList" style="display:flex;flex-direction:column;gap:8px;"></div>
   </div>
 </div>
 
@@ -635,7 +641,10 @@
     <div id="profileAvatarGrid" style="display:grid;grid-template-columns:repeat(6,44px);gap:8px;"></div>
     <div style="width:100%;max-width:280px;">
       <div style="color:rgba(255,255,255,.6);font-size:12px;margin-bottom:6px;">ชื่อในอันดับ</div>
-      <input id="profileNameInput" type="text" maxlength="20" placeholder="ใส่ชื่อ..." style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;font-size:14px;padding:10px 12px;outline:none;">
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input id="profileNameInput" type="text" maxlength="20" placeholder="ใส่ชื่อ..." style="flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;font-size:14px;padding:10px 12px;outline:none;">
+        <button onclick="rollRandomName()" title="สุ่มชื่อ" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:10px 12px;font-size:18px;cursor:pointer;transition:transform .15s,background .15s;flex-shrink:0;" onmouseover="this.style.background='rgba(255,255,255,.15)'" onmouseout="this.style.background='rgba(255,255,255,.08)'" onmousedown="this.style.transform='scale(.9)'" onmouseup="this.style.transform=''">🎲</button>
+      </div>
     </div>
     <button onclick="saveProfile()" style="background:linear-gradient(135deg,#ffd24d,#ff9800);color:#1a0a00;font-size:14px;font-weight:900;padding:12px 40px;border:none;border-radius:50px;cursor:pointer;box-shadow:0 4px 16px rgba(255,152,0,.4);">💾 บันทึกโปรไฟล์</button>
     <div id="profileSaveMsg" style="color:#69f0ae;font-size:12px;display:none;">✅ บันทึกแล้ว!</div>
@@ -649,12 +658,25 @@
 <div id="leaderboard" style="display: none;">
   <div class="lb-hd">
     <button class="bback" id="lbBackBtn">← กลับ</button>
-    <div class="lb-hd-title">🏆 อันดับ &amp; สถิติ</div>
+    <div class="lb-hd-title">🏆 สถิติการเล่น</div>
   </div>
   <div class="lb-tabs">
-    <div class="lb-tab active" id="lbt0" onclick="switchLbTab(0)">📊 สถิติของฉัน</div>
-    <div class="lb-tab" id="lbt1" onclick="switchLbTab(1)">🌍 ทั้งหมด</div>
-    <div class="lb-tab" id="lbt2" onclick="switchLbTab(2)">🔥 เอนด์เกม</div>
+    <div class="lb-tab active" id="lbt0" onclick="switchLbTab(0)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      ของฉัน
+    </div>
+    <div class="lb-tab" id="lbt1" onclick="switchLbTab(1)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3"/><circle cx="17" cy="8" r="2.5"/><path d="M2 20c0-3.3 3-6 7-6"/><path d="M13 20c0-3 2.5-5.5 6-5.5"/></svg>
+      รวมทุกคน
+    </div>
+    <div class="lb-tab" id="lbt2" onclick="switchLbTab(2)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21V13H4l8-10 8 10h-4v8z"/><path d="M10 21v-4h4v4"/></svg>
+      กระดาน
+    </div>
+    <div class="lb-tab" id="lbt3" onclick="switchLbTab(3)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="9" y2="14"/><line x1="12" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="9" y2="18"/><line x1="12" y1="18" x2="14" y2="18"/></svg>
+      ประวัติ
+    </div>
   </div>
   <div class="lb-body" id="lbBody"></div>
 </div>
