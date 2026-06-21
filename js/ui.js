@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.62';
+const GAME_VERSION='3.11.63';
 const PATCH_NOTES=[
+  {ver:'3.11.63',date:'2026-06-22',title:'🔑 แก้ Google Login: session save + error msg',notes:[
+    'บังคับ session.save() ก่อน redirect กลับ หลัง OAuth callback',
+    'แสดง toast error ถ้า login ล้มเหลว พร้อม error message',
+  ]},
   {ver:'3.11.62',date:'2026-06-22',title:'🎰 สล็อต: คืน "คู่" + ลดเรทอีกครั้ง',notes:[
     'JACKPOT 0.1% / SUPER 0.3% / GREAT 1% / NICE 3% / คู่ 10% / ไม่ตรง 85.6%',
   ]},

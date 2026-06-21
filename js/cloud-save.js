@@ -40,6 +40,18 @@ async function cloudInit() {
   const screen = document.getElementById('cloudLoginScreen');
   const game   = document.getElementById('gr');
 
+  // แสดง error ถ้า OAuth ล้มเหลว
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('error') === 'auth_failed') {
+    const msg = urlParams.get('msg') || 'unknown';
+    console.error('Auth failed:', msg);
+    // ลบ query string ออกจาก URL
+    history.replaceState(null, '', '/');
+    setTimeout(() => {
+      if (typeof showToast === 'function') showToast('❌ เข้าสู่ระบบ Google ล้มเหลว: ' + msg);
+    }, 1000);
+  }
+
   try {
     const res = await fetch('/api/me', { signal: AbortSignal.timeout(4000) });
     if (!res.ok) throw new Error('server_error');

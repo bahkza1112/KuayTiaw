@@ -82,10 +82,13 @@ app.get('/auth/google/callback', async (req, res) => {
     const ticket = await oauthClient.verifyIdToken({ idToken: tokens.id_token, audience: CLIENT_ID });
     const p = ticket.getPayload();
     req.session.user = { id: p.sub, name: p.name, email: p.email, picture: p.picture };
-    res.redirect('/');
+    req.session.save(err => {
+      if (err) console.error('Session save error:', err);
+      res.redirect('/');
+    });
   } catch (e) {
     console.error('Auth error:', e.message);
-    res.redirect('/?error=auth_failed');
+    res.redirect('/?error=auth_failed&msg=' + encodeURIComponent(e.message));
   }
 });
 
