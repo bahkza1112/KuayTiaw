@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
+const FileStore = require('session-file-store')(session);
 const { OAuth2Client } = require('google-auth-library');
 const path = require('path');
 const fs = require('fs');
@@ -40,7 +41,10 @@ const oauthClient = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, `${BASE_URL}/auth
 const isProd = process.env.NODE_ENV === 'production' || !!process.env.RAILWAY_ENVIRONMENT;
 app.set('trust proxy', 1); // Railway sits behind a proxy
 app.use(express.json({ limit: '2mb' }));
+const SESSION_DIR = path.join(__dirname, 'data', 'sessions');
+if (!fs.existsSync(SESSION_DIR)) fs.mkdirSync(SESSION_DIR, { recursive: true });
 app.use(session({
+  store: new FileStore({ path: SESSION_DIR, ttl: 30 * 24 * 3600, retries: 1, logFn: ()=>{} }),
   secret: process.env.SESSION_SECRET || 'tq-secret',
   resave: false,
   saveUninitialized: false,
