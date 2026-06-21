@@ -1,6 +1,9 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.56';
+const GAME_VERSION='3.11.57';
 const PATCH_NOTES=[
+  {ver:'3.11.57',date:'2026-06-22',title:'🗑️ นำแท็บ "ประวัติ" ออกจากหน้า Leaderboard',notes:[
+    'แท็บ "ประวัติ" ซ้ำซ้อนกับหน้า "ของฉัน" จึงเอาออก เหลือ 3 แท็บ',
+  ]},
   {ver:'3.11.56',date:'2026-06-22',title:'📊 แก้ไข: คะแนน Endgame ขึ้น TOP 10 เซิฟ',notes:[
     'กด "ข้าม" ในหน้าบันทึกก็ยังส่งคะแนนขึ้น TOP 10 เซิฟ (ใช้ชื่อล่าสุด)',
     'ก่อนหน้านี้ "ข้าม" จะไม่ส่งข้อมูลไปเซิฟเลย',
@@ -3377,7 +3380,7 @@ function openLeaderboard(){
 }
 function switchLbTab(i){
   lbTab=i;
-  for(let j=0;j<4;j++) document.getElementById('lbt'+j).classList.toggle('active',j===i);
+  for(let j=0;j<3;j++) document.getElementById('lbt'+j).classList.toggle('active',j===i);
   renderLb();
 }
 function renderLb(){
@@ -3509,24 +3512,6 @@ function renderLb(){
         body.innerHTML=_hd+`<div style="text-align:center;padding:20px;"><div style="font-size:13px;color:rgba(255,255,255,.5);">📴 Offline — ข้อมูลของคุณ</div><div style="font-size:28px;font-weight:900;color:#ffd54f;margin-top:12px;">${totalStars}★</div><div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:4px;">${stagesCleared} ด่านที่ผ่าน</div></div>`;
       });
     return; // async
-  } else if(lbTab===3){
-    // ประวัติของฉัน
-    const myName=lastName;
-    const myRuns=runs.filter(r=>r.name===myName);
-    if(!myRuns.length){ body.innerHTML='<div class="lb-empty">ยังไม่มีประวัติ</div>'; return; }
-    let html=`<div class="lbt-subtitle">ประวัติการเล่นของคุณ</div>`;
-    html+=`<div class="lbt-header"><span>#</span><span>ชื่อ</span><span>แมพ</span><span>คะแนน</span><span></span></div>`;
-    myRuns.slice(0,50).forEach((r,i)=>{
-      const origIdx=runs.indexOf(r);
-      html+=`<div class="lbt-row lbt-me">
-        <span class="lbt-rank">${i+1}</span>
-        <span class="lbt-name">${r.mode==='endgame'?'🔥':'⚔️'} ${r.date}</span>
-        <span class="lbt-wave">${r.mode==='endgame'?r.wave:'-'}</span>
-        <span class="lbt-score">${r.score.toLocaleString()}</span>
-        <span><button class="lbt-del" onclick="deleteRun(${origIdx})">×</button></span>
-      </div>`;
-    });
-    body.innerHTML=html;
   }
 }
 function deleteRun(idx){
