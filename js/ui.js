@@ -1,6 +1,12 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.39';
+const GAME_VERSION='3.11.40';
 const PATCH_NOTES=[
+  {ver:'3.11.40',date:'2026-06-21',title:'🗺️ Stage Select UI Redesign',notes:[
+    'การ์ดด่านใหม่ — ไอคอนกล่องกลม, กรอบสีตามเทียร์ดาว',
+    'แถบ Star Progress Bar แสดงความก้าวหน้า ⭐⭐⭐',
+    'พื้นหลังมีแสง Radial Glow สีเขียว + เอฟเฟกต์ขอบซ้าย',
+    'ปุ่มลูกศร › แทน star ลอยมุมขวา, รางวัลซ้อนด้านขวาของการ์ด',
+  ]},
   {ver:'3.11.39',date:'2026-06-21',title:'🎰 สล็อต Win Effects ระเบิด',notes:[
     'JACKPOT 💎: overlay ทอง + confetti 55 ชิ้น + เขย่าจอ + glow พัลส์',
     'SUPER ⭐: overlay ฟ้า + confetti 28 ชิ้น + glow พัลส์',
@@ -1558,28 +1564,29 @@ function renderStageSelect(){
     /* 🎁 ป้ายกล่องรางวัล + กรอบเรืองแสงตามระดับดาว (สไตล์เดียวกับหน้าจอจบด่าน) */
     const tierClass=stars>=3?' tier-gold':stars===2?' tier-silver':stars===1?' tier-bronze':'';
     const chestIcon=stars>=3?'👑':stars===2?'🎁':stars===1?'📦':'';
+    const starPct=Math.round(stars/3*100);
+    const starPips=[1,2,3].map(n=>`<span class="stage-star-pip${stars>=n?'':' empty'}">⭐</span>`).join('');
+    const rewardRows=unlocked?[10,20,30].map((g,i)=>{const got=stars>i;return`<span class="srw${got?' srw-got':''}">${'★'.repeat(i+1)} <span class="srw-gem">💎${g}</span>${got?' ✓':''}</span>`;}).join(''):'';
     html+=`<div class="stage-card${unlocked?'':' locked'}${tierClass}" onclick="${unlocked?'startStage('+si+')':'void(0)'}">
-      ${chestIcon?`<div class="stage-chest-badge">${chestIcon}</div>`:''}
       <div class="stage-icon">${s.icon}</div>
       <div class="stage-info">
         <div class="stage-name">ด่าน ${si+1}: ${s.name}</div>
-        <div class="stage-desc">${s.desc}</div>
+        <div class="stage-star-bar">
+          ${starPips}
+          <div class="stage-star-bar-track"><div class="stage-star-bar-fill${stars>=3?' full':''}" style="width:${starPct}%"></div></div>
+        </div>
         <div class="stage-meta">
           <span class="stage-pill pill-wave">🌊 ${s.waves} คลื่น</span>
           <span class="stage-pill pill-enemy">${enemyIcons} ${cleared?'ศัตรู':'???'}</span>
           <span class="stage-pill pill-unlock">🏰 ${s.unlockedTowers.length} ป้อม</span>
         </div>
-        ${unlocked?`<div class="stage-rewards">${[10,20,30].map((g,i)=>{const got=stars>i;return`<span class="srw${got?' srw-got':''}">${'★'.repeat(i+1)} <span class="srw-gem">💎${g}</span>${got?' ✓':''}</span>`;}).join('')}</div>`:''}
       </div>
-      ${unlocked&&starStr?`<div class="stage-stars" style="color:${starColor}">${starStr}</div>`:''}
-      ${!unlocked?'<div class="stage-lock-icon">🔒</div>':''}
+      <div class="stage-right">
+        ${unlocked?`<div class="stage-rewards">${rewardRows}</div>`:''}
+        ${unlocked?'<div class="stage-arrow">›</div>':'<div class="stage-lock-icon">🔒</div>'}
+      </div>
     </div>`;
   });
-  for(let si=1;si<STAGES.length;si++){
-    if(!isStageUnlocked(si)){
-      html+=`<div class="ss-unlock-note">🔒 ผ่านด่าน ${si} เพื่อปลดล็อก <strong>${STAGES[si].name}</strong></div>`;
-    }
-  }
   document.getElementById('ssBody').innerHTML=html;
 }
 
