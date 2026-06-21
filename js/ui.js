@@ -1,6 +1,9 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.49';
+const GAME_VERSION='3.11.50';
 const PATCH_NOTES=[
+  {ver:'3.11.50',date:'2026-06-21',title:'🐛 แก้บัคโปรไฟล์: dataURL ล้นออกนอกกรอบ',notes:[
+    'เพิ่ม overflow:hidden ที่วงกลม avatar ป้องกัน base64 text ล้น',
+  ]},
   {ver:'3.11.49',date:'2026-06-21',title:'🎰 ตารางอัตรา Gacha เรียงจากหายากสุด',notes:[
     'เรียง 001 = หายากสุด (% น้อยสุด) ไปถึงธรรมดา',
     'แสดงผลใหม่ทุกครั้งที่เปิดตาราง (ไม่ติดค้างจากครั้งก่อน)',
