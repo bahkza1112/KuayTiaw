@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.67';
+const GAME_VERSION='3.11.68';
 const PATCH_NOTES=[
+  {ver:'3.11.68',date:'2026-06-22',title:'🔑 แก้: OAuth redirect ตรงไปที่ game URL',notes:[
+    'index.html กิน hash #tqauth= ทิ้งเมื่อ redirect → login ไม่ถูกบันทึก',
+    'แก้: server redirect ตรงไป /Tower Quest 🏰.html#tqauth=... ข้ามไม่ผ่าน index.html',
+  ]},
   {ver:'3.11.67',date:'2026-06-22',title:'🔑 แก้: decode base64url ถูกต้อง (เพิ่ม padding)',notes:[
     'atob() ต้องการ padding (=) แต่ base64url ไม่มี → parse error เงียบๆ → ไม่บันทึก user',
     'แก้แล้ว: เติม = padding ก่อน atob() → login ทำงานได้จริง',

@@ -97,7 +97,7 @@ app.get('/auth/google/callback', async (req, res) => {
     const token = makeToken(user.id);
     // ส่ง user + HMAC token ผ่าน hash fragment → client เก็บใน localStorage
     const encoded = Buffer.from(JSON.stringify({ ...user, _token: token })).toString('base64url');
-    res.redirect('/#tqauth=' + encoded);
+    res.redirect('/Tower%20Quest%20%F0%9F%8F%B0.html#tqauth=' + encoded);
   } catch (e) {
     console.error('Auth error:', e.message);
     res.redirect('/?error=auth_failed&msg=' + encodeURIComponent(e.message));
