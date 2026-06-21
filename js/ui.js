@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.43';
+const GAME_VERSION='3.11.44';
 const PATCH_NOTES=[
+  {ver:'3.11.44',date:'2026-06-21',title:'📖 ภารกิจเนื้อเรื่อง UI Redesign',notes:[
+    'การ์ดภารกิจใหม่ — icon ด่าน, progress bar, reward chips สีสวย',
+    'แบ่งกลุ่ม: 🗺️ ภารกิจด่าน / 🏆 ไมล์สโตน',
+    'ปุ่ม "🎁 รับ!" เรืองแสงสีทองเมื่อพร้อมรับ',
+  ]},
   {ver:'3.11.43',date:'2026-06-21',title:'🖌️ วาด Avatar เอง',notes:[
     'เพิ่ม Canvas วาดรูปใน Profile — พู่กัน, ยางลบ, เทสี (flood fill)',
     'เลือกสีได้ 16 สี + ปรับขนาดพู่กัน',
@@ -1439,25 +1444,42 @@ function renderStoryMissions(){
   const list=document.getElementById('storyMissionList'); if(!list) return;
   const p=loadProgress();
   const cleared=Object.keys(p).filter(k=>(p[k]||0)>=1).length;
+  const all3s=Object.keys(p).filter(k=>(p[k]||0)>=3).length;
   const claimed=loadStoryClaimed();
-  list.innerHTML=STORY_MISSIONS.map(m=>{
-    const all3s=Object.keys(p).filter(k=>(p[k]||0)>=3).length;
-    const done=m.type==='stage'?(p[m.si]>=1):m.type==='milestone3s'?(all3s>=m.need):(cleared>=m.need);
-    const isClaimed=claimed.has(m.id);
-    const canClaim=done&&!isClaimed;
-    return `<div class="smq-row${isClaimed?' smq-claimed':canClaim?' smq-ready':''}">
-      <div class="smq-info">
-        <div class="smq-label">${m.label}</div>
-        <div class="smq-reward">💰${m.gold} · 💎${m.gems} · 🎫${m.tickets}</div>
-      </div>
-      ${isClaimed
-        ? `<div class="smq-btn smq-done">✅ รับแล้ว</div>`
-        : canClaim
-          ? `<button class="smq-btn smq-claim" onclick="claimStoryMission('${m.id}')">รับ!</button>`
-          : `<div class="smq-btn smq-lock">🔒</div>`
-      }
-    </div>`;
-  }).join('');
+  // split into groups
+  const stageMissions=STORY_MISSIONS.filter(m=>m.type==='stage');
+  const milestones=STORY_MISSIONS.filter(m=>m.type!=='stage');
+  function _renderGroup(missions,groupTitle,groupIcon){
+    const rows=missions.map(m=>{
+      const done=m.type==='stage'?(p[m.si]>=1):m.type==='milestone3s'?(all3s>=m.need):(cleared>=m.need);
+      const isClaimed=claimed.has(m.id);
+      const canClaim=done&&!isClaimed;
+      // progress
+      let pct=0,prog='',goal='';
+      if(m.type==='stage'){pct=done?100:0;prog=done?'1':'0';goal='1';}
+      else if(m.type==='milestone'){pct=Math.min(100,Math.round(cleared/m.need*100));prog=Math.min(cleared,m.need);goal=m.need;}
+      else{pct=Math.min(100,Math.round(all3s/m.need*100));prog=Math.min(all3s,m.need);goal=m.need;}
+      const barCol=isClaimed?'#616161':done?'#69f0ae':'#42a5f5';
+      const icon=m.type==='stage'?(STAGES[m.si]?.icon||'📋'):m.type==='milestone3s'?'🌟':'🏅';
+      const btn=isClaimed
+        ?`<button disabled style="background:rgba(255,255,255,.06);color:rgba(255,255,255,.3);border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;flex-shrink:0;">✅ รับแล้ว</button>`
+        :canClaim
+          ?`<button onclick="claimStoryMission('${m.id}')" style="background:linear-gradient(180deg,#ffd24d,#ff9800);color:#1a0a00;border:none;border-radius:8px;padding:7px 14px;font-size:11px;font-weight:900;cursor:pointer;flex-shrink:0;box-shadow:0 0 10px rgba(255,152,0,.5);">🎁 รับ!</button>`
+          :`<button disabled style="background:rgba(255,255,255,.06);color:rgba(255,255,255,.25);border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;flex-shrink:0;">🔒</button>`;
+      const rwChips=`<span style="font-size:9px;background:rgba(255,200,0,.1);border:1px solid rgba(255,200,0,.2);border-radius:6px;padding:1px 5px;color:#ffd24d;">💰${m.gold}</span> <span style="font-size:9px;background:rgba(100,181,246,.1);border:1px solid rgba(100,181,246,.2);border-radius:6px;padding:1px 5px;color:#90caf9;">💎${m.gems}</span> <span style="font-size:9px;background:rgba(129,212,250,.1);border:1px solid rgba(129,212,250,.2);border-radius:6px;padding:1px 5px;color:#80deea;">🎫${m.tickets}</span>`;
+      return `<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,${canClaim?'.18':isClaimed?'.05':'.07'});border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;${isClaimed?'opacity:.55':''}">
+        <div style="font-size:22px;flex-shrink:0;width:32px;text-align:center;">${icon}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:11px;font-weight:700;color:${isClaimed?'rgba(255,255,255,.4)':'#e8f5e9'};margin-bottom:4px;">${m.label}</div>
+          <div style="height:4px;background:rgba(255,255,255,.1);border-radius:3px;margin-bottom:4px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:${barCol};border-radius:3px;transition:width .4s;"></div></div>
+          <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;">${rwChips}<span style="font-size:9px;color:rgba(255,255,255,.3);margin-left:2px;">${prog}/${goal}</span></div>
+        </div>
+        ${btn}
+      </div>`;
+    }).join('');
+    return `<div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.5px;text-transform:uppercase;margin:8px 0 4px 2px;">${groupIcon} ${groupTitle}</div>${rows}`;
+  }
+  list.innerHTML=_renderGroup(stageMissions,'ภารกิจด่าน','🗺️')+_renderGroup(milestones,'ไมล์สโตน','🏆');
 }
 
 let _dailyTab=0;
