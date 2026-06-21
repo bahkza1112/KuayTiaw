@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.66';
+const GAME_VERSION='3.11.67';
 const PATCH_NOTES=[
+  {ver:'3.11.67',date:'2026-06-22',title:'🔑 แก้: decode base64url ถูกต้อง (เพิ่ม padding)',notes:[
+    'atob() ต้องการ padding (=) แต่ base64url ไม่มี → parse error เงียบๆ → ไม่บันทึก user',
+    'แก้แล้ว: เติม = padding ก่อน atob() → login ทำงานได้จริง',
+  ]},
   {ver:'3.11.66',date:'2026-06-22',title:'🔑 แก้: โปรไฟล์แสดงสถานะ login ถูกต้อง',notes:[
     'window.cloudUser ถูก set แล้วตอน init → หน้าโปรไฟล์ตรวจสอบ login ได้ถูกต้อง',
     'หลัง login แล้วเปิดโปรไฟล์จะแสดง "เชื่อมต่อแล้ว" แทนปุ่ม login',

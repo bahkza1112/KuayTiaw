@@ -50,7 +50,10 @@ async function cloudInit() {
   if (hash.startsWith('#tqauth=')) {
     try {
       const encoded = hash.slice(8);
-      const payload = JSON.parse(atob(encoded.replace(/-/g,'+').replace(/_/g,'/')));
+      // base64url → base64 (add padding, replace chars)
+      const b64 = encoded.replace(/-/g,'+').replace(/_/g,'/');
+      const padded = b64 + '='.repeat((4 - b64.length % 4) % 4);
+      const payload = JSON.parse(atob(padded));
       const { _token, ...user } = payload;
       localStorage.setItem('tq_cloud_user', JSON.stringify(user));
       if (_token) localStorage.setItem('tq_cloud_token', user.id + ':' + _token);
