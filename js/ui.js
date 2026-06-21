@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.52';
+const GAME_VERSION='3.11.53';
 const PATCH_NOTES=[
+  {ver:'3.11.53',date:'2026-06-22',title:'⚡ Performance: ลดกระตุกเมื่อมอนเยอะ',notes:[
+    'perfMode: เมื่อมอนสเตอร์ > 12 ตัว ข้าม shadow pass → draw calls ลด 50%',
+    'ลด particle cap เหลือ 30 และ ข้าม fxRings glow ใน perf mode',
+    'Shield glow ใช้ static alpha แทน sin() animation ใน perf mode',
+  ]},
   {ver:'3.11.52',date:'2026-06-22',title:'⚖️ Balance: ลดเงินเฟ้อโหมด Endgame',notes:[
     'โบนัสทองต่อเวฟ: 30+w×8+r×15 → 20+w×3+r×6 (ลดลง ~55%)',
     'รางวัลทองต่อตัว: cap เพิ่มจาก ×4.0 เป็น ×2.0, scale ช้าลง',

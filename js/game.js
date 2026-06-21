@@ -1210,7 +1210,8 @@ function update(dt){
     const t=G.fxTrails[i]; t.life-=dt*6;
     if(t.life<=0) G.fxTrails.splice(i,1);
   }
-  // particles
+  // particles — trim hard when many enemies on screen
+  if(G.enemies.length>12&&G.particles.length>30) G.particles.length=30;
   for(let i=G.particles.length-1;i>=0;i--){
     const p=G.particles[i];
     p.x+=p.vx||0; p.y+=p.vy; p.life-=dt*(p.decay||1.4);
@@ -1271,6 +1272,7 @@ function shadeColor(hex,amt){const n=parseInt(hex.replace('#',''),16);const r=Ma
 function render(){
   if(!ctx||!G||!currentStage) return;
   const s=currentStage;
+  const perfMode=G.enemies.length>12; // skip expensive shadow passes when many enemies
   ctx.clearRect(0,0,cv.width,cv.height);
   // V1: screen shake
   let _shook=false;
@@ -1480,7 +1482,7 @@ function render(){
     ctx.restore();
   });
   // FX rings — soft glow matching ring color for extra impact punch
-  G.fxRings.forEach(r=>{
+  if(!perfMode) G.fxRings.forEach(r=>{
     if(r.delay>0) return;
     ctx.save();
     ctx.shadowColor=r.col;ctx.shadowBlur=r.lw*2.2;
@@ -1621,10 +1623,9 @@ function render(){
     ctx.save();
     ctx.translate(cx2, cy2-CS*.18);
     ctx.scale(_tws,_tws);
-    ctx.shadowColor='rgba(0,0,0,.95)';ctx.shadowBlur=7;ctx.shadowOffsetX=0;ctx.shadowOffsetY=3;
+    if(!perfMode){ctx.shadowColor='rgba(0,0,0,.95)';ctx.shadowBlur=7;ctx.shadowOffsetX=0;ctx.shadowOffsetY=3;}
     drawTowerIcon(ctx,tw.type,CS-2,tw.angle,tw.lv);
-    ctx.shadowBlur=0;ctx.shadowOffsetY=0;
-    drawTowerIcon(ctx,tw.type,CS-2,tw.angle,tw.lv);
+    if(!perfMode){ctx.shadowBlur=0;ctx.shadowOffsetY=0;drawTowerIcon(ctx,tw.type,CS-2,tw.angle,tw.lv);}
     ctx.restore();
     // level badge
     if(tw.lv>1){
@@ -1759,7 +1760,7 @@ function render(){
     // shield glow
     if(e.shieldHp>0){
       const _sp=e.shieldHp/e.maxShieldHp;
-      ctx.globalAlpha=.18+.22*_sp+.15*Math.sin(Date.now()*.006);
+      ctx.globalAlpha=perfMode?(.18+.22*_sp):(.18+.22*_sp+.15*Math.sin(Date.now()*.006));
       ctx.strokeStyle='#90caf9';ctx.lineWidth=sz*.55;
       ctx.beginPath();ctx.arc(e.x,e.y,sz+5,0,Math.PI*2);ctx.stroke();
       ctx.globalAlpha=1;
@@ -1769,11 +1770,9 @@ function render(){
       const _dir=Math.atan2(_p1[1]-_p0[1],_p1[0]-_p0[0]);
       const _moveSpd=e.spd*e.slow*((e._enrageT>0)?(e._enrageMult||1):1)*((e._diveT>0)?1.5:1);
       const _mv={dir:_dir,spd:_moveSpd};
-      // soft silhouette shadow pass for extra depth/contrast (matches v1.12.8 tower polish)
-      ctx.shadowColor='rgba(0,0,0,.55)';ctx.shadowBlur=sz*.18;ctx.shadowOffsetY=sz*.1;
+      if(!perfMode){ctx.shadowColor='rgba(0,0,0,.55)';ctx.shadowBlur=sz*.18;ctx.shadowOffsetY=sz*.1;}
       drawEnemySprite(ctx,e.ti,e.x,e.y,sz,_mv);
-      ctx.shadowBlur=0;ctx.shadowOffsetY=0;
-      drawEnemySprite(ctx,e.ti,e.x,e.y,sz,_mv);
+      if(!perfMode){ctx.shadowBlur=0;ctx.shadowOffsetY=0;drawEnemySprite(ctx,e.ti,e.x,e.y,sz,_mv);}
     }
     // HP bar (taller, more visible)
     const bw=sz*2+4, bh=6, bx=e.x-sz-2, by=e.y-sz-13;
