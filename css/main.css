@@ -879,6 +879,7 @@ body{background:#0d1117;display:flex;align-items:flex-start;justify-content:cent
 .lb-sv-crown{font-size:32px;line-height:1;margin-bottom:4px;filter:drop-shadow(0 0 12px rgba(255,215,0,.7));}
 .lb-sv-title{font-size:16px;font-weight:900;color:#ffd24d;letter-spacing:2px;text-shadow:0 0 20px rgba(255,215,0,.4);}
 .lb-sv-sub{font-size:11px;color:rgba(255,255,255,.35);margin-top:3px;}
+.lb-sv-section{font-size:11px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.5px;padding:10px 14px 4px;border-top:1px solid rgba(255,255,255,.06);margin-top:4px;}
 .lbt-name{font-size:13px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:6px;}
 .lbt-wave{font-size:12px;color:rgba(255,255,255,.6);text-align:center;}
 .lbt-score{font-size:13px;font-weight:700;color:#ffd24d;text-align:right;padding-right:4px;}

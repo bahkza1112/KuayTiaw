@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.44';
+const GAME_VERSION='3.11.45';
 const PATCH_NOTES=[
+  {ver:'3.11.45',date:'2026-06-21',title:'🏆 TOP 10 เซิฟ: แยก คะแนน + เวฟ',notes:[
+    'แท็บ "รวมทุกคน" → "TOP 10 เซิฟ"',
+    'แสดง 2 ตาราง: ⭐ TOP 10 คะแนน และ 🌊 TOP 10 เวฟ แยกกัน',
+    'ทั้งสองตารางดึงข้อมูลจากเซิฟเวอร์เดียวกัน sort ต่างกัน',
+  ]},
   {ver:'3.11.44',date:'2026-06-21',title:'📖 ภารกิจเนื้อเรื่อง UI Redesign',notes:[
     'การ์ดภารกิจใหม่ — icon ด่าน, progress bar, reward chips สีสวย',
     'แบ่งกลุ่ม: 🗺️ ภารกิจด่าน / 🏆 ไมล์สโตน',
@@ -3380,7 +3385,7 @@ function renderLb(){
     }
     body.innerHTML=html;
   } else if(lbTab===1){
-    // TOP 10 เซิฟ — endgame only sorted by score
+    // TOP 10 เซิฟเวอร์ — 2 tables: score + wave
     const myName=lastName;
     const _rankBadge=i=>{
       if(i===0) return '<span class="lb-rank-1">👑</span>';
@@ -3388,39 +3393,41 @@ function renderLb(){
       if(i===2) return '<span class="lb-rank-3">🥉</span>';
       return `<span class="lb-rank-num">${i+1}</span>`;
     };
-    const _svHd=`<div class="lb-sv-hd"><div class="lb-sv-crown">👑</div><div class="lb-sv-title">TOP 10 เซิฟเวอร์</div><div class="lb-sv-sub">เรียงตามคะแนนสูงสุด</div></div>`;
-    const _svHeader=`<div class="lbt-header"><span>#</span><span>ชื่อ</span><span>เวฟ</span><span>คะแนน</span></div>`;
-    body.innerHTML=_svHd+'<div class="lb-empty" style="color:#aaa;padding:20px;">⏳ กำลังโหลด...</div>';
+    const _renderTable=(entries,sortFn,valKey,valLabel,icon,isMe)=>{
+      const sorted=[...entries].sort(sortFn).slice(0,10);
+      if(!sorted.length) return `<div class="lb-empty" style="padding:12px;">ยังไม่มีข้อมูล</div>`;
+      let h=`<div class="lbt-header" style="grid-template-columns:44px 1fr 80px;"><span>#</span><span>ชื่อ</span><span>${icon} ${valLabel}</span></div>`;
+      sorted.forEach((r,i)=>{
+        const me=r.name===myName;
+        const rc=`lbt-row${i===0?' lbt-row-1':i===1?' lbt-row-2':i===2?' lbt-row-3':''}${me?' lbt-me':''}`;
+        const val=valKey==='score'?r.score.toLocaleString():r.wave;
+        h+=`<div class="${rc}" style="grid-template-columns:44px 1fr 80px;"><span class="lbt-rank">${_rankBadge(i)}</span><span class="lbt-name">${r.name}</span><span class="lbt-score">${val}</span></div>`;
+      });
+      return h;
+    };
+    const _svBanner=`<div class="lb-sv-hd"><div class="lb-sv-crown">👑</div><div class="lb-sv-title">TOP 10 เซิฟเวอร์</div><div class="lb-sv-sub">เรียงตามคะแนนและเวฟสูงสุด</div></div>`;
+    body.innerHTML=_svBanner+'<div class="lb-empty" style="color:#aaa;padding:20px;">⏳ กำลังโหลด...</div>';
     fetch('/api/leaderboard',{signal:AbortSignal.timeout(5000)})
       .then(r=>r.json())
       .then(d=>{
         const entries=d.entries||[];
-        let myRank=-1;
-        entries.forEach((e,i)=>{ if(e.name===myName&&myRank<0) myRank=i+1; });
-        let html=_svHd;
-        if(myRank>0) html+=`<div class="lbt-myrank">อันดับของคุณ: <span>#${myRank}</span></div>`;
-        if(!entries.length){ body.innerHTML=html+'<div class="lb-empty">ยังไม่มีข้อมูล — เป็นคนแรกที่ติด TOP 10!</div>'; return; }
-        html+=_svHeader;
-        entries.forEach((r,i)=>{
-          const isMe=r.name===myName;
-          const rowCls=`lbt-row${i===0?' lbt-row-1':i===1?' lbt-row-2':i===2?' lbt-row-3':''}${isMe?' lbt-me':''}`;
-          html+=`<div class="${rowCls}"><span class="lbt-rank">${_rankBadge(i)}</span><span class="lbt-name">${r.name}</span><span class="lbt-wave">${r.wave}</span><span class="lbt-score">${r.score.toLocaleString()}</span></div>`;
-        });
+        let html=_svBanner;
+        html+=`<div class="lb-sv-section">⭐ TOP 10 คะแนน</div>`;
+        html+=_renderTable(entries,(a,b)=>b.score-a.score,'score','คะแนน','⭐',myName);
+        html+=`<div class="lb-sv-section">🌊 TOP 10 เวฟ</div>`;
+        html+=_renderTable(entries,(a,b)=>b.wave-a.wave||b.score-a.score,'wave','เวฟ','🌊',myName);
         body.innerHTML=html;
       })
       .catch(()=>{
-        // fallback to local
-        const allRuns=[...runs].filter(r=>r.mode==='endgame').sort((a,b)=>b.score-a.score).slice(0,10);
+        const allRuns=[...runs].filter(r=>r.mode==='endgame');
         let html=`<div class="lb-sv-hd"><div class="lb-sv-crown">📴</div><div class="lb-sv-title" style="color:#aaa;">Offline</div><div class="lb-sv-sub">ข้อมูลในเครื่อง</div></div>`;
-        if(!allRuns.length){ body.innerHTML=html+'<div class="lb-empty">ยังไม่มีข้อมูลเอนด์เกม</div>'; return; }
-        html+=_svHeader;
-        allRuns.forEach((r,i)=>{
-          const rowCls=`lbt-row${i===0?' lbt-row-1':i===1?' lbt-row-2':i===2?' lbt-row-3':''}`;
-          html+=`<div class="${rowCls}"><span class="lbt-rank">${_rankBadge(i)}</span><span class="lbt-name">${r.name}</span><span class="lbt-wave">${r.wave}</span><span class="lbt-score">${r.score.toLocaleString()}</span></div>`;
-        });
+        html+=`<div class="lb-sv-section">⭐ TOP 10 คะแนน</div>`;
+        html+=_renderTable(allRuns,(a,b)=>b.score-a.score,'score','คะแนน','⭐',myName);
+        html+=`<div class="lb-sv-section">🌊 TOP 10 เวฟ</div>`;
+        html+=_renderTable(allRuns,(a,b)=>b.wave-a.wave||b.score-a.score,'wave','เวฟ','🌊',myName);
         body.innerHTML=html;
       });
-    return; // async — body set in .then()
+    return; // async
   } else if(lbTab===2){
     // กระดานผู้นำ — endgame table
     const egOnly=[...runs].filter(r=>r.mode==='endgame').sort((a,b)=>b.wave-a.wave||b.score-a.score);
