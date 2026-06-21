@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.47 — TOP 10 เซิฟ: ตารางเดียว รวม avatar+คะแนน+เวฟ
+
+### Changed
+- `js/ui.js` `renderLb()` lbTab===1: แทนที่ 2 ตารางแยก (คะแนน/เวฟ) ด้วยตารางเดียว
+  - คอลัมน์: # / avatar / ชื่อ / ⭐ คะแนน / 🌊 เวฟ
+  - เรียงตามคะแนนสูงสุด; เวฟแสดงสีเขียวในแถวเดียวกัน
+  - avatar ของตัวเองแสดง emoji/dataURL ที่บันทึกไว้; คนอื่นแสดง 🎮
+
+
 ## v3.11.23 — Talent branches consolidated to leveled (100-level) talents
 
 ### Changed
