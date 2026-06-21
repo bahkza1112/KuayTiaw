@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.56 — แก้ไข: กด "ข้าม" ก็ส่งคะแนนขึ้น TOP 10 เซิฟ
+
+### Fixed
+- `js/save.js` `skipSave()`: ส่งคะแนนไป `/api/leaderboard` ด้วย แม้ผู้เล่นกดข้ามหน้าบันทึก
+  (ก่อนหน้านี้ `skipSave()` ไม่ POST ไปเซิฟเลย ทำให้คะแนนไม่ขึ้น TOP 10)
+
+### Note
+- Railway ใช้ ephemeral filesystem — ข้อมูล leaderboard หายทุกครั้งที่ redeploy
+  แก้ถาวรต้องตั้ง **Railway Volume** ที่ `/app/data` ใน Railway dashboard
+
 ## v3.11.48 — Auto Spin + แก้บัคโปรไฟล์ + ปุ่มกลับคาสิโน
 
 ### Added

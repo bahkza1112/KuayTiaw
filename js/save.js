@@ -709,6 +709,16 @@ function showSavePrompt(){
 }
 
 function skipSave(){
+  // ส่งคะแนนไปเซิฟโดยใช้ชื่อล่าสุด แม้ว่าผู้เล่นจะกด "ข้าม"
+  const name=localStorage.getItem('tq_last_name')||localStorage.getItem('tq_displayName')||'';
+  if(name&&G){
+    const run={name,score:G.score,wave:G.wave,mode:'endgame',diff:EG_DIFF_NAMES[egDiff],
+      stage:null,round:egRound+1,kills:G.kills||0,maxCombo:G.maxCombo||1,
+      date:new Date().toLocaleDateString('th-TH'),ts:Date.now()};
+    fetch('/api/leaderboard',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(run)})
+      .then(r=>r.json()).then(d=>{ if(d.rank&&d.rank<=10) showToast('🏆 ติด TOP '+d.rank+' ของเซิฟ!'); })
+      .catch(()=>{});
+  }
   document.getElementById('saveOverlay').style.display='none';
   showEgResult();
 }
