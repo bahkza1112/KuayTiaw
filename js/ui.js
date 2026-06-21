@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.50';
+const GAME_VERSION='3.11.51';
 const PATCH_NOTES=[
+  {ver:'3.11.51',date:'2026-06-22',title:'🎴 ตู้สกิล: ตารางเรียงจากหายากสุด',notes:[
+    'ตารางอัตราตู้สกิล 001 = หายากสุด (% น้อย) เรียงลงมาจนถึงธรรมดา',
+    'แสดงผลใหม่ทุกครั้งที่เปิดตาราง',
+  ]},
   {ver:'3.11.50',date:'2026-06-21',title:'🐛 แก้บัคโปรไฟล์: dataURL ล้นออกนอกกรอบ',notes:[
     'เพิ่ม overflow:hidden ที่วงกลม avatar ป้องกัน base64 text ล้น',
   ]},
@@ -1087,8 +1091,8 @@ function toggleSkillOdds(){
   const show=body.style.display==='none';
   body.style.display=show?'':'none';
   arrow.textContent=show?'▲ ซ่อน':'▼ ดูรายละเอียด';
-  if(show&&!document.getElementById('skillOddsPool').innerHTML){
-    document.getElementById('skillOddsPool').innerHTML=SKILL_DEFS.map((d,i)=>`
+  if(show){
+    document.getElementById('skillOddsPool').innerHTML=[...SKILL_DEFS].sort((a,b)=>skillCardRate(a)-skillCardRate(b)).map((d,i)=>`
       <div class="gacha-odds-row" onclick="_showSkillInfo('${d.id}')" style="cursor:pointer;">
         <span style="font-family:monospace;color:rgba(179,136,255,.6);">${String(i+1).padStart(3,'0')}</span>
         <span style="color:${d.color};">${d.icon} ${d.name}</span>
