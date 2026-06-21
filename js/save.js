@@ -406,13 +406,13 @@ function _todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getM
 function _daysBetween(a,b){return Math.round((Date.parse(b)-Date.parse(a))/86400000);}
 /* 7-day login reward cycle */
 const LOGIN_REWARDS=[
-  {icon:'💎',label:'40 มณีวิญญาณ',         grant(){addGems(40);}},
-  {icon:'🔹',label:'เศษหินมืด ×3',      grant(){addBagItem('shard_c',3);}},
-  {icon:'🪙',label:'ทองถาวร 60',           grant(){addPGold(60);}},
-  {icon:'🎫',label:'80 มณี + ตั๋วสกิล ×2', grant(){addGems(80);addTickets(2);}},
-  {icon:'💜',label:'เศษแกนเวทย์ ×2',         grant(){addBagItem('shard_r',2);}},
-  {icon:'🎁',label:'120 มณีวิญญาณ',        grant(){addGems(120);}},
-  {icon:'🌟',label:'เศษทอง ×2 + 150 มณี + 🎫3', grant(){addBagItem('shard_e',2);addGems(150);addTickets(3);}},
+  {icon:'💎',label:'300 มณีวิญญาณ + ไอเท็มบัพ ×1',   grant(){addGems(300);addBagItem('shard_c',1);addBagItem('shard_r',1);addBagItem('shard_e',1);}},
+  {icon:'🎫',label:'ตั๋ว 20 ใบ + ไอเท็มบัพ ×2',        grant(){addTickets(20);addBagItem('shard_c',2);addBagItem('shard_r',2);addBagItem('shard_e',2);}},
+  {icon:'🪙',label:'ทอง 500 + ไอเท็มบัพ ×3',           grant(){addPGold(500);addBagItem('shard_c',3);addBagItem('shard_r',3);addBagItem('shard_e',3);}},
+  {icon:'💰',label:'ทอง 1000',                          grant(){addPGold(1000);}},
+  {icon:'✨',label:'600 มณีวิญญาณ',                     grant(){addGems(600);}},
+  {icon:'🎫',label:'ตั๋ว 50 ใบ',                        grant(){addTickets(50);}},
+  {icon:'🌟',label:'1000 มณีวิญญาณ + ไอเท็มบัพ ×5',   grant(){addGems(1000);addBagItem('shard_c',5);addBagItem('shard_r',5);addBagItem('shard_e',5);}},
 ];
 function loadLogin(){try{return JSON.parse(localStorage.getItem('tq_login')||'{}');}catch(e){return {};}}
 function saveLogin(o){localStorage.setItem('tq_login',JSON.stringify(o));}
