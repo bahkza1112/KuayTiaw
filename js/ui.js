@@ -1,6 +1,9 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.58';
+const GAME_VERSION='3.11.59';
 const PATCH_NOTES=[
+  {ver:'3.11.59',date:'2026-06-22',title:'🏆 TOP 10: แก้ไอคอนอันดับ 1-3',notes:[
+    'อันดับ 1=👑  2=⚔️  3=🛡️  4-10=ตัวเลขอย่างเดียว ไม่มีตัวเลขซ้ำอีกต่อไป',
+  ]},
   {ver:'3.11.58',date:'2026-06-22',title:'✨ Save Dialog มองชัดขึ้น (v2)',notes:[
     'overlay เข้มขึ้น, border สว่างขึ้น, ค่าสถิติตัวเลขใหญ่+เงาชัด, card contrast สูงขึ้น',
   ]},
@@ -3451,8 +3454,8 @@ function renderLb(){
     const myAv=localStorage.getItem('tq_avatar')||'🎮';
     const _rankBadge=i=>{
       if(i===0) return '<span class="lb-rank-1">👑</span>';
-      if(i===1) return '<span class="lb-rank-2">🥈</span>';
-      if(i===2) return '<span class="lb-rank-3">🥉</span>';
+      if(i===1) return '<span class="lb-rank-2">⚔️</span>';
+      if(i===2) return '<span class="lb-rank-3">🛡️</span>';
       return `<span class="lb-rank-num">${i+1}</span>`;
     };
     const _renderCombined=(entries)=>{
