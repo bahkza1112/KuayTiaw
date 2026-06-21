@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.48';
+const GAME_VERSION='3.11.49';
 const PATCH_NOTES=[
+  {ver:'3.11.49',date:'2026-06-21',title:'🎰 ตารางอัตรา Gacha เรียงจากหายากสุด',notes:[
+    'เรียง 001 = หายากสุด (% น้อยสุด) ไปถึงธรรมดา',
+    'แสดงผลใหม่ทุกครั้งที่เปิดตาราง (ไม่ติดค้างจากครั้งก่อน)',
+  ]},
   {ver:'3.11.48',date:'2026-06-21',title:'🎰 Auto Spin + แก้บัคโปรไฟล์',notes:[
     'สล็อต: เพิ่มปุ่ม Auto หมุนต่อเนื่องอัตโนมัติ, หยุดเองเมื่อทองไม่พอ',
     'แก้บัค: avatar รูปวาดเองแสดงผิดในหน้าโปรไฟล์ (แสดงข้อความ dataURL)',
@@ -963,7 +967,7 @@ function toggleGachaOdds(){
   const show=body.style.display==='none';
   body.style.display=show?'':'none';
   arrow.textContent=show?'▲ ซ่อน':'▼ ดูรายละเอียด';
-  if(show&&!document.getElementById('gachaOddsPool').innerHTML){
+  if(show){
     document.getElementById('gachaOddsPool').innerHTML=[...GACHA_POOL].sort((a,b)=>a.w-b.w).map((p,i)=>{const num=String(i+1).padStart(3,'0');return`
       <div class="gacha-odds-row">
         <span style="font-family:monospace;color:rgba(179,136,255,.6);">${num}</span>
