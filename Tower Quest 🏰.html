@@ -2,8 +2,8 @@
 <html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Tower Quest 🏰 v3.11.42</title>
-<link rel="stylesheet" href="css/main.css?v=3.11.41">
+<title>Tower Quest 🏰 v3.11.43</title>
+<link rel="stylesheet" href="css/main.css?v=3.11.43">
 </head>
 <body>
 
@@ -57,7 +57,7 @@
   <div class="island" id="logoIsland">🏰</div>
   <div class="gtitle">TOWER QUEST</div>
   <div class="gsub">⚔️ ปกป้องอาณาจักรของคุณ!</div>
-  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v3.11.42 — มีอะไรใหม่<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
+  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v3.11.43 — มีอะไรใหม่<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
 
   <!-- battle buttons -->
   <button class="bbattle" id="startBtn">⚔️ โหมดเนื้อเรื่อง</button>
@@ -639,6 +639,31 @@
       <div style="color:#ffd24d;font-size:13px;font-weight:700;">เลือก Avatar</div>
     </div>
     <div id="profileAvatarGrid" style="display:grid;grid-template-columns:repeat(6,44px);gap:8px;"></div>
+    <!-- DRAW AVATAR -->
+    <div style="width:100%;max-width:280px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
+        <span style="color:rgba(255,255,255,.35);font-size:11px;">หรือวาดเอง</span>
+        <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
+      </div>
+      <div class="draw-wrap">
+        <canvas id="drawCanvas" width="200" height="200" class="draw-canvas"></canvas>
+        <div class="draw-toolbar">
+          <div class="draw-colors" id="drawColors"></div>
+          <div class="draw-tools">
+            <button class="draw-tool active" id="drawBrushBtn" onclick="setDrawTool('brush')" title="พู่กัน">🖌️</button>
+            <button class="draw-tool" id="drawEraserBtn" onclick="setDrawTool('eraser')" title="ยางลบ">🧹</button>
+            <button class="draw-tool" id="drawFillBtn" onclick="setDrawTool('fill')" title="เทสี">🪣</button>
+            <button class="draw-tool" onclick="clearDrawCanvas()" title="ล้างทั้งหมด">🗑️</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:6px;">
+            <span style="font-size:9px;color:rgba(255,255,255,.4);">ขนาด</span>
+            <input type="range" id="drawSize" min="2" max="30" value="8" style="flex:1;accent-color:#ffd24d;">
+          </div>
+        </div>
+        <button onclick="useDrawnAvatar()" class="draw-use-btn">✅ ใช้รูปนี้</button>
+      </div>
+    </div>
     <div style="width:100%;max-width:280px;">
       <div style="color:rgba(255,255,255,.6);font-size:12px;margin-bottom:6px;">ชื่อในอันดับ</div>
       <div style="display:flex;gap:8px;align-items:center;">
@@ -756,7 +781,7 @@
 <script src="js/enemy.js?v=3.11.34"></script>
 <script src="js/tower.js?v=3.11.34"></script>
 <script src="js/game.js?v=3.11.34"></script>
-<script src="js/ui.js?v=3.11.42"></script>
+<script src="js/ui.js?v=3.11.43"></script>
 
 
 </body></html>

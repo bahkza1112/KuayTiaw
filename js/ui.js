@@ -1,6 +1,12 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.42';
+const GAME_VERSION='3.11.43';
 const PATCH_NOTES=[
+  {ver:'3.11.43',date:'2026-06-21',title:'🖌️ วาด Avatar เอง',notes:[
+    'เพิ่ม Canvas วาดรูปใน Profile — พู่กัน, ยางลบ, เทสี (flood fill)',
+    'เลือกสีได้ 16 สี + ปรับขนาดพู่กัน',
+    'กด "ใช้รูปนี้" เพื่อครอบตัดเป็นวงกลมแล้วใช้เป็น Avatar ได้เลย',
+    'บันทึก draft ไว้ในเครื่อง — กลับมาแก้ได้ภายหลัง',
+  ]},
   {ver:'3.11.42',date:'2026-06-21',title:'🎰 ตารางอัตรา: เรียงจาก % น้อยสุด',notes:[
     'ตารางอัตราในตู้กาชาเรียงจากของหายากที่สุด (001) ไปหาของธรรมดา',
     'เลข 001–010 ใหม่ตาม sort ไม่ใช่ตาม code เดิม',
@@ -3111,6 +3117,8 @@ function openProfile(){
   if(inp) inp.value=nm;
   const msg=document.getElementById('profileSaveMsg');
   if(msg) msg.style.display='none';
+  // init draw canvas
+  setTimeout(initDrawCanvas,50);
 }
 const _RN_PREFIX=['นัก','ราช','มหา','ขุน','ท้าว','พ่อ','แม่','เจ้า','จอม','ยอด','สุด','มือ','หัว','เพชร','ฟ้า','ดาว','พระ','ศึก'];
 const _RN_MID=['รบ','พิชิต','ชัย','วีร','กล้า','ฮึก','บู๊','เก่ง','เทพ','ดุ','แกร่ง','โหด','ลับ','ใจ','ฮาร์ด','สาย','ดาร์ก','ไฟ','น้ำแข็ง','สายฟ้า'];
@@ -3130,14 +3138,131 @@ function rollRandomName(){
 function updateAvatarDisplay(){
   const av=localStorage.getItem('tq_avatar')||'⚔️';
   const el=document.getElementById('cloudAvatarDisplay');
-  if(el) el.textContent=av;
+  if(!el) return;
+  if(av.startsWith('data:')){
+    el.innerHTML='';
+    const img=document.createElement('img');
+    img.src=av; img.style.cssText='width:100%;height:100%;border-radius:50%;object-fit:cover;';
+    el.appendChild(img);
+  } else { el.textContent=av; }
 }
 function selectAvatar(e){
   localStorage.setItem('tq_avatar',e);
   document.querySelectorAll('.profile-avatar-btn').forEach(b=>b.classList.toggle('selected',b.dataset.av===e));
   const avBig=document.getElementById('profileAvatarBig');
-  if(avBig) avBig.textContent=e;
+  if(avBig){avBig.textContent=e;avBig.style.backgroundImage='';}
   updateAvatarDisplay();
+}
+
+/* ══ DRAW AVATAR ══ */
+const DRAW_COLORS=['#ffffff','#000000','#f44336','#ff9800','#ffeb3b','#4caf50','#2196f3','#9c27b0','#00bcd4','#ff5722','#795548','#607d8b','#e91e63','#3f51b5','#69f0ae','#ffd24d'];
+let _drawTool='brush', _drawColor=DRAW_COLORS[0], _drawDown=false, _drawCtx=null, _drawLast=null;
+
+function initDrawCanvas(){
+  const cv=document.getElementById('drawCanvas'); if(!cv) return;
+  _drawCtx=cv.getContext('2d');
+  // fill background
+  _drawCtx.fillStyle='#1a1a2e'; _drawCtx.fillRect(0,0,200,200);
+  // restore saved drawing
+  const saved=localStorage.getItem('tq_draw_draft');
+  if(saved){const img=new Image();img.onload=()=>_drawCtx.drawImage(img,0,0);img.src=saved;}
+  // color swatches
+  const dc=document.getElementById('drawColors');
+  if(dc) dc.innerHTML=DRAW_COLORS.map((c,i)=>`<div class="draw-color-swatch${i===0?' active':''}" style="background:${c}" onclick="_pickColor('${c}',this)" title="${c}"></div>`).join('');
+  // events
+  cv.addEventListener('pointerdown',_drawStart);
+  cv.addEventListener('pointermove',_drawMove);
+  cv.addEventListener('pointerup',_drawEnd);
+  cv.addEventListener('pointercancel',_drawEnd);
+  cv.addEventListener('contextmenu',e=>e.preventDefault());
+}
+function _pickColor(c,el){
+  _drawColor=c;
+  document.querySelectorAll('.draw-color-swatch').forEach(s=>s.classList.remove('active'));
+  if(el) el.classList.add('active');
+  setDrawTool('brush');
+}
+function setDrawTool(t){
+  _drawTool=t;
+  document.getElementById('drawBrushBtn')?.classList.toggle('active',t==='brush');
+  document.getElementById('drawEraserBtn')?.classList.toggle('active',t==='eraser');
+  document.getElementById('drawFillBtn')?.classList.toggle('active',t==='fill');
+}
+function _getPos(cv,e){
+  const r=cv.getBoundingClientRect();
+  const scaleX=cv.width/r.width, scaleY=cv.height/r.height;
+  return {x:(e.clientX-r.left)*scaleX, y:(e.clientY-r.top)*scaleY};
+}
+function _drawStart(e){
+  e.preventDefault(); _drawDown=true;
+  const pos=_getPos(this,e);
+  if(_drawTool==='fill'){_floodFill(Math.round(pos.x),Math.round(pos.y),_drawColor);return;}
+  _drawCtx.beginPath(); _drawCtx.moveTo(pos.x,pos.y);
+  _drawLast=pos;
+  _drawDot(pos);
+}
+function _drawMove(e){
+  if(!_drawDown) return; e.preventDefault();
+  const pos=_getPos(this,e);
+  _drawCtx.beginPath();
+  _drawCtx.moveTo(_drawLast.x,_drawLast.y);
+  _drawCtx.lineTo(pos.x,pos.y);
+  const sz=Number(document.getElementById('drawSize')?.value||8);
+  _drawCtx.lineWidth=_drawTool==='eraser'?sz*2:sz;
+  _drawCtx.lineCap='round'; _drawCtx.lineJoin='round';
+  _drawCtx.strokeStyle=_drawTool==='eraser'?'#1a1a2e':_drawColor;
+  _drawCtx.globalCompositeOperation=_drawTool==='eraser'?'source-over':'source-over';
+  _drawCtx.stroke();
+  _drawLast=pos;
+}
+function _drawDot(pos){
+  const sz=Number(document.getElementById('drawSize')?.value||8);
+  _drawCtx.beginPath();
+  _drawCtx.arc(pos.x,pos.y,(_drawTool==='eraser'?sz:sz/2),0,Math.PI*2);
+  _drawCtx.fillStyle=_drawTool==='eraser'?'#1a1a2e':_drawColor;
+  _drawCtx.fill();
+}
+function _drawEnd(){_drawDown=false;_drawLast=null;}
+function _floodFill(sx,sy,fillCol){
+  const d=_drawCtx.getImageData(0,0,200,200), pix=d.data;
+  const idx=(sx+sy*200)*4;
+  const tr=pix[idx],tg=pix[idx+1],tb=pix[idx+2],ta=pix[idx+3];
+  const r2=parseInt(fillCol.slice(1,3),16),g2=parseInt(fillCol.slice(3,5),16),b2=parseInt(fillCol.slice(5,7),16);
+  if(tr===r2&&tg===g2&&tb===b2) return;
+  const stack=[[sx,sy]];
+  while(stack.length){
+    const [x,y]=stack.pop();
+    if(x<0||x>=200||y<0||y>=200) continue;
+    const i=(x+y*200)*4;
+    if(pix[i]!==tr||pix[i+1]!==tg||pix[i+2]!==tb||pix[i+3]!==ta) continue;
+    pix[i]=r2;pix[i+1]=g2;pix[i+2]=b2;pix[i+3]=255;
+    stack.push([x+1,y],[x-1,y],[x,y+1],[x,y-1]);
+  }
+  _drawCtx.putImageData(d,0,0);
+}
+function clearDrawCanvas(){
+  if(!_drawCtx) return;
+  _drawCtx.fillStyle='#1a1a2e'; _drawCtx.fillRect(0,0,200,200);
+  localStorage.removeItem('tq_draw_draft');
+}
+function useDrawnAvatar(){
+  const cv=document.getElementById('drawCanvas'); if(!cv||!_drawCtx) return;
+  // save draft
+  const draft=cv.toDataURL('image/png');
+  localStorage.setItem('tq_draw_draft',draft);
+  // crop to circle → save as avatar (80x80)
+  const off=document.createElement('canvas'); off.width=off.height=80;
+  const ctx2=off.getContext('2d');
+  ctx2.beginPath(); ctx2.arc(40,40,40,0,Math.PI*2); ctx2.clip();
+  ctx2.drawImage(cv,0,0,80,80);
+  const url=off.toDataURL('image/png');
+  localStorage.setItem('tq_avatar',url);
+  // update big display
+  const avBig=document.getElementById('profileAvatarBig');
+  if(avBig){avBig.textContent='';avBig.style.backgroundImage=`url(${url})`;avBig.style.backgroundSize='cover';avBig.style.backgroundPosition='center';}
+  document.querySelectorAll('.profile-avatar-btn').forEach(b=>b.classList.remove('selected'));
+  updateAvatarDisplay();
+  showToast('🖌️ ใช้รูปที่วาดแล้ว!');
 }
 function saveProfile(){
   const inp=document.getElementById('profileNameInput');
