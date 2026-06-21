@@ -37,12 +37,14 @@ function writeLb(data) {
 
 const oauthClient = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, `${BASE_URL}/auth/google/callback`);
 
+const isProd = process.env.NODE_ENV === 'production' || !!process.env.RAILWAY_ENVIRONMENT;
+app.set('trust proxy', 1); // Railway sits behind a proxy
 app.use(express.json({ limit: '2mb' }));
 app.use(session({
   secret: process.env.SESSION_SECRET || 'tq-secret',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false, maxAge: 30 * 24 * 60 * 60 * 1000 }
+  cookie: { secure: isProd, sameSite: isProd ? 'none' : 'lax', maxAge: 30 * 24 * 60 * 60 * 1000 }
 }));
 
 // Serve game files
