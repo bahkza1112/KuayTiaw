@@ -1,6 +1,9 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.54';
+const GAME_VERSION='3.11.55';
 const PATCH_NOTES=[
+  {ver:'3.11.55',date:'2026-06-22',title:'🏠 ปุ่มเมนูหลักในหน้าจบ Endgame',notes:[
+    'ปุ่ม "เลือกด่าน" เปลี่ยนเป็น "เมนูหลัก" กลับหน้าหลักแทน',
+  ]},
   {ver:'3.11.54',date:'2026-06-22',title:'✨ Save Endgame Score UI ชัดขึ้น',notes:[
     'กล่องบันทึกคะแนนมี contrast สูงขึ้น, label อ่านง่ายขึ้น, ค่าสถิติใหญ่และสว่างกว่าเดิม',
   ]},
