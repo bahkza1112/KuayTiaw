@@ -1,6 +1,13 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.38';
+const GAME_VERSION='3.11.39';
 const PATCH_NOTES=[
+  {ver:'3.11.39',date:'2026-06-21',title:'🎰 สล็อต Win Effects ระเบิด',notes:[
+    'JACKPOT 💎: overlay ทอง + confetti 55 ชิ้น + เขย่าจอ + glow พัลส์',
+    'SUPER ⭐: overlay ฟ้า + confetti 28 ชิ้น + glow พัลส์',
+    'GREAT 🔮: overlay ม่วง + glow พัลส์',
+    'NICE 💰: overlay ส้มทอง + glow พัลส์',
+    'ข้อความชนะ pop ออกมาพร้อม glow ตามเทียร์',
+  ]},
   {ver:'3.11.38',date:'2026-06-21',title:'👑 TOP 10 เซิฟเวอร์ — ปรับ UI',notes:[
     'หัวข้อ "TOP 10 เซิฟเวอร์" พร้อม crown banner ทอง',
     'อันดับ 1 ใช้ 👑 พร้อม glow ทอง, 2 เงิน, 3 ทองแดง — แถวสีต่างกันตามอันดับ',
@@ -3425,6 +3432,52 @@ function _renderCasinoUI(){
       </div>`).join('');
   }
 }
+function _slotWinFx(outcome,reels){
+  const w=outcome.w;
+  const isJP=w<=5,isSP=w<=15,isGR=w<=30;
+  const machine=document.querySelector('.slot-machine');
+  if(!machine) return;
+  // reel glow
+  const rc=isJP?'win-jp':isSP?'win-sp':isGR?'win-gr':'win-ni';
+  reels.forEach(r=>{if(r){r.classList.remove('win');r.classList.add(rc);}});
+  const clearT=isJP?3200:isSP?2600:isGR?2100:1600;
+  setTimeout(()=>reels.forEach(r=>{if(r){r.className='slot-reel';}}),clearT);
+  // screen shake for JACKPOT
+  if(isJP){machine.style.animation='slotShake .75s ease';setTimeout(()=>{machine.style.animation='';},800);}
+  // overlay
+  machine.querySelectorAll('.slot-win-overlay').forEach(e=>e.remove());
+  const ov=document.createElement('div'); ov.className='slot-win-overlay';
+  // background flash
+  const bg=document.createElement('div'); bg.className='slot-win-bg';
+  bg.style.background=isJP?'rgba(255,215,0,.24)':isSP?'rgba(100,200,255,.18)':isGR?'rgba(200,100,255,.16)':'rgba(255,160,0,.13)';
+  ov.appendChild(bg);
+  // confetti for JP + SUPER
+  if(isSP){
+    const cols=['#FFD700','#FF6B6B','#4ECDC4','#A78BFA','#F472B6','#34D399','#FB923C','#60A5FA'];
+    const n=isJP?55:28;
+    for(let i=0;i<n;i++){
+      const c=document.createElement('div'); c.className='slot-confetti';
+      const sz=5+Math.random()*9;
+      c.style.cssText=`left:${Math.random()*100}%;top:${-5+Math.random()*35}%;background:${cols[i%cols.length]};width:${sz}px;height:${sz}px;animation-delay:${Math.random()*.65}s;animation-duration:${1.1+Math.random()*.8}s;transform:rotate(${Math.random()*360}deg);`;
+      ov.appendChild(c);
+    }
+  }
+  // win text
+  const wt=document.createElement('div'); wt.className='slot-win-text';
+  const [col,txt]=isJP?['#FFD700','💎 JACKPOT!']:isSP?['#87CEEB','⭐ SUPER!']:isGR?['#CE93D8','🔮 GREAT!']:['#FFB300','💰 NICE!'];
+  wt.textContent=txt;
+  wt.style.cssText=`color:${col};text-shadow:0 0 40px ${col},0 0 80px ${col}99,0 4px 20px rgba(0,0,0,.95);`;
+  ov.appendChild(wt);
+  // reward sub-text
+  const ws=document.createElement('div'); ws.className='slot-win-sub';
+  ws.textContent=outcome.label.replace(/^[^\s🎫💰💎⭐🔮]+\s/,'').replace(/^[^\s]+\s/,'');
+  ov.appendChild(ws);
+  machine.appendChild(ov);
+  // fade out
+  const dur=isJP?2900:isSP?2400:isGR?1900:1500;
+  setTimeout(()=>{ov.style.cssText='opacity:0;transition:opacity .4s;pointer-events:none;';setTimeout(()=>ov.remove(),450);},dur);
+}
+
 function spinSlot(){
   if(_slotBusy) return;
   const pg=loadPGold();
@@ -3464,13 +3517,12 @@ function spinSlot(){
     if(idx===2){
       clearInterval(iv);
       const won=outcome.w<=60;
-      if(won)reels.forEach(r=>{if(r)r.classList.add('win');});
       if(outcome.gold)addPGold(outcome.gold);
       if(outcome.gems)addGems(outcome.gems);
       if(outcome.tickets)addTickets(outcome.tickets);
       if(outcome.shardC)addBagItem('shard_c',outcome.shardC);
       if(res)res.innerHTML=`<span style="color:${won?'#ffd54f':'#888'};">${outcome.label}</span>`;
-      if(won)showToast('🎉 '+outcome.label);
+      if(won){ _slotWinFx(outcome,reels); showToast('🎉 '+outcome.label); }
       _slotBusy=false;
       _renderCasinoUI();
     }
