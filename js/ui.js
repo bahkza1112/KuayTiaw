@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.41';
+const GAME_VERSION='3.11.42';
 const PATCH_NOTES=[
+  {ver:'3.11.42',date:'2026-06-21',title:'🎰 ตารางอัตรา: เรียงจาก % น้อยสุด',notes:[
+    'ตารางอัตราในตู้กาชาเรียงจากของหายากที่สุด (001) ไปหาของธรรมดา',
+    'เลข 001–010 ใหม่ตาม sort ไม่ใช่ตาม code เดิม',
+  ]},
   {ver:'3.11.41',date:'2026-06-21',title:'🎁 ปรับรางวัลล็อกอิน 7 วัน',notes:[
     'วัน 1: 300 มณี + ไอเท็มบัพ 3 อย่าง ×1',
     'วัน 2: ตั๋ว 20 ใบ + ไอเท็มบัพ 3 อย่าง ×2',
@@ -930,13 +934,13 @@ function toggleGachaOdds(){
   body.style.display=show?'':'none';
   arrow.textContent=show?'▲ ซ่อน':'▼ ดูรายละเอียด';
   if(show&&!document.getElementById('gachaOddsPool').innerHTML){
-    document.getElementById('gachaOddsPool').innerHTML=GACHA_POOL.map(p=>`
+    document.getElementById('gachaOddsPool').innerHTML=[...GACHA_POOL].sort((a,b)=>a.w-b.w).map((p,i)=>{const num=String(i+1).padStart(3,'0');return`
       <div class="gacha-odds-row">
-        <span style="font-family:monospace;color:rgba(179,136,255,.6);">${p.code}</span>
+        <span style="font-family:monospace;color:rgba(179,136,255,.6);">${num}</span>
         <span style="color:${p.color};">${p.icon} ${p.name}</span>
         <span class="gacha-rarity-tag rarity-${p.rarity}" style="font-size:7px;">${p.rarity}</span>
         <span style="color:#aaa;">${p.w/10}%</span>
-      </div>`).join('')+`
+      </div>`;}).join('')+`
       <div class="gacha-odds-row">
         <span style="font-family:monospace;color:rgba(179,136,255,.6);">dud</span>
         <span style="color:#888;">เศษ ×1 (🔹70% · 💜22% · 🌟8%)</span>
