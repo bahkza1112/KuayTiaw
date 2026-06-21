@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.65';
+const GAME_VERSION='3.11.66';
 const PATCH_NOTES=[
+  {ver:'3.11.66',date:'2026-06-22',title:'🔑 แก้: โปรไฟล์แสดงสถานะ login ถูกต้อง',notes:[
+    'window.cloudUser ถูก set แล้วตอน init → หน้าโปรไฟล์ตรวจสอบ login ได้ถูกต้อง',
+    'หลัง login แล้วเปิดโปรไฟล์จะแสดง "เชื่อมต่อแล้ว" แทนปุ่ม login',
+  ]},
   {ver:'3.11.65',date:'2026-06-22',title:'🔗 Cross-device sync: Google Login ทำงานครบ',notes:[
     'ล็อกอิน Google → ข้อมูลบันทึกขึ้น server และ sync ข้ามเครื่องได้',
     'ใช้ HMAC token แทน session cookie → เสถียร ไม่หาย',

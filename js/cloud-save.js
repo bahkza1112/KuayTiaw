@@ -70,7 +70,7 @@ async function cloudInit() {
   // โหลด user จาก localStorage
   try {
     const saved = localStorage.getItem('tq_cloud_user');
-    if (saved) cloudUser = JSON.parse(saved);
+    if (saved) { cloudUser = JSON.parse(saved); window.cloudUser = cloudUser; }
   } catch(e) {}
 
   // แสดงเกมเสมอ (ไม่บังคับ login)
@@ -107,6 +107,7 @@ function cloudLogout() {
   localStorage.removeItem('tq_cloud_user');
   localStorage.removeItem('tq_cloud_token');
   cloudUser = null;
+  window.cloudUser = null;
   cloudAvailable = false;
   fetch('/auth/logout').catch(()=>{});
   // อัปเดต UI
