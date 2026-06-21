@@ -1,6 +1,9 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.57';
+const GAME_VERSION='3.11.58';
 const PATCH_NOTES=[
+  {ver:'3.11.58',date:'2026-06-22',title:'✨ Save Dialog มองชัดขึ้น (v2)',notes:[
+    'overlay เข้มขึ้น, border สว่างขึ้น, ค่าสถิติตัวเลขใหญ่+เงาชัด, card contrast สูงขึ้น',
+  ]},
   {ver:'3.11.57',date:'2026-06-22',title:'🗑️ นำแท็บ "ประวัติ" ออกจากหน้า Leaderboard',notes:[
     'แท็บ "ประวัติ" ซ้ำซ้อนกับหน้า "ของฉัน" จึงเอาออก เหลือ 3 แท็บ',
   ]},
