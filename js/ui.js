@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.59';
+const GAME_VERSION='3.11.60';
 const PATCH_NOTES=[
+  {ver:'3.11.60',date:'2026-06-22',title:'🎰 สล็อต: ลดเรท + ไม่ตรง=ไม่ได้อะไร',notes:[
+    'JACKPOT 0.2% / SUPER 0.6% / GREAT 1.8% / NICE 4% / ไม่ตรง 93.4%',
+    'ลบ "คู่" ออก — ถ้าไม่ตรงไม่ได้รางวัลใดๆ เลย',
+  ]},
   {ver:'3.11.59',date:'2026-06-22',title:'🏆 TOP 10: แก้ไอคอนอันดับ 1-3',notes:[
     'อันดับ 1=👑  2=⚔️  3=🛡️  4-10=ตัวเลขอย่างเดียว ไม่มีตัวเลขซ้ำอีกต่อไป',
   ]},
@@ -3638,12 +3642,11 @@ updateMenuStats();
 const SLOT_COST=50;
 const SLOT_SPIN_SYMS=['💎','⭐','🔮','💰','🔷','🌙','🎯','🌸'];
 const SLOT_OUTCOMES=[
-  {w:5,  s:['💎','💎','💎'], gold:5000,gems:3000,tickets:50, label:'💎 JACKPOT! +🎫50 +💰5000 +💎3000'},
-  {w:15, s:['⭐','⭐','⭐'], gold:2500,gems:1500,tickets:25, label:'⭐ SUPER!  +🎫25 +💰2500 +💎1500'},
-  {w:30, s:['🔮','🔮','🔮'],gold:1000,gems:500, tickets:0,  label:'🔮 GREAT! +💰1000 +💎500'},
-  {w:60, s:['💰','💰','💰'],gold:500, gems:250, tickets:0,  label:'💰 NICE!  +💰500 +💎250'},
-  {w:250,s:null,pair:true,  gold:30,  gems:0,   tickets:0,  label:'คู่! +💰30'},
-  {w:640,s:null,miss:true,  gold:0,   gems:0,   tickets:0,  shardC:1,label:'เศษหินมืด ×1'},
+  {w:2,  s:['💎','💎','💎'], gold:5000,gems:3000,tickets:50, label:'💎 JACKPOT! +🎫50 +💰5000 +💎3000'},
+  {w:6,  s:['⭐','⭐','⭐'], gold:2500,gems:1500,tickets:25, label:'⭐ SUPER!  +🎫25 +💰2500 +💎1500'},
+  {w:18, s:['🔮','🔮','🔮'],gold:1000,gems:500, tickets:0,  label:'🔮 GREAT! +💰1000 +💎500'},
+  {w:40, s:['💰','💰','💰'],gold:500, gems:250, tickets:0,  label:'💰 NICE!  +💰500 +💎250'},
+  {w:934,s:null,miss:true,  gold:0,   gems:0,   tickets:0,  label:'ไม่ตรง — ไม่ได้อะไร'},
 ];
 let _slotBusy=false;
 
@@ -3657,7 +3660,7 @@ function _renderCasinoUI(){
   const btn=document.getElementById('slotSpinBtn');if(btn) btn.disabled=_slotBusy||pg<SLOT_COST;
   const ot=document.getElementById('slotOddsTable');
   if(ot&&!ot.innerHTML){
-    const names={5:'💎💎💎',15:'⭐⭐⭐',30:'🔮🔮🔮',60:'💰💰💰',250:'คู่ใดก็ได้',640:'ไม่ตรง'};
+    const names={2:'💎💎💎',6:'⭐⭐⭐',18:'🔮🔮🔮',40:'💰💰💰',934:'ไม่ตรง'};
     ot.innerHTML=SLOT_OUTCOMES.map(o=>`
       <div class="gacha-odds-row">
         <span style="font-family:monospace;color:rgba(179,136,255,.6);">${String(o.w/10).padStart(4,' ')}%</span>
@@ -3668,7 +3671,7 @@ function _renderCasinoUI(){
 }
 function _slotWinFx(outcome,reels){
   const w=outcome.w;
-  const isJP=w<=5,isSP=w<=15,isGR=w<=30;
+  const isJP=w<=2,isSP=w<=6,isGR=w<=18;
   const machine=document.querySelector('.slot-machine');
   if(!machine) return;
   // reel glow
@@ -3743,10 +3746,6 @@ function spinSlot(){
   // build display
   let display;
   if(outcome.s){display=[...outcome.s];}
-  else if(outcome.pair){
-    const base=SLOT_SPIN_SYMS[Math.floor(Math.random()*4)];
-    const other=SLOT_SPIN_SYMS.filter(s=>s!==base)[Math.floor(Math.random()*3)];
-    display=[base,base,other];display.sort(()=>Math.random()-.5);
   } else {
     display=[...SLOT_SPIN_SYMS].sort(()=>Math.random()-.5).slice(0,3);
     while(display[0]===display[1]||display[1]===display[2]||display[0]===display[2])
@@ -3763,7 +3762,7 @@ function spinSlot(){
     if(reels[idx]){reels[idx].classList.remove('spinning');}
     if(idx===2){
       clearInterval(iv);
-      const won=outcome.w<=60;
+      const won=outcome.w<=40;
       if(outcome.gold)addPGold(outcome.gold);
       if(outcome.gems)addGems(outcome.gems);
       if(outcome.tickets)addTickets(outcome.tickets);
