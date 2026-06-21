@@ -2,6 +2,25 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.65 — Cross-device sync สมบูรณ์ (HMAC token auth)
+
+### Added
+- `server.js` `makeToken(uid)` / `verifyToken()` / `authMiddleware`: stateless HMAC-SHA256 token auth แทน session
+- `js/cloud-save.js` `authHeaders()`: ส่ง `X-Auth-Token: uid:hmac` header กับ `/api/save` requests
+
+### Changed
+- `server.js` OAuth callback: encode `_token = makeToken(uid)` ใน hash redirect พร้อมกับ user data
+- `server.js` `/api/me`: เปลี่ยนเป็น health-check (ไม่ต้องการ auth)
+- `server.js` `/api/save` GET+POST: ใช้ `authMiddleware` แทน `req.session.user`
+- `server.js` `/auth/logout`: ลบ `req.session.destroy()` (ไม่มี session แล้ว)
+- `js/cloud-save.js` hash parse: แยก `_token` ออก เก็บใน `tq_cloud_token` localStorage
+- `js/cloud-save.js` `cloudSave()`: ส่ง auth header
+- `js/cloud-save.js` `cloudInit()`: ส่ง auth header ตอนโหลด save; check `sr.ok` ก่อน parse
+- `js/cloud-save.js` `cloudLogout()`: ลบ `tq_cloud_token` ด้วย
+
+### New localStorage key
+- `tq_cloud_token`: `uid:hmac` string สำหรับ API auth
+
 ## v3.11.56 — แก้ไข: กด "ข้าม" ก็ส่งคะแนนขึ้น TOP 10 เซิฟ
 
 ### Fixed

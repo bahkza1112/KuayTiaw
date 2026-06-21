@@ -25,12 +25,17 @@ function restoreSave(saveData) {
   });
 }
 
+function authHeaders() {
+  const tok = localStorage.getItem('tq_cloud_token');
+  return tok ? { 'X-Auth-Token': tok } : {};
+}
+
 async function cloudSave() {
   if (!cloudUser || !cloudAvailable) return;
   try {
     await fetch('/api/save', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
       body: JSON.stringify(getAllTqKeys()),
     });
   } catch (e) { /* silent fail */ }
@@ -45,8 +50,10 @@ async function cloudInit() {
   if (hash.startsWith('#tqauth=')) {
     try {
       const encoded = hash.slice(8);
-      const user = JSON.parse(atob(encoded.replace(/-/g,'+').replace(/_/g,'/')));
+      const payload = JSON.parse(atob(encoded.replace(/-/g,'+').replace(/_/g,'/')));
+      const { _token, ...user } = payload;
       localStorage.setItem('tq_cloud_user', JSON.stringify(user));
+      if (_token) localStorage.setItem('tq_cloud_token', user.id + ':' + _token);
       history.replaceState(null, '', '/');
     } catch(e) { console.error('tqauth parse error', e); }
   }
@@ -78,9 +85,11 @@ async function cloudInit() {
     if (res.ok) {
       cloudAvailable = true;
       if (cloudUser) {
-        const sr = await fetch('/api/save');
-        const sd = await sr.json();
-        restoreSave(sd.save);
+        const sr = await fetch('/api/save', { headers: authHeaders() });
+        if (sr.ok) {
+          const sd = await sr.json();
+          restoreSave(sd.save);
+        }
       }
     }
   } catch (e) { cloudAvailable = false; }
@@ -96,6 +105,7 @@ window.addEventListener('DOMContentLoaded', cloudInit);
 function cloudLogout() {
   if (!confirm('ออกจากระบบ?')) return;
   localStorage.removeItem('tq_cloud_user');
+  localStorage.removeItem('tq_cloud_token');
   cloudUser = null;
   cloudAvailable = false;
   fetch('/auth/logout').catch(()=>{});

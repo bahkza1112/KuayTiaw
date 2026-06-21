@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const session = require('express-session');
-const FileStore = require('session-file-store')(session);
+const crypto = require('crypto');
 const { OAuth2Client } = require('google-auth-library');
 const path = require('path');
 const fs = require('fs');
@@ -38,18 +37,27 @@ function writeLb(data) {
 
 const oauthClient = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, `${BASE_URL}/auth/google/callback`);
 
-const isProd = process.env.NODE_ENV === 'production' || !!process.env.RAILWAY_ENVIRONMENT;
-app.set('trust proxy', 1); // Railway sits behind a proxy
+const TOKEN_SECRET = process.env.SESSION_SECRET || 'tq-secret';
+app.set('trust proxy', 1);
 app.use(express.json({ limit: '2mb' }));
-const SESSION_DIR = path.join(__dirname, 'data', 'sessions');
-if (!fs.existsSync(SESSION_DIR)) fs.mkdirSync(SESSION_DIR, { recursive: true });
-app.use(session({
-  store: new FileStore({ path: SESSION_DIR, ttl: 30 * 24 * 3600, retries: 1, logFn: ()=>{} }),
-  secret: process.env.SESSION_SECRET || 'tq-secret',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: isProd, sameSite: isProd ? 'none' : 'lax', maxAge: 30 * 24 * 60 * 60 * 1000 }
-}));
+
+// Stateless token auth — no sessions needed
+function makeToken(uid) {
+  return crypto.createHmac('sha256', TOKEN_SECRET).update(uid).digest('hex');
+}
+function verifyToken(uid, token) {
+  if (!uid || !token) return false;
+  return crypto.timingSafeEqual(Buffer.from(makeToken(uid)), Buffer.from(token));
+}
+function authMiddleware(req, res, next) {
+  const auth = req.headers['x-auth-token'] || '';
+  const [uid, token] = auth.split(':');
+  if (uid && token && verifyToken(uid, token)) {
+    req.authUser = { id: uid };
+    return next();
+  }
+  res.status(401).json({ error: 'unauthorized' });
+}
 
 // Serve game files
 app.use(express.static(__dirname));
@@ -86,8 +94,9 @@ app.get('/auth/google/callback', async (req, res) => {
     const ticket = await oauthClient.verifyIdToken({ idToken: tokens.id_token, audience: CLIENT_ID });
     const p = ticket.getPayload();
     const user = { id: p.sub, name: p.name, email: p.email, picture: p.picture };
-    // ส่ง user data ผ่าน hash fragment → client เก็บใน localStorage (ไม่ต้องพึ่ง cookie)
-    const encoded = Buffer.from(JSON.stringify(user)).toString('base64url');
+    const token = makeToken(user.id);
+    // ส่ง user + HMAC token ผ่าน hash fragment → client เก็บใน localStorage
+    const encoded = Buffer.from(JSON.stringify({ ...user, _token: token })).toString('base64url');
     res.redirect('/#tqauth=' + encoded);
   } catch (e) {
     console.error('Auth error:', e.message);
@@ -96,27 +105,24 @@ app.get('/auth/google/callback', async (req, res) => {
 });
 
 app.get('/auth/logout', (req, res) => {
-  req.session.destroy(() => res.redirect('/'));
+  res.redirect('/');
 });
 
 // ── API ───────────────────────────────────────────
 app.get('/api/me', (req, res) => {
-  res.json({ user: req.session.user || null });
+  res.json({ ok: true });
 });
 
-app.get('/api/save', (req, res) => {
-  if (!req.session.user) return res.status(401).json({ error: 'not_logged_in' });
+app.get('/api/save', authMiddleware, (req, res) => {
   const saves = loadSaves();
-  res.json({ save: saves[req.session.user.id] || null });
+  res.json({ save: saves[req.authUser.id] || null });
 });
 
-app.post('/api/save', (req, res) => {
-  if (!req.session.user) return res.status(401).json({ error: 'not_logged_in' });
+app.post('/api/save', authMiddleware, (req, res) => {
   const saves = loadSaves();
-  saves[req.session.user.id] = {
+  saves[req.authUser.id] = {
     ...req.body,
-    _uid: req.session.user.id,
-    _name: req.session.user.name,
+    _uid: req.authUser.id,
     _lastSaved: new Date().toISOString(),
   };
   writeSaves(saves);

@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.64';
+const GAME_VERSION='3.11.65';
 const PATCH_NOTES=[
+  {ver:'3.11.65',date:'2026-06-22',title:'🔗 Cross-device sync: Google Login ทำงานครบ',notes:[
+    'ล็อกอิน Google → ข้อมูลบันทึกขึ้น server และ sync ข้ามเครื่องได้',
+    'ใช้ HMAC token แทน session cookie → เสถียร ไม่หาย',
+    'เล่นเครื่องอื่น → login → ข้อมูลกลับมาอัตโนมัติ',
+  ]},
   {ver:'3.11.64',date:'2026-06-22',title:'🔑 Google Login: เปลี่ยนเป็น localStorage token',notes:[
     'ไม่ใช้ session cookie อีกต่อไป → login ทำงานได้ไม่ว่า server จะ restart',
     'user data เก็บใน localStorage (tq_cloud_user) ถาวรในเครื่อง',
