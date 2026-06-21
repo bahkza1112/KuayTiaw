@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.63';
+const GAME_VERSION='3.11.64';
 const PATCH_NOTES=[
+  {ver:'3.11.64',date:'2026-06-22',title:'🔑 Google Login: เปลี่ยนเป็น localStorage token',notes:[
+    'ไม่ใช้ session cookie อีกต่อไป → login ทำงานได้ไม่ว่า server จะ restart',
+    'user data เก็บใน localStorage (tq_cloud_user) ถาวรในเครื่อง',
+  ]},
   {ver:'3.11.63',date:'2026-06-22',title:'🔑 แก้ Google Login: session save + error msg',notes:[
     'บังคับ session.save() ก่อน redirect กลับ หลัง OAuth callback',
     'แสดง toast error ถ้า login ล้มเหลว พร้อม error message',

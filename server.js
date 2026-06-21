@@ -85,11 +85,10 @@ app.get('/auth/google/callback', async (req, res) => {
     if (!tokens.id_token) throw new Error('no id_token: ' + JSON.stringify(tokens));
     const ticket = await oauthClient.verifyIdToken({ idToken: tokens.id_token, audience: CLIENT_ID });
     const p = ticket.getPayload();
-    req.session.user = { id: p.sub, name: p.name, email: p.email, picture: p.picture };
-    req.session.save(err => {
-      if (err) console.error('Session save error:', err);
-      res.redirect('/');
-    });
+    const user = { id: p.sub, name: p.name, email: p.email, picture: p.picture };
+    // ส่ง user data ผ่าน hash fragment → client เก็บใน localStorage (ไม่ต้องพึ่ง cookie)
+    const encoded = Buffer.from(JSON.stringify(user)).toString('base64url');
+    res.redirect('/#tqauth=' + encoded);
   } catch (e) {
     console.error('Auth error:', e.message);
     res.redirect('/?error=auth_failed&msg=' + encodeURIComponent(e.message));

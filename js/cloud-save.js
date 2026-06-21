@@ -40,51 +40,50 @@ async function cloudInit() {
   const screen = document.getElementById('cloudLoginScreen');
   const game   = document.getElementById('gr');
 
-  // แสดง error ถ้า OAuth ล้มเหลว
+  // ตรวจ hash fragment จาก OAuth callback (#tqauth=...)
+  const hash = window.location.hash;
+  if (hash.startsWith('#tqauth=')) {
+    try {
+      const encoded = hash.slice(8);
+      const user = JSON.parse(atob(encoded.replace(/-/g,'+').replace(/_/g,'/')));
+      localStorage.setItem('tq_cloud_user', JSON.stringify(user));
+      history.replaceState(null, '', '/');
+    } catch(e) { console.error('tqauth parse error', e); }
+  }
+
+  // ตรวจ error
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('error') === 'auth_failed') {
-    const msg = urlParams.get('msg') || 'unknown';
-    console.error('Auth failed:', msg);
-    // ลบ query string ออกจาก URL
     history.replaceState(null, '', '/');
     setTimeout(() => {
-      if (typeof showToast === 'function') showToast('❌ เข้าสู่ระบบ Google ล้มเหลว: ' + msg);
-    }, 1000);
+      if (typeof showToast === 'function') showToast('❌ เข้าสู่ระบบ Google ล้มเหลว');
+    }, 800);
   }
 
+  // โหลด user จาก localStorage
+  try {
+    const saved = localStorage.getItem('tq_cloud_user');
+    if (saved) cloudUser = JSON.parse(saved);
+  } catch(e) {}
+
+  // แสดงเกมเสมอ (ไม่บังคับ login)
+  if (screen) screen.style.display = 'none';
+  if (game)   game.style.display   = '';
+  const bar = document.getElementById('cloudUserBar');
+  if (bar) { bar.style.display = 'flex'; updateAvatarDisplay(); }
+
+  // sync กับ server ถ้า login แล้ว
   try {
     const res = await fetch('/api/me', { signal: AbortSignal.timeout(4000) });
-    if (!res.ok) throw new Error('server_error');
-    const data = await res.json();
-    cloudAvailable = true;
-
-    if (data.user) {
-      cloudUser = data.user;
-      // โหลด save จาก server
-      const sr = await fetch('/api/save');
-      const sd = await sr.json();
-      restoreSave(sd.save);
-      // อัปเดต UI ชื่อผู้เล่น
-      const bar = document.getElementById('cloudUserBar');
-      if (bar) { bar.style.display = 'flex'; updateAvatarDisplay(); }
-      // แสดงเกม
-      if (screen) screen.style.display = 'none';
-      if (game)   game.style.display   = '';
-    } else {
-      // ยังไม่ login → เข้าเกมโดยตรง (login ได้จากหน้าโปรไฟล์)
-      if (screen) screen.style.display = 'none';
-      if (game)   game.style.display   = '';
-      const bar = document.getElementById('cloudUserBar');
-      if (bar) { bar.style.display = 'flex'; updateAvatarDisplay(); }
+    if (res.ok) {
+      cloudAvailable = true;
+      if (cloudUser) {
+        const sr = await fetch('/api/save');
+        const sd = await sr.json();
+        restoreSave(sd.save);
+      }
     }
-  } catch (e) {
-    // server ไม่ตอบสนอง → เล่น offline ได้เลย
-    cloudAvailable = false;
-    if (screen) screen.style.display = 'none';
-    if (game)   game.style.display   = '';
-    const bar = document.getElementById('cloudUserBar');
-    if (bar) { bar.style.display = 'flex'; updateAvatarDisplay(); }
-  }
+  } catch (e) { cloudAvailable = false; }
 
   // auto-save ทุก 60 วิ
   setInterval(cloudSave, 60000);
@@ -96,7 +95,14 @@ window.addEventListener('DOMContentLoaded', cloudInit);
 
 function cloudLogout() {
   if (!confirm('ออกจากระบบ?')) return;
-  cloudSave().finally(() => { window.location.href = '/auth/logout'; });
+  localStorage.removeItem('tq_cloud_user');
+  cloudUser = null;
+  cloudAvailable = false;
+  fetch('/auth/logout').catch(()=>{});
+  // อัปเดต UI
+  const bar = document.getElementById('cloudUserBar');
+  if (bar) updateAvatarDisplay();
+  if (typeof openProfile === 'function') openProfile();
 }
 
 // expose ให้ game เรียกเมื่อ save เกิดขึ้น
