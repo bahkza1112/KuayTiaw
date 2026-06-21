@@ -11,14 +11,14 @@ const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 const SAVES_FILE = path.join(__dirname, 'data', 'saves.json');
+const LB_FILE    = path.join(__dirname, 'data', 'leaderboard.json');
 
 // Ensure data directory exists
 if (!fs.existsSync(path.join(__dirname, 'data'))) {
   fs.mkdirSync(path.join(__dirname, 'data'));
 }
-if (!fs.existsSync(SAVES_FILE)) {
-  fs.writeFileSync(SAVES_FILE, '{}', 'utf8');
-}
+if (!fs.existsSync(SAVES_FILE)) fs.writeFileSync(SAVES_FILE, '{}', 'utf8');
+if (!fs.existsSync(LB_FILE))    fs.writeFileSync(LB_FILE, '[]', 'utf8');
 
 function loadSaves() {
   try { return JSON.parse(fs.readFileSync(SAVES_FILE, 'utf8')); }
@@ -26,6 +26,13 @@ function loadSaves() {
 }
 function writeSaves(data) {
   fs.writeFileSync(SAVES_FILE, JSON.stringify(data, null, 2), 'utf8');
+}
+function loadLb() {
+  try { return JSON.parse(fs.readFileSync(LB_FILE, 'utf8')); }
+  catch { return []; }
+}
+function writeLb(data) {
+  fs.writeFileSync(LB_FILE, JSON.stringify(data, null, 2), 'utf8');
 }
 
 const oauthClient = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, `${BASE_URL}/auth/google/callback`);
@@ -106,6 +113,27 @@ app.post('/api/save', (req, res) => {
   };
   writeSaves(saves);
   res.json({ ok: true });
+});
+
+// ── Leaderboard ───────────────────────────────────
+app.get('/api/leaderboard', (req, res) => {
+  const lb = loadLb().sort((a,b)=>b.score-a.score).slice(0,10);
+  res.json({ entries: lb });
+});
+
+app.post('/api/leaderboard', (req, res) => {
+  const { name, score, wave, diff, kills, maxCombo, round, date } = req.body;
+  if (!name || typeof score !== 'number' || typeof wave !== 'number') {
+    return res.status(400).json({ error: 'invalid' });
+  }
+  const lb = loadLb();
+  const entry = { name: String(name).slice(0,30), score, wave, diff, kills:kills||0, maxCombo:maxCombo||1, round:round||1, date: date||new Date().toLocaleDateString('th-TH'), ts: Date.now() };
+  lb.push(entry);
+  lb.sort((a,b)=>b.score-a.score);
+  if (lb.length > 100) lb.length = 100;
+  writeLb(lb);
+  const rank = lb.findIndex(e=>e.ts===entry.ts) + 1;
+  res.json({ ok: true, rank });
 });
 
 app.listen(PORT, () => {

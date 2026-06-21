@@ -719,6 +719,10 @@ function confirmSave(){
   if(runs.length>50) runs.length=50; // keep max 50
   localStorage.setItem('tq_runs',JSON.stringify(runs));
   checkAchievements(); // check eg3/eg7 achievements after saving run
+  // POST to server leaderboard (fire-and-forget)
+  fetch('/api/leaderboard',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(run)})
+    .then(r=>r.json()).then(d=>{ if(d.rank&&d.rank<=10) showToast('🏆 ติด TOP '+d.rank+' ของเซิฟ!'); })
+    .catch(()=>{});
   showToast('💾 Save Scoreของ '+name+' แล้ว!');
   document.getElementById('saveOverlay').style.display='none';
   showEgResult();

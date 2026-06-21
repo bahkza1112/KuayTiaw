@@ -1,6 +1,12 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.36';
+const GAME_VERSION='3.11.37';
 const PATCH_NOTES=[
+  {ver:'3.11.37',date:'2026-06-21',title:'🌐 Server Leaderboard TOP 10',notes:[
+    'อันดับ "รวมทุกคน" ตอนนี้ดึงข้อมูลจากเซิฟ — เห็นคะแนนของผู้เล่นทุกคน',
+    'เมื่อบันทึกคะแนนเอนด์เกมจะส่งไปเซิฟโดยอัตโนมัติ',
+    'แสดง 🏆 TOP X แจ้งเตือนถ้าติดอันดับ',
+    'ถ้าไม่มีอินเทอร์เน็ต ใช้ข้อมูลในเครื่องแทน (fallback)',
+  ]},
   {ver:'3.11.36',date:'2026-06-21',title:'🏆 ปรับอันดับให้ชัดขึ้น',notes:[
     'อันดับ tab "คะแนนสูงสุด" และ "เวฟสูงสุด" ตอนนี้แสดงเฉพาะเอนด์เกม',
     'เนื้อเรื่องไม่มีคะแนนในอันดับ — วัดผลด้วยดาวในหน้าด่านแทน',
@@ -3184,28 +3190,45 @@ function renderLb(){
     }
     body.innerHTML=html;
   } else if(lbTab===1){
-    // คะแนนสูงสุด — endgame only sorted by score
-    const allRuns=[...runs].filter(r=>r.mode==='endgame').sort((a,b)=>b.score-a.score);
-    if(!allRuns.length){ body.innerHTML='<div class="lb-empty">ยังไม่มีข้อมูลเอนด์เกม</div>'; return; }
+    // TOP 10 เซิฟ — endgame only sorted by score
     const myName=lastName;
-    let myRank=-1;
-    allRuns.forEach((r,i)=>{ if(r.name===myName&&myRank<0) myRank=i+1; });
-    let html=`<div class="lbt-subtitle">🔥 เอนด์เกม — เรียงตามคะแนนสูงสุด</div>`;
-    if(myRank>0) html+=`<div class="lbt-myrank">อันดับของคุณ: <span>#${myRank}</span></div>`;
-    html+=`<div class="lbt-header"><span>#</span><span>ชื่อ</span><span>เวฟ</span><span>คะแนน</span><span></span></div>`;
-    allRuns.slice(0,50).forEach((r,i)=>{
-      const isMe=r.name===myName;
-      const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
-      const origIdx=runs.indexOf(r);
-      html+=`<div class="lbt-row${isMe?' lbt-me':''}">
-        <span class="lbt-rank">${medal||i+1}</span>
-        <span class="lbt-name">${r.name}</span>
-        <span class="lbt-wave">${r.wave}</span>
-        <span class="lbt-score">${r.score.toLocaleString()}</span>
-        <span><button class="lbt-del" onclick="deleteRun(${origIdx})">×</button></span>
-      </div>`;
-    });
-    body.innerHTML=html;
+    body.innerHTML='<div class="lb-empty" style="color:#aaa;">⏳ กำลังโหลด...</div>';
+    fetch('/api/leaderboard',{signal:AbortSignal.timeout(5000)})
+      .then(r=>r.json())
+      .then(d=>{
+        const entries=d.entries||[];
+        let myRank=-1;
+        entries.forEach((e,i)=>{ if(e.name===myName&&myRank<0) myRank=i+1; });
+        let html=`<div class="lbt-subtitle">🌐 TOP 10 ของเซิฟ — เรียงตามคะแนนสูงสุด</div>`;
+        if(myRank>0) html+=`<div class="lbt-myrank">อันดับของคุณ: <span>#${myRank}</span></div>`;
+        if(!entries.length){ body.innerHTML=html+'<div class="lb-empty">ยังไม่มีข้อมูล</div>'; return; }
+        html+=`<div class="lbt-header"><span>#</span><span>ชื่อ</span><span>เวฟ</span><span>คะแนน</span><span></span></div>`;
+        entries.forEach((r,i)=>{
+          const isMe=r.name===myName;
+          const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+          html+=`<div class="lbt-row${isMe?' lbt-me':''}">
+            <span class="lbt-rank">${medal||i+1}</span>
+            <span class="lbt-name">${r.name}</span>
+            <span class="lbt-wave">${r.wave}</span>
+            <span class="lbt-score">${r.score.toLocaleString()}</span>
+            <span></span>
+          </div>`;
+        });
+        body.innerHTML=html;
+      })
+      .catch(()=>{
+        // fallback to local
+        const allRuns=[...runs].filter(r=>r.mode==='endgame').sort((a,b)=>b.score-a.score).slice(0,10);
+        if(!allRuns.length){ body.innerHTML='<div class="lb-empty">ยังไม่มีข้อมูลเอนด์เกม</div>'; return; }
+        let html=`<div class="lbt-subtitle">📴 Offline — ข้อมูลในเครื่อง</div>`;
+        html+=`<div class="lbt-header"><span>#</span><span>ชื่อ</span><span>เวฟ</span><span>คะแนน</span><span></span></div>`;
+        allRuns.forEach((r,i)=>{
+          const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+          html+=`<div class="lbt-row"><span class="lbt-rank">${medal||i+1}</span><span class="lbt-name">${r.name}</span><span class="lbt-wave">${r.wave}</span><span class="lbt-score">${r.score.toLocaleString()}</span><span></span></div>`;
+        });
+        body.innerHTML=html;
+      });
+    return; // async — body set in .then()
   } else if(lbTab===2){
     // กระดานผู้นำ — endgame table
     const egOnly=[...runs].filter(r=>r.mode==='endgame').sort((a,b)=>b.wave-a.wave||b.score-a.score);
