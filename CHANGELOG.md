@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.89 — ตัวเลขทองในคาสิโนเห็นชัดขึ้น
+
+### Changed
+- `Tower Quest 🏰.html` `#slotGoldDisplay`: font ใหญ่ขึ้น (15px), ตัวหนา, สีเหลืองทอง `#ffd54f` พร้อม glow
+
 ## v3.11.88 — แก้บัค: หมวดคาสิโนหายจากหน้ารางวัล
 
 ### Fixed

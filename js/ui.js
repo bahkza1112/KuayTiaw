@@ -1,6 +1,9 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.88';
+const GAME_VERSION='3.11.89';
 const PATCH_NOTES=[
+  {ver:'3.11.89',date:'2026-06-23',title:'🎰 ตัวเลขทองในคาสิโนเห็นชัดขึ้น',notes:[
+    'ตัวเลข "มี: X ทอง" ในหน้าสล็อต ใหญ่ขึ้น + สีเหลืองทอง + glow',
+  ]},
   {ver:'3.11.88',date:'2026-06-23',title:'🔧 แก้บัค: หมวด "คาสิโน" หายจากหน้ารางวัล',notes:[
     'เพิ่ม "casino" เข้า cats[] ใน renderAchievTab() — 8 รางวัลคาสิโนแสดงครบแล้ว',
   ]},
