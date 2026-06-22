@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.74';
+const GAME_VERSION='3.11.75';
 const PATCH_NOTES=[
+  {ver:'3.11.75',date:'2026-06-22',title:'🔧 แก้สถิติหายเมื่อเปลี่ยนชื่อ',notes:[
+    'เปลี่ยนชื่อแล้วสถิติ Endgame ไม่หายอีกต่อไป',
+    'ระบบอัปชื่อใน run เก่าอัตโนมัติเมื่อบันทึกโปรไฟล์',
+  ]},
   {ver:'3.11.74',date:'2026-06-22',title:'🔥 Endgame สเกลไม่มีเพดาน — ความท้าทายที่ไม่สิ้นสุด',notes:[
     'ลบเพดาน HP/Shield ศัตรู Endgame — ยากขึ้นเรื่อยๆ ทุก Round ไม่มีวันแบนราบ',
     'ลดอัตราสเกลนิดหน่อย (Normal: ×0.22/round, Boss: ×0.15) ให้โค้งสวยขึ้นในช่วงกลาง',
@@ -3436,6 +3440,15 @@ function useDrawnAvatar(){
 function saveProfile(){
   const inp=document.getElementById('profileNameInput');
   const nm=(inp?inp.value.trim():'')||'ผู้เล่น';
+  // อัปชื่อใน local runs ทั้งหมด เพื่อไม่ให้สถิติหายเมื่อเปลี่ยนชื่อ
+  try{
+    const runs=JSON.parse(localStorage.getItem('tq_runs')||'[]');
+    const oldName=localStorage.getItem('tq_last_name')||'';
+    if(oldName&&oldName!==nm){
+      runs.forEach(r=>{if(r.name===oldName) r.name=nm;});
+      localStorage.setItem('tq_runs',JSON.stringify(runs));
+    }
+  }catch(e){}
   localStorage.setItem('tq_displayName',nm);
   localStorage.setItem('tq_last_name',nm);
   if(window.cloudSave) cloudSave();
@@ -3460,8 +3473,8 @@ function renderLb(){
   const runs=JSON.parse(localStorage.getItem('tq_runs')||'[]');
   const lastName=localStorage.getItem('tq_last_name')||'';
   if(lbTab===0){
-    // My Stats
-    const myRuns=lastName?runs.filter(r=>r.name===lastName):runs.slice(0,10);
+    // My Stats — ใช้ทุก run ใน local storage (local runs เป็นของผู้เล่นคนนี้เสมอ ไม่กรองชื่อเพื่อป้องกันสถิติหายเมื่อเปลี่ยนชื่อ)
+    const myRuns=runs;
     const egRuns=myRuns.filter(r=>r.mode==='endgame');
     const p=loadProgress();
     const totalStars=Object.values(p).reduce((a,b)=>a+b,0);

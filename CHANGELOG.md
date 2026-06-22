@@ -1,6 +1,13 @@
-# Changelog
+﻿# Changelog
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
+
+## v3.11.75 — Fix stats disappearing on rename
+
+### Fixed
+- **Stats lost on rename** (`js/ui.js` `renderLb`, `saveProfile`): "My Stats" tab now shows
+  all local runs unconditionally (local runs always belong to the local player).
+  `saveProfile()` also migrates existing run entries from old name to new name on save.
 
 ## v3.11.74 — Endgame infinite scaling (no HP/Shield cap)
 
