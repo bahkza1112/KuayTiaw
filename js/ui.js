@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.86';
+const GAME_VERSION='3.11.87';
 const PATCH_NOTES=[
+  {ver:'3.11.87',date:'2026-06-23',title:'🖼️ Leaderboard แสดงรูปวาดของผู้เล่นทุกคนได้',notes:[
+    'บีบอัดรูปวาด → 32×32px ก่อนส่งขึ้น leaderboard (~1-2KB)',
+    'อันดับเซิฟเวอร์แสดงรูปวาดของผู้เล่นทุกคน ไม่ใช่แค่ตัวเอง',
+  ]},
   {ver:'3.11.86',date:'2026-06-22',title:'🔧 แก้ช่องโหว่: ขายป้อมตอนเริ่มเกมใหม่',notes:[
     'ปิด tower popup อัตโนมัติทุกครั้งที่เริ่มเกมใหม่ (story และ endgame)',
     'ป้องกัน sellTowerFromPopup() ทำงานถ้าเกมจบแล้ว (G.over/G.win)',
@@ -3700,7 +3704,7 @@ function renderLb(){
         const me=r.name===myName;
         const rc=`lbt-row${i===0?' lbt-row-1':i===1?' lbt-row-2':i===2?' lbt-row-3':''}${me?' lbt-me':''}`;
         const av=me?myAv:(r.avatar||'🎮');
-        const avHtml=me&&myAv.startsWith('data:')?`<img src="${myAv}" style="width:26px;height:26px;border-radius:50%;object-fit:cover;vertical-align:middle;">`:`<span style="font-size:20px;line-height:26px;">${av}</span>`;
+        const avHtml=av.startsWith('data:')?`<img src="${av}" style="width:26px;height:26px;border-radius:50%;object-fit:cover;vertical-align:middle;">`:`<span style="font-size:20px;line-height:26px;">${av}</span>`;
         h+=`<div class="${rc}" style="grid-template-columns:${_gridCols};align-items:center;">
           <span class="lbt-rank">${_rankBadge(i)}</span>
           <span style="display:flex;align-items:center;justify-content:center;">${avHtml}</span>
@@ -3743,7 +3747,7 @@ function renderLb(){
           const isMe=r.name===myName;
           const rc=`lbt-row${i===0?' lbt-row-1':i===1?' lbt-row-2':i===2?' lbt-row-3':''}${isMe?' lbt-me':''}`;
           const sav=isMe?mySlAv:(r.avatar||'🎮');
-          const savHtml=isMe&&mySlAv.startsWith('data:')?`<img src="${mySlAv}" style="width:26px;height:26px;border-radius:50%;object-fit:cover;vertical-align:middle;">`:`<span style="font-size:20px;line-height:26px;">${sav}</span>`;
+          const savHtml=sav.startsWith('data:')?`<img src="${sav}" style="width:26px;height:26px;border-radius:50%;object-fit:cover;vertical-align:middle;">`:`<span style="font-size:20px;line-height:26px;">${sav}</span>`;
           html+=`<div class="${rc}" style="grid-template-columns:44px 38px 1fr 60px 70px;align-items:center;"><span class="lbt-rank">${_rb(i)}</span><span style="display:flex;align-items:center;justify-content:center;">${savHtml}</span><span class="lbt-name">${r.name}</span><span class="lbt-wave" style="color:#80cbc4;">${r.stagesCleared}</span><span class="lbt-score" style="color:#ffd54f;">${r.totalStars}★</span></div>`;
         });
         body.innerHTML=html;

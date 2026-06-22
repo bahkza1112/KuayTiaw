@@ -141,7 +141,7 @@ app.post('/api/leaderboard', (req, res) => {
     return res.status(400).json({ error: 'invalid' });
   }
   const lb = loadLb();
-  const entry = { name: String(name).slice(0,30), score, wave, diff, kills:kills||0, maxCombo:maxCombo||1, round:round||1, avatar:avatar?String(avatar).slice(0,10):'🎮', date: date||new Date().toLocaleDateString('th-TH'), ts: Date.now() };
+  const entry = { name: String(name).slice(0,30), score, wave, diff, kills:kills||0, maxCombo:maxCombo||1, round:round||1, avatar:avatar?String(avatar).slice(0,3000):'🎮', date: date||new Date().toLocaleDateString('th-TH'), ts: Date.now() };
   lb.push(entry);
   lb.sort((a,b)=>b.score-a.score);
   if (lb.length > 100) lb.length = 100;
@@ -167,7 +167,7 @@ app.post('/api/story-leaderboard', (req, res) => {
   const lb = loadSlb();
   // keep best entry per name
   const idx = lb.findIndex(e=>e.name===name);
-  const entry = { name:String(name).slice(0,30), totalStars, stagesCleared:stagesCleared||0, avatar:avatar?String(avatar).slice(0,10):'🎮', date:date||new Date().toLocaleDateString('th-TH'), ts:Date.now() };
+  const entry = { name:String(name).slice(0,30), totalStars, stagesCleared:stagesCleared||0, avatar:avatar?String(avatar).slice(0,3000):'🎮', date:date||new Date().toLocaleDateString('th-TH'), ts:Date.now() };
   if (idx>=0) { if (totalStars>lb[idx].totalStars||(totalStars===lb[idx].totalStars&&stagesCleared>lb[idx].stagesCleared)) lb[idx]=entry; }
   else lb.push(entry);
   lb.sort((a,b)=>b.totalStars-a.totalStars||b.stagesCleared-a.stagesCleared);

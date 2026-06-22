@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.87 — Leaderboard แสดงรูปวาดของผู้เล่นทุกคน
+
+### Added
+- `js/save.js` `_compressAvatar(src, cb)`: resize data URL รูปวาดลง 32×32px (PNG quality 0.7) ก่อน submit — ได้ ~1-2KB แทน data URL ขนาดเต็ม
+
+### Changed
+- `js/save.js` `skipSave()` / `confirmSave()` / `_submitStoryLb()`: ใช้ `_compressAvatar()` แทน fallback `'👤'` — ส่งรูปจริงขึ้น leaderboard
+- `js/ui.js` endgame + story leaderboard render: แสดง `<img>` สำหรับ data URL ของทุกผู้เล่น ไม่ใช่แค่ตัวเอง
+- `server.js`: เพิ่ม avatar slice limit จาก 10 → 3000 chars รองรับ base64 32×32
+
 ## v3.11.86 — แก้ช่องโหว่: ขายป้อมตอนเริ่มเกมใหม่
 
 ### Fixed

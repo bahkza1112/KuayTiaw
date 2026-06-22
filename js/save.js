@@ -1,4 +1,17 @@
 
+/* ══ AVATAR COMPRESS ══ */
+function _compressAvatar(src,cb){
+  if(!src||!src.startsWith('data:')){cb(src||'🎮');return;}
+  const img=new Image();
+  img.onload=function(){
+    const c=document.createElement('canvas');c.width=32;c.height=32;
+    const cx=c.getContext('2d');cx.drawImage(img,0,0,32,32);
+    cb(c.toDataURL('image/png',0.7));
+  };
+  img.onerror=function(){cb('👤');};
+  img.src=src;
+}
+
 /* ══ PROGRESS ══ */
 function loadProgress(){try{return JSON.parse(localStorage.getItem('tq_progress')||'{}');}catch(e){return{};}}
 const GEM_STAR_TABLE=[0,10,20,30]; // เพชรสะสมตามดาว 0/1/2/3
@@ -409,10 +422,12 @@ function _submitStoryLb(){
   const totalStars=Object.values(p).reduce((a,b)=>a+b,0);
   const stagesCleared=Object.keys(p).filter(k=>(p[k]||0)>=1).length;
   const _slav=localStorage.getItem('tq_avatar')||'🎮';
-  fetch('/api/story-leaderboard',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({name,totalStars,stagesCleared,avatar:_slav.startsWith('data:')?'👤':_slav,date:new Date().toLocaleDateString('th-TH')})})
-    .then(r=>r.json()).then(d=>{ if(d.rank&&d.rank<=10) showToast('⭐ ติด TOP '+d.rank+' กระดานดาว!'); })
-    .catch(()=>{});
+  _compressAvatar(_slav,function(avatar){
+    fetch('/api/story-leaderboard',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name,totalStars,stagesCleared,avatar,date:new Date().toLocaleDateString('th-TH')})})
+      .then(r=>r.json()).then(d=>{ if(d.rank&&d.rank<=10) showToast('⭐ ติด TOP '+d.rank+' กระดานดาว!'); })
+      .catch(()=>{});
+  });
 }
 
 /* ══ DAILY LOGIN + DAILY QUESTS (v3.6.0) ══ */
@@ -727,17 +742,17 @@ function showSavePrompt(){
 }
 
 function skipSave(){
-  // ส่งคะแนนไปเซิฟโดยใช้ชื่อล่าสุด แม้ว่าผู้เล่นจะกด "ข้าม"
   const name=localStorage.getItem('tq_last_name')||localStorage.getItem('tq_displayName')||'';
   if(name&&G){
     const _av=localStorage.getItem('tq_avatar')||'🎮';
-    const run={name,score:G.score,wave:G.wave,mode:'endgame',diff:EG_DIFF_NAMES[egDiff],
-      stage:null,round:egRound+1,kills:G.kills||0,maxCombo:G.maxCombo||1,
-      avatar:_av.startsWith('data:')?'👤':_av,
-      date:new Date().toLocaleDateString('th-TH'),ts:Date.now()};
-    fetch('/api/leaderboard',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(run)})
-      .then(r=>r.json()).then(d=>{ if(d.rank&&d.rank<=10) showToast('🏆 ติด TOP '+d.rank+' ของเซิฟ!'); })
-      .catch(()=>{});
+    _compressAvatar(_av,function(avatar){
+      const run={name,score:G.score,wave:G.wave,mode:'endgame',diff:EG_DIFF_NAMES[egDiff],
+        stage:null,round:egRound+1,kills:G.kills||0,maxCombo:G.maxCombo||1,
+        avatar,date:new Date().toLocaleDateString('th-TH'),ts:Date.now()};
+      fetch('/api/leaderboard',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(run)})
+        .then(r=>r.json()).then(d=>{ if(d.rank&&d.rank<=10) showToast('🏆 ติด TOP '+d.rank+' ของเซิฟ!'); })
+        .catch(()=>{});
+    });
   }
   document.getElementById('saveOverlay').style.display='none';
   showEgResult();
@@ -747,27 +762,24 @@ function confirmSave(){
   const name=document.getElementById('saveNameInput').value.trim()||'ผู้เล่น';
   localStorage.setItem('tq_last_name',name);
   const _cav=localStorage.getItem('tq_avatar')||'🎮';
-  const run={
+  const runBase={
     name, score:G.score, wave:G.wave,
-    mode:'endgame',
-    diff:EG_DIFF_NAMES[egDiff],
-    stage:null,
-    round:egRound+1,
-    kills:G.kills||0,
-    maxCombo:G.maxCombo||1,
-    avatar:_cav.startsWith('data:')?'👤':_cav,
-    date:new Date().toLocaleDateString('th-TH'),
-    ts:Date.now()
+    mode:'endgame', diff:EG_DIFF_NAMES[egDiff],
+    stage:null, round:egRound+1,
+    kills:G.kills||0, maxCombo:G.maxCombo||1,
+    date:new Date().toLocaleDateString('th-TH'), ts:Date.now()
   };
   const runs=JSON.parse(localStorage.getItem('tq_runs')||'[]');
-  runs.unshift(run);
-  if(runs.length>50) runs.length=50; // keep max 50
+  runs.unshift({...runBase,avatar:_cav.startsWith('data:')?'👤':_cav});
+  if(runs.length>50) runs.length=50;
   localStorage.setItem('tq_runs',JSON.stringify(runs));
-  checkAchievements(); // check eg3/eg7 achievements after saving run
-  // POST to server leaderboard (fire-and-forget)
-  fetch('/api/leaderboard',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(run)})
-    .then(r=>r.json()).then(d=>{ if(d.rank&&d.rank<=10) showToast('🏆 ติด TOP '+d.rank+' ของเซิฟ!'); })
-    .catch(()=>{});
+  checkAchievements();
+  _compressAvatar(_cav,function(avatar){
+    const run={...runBase,avatar};
+    fetch('/api/leaderboard',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(run)})
+      .then(r=>r.json()).then(d=>{ if(d.rank&&d.rank<=10) showToast('🏆 ติด TOP '+d.rank+' ของเซิฟ!'); })
+      .catch(()=>{});
+  });
   showToast('💾 Save Scoreของ '+name+' แล้ว!');
   document.getElementById('saveOverlay').style.display='none';
   showEgResult();
