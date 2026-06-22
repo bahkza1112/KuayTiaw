@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.93 — ปรับรางวัลสล็อต GREAT/NICE เพิ่มขึ้น
+
+### Changed
+- `js/ui.js` GREAT: `gold:1000` → `gold:2000`; NICE: `gold:500` → `gold:1000`
+
 ## v3.11.92 — ลบเพชรออกจากรางวัล GREAT/NICE สล็อต
 
 ### Changed
