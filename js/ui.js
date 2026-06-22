@@ -1,6 +1,9 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.87';
+const GAME_VERSION='3.11.88';
 const PATCH_NOTES=[
+  {ver:'3.11.88',date:'2026-06-23',title:'🔧 แก้บัค: หมวด "คาสิโน" หายจากหน้ารางวัล',notes:[
+    'เพิ่ม "casino" เข้า cats[] ใน renderAchievTab() — 8 รางวัลคาสิโนแสดงครบแล้ว',
+  ]},
   {ver:'3.11.87',date:'2026-06-23',title:'🖼️ Leaderboard แสดงรูปวาดของผู้เล่นทุกคนได้',notes:[
     'บีบอัดรูปวาด → 32×32px ก่อนส่งขึ้น leaderboard (~1-2KB)',
     'อันดับเซิฟเวอร์แสดงรูปวาดของผู้เล่นทุกคน ไม่ใช่แค่ตัวเอง',
@@ -912,7 +915,7 @@ function renderAchievTab(){
   <div class="ach-progress-bar" style="margin-bottom:14px;">
     <div class="ach-progress-fill" style="width:${Math.round(done/total*100)}%"></div>
   </div>`;
-  const cats=['story','combat','skill','endgame','collect'];
+  const cats=['story','combat','skill','endgame','casino','collect'];
   cats.forEach(cat=>{
     const items=ACHIEVEMENTS.filter(a=>a.cat===cat);
     html+=`<div class="ach-cat-label">${ACH_CATS[cat]}</div><div class="ach-grid">`;

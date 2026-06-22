@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.88 — แก้บัค: หมวดคาสิโนหายจากหน้ารางวัล
+
+### Fixed
+- `js/ui.js` `renderAchievTab()`: เพิ่ม `'casino'` เข้า `cats[]` — หมวด 🎰 คาสิโน (8 รางวัล) หายไปเพราะลืมใส่ไว้ในรายการ
+
 ## v3.11.87 — Leaderboard แสดงรูปวาดของผู้เล่นทุกคน
 
 ### Added
