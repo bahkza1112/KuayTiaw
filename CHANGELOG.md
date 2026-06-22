@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.82 — Leaderboard แสดง Avatar ผู้เล่น
+
+### Changed
+- `js/save.js` `skipSave()` / `confirmSave()`: เพิ่ม field `avatar` (emoji only, ไม่ส่ง data URL) ใน POST `/api/leaderboard`
+- `js/save.js` `_submitStoryLb()`: เพิ่ม field `avatar` ใน POST `/api/story-leaderboard`
+- `server.js` `/api/leaderboard` POST: รับและเก็บ `avatar` field (slice 10 chars, default `🎮`)
+- `server.js` `/api/story-leaderboard` POST: รับและเก็บ `avatar` field
+- `js/ui.js` `_renderCombined()`: แสดง `r.avatar` ของผู้เล่นแต่ละคนแทน hardcode `🎮`; ผู้เล่นตัวเองใช้ avatar จาก localStorage (รองรับ data URL)
+- `js/ui.js` story leaderboard render: เพิ่มคอลัมน์ avatar; แสดง `r.avatar` เช่นเดียวกับ endgame leaderboard
+
 ## v3.11.79 — Menu Tour: แนะนำเมนูเกม 13 ขั้น
 
 ### Added

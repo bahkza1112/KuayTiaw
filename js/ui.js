@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.81';
+const GAME_VERSION='3.11.82';
 const PATCH_NOTES=[
+  {ver:'3.11.82',date:'2026-06-22',title:'🏆 Leaderboard แสดง Avatar ผู้เล่น',notes:[
+    'อันดับเซิฟเวอร์แสดง avatar (อิโมจิ) ของผู้เล่นแต่ละคน แทน 🎮',
+    'รองรับทั้ง TOP 10 Endgame และกระดานดาว เนื้อเรื่อง',
+  ]},
   {ver:'3.11.81',date:'2026-06-22',title:'❓ ย้ายปุ่มแนะนำเมนูไปเมนูหลัก',notes:[
     'ปุ่ม "❓ แนะนำเมนู" ย้ายจากโปรไฟล์ไปอยู่ใต้ปุ่มโปรไฟล์บนเมนูหลัก',
   ]},
@@ -3682,7 +3686,7 @@ function renderLb(){
       sorted.forEach((r,i)=>{
         const me=r.name===myName;
         const rc=`lbt-row${i===0?' lbt-row-1':i===1?' lbt-row-2':i===2?' lbt-row-3':''}${me?' lbt-me':''}`;
-        const av=me?myAv:'🎮';
+        const av=me?myAv:(r.avatar||'🎮');
         const avHtml=me&&myAv.startsWith('data:')?`<img src="${myAv}" style="width:26px;height:26px;border-radius:50%;object-fit:cover;vertical-align:middle;">`:`<span style="font-size:20px;line-height:26px;">${av}</span>`;
         h+=`<div class="${rc}" style="grid-template-columns:${_gridCols};align-items:center;">
           <span class="lbt-rank">${_rankBadge(i)}</span>
@@ -3712,6 +3716,7 @@ function renderLb(){
     // กระดานดาว — story TOP 10 by totalStars from server
     const myName=lastName;
     const _rb=i=>i===0?'<span class="lb-rank-1">👑</span>':i===1?'<span class="lb-rank-2">🥈</span>':i===2?'<span class="lb-rank-3">🥉</span>':`<span class="lb-rank-num">${i+1}</span>`;
+    const mySlAv=localStorage.getItem('tq_avatar')||'🎮';
     const _hd=`<div class="lb-sv-hd"><div class="lb-sv-crown">⭐</div><div class="lb-sv-title">กระดานดาว เนื้อเรื่อง</div><div class="lb-sv-sub">เรียงตามดาวรวมสูงสุด</div></div>`;
     body.innerHTML=_hd+'<div class="lb-empty" style="color:#aaa;padding:20px;">⏳ กำลังโหลด...</div>';
     fetch('/api/story-leaderboard',{signal:AbortSignal.timeout(5000)})
@@ -3720,11 +3725,13 @@ function renderLb(){
         const entries=d.entries||[];
         let html=_hd;
         if(!entries.length){ body.innerHTML=html+'<div class="lb-empty">ยังไม่มีข้อมูล — ผ่านด่านแล้วมาดูอันดับ!</div>'; return; }
-        html+=`<div class="lbt-header" style="grid-template-columns:44px 1fr 60px 70px;"><span>#</span><span>ชื่อ</span><span>ด่าน</span><span>⭐ ดาว</span></div>`;
+        html+=`<div class="lbt-header" style="grid-template-columns:44px 38px 1fr 60px 70px;"><span>#</span><span></span><span>ชื่อ</span><span>ด่าน</span><span>⭐ ดาว</span></div>`;
         entries.forEach((r,i)=>{
           const isMe=r.name===myName;
           const rc=`lbt-row${i===0?' lbt-row-1':i===1?' lbt-row-2':i===2?' lbt-row-3':''}${isMe?' lbt-me':''}`;
-          html+=`<div class="${rc}" style="grid-template-columns:44px 1fr 60px 70px;"><span class="lbt-rank">${_rb(i)}</span><span class="lbt-name">${r.name}</span><span class="lbt-wave" style="color:#80cbc4;">${r.stagesCleared}</span><span class="lbt-score" style="color:#ffd54f;">${r.totalStars}★</span></div>`;
+          const sav=isMe?mySlAv:(r.avatar||'🎮');
+          const savHtml=isMe&&mySlAv.startsWith('data:')?`<img src="${mySlAv}" style="width:26px;height:26px;border-radius:50%;object-fit:cover;vertical-align:middle;">`:`<span style="font-size:20px;line-height:26px;">${sav}</span>`;
+          html+=`<div class="${rc}" style="grid-template-columns:44px 38px 1fr 60px 70px;align-items:center;"><span class="lbt-rank">${_rb(i)}</span><span style="display:flex;align-items:center;justify-content:center;">${savHtml}</span><span class="lbt-name">${r.name}</span><span class="lbt-wave" style="color:#80cbc4;">${r.stagesCleared}</span><span class="lbt-score" style="color:#ffd54f;">${r.totalStars}★</span></div>`;
         });
         body.innerHTML=html;
       })

@@ -408,8 +408,9 @@ function _submitStoryLb(){
   const p=loadProgress();
   const totalStars=Object.values(p).reduce((a,b)=>a+b,0);
   const stagesCleared=Object.keys(p).filter(k=>(p[k]||0)>=1).length;
+  const _slav=localStorage.getItem('tq_avatar')||'🎮';
   fetch('/api/story-leaderboard',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({name,totalStars,stagesCleared,date:new Date().toLocaleDateString('th-TH')})})
+    body:JSON.stringify({name,totalStars,stagesCleared,avatar:_slav.startsWith('data:')?'👤':_slav,date:new Date().toLocaleDateString('th-TH')})})
     .then(r=>r.json()).then(d=>{ if(d.rank&&d.rank<=10) showToast('⭐ ติด TOP '+d.rank+' กระดานดาว!'); })
     .catch(()=>{});
 }
@@ -729,8 +730,10 @@ function skipSave(){
   // ส่งคะแนนไปเซิฟโดยใช้ชื่อล่าสุด แม้ว่าผู้เล่นจะกด "ข้าม"
   const name=localStorage.getItem('tq_last_name')||localStorage.getItem('tq_displayName')||'';
   if(name&&G){
+    const _av=localStorage.getItem('tq_avatar')||'🎮';
     const run={name,score:G.score,wave:G.wave,mode:'endgame',diff:EG_DIFF_NAMES[egDiff],
       stage:null,round:egRound+1,kills:G.kills||0,maxCombo:G.maxCombo||1,
+      avatar:_av.startsWith('data:')?'👤':_av,
       date:new Date().toLocaleDateString('th-TH'),ts:Date.now()};
     fetch('/api/leaderboard',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(run)})
       .then(r=>r.json()).then(d=>{ if(d.rank&&d.rank<=10) showToast('🏆 ติด TOP '+d.rank+' ของเซิฟ!'); })
@@ -743,6 +746,7 @@ function skipSave(){
 function confirmSave(){
   const name=document.getElementById('saveNameInput').value.trim()||'ผู้เล่น';
   localStorage.setItem('tq_last_name',name);
+  const _cav=localStorage.getItem('tq_avatar')||'🎮';
   const run={
     name, score:G.score, wave:G.wave,
     mode:'endgame',
@@ -751,6 +755,7 @@ function confirmSave(){
     round:egRound+1,
     kills:G.kills||0,
     maxCombo:G.maxCombo||1,
+    avatar:_cav.startsWith('data:')?'👤':_cav,
     date:new Date().toLocaleDateString('th-TH'),
     ts:Date.now()
   };
