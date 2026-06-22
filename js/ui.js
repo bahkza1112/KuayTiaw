@@ -1,6 +1,9 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.76';
+const GAME_VERSION='3.11.77';
 const PATCH_NOTES=[
+  {ver:'3.11.77',date:'2026-06-22',title:'🔧 แก้ Login Reward ให้ไอเท็มบัพถูกต้อง',notes:[
+    'แก้บั๊ก Login Reward วันที่ 1/2/3/7 — เดิมให้เศษแทนยาบัพ ตอนนี้ให้ยาเข้มแข็ง + ยาเพิ่ม HP + ยาเพิ่มทอง ตามที่แสดงในการ์ด',
+  ]},
   {ver:'3.11.76',date:'2026-06-22',title:'🏆 Achievement Endgame Wave 25 / 50 / 100',notes:[
     'เพิ่ม Achievement ใหม่ 3 รางวัล สำหรับ Endgame โหมด Infinite',
     '🌊 ผู้พิทักษ์นิรันดร์ — อยู่รอดถึง Wave 25 (💎 +80)',
