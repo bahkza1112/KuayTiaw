@@ -363,6 +363,7 @@ function applyLightningStrike(){
 function initGame(){
   // BUG FIX: cancel any lingering RAF before starting new loop
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
+  if(typeof hideTowerPopup==='function') hideTowerPopup();
   G=mkState();
   const s=currentStage;
   // ใช้ startGold per-stage ถ้ามี (balance override)
@@ -2528,6 +2529,7 @@ function startEndgame(){
 }
 function _doStartEndgame(){
   isEndgame=true; egRound=0;
+  if(typeof hideTowerPopup==='function') hideTowerPopup();
   G=null; // reset ทุกสถิติ เวฟ kills score ให้เป็น 0 สำหรับ run ใหม่
   // 🎲 สุ่มแมพใหม่ทุกครั้ง — หยิบ path + ธีมสีจากด่านเนื้อเรื่อง (กันซ้ำแมพเดิมติดกัน)
   let _mi=Math.floor(Math.random()*STAGES.length);

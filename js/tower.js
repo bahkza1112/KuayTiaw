@@ -561,7 +561,7 @@ function upgradeTowerFromPopup(stat){
   },60);
 }
 function sellTowerFromPopup(){
-  if(!_popupTw||!G) return;
+  if(!_popupTw||!G||G.over||G.win) return;
   const tw=_popupTw;
   const refund=Math.floor(CFG.t_cost[tw.type]*tw.lv*.6);
   const key=tw.col+'_'+tw.row;

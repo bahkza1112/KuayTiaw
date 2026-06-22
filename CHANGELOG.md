@@ -2,6 +2,12 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.86 — แก้ช่องโหว่: ขายป้อมตอนเริ่มเกมใหม่
+
+### Fixed
+- `js/game.js` `initGame()` / `_doStartEndgame()`: เรียก `hideTowerPopup()` ทุกครั้งที่เริ่มเกมใหม่ — ป้องกันผู้เล่นค้าง popup ไว้แล้วกดขายตอนเริ่มเพื่อได้ทองพิเศษ
+- `js/tower.js` `sellTowerFromPopup()`: เพิ่มเงื่อนไข guard `G.over||G.win` ป้องกันขายในสถานะเกมจบ
+
 ## v3.11.85 — Popup สภาพอากาศแสดงทุกสภาพที่เป็นไปได้ในด่าน
 
 ### Changed
