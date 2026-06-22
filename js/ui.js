@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.79';
+const GAME_VERSION='3.11.80';
 const PATCH_NOTES=[
+  {ver:'3.11.80',date:'2026-06-22',title:'🔧 Menu Tour: แก้กล่องทับปุ่มเป้าหมาย',notes:[
+    'คำนวณพื้นที่ว่างบน/ล่างแบบ dynamic แทน hardcode 150px',
+    'fallback: บน→ล่าง→กลางจอ เมื่อพื้นที่ไม่พอ',
+  ]},
   {ver:'3.11.79',date:'2026-06-22',title:'❓ แนะนำเมนูเกม (Menu Tour)',notes:[
     'ปุ่ม "❓ แนะนำเมนูเกม" ในหน้าโปรไฟล์ — เดินทัวร์ 13 ขั้นครอบคลุมทุกหน้า',
     'พาเข้าแต่ละหน้าพร้อมไฮไลต์ปุ่มและอธิบายระบบ',
@@ -2022,17 +2026,22 @@ function _renderTour(){
   const tEl=s.target?document.querySelector(s.target):null;
   let hlStyle='display:none;', boxStyle='top:50%;left:50%;transform:translate(-50%,-50%);width:240px;', arrowStyle='display:none;', arrowTxt='';
   if(tEl){
-    const r=tEl.getBoundingClientRect(), pad=6, bw=230;
+    const r=tEl.getBoundingClientRect(), pad=6, bw=230, bh=190;
     hlStyle=`top:${r.top-pad}px;left:${r.left-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px;`;
     const bx=Math.min(Math.max(8,r.left+r.width/2-bw/2),window.innerWidth-bw-8);
-    if(s.anchor==='above'){
-      const by=Math.max(8,r.top-pad-150);
+    const spaceAbove=r.top-pad-12;
+    const spaceBelow=window.innerHeight-(r.bottom+pad+12);
+    // ถ้าที่ว่างด้านบนพอ → แสดงบน; ไม่พอ → แสดงล่าง; ไม่พอทั้งคู่ → กลางจอ
+    if(spaceAbove>=bh){
+      const by=r.top-pad-12-bh;
       boxStyle=`top:${by}px;left:${bx}px;width:${bw}px;`;
-      arrowTxt='⬇️'; arrowStyle=`top:${r.top-pad-28}px;left:${r.left+r.width/2}px;transform:translateX(-50%);`;
-    } else {
-      const by=Math.min(r.bottom+pad+8,window.innerHeight-180);
+      arrowTxt='⬇️'; arrowStyle=`top:${r.top-pad-26}px;left:${r.left+r.width/2}px;transform:translateX(-50%);`;
+    } else if(spaceBelow>=bh){
+      const by=r.bottom+pad+12;
       boxStyle=`top:${by}px;left:${bx}px;width:${bw}px;`;
       arrowTxt='⬆️'; arrowStyle=`top:${r.bottom+pad+2}px;left:${r.left+r.width/2}px;transform:translateX(-50%);`;
+    } else {
+      boxStyle=`top:50%;left:50%;transform:translate(-50%,-50%);width:${bw}px;`;
     }
   }
   el.innerHTML=`
