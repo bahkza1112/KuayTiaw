@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.92 — ลบเพชรออกจากรางวัล GREAT/NICE สล็อต
+
+### Changed
+- `js/ui.js` outcomes GREAT/NICE: `gems:500/250` → `gems:0`; label ลบ `+💎500`/`+💎250` ออก
+
 ## v3.11.91 — ปรับราคาสล็อต: 50→100 ทอง/สปิน
 
 ### Changed
