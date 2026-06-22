@@ -3938,7 +3938,7 @@ function _renderSlotHistory(){
 function _renderCasinoUI(){
   const pg=loadPGold();
   const el=document.getElementById('slotGoldDisplay');if(el) el.textContent=pg.toLocaleString();
-  const btn=document.getElementById('slotSpinBtn');if(btn) btn.disabled=_slotBusy||pg<SLOT_COST;
+  const btn=document.getElementById('slotSpinBtn');if(btn){btn.disabled=_slotBusy||pg<SLOT_COST;btn.textContent='🎰 หมุน! (💰 '+SLOT_COST+')'}
   const ot=document.getElementById('slotOddsTable');
   if(ot&&!ot.innerHTML){
     const names={1:'💎💎💎',3:'⭐⭐⭐',10:'🔮🔮🔮',30:'💰💰💰',100:'คู่ใดก็ได้',856:'ไม่ตรง'};
