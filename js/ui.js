@@ -1,6 +1,11 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.78';
+const GAME_VERSION='3.11.79';
 const PATCH_NOTES=[
+  {ver:'3.11.79',date:'2026-06-22',title:'❓ แนะนำเมนูเกม (Menu Tour)',notes:[
+    'ปุ่ม "❓ แนะนำเมนูเกม" ในหน้าโปรไฟล์ — เดินทัวร์ 13 ขั้นครอบคลุมทุกหน้า',
+    'พาเข้าแต่ละหน้าพร้อมไฮไลต์ปุ่มและอธิบายระบบ',
+    'Auto-start ครั้งแรกหลังผ่าน tutorial ด่าน 1-3',
+  ]},
   {ver:'3.11.78',date:'2026-06-22',title:'🎰 Achievement คาสิโน 8 รางวัลใหม่',notes:[
     'เพิ่ม Achievement หมวด 🎰 คาสิโน ครั้งแรกหมุน · คู่แรก · GREAT · SUPER · JACKPOT',
     '🎲 นักพนันตัวจริง — หมุนรวม 100 ครั้ง',
@@ -905,8 +910,12 @@ function showScreen(id,flex){
   el.style.display=flex?'flex':'block';
   if(flex)el.style.flexDirection='column';
   el.classList.remove('screen-enter');
-  void el.offsetWidth; // reflow เพื่อรีสตาร์ทแอนิเมชัน
+  void el.offsetWidth;
   el.classList.add('screen-enter');
+  // auto-start menu tour ครั้งแรกหลัง tutorial จบ
+  if(id==='mm'&&!localStorage.getItem('tq_menutour_done')&&localStorage.getItem('tq_tut_done')){
+    setTimeout(startMenuTour,600);
+  }
 }
 
 /* ══ MENU STATS ══ */
@@ -1937,6 +1946,106 @@ function skipTutorial(){
   localStorage.setItem('tq_tut_done','1');
   const el=document.getElementById('tutOverlay');
   if(el) el.style.display='none';
+}
+
+/* ══ MENU TOUR ══ */
+let _tourStep=-1;
+const MENU_TOUR_STEPS=[
+  {screen:'mm',target:null,anchor:'center',
+   title:'🏰 ยินดีต้อนรับสู่ Tower Quest!',
+   msg:'ขอแนะนำเมนูและระบบต่างๆ ในเกม\nกด "ต่อไป" เพื่อเดินทัวร์'},
+  {screen:'mm',target:'#startBtn',anchor:'above',
+   title:'⚔️ โหมดเนื้อเรื่อง',
+   msg:'เล่นผ่าน 11 ด่านพร้อมเนื้อเรื่อง\nปลดล็อกป้อมใหม่และ Awaken\nแนะนำให้เริ่มที่นี่!'},
+  {screen:'mm',target:'#egMenuBtn',anchor:'above',
+   title:'🔥 เอนด์เกม',
+   msg:'โหมดเอาตัวรอดไม่จำกัดเวฟ\nท้าทายที่สุด มีอันดับเซิร์ฟ\nปลดล็อกหลังจบเนื้อเรื่อง'},
+  {screen:'mm',target:'.mm-resource-bar',anchor:'below',
+   title:'💰 ทรัพยากร (ทอง + เจม)',
+   msg:'ทอง💰 ซื้อ/อัปเกรดป้อมในเกม\nเจม💎 ใช้ใน Workshop และกาชา\nกดแถบนี้เพื่อเปิด Workshop'},
+  {screen:'workshop',open:'openWorkshop',target:'#workshopNavBtn',anchor:'above',
+   title:'🛠️ เวิร์กชอป',
+   msg:'สะสมวัสดุจาก Endgame\nนำมา Craft ปลดล็อกป้อมใหม่\nและอัปเกรด Awaken ป้อม'},
+  {screen:'gacha',open:'openGacha',target:'#gachaNavBtn',anchor:'above',
+   title:'🎁 กาชา',
+   msg:'ใช้เจม💎 หมุนตู้รางวัล\nรับโปชั่น เจม การ์ดสกิล\nมีตู้ปกติ + ตู้การ์ดสกิลพิเศษ'},
+  {screen:'bag',open:'openBag',target:'#bagNavBtn',anchor:'above',
+   title:'🎒 กระเป๋า',
+   msg:'เก็บไอเทมและการ์ดสกิล\nการ์ดสกิลใช้ระหว่างเล่น\nเพิ่มพลังพิเศษให้ป้อม'},
+  {screen:'casino',open:'openCasino',target:'#casinoNavBtn',anchor:'above',
+   title:'🎰 คาสิโน',
+   msg:'ใช้ทองพิเศษ (PG) หมุนสล็อต\nโอกาสรับเจม ตั๋ว ทอง\nPG หาได้จากการเล่น Endgame'},
+  {screen:'leaderboard',open:'openLeaderboard',target:'#lbNavBtn',anchor:'above',
+   title:'🏆 อันดับ',
+   msg:'อันดับ Endgame แบบ Real-time\nทั้งของตัวเองและผู้เล่นอื่น\nอันดับเซิร์ฟ + สถิติส่วนตัว'},
+  {screen:'daily',open:'openDaily',target:'#dailyNavBtn',anchor:'below',
+   title:'📅 ภารกิจ',
+   msg:'รับรางวัล Login ประจำวัน\nทำภารกิจรับเจม/ไอเทม\nอย่าลืมเช็คอินทุกวัน!'},
+  {screen:'codex',open:'openCodex',target:'#codexNavBtn',anchor:'below',
+   title:'📖 สารานุกรม',
+   msg:'ข้อมูลป้อม + ศัตรูทุกชนิด\nรวมถึงภารกิจความสำเร็จ\nสะสมครบรับรางวัลพิเศษ'},
+  {screen:'profile',open:'openProfile',target:'#tourStartBtn',anchor:'above',
+   title:'👤 โปรไฟล์',
+   msg:'ตั้งชื่อ + เลือก Avatar ในเกม\nLogin Google เพื่อ sync ข้ามเครื่อง\nข้อมูลไม่หายแม้เปลี่ยนอุปกรณ์'},
+  {screen:'mm',target:null,anchor:'center',
+   title:'🎮 พร้อมออกรบแล้ว!',
+   msg:'รู้จักเมนูทั้งหมดแล้ว\nกด ⚔️ โหมดเนื้อเรื่อง เพื่อเริ่ม\nขอให้สนุกกับการเล่น!', final:true},
+];
+function startMenuTour(){
+  showScreen('mm',true);
+  localStorage.setItem('tq_menutour_done','1');
+  _tourStep=0;
+  _renderTour();
+}
+function _tourNext(){
+  if(_tourStep<0) return;
+  if(MENU_TOUR_STEPS[_tourStep].final){ endMenuTour(); return; }
+  _tourStep++;
+  if(_tourStep>=MENU_TOUR_STEPS.length){ endMenuTour(); return; }
+  const ns=MENU_TOUR_STEPS[_tourStep];
+  if(ns.open&&typeof window[ns.open]==='function') window[ns.open]();
+  else if(ns.screen==='mm') showScreen('mm',true);
+  setTimeout(_renderTour,100);
+}
+function endMenuTour(){
+  _tourStep=-1;
+  const el=document.getElementById('tourOverlay');
+  if(el){el.style.display='none';el.innerHTML='';}
+  showScreen('mm',true);
+}
+function _renderTour(){
+  const el=document.getElementById('tourOverlay'); if(!el) return;
+  if(_tourStep<0){el.style.display='none';return;}
+  el.style.display='block';
+  const s=MENU_TOUR_STEPS[_tourStep];
+  const total=MENU_TOUR_STEPS.length;
+  const tEl=s.target?document.querySelector(s.target):null;
+  let hlStyle='display:none;', boxStyle='top:50%;left:50%;transform:translate(-50%,-50%);width:240px;', arrowStyle='display:none;', arrowTxt='';
+  if(tEl){
+    const r=tEl.getBoundingClientRect(), pad=6, bw=230;
+    hlStyle=`top:${r.top-pad}px;left:${r.left-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px;`;
+    const bx=Math.min(Math.max(8,r.left+r.width/2-bw/2),window.innerWidth-bw-8);
+    if(s.anchor==='above'){
+      const by=Math.max(8,r.top-pad-150);
+      boxStyle=`top:${by}px;left:${bx}px;width:${bw}px;`;
+      arrowTxt='⬇️'; arrowStyle=`top:${r.top-pad-28}px;left:${r.left+r.width/2}px;transform:translateX(-50%);`;
+    } else {
+      const by=Math.min(r.bottom+pad+8,window.innerHeight-180);
+      boxStyle=`top:${by}px;left:${bx}px;width:${bw}px;`;
+      arrowTxt='⬆️'; arrowStyle=`top:${r.bottom+pad+2}px;left:${r.left+r.width/2}px;transform:translateX(-50%);`;
+    }
+  }
+  el.innerHTML=`
+    <div style="position:fixed;inset:0;background:rgba(0,0,0,.5);pointer-events:auto;" onclick=""></div>
+    <div class="tut-highlight" style="position:fixed;border-radius:10px;${hlStyle}"></div>
+    <div style="position:fixed;font-size:18px;pointer-events:none;${arrowStyle}">${arrowTxt}</div>
+    <div class="tut-box" style="position:fixed;${boxStyle}pointer-events:auto;">
+      <div class="tut-title">${s.title}</div>
+      <div style="font-size:12px;line-height:1.65;margin-bottom:10px;color:rgba(255,255,255,.85);">${s.msg.replace(/\n/g,'<br>')}</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.3);margin-bottom:8px;">${_tourStep+1} / ${total}</div>
+      <div class="tut-next" onclick="_tourNext()">${s.final?'🎮 เริ่มเล่น!':'ต่อไป ▶'}</div>
+    </div>
+    <div class="tut-skip" style="position:fixed;bottom:16px;right:16px;pointer-events:auto;" onclick="endMenuTour()">ข้าม ✕</div>`;
 }
 
 /* ══ CUTSCENE ENGINE ══ */

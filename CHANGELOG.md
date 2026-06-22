@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.79 — Menu Tour: แนะนำเมนูเกม 13 ขั้น
+
+### Added
+- `js/ui.js` `MENU_TOUR_STEPS` (13 steps) + `startMenuTour/endMenuTour/_tourNext/_renderTour`: ทัวร์แนะนำทุกหน้าเมนู พร้อมไฮไลต์ปุ่มและคำอธิบาย (`position:fixed` overlay ทำงานได้ทุกหน้าจอ)
+- `Tower Quest 🏰.html` `#tourOverlay` + `#tourStartBtn` "❓ แนะนำเมนูเกม" ในโปรไฟล์
+- `showScreen()` auto-trigger ทัวร์เมื่อ `tq_tut_done=1` และยังไม่เคยทำ (`tq_menutour_done`)
+
+### New localStorage key
+- `tq_menutour_done`: ป้องกัน auto-trigger ซ้ำ
+
 ## v3.11.78 — Casino achievement category (8 new achievements)
 
 ### Added
