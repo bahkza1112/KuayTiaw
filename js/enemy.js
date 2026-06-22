@@ -196,7 +196,8 @@ function killEnemy(e){
   _onComboForAch(G.comboN); // achievement: combo milestone
   const comboMult=G.comboN>=10?3:G.comboN>=5?2:G.comboN>=3?1.5:1;
   const baseScore=e.reward*10;
-  const finalScore=Math.round(baseScore*comboMult);
+  const _scDiff=isEndgame?(EG_SCORE_MULT[egDiff]||1):1; // 🔥 คะแนน Endgame คูณตามความยาก
+  const finalScore=Math.round(baseScore*comboMult*_scDiff);
   G.score+=finalScore;
   _onScoreForAch(G.score); // achievement: score milestone
   if(G.comboN>=3&&G.comboN%3===0){
@@ -205,7 +206,7 @@ function killEnemy(e){
     G.particles.push({x:e.x,y:e.y-ESIZES[e.ti]-20,txt:'⚡'+ct,col:'#ffe234',
       life:1.2,vy:-1.6,vx:0,decay:.9,scale:1.3});
   }
-  const _gr=Math.round(e.reward*(G.goldMult||1)*(1+((G.skillGoldT>0)?G.skillGoldMult:0))); // 🌳 talent + 💰 โกลด์รัช
+  const _gr=Math.round(e.reward*(G.goldMult||1)*(1+((G.skillGoldT>0)?G.skillGoldMult:0))*(G.goldWaveMult||1)); // 🌳 talent + 💰 โกลด์รัช + 💰 เวฟทอง
   G.gold+=_gr;
   addParticle(e.x,e.y,'+'+_gr+'💰','#ffe082');
   // 📅 daily quest tracking

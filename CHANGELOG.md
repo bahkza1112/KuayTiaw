@@ -2,6 +2,21 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.73 — Difficulty-scaled score + special waves + stage-11 opening
+
+### Changed
+- **Endgame score scales with difficulty** (`js/game.js` `EG_SCORE_MULT=[1.0,1.5,2.5]`,
+  applied in `js/enemy.js` kill handler): final score is now `reward*10*combo*diffMult`
+  in endgame, so Hard runs (×2.5) outscore Easy (×1.0) instead of Easy ranking higher just
+  by surviving longer at 0.7× HP. Story mode unaffected (`isEndgame` gate).
+- **Special endgame waves** (`js/game.js` `startEgWave`): every 10 waves (from wave 6) a
+  themed wave fires — 👹 boss rush (boss chance ≥0.30), 💰 gold wave (kills pay ×2 via
+  `G.goldWaveMult`, reset on wave clear), 🐝 swarm (count ×1.6) — each with its own banner.
+- **Stage 11 opening softened** (`js/game.js` `STAGES[10].enemyTypes`): reordered
+  `[7,8,10,…]` → `[0,2,1,5,8,10,6,7,3,4,9]` so the early waves lead with ground basics
+  (goblin/shadow) instead of an air rush (Wyvern). Same enemy set, gentler ramp-in; later
+  waves still see the full pool.
+
 ## v3.11.72 — Endgame randomizes its map each run
 
 ### Changed

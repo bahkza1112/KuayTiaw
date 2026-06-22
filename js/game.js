@@ -104,7 +104,7 @@ const STAGES=[
    grassColors:['#080018','#0a001e','#060012','#0c0020','#07001a']},
   {id:10,name:'Shadow Remnant',icon:'🌑',
    desc:'เศษเสี้ยวสุดท้ายของจอมมารลุกขึ้นอีกครั้ง ศัตรูทุกชนิดรวมพลในศึกครั้งสุดท้ายที่แท้จริง',
-   waves:13,enemyTypes:[7,8,10,0,2,5,6,1,3,4,9],bossChance:.13,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
+   waves:13,enemyTypes:[0,2,1,5,8,10,6,7,3,4,9],bossChance:.13,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
    isFinalStage:true,
    maxTowers:6,story:'จอมมารพ่ายแพ้ไปแล้ว... แต่เงาของมันไม่ยอมสลายไปง่ายๆ เศษพลังมืดที่หลงเหลือรวมตัวกันเป็นกองทัพผีร้ายชุดสุดท้าย ทุกชนิดสัตว์ร้ายที่เคยพ่ายแพ้กลับมารวมพลังกันอีกครั้ง — นี่คือศึกแท้จริงที่จะยุติความมืดตลอดกาล!',
    path:[[0,5],[1,5],[1,6],[1,7],[1,8],[2,8],[3,8],[4,8],[4,7],[4,6],[4,5],[4,4],
@@ -154,6 +154,7 @@ let egDiff=1; // 0=easy,1=normal,2=hard
 let egRound=0;
 const EG_WAVES_PER_ROUND=5; // Endgame: เลื่อน round ทุก 5 เวฟ → round = floor((wave-1)/5) (ดีไซน์ตั้งใจให้ไปถึง ~round 20)
 const EG_DIFF_MULT=[0.7,1.0,1.8];
+const EG_SCORE_MULT=[1.0,1.5,2.5]; // คะแนน Endgame คูณตามความยาก (ง่าย/ปกติ/ยาก) — ให้คนเล่นยากได้คะแนนคุ้มและขึ้น TOP 10 อย่างเป็นธรรม
 const EG_DIFF_NAMES=['ง่าย','ปกติ','ยาก'];
 const MAT_DROP_RATES=[
   [0.10,0.14,0.20], // 0: 🪨 เศษหินมืด
@@ -2588,10 +2589,20 @@ function startEgWave(){
   document.getElementById('waveBtn').disabled=true;
   G.waveActive=true; G.queue=[]; G.spawnT=0;
   rollWeather(currentStage.id); // 🌦 roll random weather for this Endgame wave
+  // 🌟 เวฟพิเศษ (Endgame) — หมุนเวียนทุก 10 เวฟ ให้จังหวะเกมไม่จำเจ
+  let special=null;
+  if(G.wave>=6){
+    if(G.wave%10===0) special='boss';      // 👹 บอสรัช
+    else if(G.wave%10===7) special='gold'; // 💰 เวฟทอง ×2
+    else if(G.wave%10===4) special='swarm';// 🐝 เวฟฝูง (ศัตรูเยอะ)
+  }
+  G.goldWaveMult=special==='gold'?2:1;
   // count สเกลเชิงเส้นตามเวฟเท่านั้น — เดิมคูณ (1+egRound*.2) ด้วย แต่ egRound ค้าง 0 เลยไม่เคยมีผล; พอ egRound โตจริงจะระเบิดเป็น quadratic (เวฟ100 = ~960 ตัว) จึงตัด term นี้ออก
-  const n=Math.floor(CFG.enemyPerWaveBase+G.wave*CFG.enemyPerWaveInc);
+  let n=Math.floor(CFG.enemyPerWaveBase+G.wave*CFG.enemyPerWaveInc);
+  if(special==='swarm') n=Math.round(n*1.6);
   const avail=_getEgEnemyPool();
-  const bChance=0.08+egRound*.015;
+  let bChance=0.08+egRound*.015;
+  if(special==='boss') bChance=Math.max(bChance,0.30); // บอสรัช: บอสออกถี่ขึ้น
   for(let i=0;i<n;i++){
     const maxIdx=Math.min(avail.length-1,Math.ceil((G.wave+egRound*2)/3));
     let ei=avail[Math.floor(Math.random()*(maxIdx+1))];
@@ -2600,7 +2611,8 @@ function startEgWave(){
     if(avail.includes(10)&&G.wave>=2&&Math.random()<.15) ei=10;
     G.queue.push(ei);
   }
-  G.waveBanner={text:'🔥  WAVE  '+G.wave,t:1.5};
+  const _banner=special==='boss'?'👹  บอสรัช!':special==='gold'?'💰  เวฟทอง ×2!':special==='swarm'?'🐝  เวฟฝูง!':'🔥  WAVE  '+G.wave;
+  G.waveBanner={text:_banner,t:special?2.2:1.5};
 }
 
 function updateEg(dt){
@@ -2906,6 +2918,7 @@ function updateEg(dt){
   // wave clear → next wave (no limit)
   if(G.waveActive&&G.queue.length===0&&G.enemies.length===0){
     G.waveActive=false;
+    G.goldWaveMult=1; // 💰 จบเวฟทอง — รีเซ็ตตัวคูณทอง
     if(egDiff===2&&G.weather&&G.weather.active) unlockAchievement('eghw'); // 🌩️ Hard + weather wave clear
     clearWeather(); // 🌦 clear weather when Endgame wave ends
     const bonus=20+G.wave*3+egRound*6; G.gold+=bonus; updateHUD();
