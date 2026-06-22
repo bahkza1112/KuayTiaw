@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.83 — แก้บัค: แสงสีแดงจาก Combo Meter
+
+### Fixed
+- `js/game.js` Combo meter timer bar + Wave Banner: เพิ่ม `ctx.beginPath()` ก่อนทุก `roundRect`/`rect` call — ขาด `beginPath()` ทำให้ path สะสมข้ามเฟรม และ `ctx.fill()` fill ทับพื้นที่ใหญ่เป็นสีแดง (เห็นเป็น ellipse สีแดงบนแผนที่)
+
 ## v3.11.82 — Leaderboard แสดง Avatar ผู้เล่น
 
 ### Changed

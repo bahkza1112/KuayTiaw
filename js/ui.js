@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.82';
+const GAME_VERSION='3.11.83';
 const PATCH_NOTES=[
+  {ver:'3.11.83',date:'2026-06-22',title:'🔧 แก้บัค: แสงสีแดงจาก Combo Meter',notes:[
+    'Combo timer bar และ Wave Banner ขาด beginPath() ทำให้ path สะสมข้ามเฟรม',
+    'แก้แล้ว: เพิ่ม ctx.beginPath() ก่อนทุก rect/roundRect ใน combo และ wave banner',
+  ]},
   {ver:'3.11.82',date:'2026-06-22',title:'🏆 Leaderboard แสดง Avatar ผู้เล่น',notes:[
     'อันดับเซิฟเวอร์แสดง avatar (อิโมจิ) ของผู้เล่นแต่ละคน แทน 🎮',
     'รองรับทั้ง TOP 10 Endgame และกระดานดาว เนื้อเรื่อง',

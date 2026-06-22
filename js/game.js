@@ -2017,9 +2017,9 @@ function render(){
     ctx.save();ctx.globalAlpha=Math.max(0,Math.min(.94,alpha));
     const bw2=Math.min(310,cv.width*.75),bh2=50,bx2=cv.width/2-bw2/2+slideX,by2=cv.height*.34;
     ctx.fillStyle='rgba(0,0,0,.8)';
-    if(ctx.roundRect)ctx.roundRect(bx2,by2,bw2,bh2,13);else ctx.rect(bx2,by2,bw2,bh2);ctx.fill();
+    ctx.beginPath();if(ctx.roundRect)ctx.roundRect(bx2,by2,bw2,bh2,13);else ctx.rect(bx2,by2,bw2,bh2);ctx.fill();
     ctx.strokeStyle='#ffe082';ctx.lineWidth=2;
-    if(ctx.roundRect)ctx.roundRect(bx2,by2,bw2,bh2,13);else ctx.rect(bx2,by2,bw2,bh2);ctx.stroke();
+    ctx.beginPath();if(ctx.roundRect)ctx.roundRect(bx2,by2,bw2,bh2,13);else ctx.rect(bx2,by2,bw2,bh2);ctx.stroke();
     ctx.fillStyle='#fff';ctx.font='bold 21px Arial';
     ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.shadowColor='rgba(255,224,130,.85)';ctx.shadowBlur=10;
@@ -2046,10 +2046,10 @@ function render(){
     // timer bar
     const bw=110,bh=4,bx=cx-bw/2,byb=cy+30;
     ctx.fillStyle='rgba(255,255,255,.18)';
-    if(ctx.roundRect)ctx.roundRect(bx,byb,bw,bh,2);else ctx.rect(bx,byb,bw,bh);ctx.fill();
+    ctx.beginPath();if(ctx.roundRect)ctx.roundRect(bx,byb,bw,bh,2);else ctx.rect(bx,byb,bw,bh);ctx.fill();
     ctx.fillStyle=col;
     const tw=bw*Math.min(1,G.comboT/2.2);
-    if(ctx.roundRect)ctx.roundRect(bx,byb,tw,bh,2);else ctx.rect(bx,byb,tw,bh);ctx.fill();
+    ctx.beginPath();if(ctx.roundRect)ctx.roundRect(bx,byb,tw,bh,2);else ctx.rect(bx,byb,tw,bh);ctx.fill();
     ctx.restore();
   }
 }
