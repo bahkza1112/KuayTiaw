@@ -2,6 +2,41 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.70 — แก้บัค Endgame restart ไม่รีเซ็ตสถิติ/เวฟ
+
+### Fixed
+- `js/game.js` `restartGame()`: branch บน `isEndgame` → เรียก `_doStartEndgame()`
+  แทน `initGame()` (story mode) เมื่ออยู่ใน Endgame ทำให้การกด "เล่นใหม่"
+  จาก end overlay และ "เริ่มใหม่" จากหน้าหยุดเกม (`pausedRestart()`) ทำงานถูกโหมด
+- `js/game.js` `_doStartEndgame()`: set `G=null` ก่อน `initEgGame()` →
+  `initEgGame()`'s carry-over (`prevKills`/`prevScore`/`prevMaxCombo`) อ่านได้ 0
+  ทำให้ wave/score/kills/combo รีเซ็ตเป็น 0 สำหรับ run ใหม่
+
+## v3.11.69 — โปรไฟล์แสดง in-game avatar+ชื่อแทน Google pic
+
+### Changed
+- `js/ui.js` `openProfile()`: แสดง avatar ในเกม + ชื่อผู้เล่นเสมอ
+  (ไม่แสดงรูป/อีเมล Google); ชื่อ fallback เป็นชื่อ Google เฉพาะตอนยังไม่ตั้งชื่อ
+
+## v3.11.68 — แก้ OAuth redirect รักษา hash #tqauth=
+
+### Fixed
+- `server.js` OAuth callback: redirect ตรงไป `/Tower%20Quest%20%F0%9F%8F%B0.html#tqauth=...`
+  ข้าม `index.html` ที่ใช้ `location.replace()` แล้วทำให้ hash fragment หาย
+
+## v3.11.67 — แก้ decode base64url (เพิ่ม padding)
+
+### Fixed
+- `js/cloud-save.js`: เติม `=` padding ให้ base64url ก่อน `atob()` —
+  เดิม `atob()` throw แล้วถูก `try/catch` กลืน ทำให้ `tq_cloud_user` ไม่ถูกบันทึก
+
+## v3.11.66 — แก้สถานะ login บนหน้าโปรไฟล์
+
+### Fixed
+- `js/cloud-save.js`: set `window.cloudUser` หลังโหลดจาก localStorage และ
+  เคลียร์เป็น `null` ตอน logout — `openProfile()` เช็ค `window.cloudUser`
+  ซึ่งเดิมเป็น `undefined` เสมอ (เพราะ `let` ไม่ผูกกับ `window`)
+
 ## v3.11.65 — Cross-device sync สมบูรณ์ (HMAC token auth)
 
 ### Added
