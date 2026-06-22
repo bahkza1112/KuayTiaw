@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.71 — TOP 10 leaderboard shows difficulty
+
+### Added
+- **Difficulty column in TOP 10 server table** (`js/ui.js` `renderLb` → `_renderCombined`):
+  each entry now shows its endgame difficulty with a colour emoji + label
+  (🟢 ง่าย / 🟡 ปกติ / 🔴 ยาก) in a new column placed before the score column. Uses the
+  `diff` field already stored on each leaderboard entry (server + local fallback); old
+  entries without `diff` show ⚪ —. Grid widened to `40px 38px 1fr 52px 80px 56px`.
+
 ## v3.11.70 — แก้บัค Endgame restart ไม่รีเซ็ตสถิติ/เวฟ
 
 ### Fixed

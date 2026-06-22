@@ -1,6 +1,9 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.70';
+const GAME_VERSION='3.11.71';
 const PATCH_NOTES=[
+  {ver:'3.11.71',date:'2026-06-22',title:'🏆 TOP 10 เซิฟ: เพิ่มคอลัมน์ระดับความยาก',notes:[
+    'ตาราง TOP 10 เซิฟแสดงระดับความยากของแต่ละสถิติ (🟢 ง่าย · 🟡 ปกติ · 🔴 ยาก) หน้าคอลัมน์คะแนน',
+  ]},
   {ver:'3.11.70',date:'2026-06-22',title:'🐛 แก้บัค: Endgame เล่นใหม่ เวฟ/สถิติรีเป็น 0',notes:[
     'กด "เล่นใหม่" จาก Endgame ตอนนี้รีเซ็ต wave/score/kills/combo เป็น 0 ถูกต้อง',
     'แก้ restartGame() ใช้ _doStartEndgame() แทน initGame() ตอนอยู่ใน Endgame',
@@ -3507,19 +3510,22 @@ function renderLb(){
       if(i===2) return '<span class="lb-rank-3">🛡️</span>';
       return `<span class="lb-rank-num">${i+1}</span>`;
     };
+    const _diffEmoji={'ง่าย':'🟢','ปกติ':'🟡','ยาก':'🔴'};
+    const _gridCols='40px 38px 1fr 52px 80px 56px';
     const _renderCombined=(entries)=>{
       const sorted=[...entries].sort((a,b)=>b.score-a.score).slice(0,10);
       if(!sorted.length) return `<div class="lb-empty">ยังไม่มีข้อมูล</div>`;
-      let h=`<div class="lbt-header" style="grid-template-columns:44px 44px 1fr 90px 70px;"><span>#</span><span></span><span>ชื่อ</span><span>⭐ คะแนน</span><span>🌊 เวฟ</span></div>`;
+      let h=`<div class="lbt-header" style="grid-template-columns:${_gridCols};"><span>#</span><span></span><span>ชื่อ</span><span>ระดับ</span><span>⭐ คะแนน</span><span>🌊 เวฟ</span></div>`;
       sorted.forEach((r,i)=>{
         const me=r.name===myName;
         const rc=`lbt-row${i===0?' lbt-row-1':i===1?' lbt-row-2':i===2?' lbt-row-3':''}${me?' lbt-me':''}`;
         const av=me?myAv:'🎮';
         const avHtml=me&&myAv.startsWith('data:')?`<img src="${myAv}" style="width:26px;height:26px;border-radius:50%;object-fit:cover;vertical-align:middle;">`:`<span style="font-size:20px;line-height:26px;">${av}</span>`;
-        h+=`<div class="${rc}" style="grid-template-columns:44px 44px 1fr 90px 70px;align-items:center;">
+        h+=`<div class="${rc}" style="grid-template-columns:${_gridCols};align-items:center;">
           <span class="lbt-rank">${_rankBadge(i)}</span>
           <span style="display:flex;align-items:center;justify-content:center;">${avHtml}</span>
           <span class="lbt-name">${r.name}</span>
+          <span style="display:flex;flex-direction:column;align-items:center;line-height:1.05;"><span style="font-size:13px;">${_diffEmoji[r.diff]||'⚪'}</span><span style="font-size:8.5px;color:#aaa;">${r.diff||'—'}</span></span>
           <span class="lbt-score">${r.score.toLocaleString()}</span>
           <span class="lbt-score" style="color:#80cbc4;">${r.wave}</span>
         </div>`;
