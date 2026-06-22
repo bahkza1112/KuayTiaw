@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.90 — คาสิโน: ประวัติผลสล็อตล่าสุด
+
+### Added
+- `Tower Quest 🏰.html` `#slotHistoryBox` / `#slotHistory`: กล่องแสดงผล 8 ครั้งล่าสุด ใต้ตารางอัตรา
+- `css/main.css` `.sh-item` / `.sh-jp` / `.sh-sp` / `.sh-gr` / `.sh-ni`: card แต่ละผล มี border highlight ตามระดับ
+- `js/ui.js` `_renderSlotHistory()`: อ่านจาก `tq_slot_hist` แล้ว render; เรียกตอน `openCasino()` และหลังสปินแต่ละครั้ง
+- `js/ui.js` `spinSlot()`: บันทึก `{syms, label, w}` ลง `tq_slot_hist` (เก็บสูงสุด 8 รายการ)
+
 ## v3.11.89 — ตัวเลขทองในคาสิโนเห็นชัดขึ้น
 
 ### Changed

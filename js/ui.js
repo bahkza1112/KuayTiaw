@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.89';
+const GAME_VERSION='3.11.90';
 const PATCH_NOTES=[
+  {ver:'3.11.90',date:'2026-06-23',title:'🕐 คาสิโน: ประวัติผลสล็อตล่าสุด',notes:[
+    'แสดง 8 ผลสุดท้ายใต้ตารางอัตรา — ไอคอน 3 วงล้อ + ชื่อผล (JACKPOT/SUPER/GREAT/NICE/คู่/ไม่ตรง)',
+    'ผลดีมี border highlight สีตามระดับ',
+  ]},
   {ver:'3.11.89',date:'2026-06-23',title:'🎰 ตัวเลขทองในคาสิโนเห็นชัดขึ้น',notes:[
     'ตัวเลข "มี: X ทอง" ในหน้าสล็อต ใหญ่ขึ้น + สีเหลืองทอง + glow',
   ]},
@@ -3898,6 +3902,22 @@ let _slotBusy=false;
 function openCasino(){
   showScreen('casino',true);
   _renderCasinoUI();
+  _renderSlotHistory();
+}
+function _renderSlotHistory(){
+  const hist=JSON.parse(localStorage.getItem('tq_slot_hist')||'[]');
+  const box=document.getElementById('slotHistoryBox');
+  const el=document.getElementById('slotHistory');
+  if(!el||!box) return;
+  if(!hist.length){box.style.display='none';return;}
+  box.style.display='';
+  const _cls=w=>w<=1?'sh-jp':w<=3?'sh-sp':w<=10?'sh-gr':w<=100?'sh-ni':'';
+  const _lbl=w=>w<=1?'JACKPOT':w<=3?'SUPER':w<=10?'GREAT':w<=30?'NICE':w<=100?'คู่':'ไม่ตรง';
+  el.innerHTML=hist.map(h=>`
+    <div class="sh-item ${_cls(h.w)}">
+      <div class="sh-syms">${h.syms.join('')}</div>
+      <div class="sh-label" style="color:${h.w<=1?'#FFD700':h.w<=3?'#87CEEB':h.w<=10?'#CE93D8':h.w<=100?'#FFB300':'#666'};">${_lbl(h.w)}</div>
+    </div>`).join('');
 }
 function _renderCasinoUI(){
   const pg=loadPGold();
@@ -4034,8 +4054,16 @@ function spinSlot(){
         if(ss.dryStreak>=50)  unlockAchievement('sl_dry50');
         if(ss.dryStreak>=100) unlockAchievement('sl_dry100');
       }catch(e){}
+      // บันทึกประวัติ
+      try{
+        const hist=JSON.parse(localStorage.getItem('tq_slot_hist')||'[]');
+        hist.unshift({syms:display,label:outcome.label,w:outcome.w});
+        if(hist.length>8) hist.length=8;
+        localStorage.setItem('tq_slot_hist',JSON.stringify(hist));
+      }catch(e){}
       _slotBusy=false;
       _renderCasinoUI();
+      _renderSlotHistory();
       if(_slotAutoOn) setTimeout(()=>{ if(_slotAutoOn&&!_slotBusy) spinSlot(); },600);
     }
   },delay);
