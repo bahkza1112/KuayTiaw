@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.84 — กดดูรายละเอียดสภาพอากาศ
+
+### Added
+- `Tower Quest 🏰.html` `#weatherHud`: เพิ่ม `onclick="toggleWeatherPopup()"` และ `cursor:pointer`
+- `Tower Quest 🏰.html` `#weatherPopup`: popup ใหม่แสดงไอคอน ชื่อ และคำอธิบายผลกระทบของสภาพอากาศ
+- `css/main.css` `#weatherPopup`: style พร้อม animation เข้าและปุ่ม ✕ ปิด
+- `js/game.js` `toggleWeatherPopup()` / `closeWeatherPopup()` / `_wpOutsideClick()`: เปิด/ปิด popup พร้อม click-outside-to-close
+
 ## v3.11.83 — แก้บัค: แสงสีแดงจาก Combo Meter
 
 ### Fixed

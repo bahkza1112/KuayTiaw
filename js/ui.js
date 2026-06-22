@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.83';
+const GAME_VERSION='3.11.84';
 const PATCH_NOTES=[
+  {ver:'3.11.84',date:'2026-06-22',title:'🌦️ กดดูรายละเอียดสภาพอากาศได้',notes:[
+    'กดที่ไอคอนสภาพอากาศมุมบนจอ → popup แสดงชื่อ+ผลกระทบ',
+    'กดนอก popup หรือกดปุ่ม ✕ เพื่อปิด',
+  ]},
   {ver:'3.11.83',date:'2026-06-22',title:'🔧 แก้บัค: แสงสีแดงจาก Combo Meter',notes:[
     'Combo timer bar และ Wave Banner ขาด beginPath() ทำให้ path สะสมข้ามเฟรม',
     'แก้แล้ว: เพิ่ม ctx.beginPath() ก่อนทุก rect/roundRect ใน combo และ wave banner',

@@ -277,6 +277,30 @@ function clearWeather(silent){
   const hud=document.getElementById('weatherHud');
   if(hud){hud.style.display='none';hud.classList.remove('active');}
 }
+function toggleWeatherPopup(){
+  if(!G||!G.weather||!G.weather.active) return;
+  const popup=document.getElementById('weatherPopup');
+  if(!popup) return;
+  if(popup.style.display!=='none'){closeWeatherPopup();return;}
+  const w=WEATHERS.find(x=>x.id===G.weather.active);
+  if(!w) return;
+  document.getElementById('wpIcon').textContent=w.icon;
+  document.getElementById('wpName').textContent=w.name;
+  document.getElementById('wpDesc').textContent=w.desc;
+  popup.style.borderColor=getWeatherColor(w.id)+'55';
+  popup.style.display='block';
+  document.addEventListener('click',_wpOutsideClick,{once:true,capture:true});
+}
+function closeWeatherPopup(){
+  const popup=document.getElementById('weatherPopup');
+  if(popup) popup.style.display='none';
+}
+function _wpOutsideClick(e){
+  const popup=document.getElementById('weatherPopup');
+  const hud=document.getElementById('weatherHud');
+  if(popup&&!popup.contains(e.target)&&!hud.contains(e.target)) closeWeatherPopup();
+  else if(popup&&popup.style.display!=='none') document.addEventListener('click',_wpOutsideClick,{once:true,capture:true});
+}
 function getWeatherColor(id){
   const c={fog:'#b0bec5',blizzard:'#80d8ff',lightning:'#ffe082',
     darknight:'#ce93d8',heatwave:'#ff8a65',rain:'#64b5f6',tornado:'#e0e0e0',sun:'#ffcc02'};
