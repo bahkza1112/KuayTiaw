@@ -1,6 +1,12 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.77';
+const GAME_VERSION='3.11.78';
 const PATCH_NOTES=[
+  {ver:'3.11.78',date:'2026-06-22',title:'🎰 Achievement คาสิโน 8 รางวัลใหม่',notes:[
+    'เพิ่ม Achievement หมวด 🎰 คาสิโน ครั้งแรกหมุน · คู่แรก · GREAT · SUPER · JACKPOT',
+    '🎲 นักพนันตัวจริง — หมุนรวม 100 ครั้ง',
+    '😤 ขาดทุนแต่ไม่แคร์ — หมุน 50 ครั้งติดไม่ได้ GREAT',
+    '⛏️ ราชานักขุดเกลือ — หมุน 100 ครั้งติดไม่ได้ GREAT',
+  ]},
   {ver:'3.11.77',date:'2026-06-22',title:'🔧 แก้ Login Reward ให้ไอเท็มบัพถูกต้อง',notes:[
     'แก้บั๊ก Login Reward วันที่ 1/2/3/7 — เดิมให้เศษแทนยาบัพ ตอนนี้ให้ยาเข้มแข็ง + ยาเพิ่ม HP + ยาเพิ่มทอง ตามที่แสดงในการ์ด',
   ]},
@@ -3861,6 +3867,22 @@ function spinSlot(){
       if(outcome.shardC)addBagItem('shard_c',outcome.shardC);
       if(res)res.innerHTML=`<span style="color:${won?'#ffd54f':'#888'};">${outcome.label}</span>`;
       if(won){ _slotWinFx(outcome,reels); showToast('🎉 '+outcome.label); }
+      // 🎰 Casino achievements
+      try{
+        let ss=JSON.parse(localStorage.getItem('tq_slot_stats')||'{}');
+        ss.total=(ss.total||0)+1;
+        const isGreatPlus=outcome.w<=10&&!outcome.pair&&!outcome.miss;
+        if(isGreatPlus) ss.dryStreak=0; else ss.dryStreak=(ss.dryStreak||0)+1;
+        localStorage.setItem('tq_slot_stats',JSON.stringify(ss));
+        unlockAchievement('sl_first');
+        if(outcome.pair)  unlockAchievement('sl_pair');
+        if(outcome.w<=10&&!outcome.pair) unlockAchievement('sl_great');
+        if(outcome.w<=3)  unlockAchievement('sl_super');
+        if(outcome.w<=1)  unlockAchievement('sl_jp');
+        if(ss.total>=100) unlockAchievement('sl_100');
+        if(ss.dryStreak>=50)  unlockAchievement('sl_dry50');
+        if(ss.dryStreak>=100) unlockAchievement('sl_dry100');
+      }catch(e){}
       _slotBusy=false;
       _renderCasinoUI();
       if(_slotAutoOn) setTimeout(()=>{ if(_slotAutoOn&&!_slotBusy) spinSlot(); },600);

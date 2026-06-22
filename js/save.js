@@ -529,6 +529,15 @@ const ACHIEVEMENTS=[
   {id:'egw25',icon:'🌊',cat:'endgame',name:'ผู้พิทักษ์นิรันดร์', desc:'อยู่รอดถึง Wave 25 ใน Endgame',            reward:80},
   {id:'egw50',icon:'🔱',cat:'endgame',name:'ราชันแห่งความวุ่นวาย', desc:'อยู่รอดถึง Wave 50 ใน Endgame',          reward:200},
   {id:'egw100',icon:'💀',cat:'endgame',name:'ตำนานไม่มีวันสิ้น', desc:'อยู่รอดถึง Wave 100 ใน Endgame — ไม่มีใครทำได้', reward:500},
+  // Casino
+  {id:'sl_first', icon:'🎰',cat:'casino',name:'มือใหม่นักพนัน',    desc:'หมุนสล็อตครั้งแรก',                              reward:20},
+  {id:'sl_pair',  icon:'💰',cat:'casino',name:'คู่แรกในชีวิต',     desc:'ได้ผล "คู่" ในสล็อตครั้งแรก',                    reward:30},
+  {id:'sl_great', icon:'🔮',cat:'casino',name:'โชคดีเข้าช่วย',     desc:'ได้ GREAT (🔮🔮🔮) ครั้งแรก',                     reward:50},
+  {id:'sl_super', icon:'⭐',cat:'casino',name:'ดาวตกสามดวง',       desc:'ได้ SUPER (⭐⭐⭐) ครั้งแรก',                     reward:150},
+  {id:'sl_jp',    icon:'💎',cat:'casino',name:'ราชันแจ็กพอต',      desc:'ได้ JACKPOT (💎💎💎) ครั้งแรก',                   reward:999},
+  {id:'sl_100',   icon:'🎲',cat:'casino',name:'นักพนันตัวจริง',    desc:'หมุนสล็อตรวม 100 ครั้ง',                          reward:10},
+  {id:'sl_dry50', icon:'😤',cat:'casino',name:'ขาดทุนแต่ไม่แคร์', desc:'หมุน 50 ครั้งติดโดยไม่ได้ GREAT ขึ้นไป',          reward:2},
+  {id:'sl_dry100',icon:'⛏️',cat:'casino',name:'ราชานักขุดเกลือ',   desc:'หมุน 100 ครั้งติดโดยไม่ได้ GREAT ขึ้นไป',         reward:1},
   // Collection
   {id:'cdx_m',icon:'📖',cat:'collect',name:'นักวิชาการ',    desc:'พบ Monster ทุกตัวใน Codex',      reward:80},
   {id:'cdx_t',icon:'🏗️',cat:'collect',name:'สถาปนิก',       desc:'ปลดล็อก Tower ทุกแบบ',           reward:100},
@@ -537,7 +546,7 @@ const ACHIEVEMENTS=[
   {id:'sk_all5',icon:'🃏',cat:'collect',name:'นักสะสมการ์ด', desc:'เก็บการ์ดสกิลครบทั้ง 5 ใบ',      reward:100},
   {id:'sk_max', icon:'⭐',cat:'collect',name:'สกิลสูงสุด',   desc:'อัพการ์ดสกิลใบใดก็ได้ถึง ★5',   reward:150},
 ];
-const ACH_CATS={story:'📜 เนื้อเรื่อง',combat:'⚔️ การต่อสู้',skill:'🎯 ทักษะ',endgame:'🔥 Endgame',collect:'📚 สะสม'};
+const ACH_CATS={story:'📜 เนื้อเรื่อง',combat:'⚔️ การต่อสู้',skill:'🎯 ทักษะ',endgame:'🔥 Endgame',casino:'🎰 คาสิโน',collect:'📚 สะสม'};
 
 function loadAchievements(){
   try{return new Set(JSON.parse(localStorage.getItem('tq_ach')||'[]'));}catch(e){return new Set();}

@@ -2,6 +2,19 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.78 — Casino achievement category (8 new achievements)
+
+### Added
+- **Casino achievement category** (`js/save.js` `ACHIEVEMENTS`, `ACH_CATS`; `js/ui.js` `spinSlot`):
+  - `sl_first` 🎰 มือใหม่นักพนัน — first spin ever (+20💎)
+  - `sl_pair`  💰 คู่แรกในชีวิต  — first pair result (+30💎)
+  - `sl_great` 🔮 โชคดีเข้าช่วย  — first GREAT (+50💎)
+  - `sl_super` ⭐ ดาวตกสามดวง   — first SUPER (+150💎)
+  - `sl_jp`    💎 ราชันแจ็กพอต   — first JACKPOT (+999💎)
+  - `sl_100`   🎲 นักพนันตัวจริง — 100 total spins (+10💎)
+  - `sl_dry50` 😤 ขาดทุนแต่ไม่แคร์ — 50 consecutive non-GREAT spins (+2💎)
+  - `sl_dry100` ⛏️ ราชานักขุดเกลือ — 100 consecutive non-GREAT spins (+1💎)
+- Spin stats tracked in `tq_slot_stats` (`{total, dryStreak}`); triggers fire inside `spinSlot()` after reel 2 stops.
 ## v3.11.76 — Endgame Wave achievement milestones (Wave 25 / 50 / 100)
 
 ### Added
