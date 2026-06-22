@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.76 — Endgame Wave achievement milestones (Wave 25 / 50 / 100)
+
+### Added
+- **3 new Endgame achievements** (`js/save.js` `ACHIEVEMENTS`, `checkAchievements`):
+  - `egw25` 🌊 ผู้พิทักษ์นิรันดร์ — survive to Wave 25 (💎 +80)
+  - `egw50` 🔱 ราชันแห่งความวุ่นวาย — survive to Wave 50 (💎 +200)
+  - `egw100` 💀 ตำนานไม่มีวันสิ้น — survive to Wave 100 (💎 +500)
+- `checkAchievements()` now tracks `bestWave` from endgame runs and triggers milestones on save.
+
 ## v3.11.75 — Fix stats disappearing on rename
 
 ### Fixed

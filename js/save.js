@@ -523,9 +523,12 @@ const ACHIEVEMENTS=[
   {id:'sc10k',  icon:'⭐',cat:'skill', name:'นักเก็บแต้ม',    desc:'ทำคะแนน 10,000 ในเกมเดียว',    reward:30},
   {id:'sc50k',  icon:'🌟',cat:'skill', name:'ราชาแต้ม',      desc:'ทำคะแนน 50,000 ในเกมเดียว',    reward:80},
   // Endgame
-  {id:'eg3',icon:'🔥',cat:'endgame',name:'ผู้รอดชีวิต',     desc:'ผ่าน Endgame Round 3+',          reward:50},
-  {id:'eg7',icon:'☠️',cat:'endgame',name:'ไม่มีวันตาย',     desc:'ผ่าน Endgame Round 7+',          reward:120},
-  {id:'eghw',icon:'🌩️',cat:'endgame',name:'ผู้ฝ่าวิกฤต',   desc:'ผ่าน Wave ใน Endgame ระดับยาก ขณะมีสภาพอากาศแปรปรวน',reward:60},
+  {id:'eg3',  icon:'🔥',cat:'endgame',name:'ผู้รอดชีวิต',   desc:'ผ่าน Endgame Round 3+',                          reward:50},
+  {id:'eg7',  icon:'☠️',cat:'endgame',name:'ไม่มีวันตาย',   desc:'ผ่าน Endgame Round 7+',                          reward:120},
+  {id:'eghw', icon:'🌩️',cat:'endgame',name:'ผู้ฝ่าวิกฤต',  desc:'ผ่าน Wave ใน Endgame ระดับยาก ขณะมีสภาพอากาศแปรปรวน', reward:60},
+  {id:'egw25',icon:'🌊',cat:'endgame',name:'ผู้พิทักษ์นิรันดร์', desc:'อยู่รอดถึง Wave 25 ใน Endgame',            reward:80},
+  {id:'egw50',icon:'🔱',cat:'endgame',name:'ราชันแห่งความวุ่นวาย', desc:'อยู่รอดถึง Wave 50 ใน Endgame',          reward:200},
+  {id:'egw100',icon:'💀',cat:'endgame',name:'ตำนานไม่มีวันสิ้น', desc:'อยู่รอดถึง Wave 100 ใน Endgame — ไม่มีใครทำได้', reward:500},
   // Collection
   {id:'cdx_m',icon:'📖',cat:'collect',name:'นักวิชาการ',    desc:'พบ Monster ทุกตัวใน Codex',      reward:80},
   {id:'cdx_t',icon:'🏗️',cat:'collect',name:'สถาปนิก',       desc:'ปลดล็อก Tower ทุกแบบ',           reward:100},
@@ -623,9 +626,14 @@ function checkAchievements(){
   // Endgame
   try{
     const runs=JSON.parse(localStorage.getItem('tq_runs')||'[]');
-    const best=Math.max(0,...runs.map(r=>r.round||0));
-    if(best>=3) unlockAchievement('eg3');
-    if(best>=7) unlockAchievement('eg7');
+    const egRuns=runs.filter(r=>r.mode==='endgame');
+    const bestRound=Math.max(0,...egRuns.map(r=>r.round||0));
+    const bestWave=Math.max(0,...egRuns.map(r=>r.wave||0));
+    if(bestRound>=3)  unlockAchievement('eg3');
+    if(bestRound>=7)  unlockAchievement('eg7');
+    if(bestWave>=25)  unlockAchievement('egw25');
+    if(bestWave>=50)  unlockAchievement('egw50');
+    if(bestWave>=100) unlockAchievement('egw100');
   }catch(e){}
 }
 
