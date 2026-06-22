@@ -59,11 +59,20 @@ function authMiddleware(req, res, next) {
   res.status(401).json({ error: 'unauthorized' });
 }
 
-// Serve game files
-app.use(express.static(__dirname));
+// Serve game files — HTML no-cache so players always get latest version
+app.use(express.static(__dirname, {
+  setHeaders(res, filePath) {
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    }
+  }
+}));
 
 // Redirect index to game
 app.get('/', (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   res.sendFile(path.join(__dirname, 'Tower Quest 🏰.html'));
 });
 
