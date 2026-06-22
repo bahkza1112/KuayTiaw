@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.72 — Endgame randomizes its map each run
+
+### Changed
+- **Random endgame map** (`js/game.js`): `EG_PATH` is now a `let` reassigned on every
+  `_doStartEndgame()` (start *and* restart, since restart routes through it) — it picks a
+  random `STAGES` entry and uses that stage's `path` + visual theme (`bgColor`/`pathColor`/
+  `grassColors`), so each endgame run plays on a different map instead of the fixed
+  stage-2 path. `_egLastMap` prevents picking the same map twice in a row.
+
 ## v3.11.71 — TOP 10 leaderboard shows difficulty
 
 ### Added

@@ -167,13 +167,15 @@ function rollEndgameMaterialDrops(){
   }
   return drops;
 }
-const EG_PATH=[ /* ใช้ path ด่าน 2 */
+/* Endgame map — สุ่มใหม่ทุกครั้งที่เริ่ม/เล่นใหม่ (ดู _doStartEndgame). ค่าเริ่มต้น = path ด่าน 2 */
+let EG_PATH=[
   [0,1],[1,1],[2,1],[3,1],[3,2],[3,3],[3,4],[3,5],[4,5],[5,5],[6,5],
   [7,5],[7,4],[7,3],[7,2],[8,2],[9,2],[10,2],[11,2],
   [11,3],[11,4],[10,4],[9,4],[8,4],[8,5],[8,6],[8,7],
   [9,7],[10,7],[11,7],[11,8],[10,8],[9,8],[8,8],[7,8],
   [6,8],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8]
 ];
+let _egLastMap=-1; // กันสุ่มได้แมพเดิมซ้ำติดกัน
 let selectedTowersForStage=[];
 let pendingStageIndex=-1;
 let stageMaxTowers=6;
@@ -2473,11 +2475,17 @@ function startEndgame(){
 function _doStartEndgame(){
   isEndgame=true; egRound=0;
   G=null; // reset ทุกสถิติ เวฟ kills score ให้เป็น 0 สำหรับ run ใหม่
+  // 🎲 สุ่มแมพใหม่ทุกครั้ง — หยิบ path + ธีมสีจากด่านเนื้อเรื่อง (กันซ้ำแมพเดิมติดกัน)
+  let _mi=Math.floor(Math.random()*STAGES.length);
+  if(STAGES.length>1&&_mi===_egLastMap) _mi=(_mi+1)%STAGES.length;
+  _egLastMap=_mi;
+  const _m=STAGES[_mi];
+  EG_PATH=_m.path;
   currentStage={id:99,name:'Endgame',icon:'🔥',waves:999,
     enemyTypes:_getEgEnemyPool(),unlockedTowers:[...selectedTowersForStage],unlocks:null,
     bossChance:.10,
-    path:EG_PATH,bgColor:'#0a0a1a',pathColor:'#3a2a1a',
-    grassColors:['#1a0a0a','#1e0e0e','#120808','#1a0c0c','#160a0a']};
+    path:EG_PATH,bgColor:_m.bgColor,pathColor:_m.pathColor,
+    grassColors:_m.grassColors};
   currentPath=EG_PATH;
   currentPset=new Set(EG_PATH.map(p=>p[0]+','+p[1]));
   showScreen('gp',true);
