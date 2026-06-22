@@ -1,6 +1,9 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.90';
+const GAME_VERSION='3.11.91';
 const PATCH_NOTES=[
+  {ver:'3.11.91',date:'2026-06-23',title:'💰 ปรับราคาสล็อต: 50→100 ทอง/สปิน',notes:[
+    'ค่าสปิน slot machine เพิ่มจาก 50 → 100 ทองถาวร เพื่อสมดุลเศรษฐกิจในเกม',
+  ]},
   {ver:'3.11.90',date:'2026-06-23',title:'🕐 คาสิโน: ประวัติผลสล็อตล่าสุด',notes:[
     'แสดง 8 ผลสุดท้ายใต้ตารางอัตรา — ไอคอน 3 วงล้อ + ชื่อผล (JACKPOT/SUPER/GREAT/NICE/คู่/ไม่ตรง)',
     'ผลดีมี border highlight สีตามระดับ',
@@ -3887,7 +3890,7 @@ document.getElementById('casinoBackBtn').addEventListener('click',()=>showScreen
 updateMenuStats();
 
 /* ══ SLOT MACHINE ══ */
-const SLOT_COST=50;
+const SLOT_COST=100;
 const SLOT_SPIN_SYMS=['💎','⭐','🔮','💰','🔷','🌙','🎯','🌸'];
 const SLOT_OUTCOMES=[
   {w:1,  s:['💎','💎','💎'], gold:5000,gems:3000,tickets:50, label:'💎 JACKPOT! +🎫50 +💰5000 +💎3000'},

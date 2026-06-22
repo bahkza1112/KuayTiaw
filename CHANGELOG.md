@@ -2,6 +2,12 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.91 — ปรับราคาสล็อต: 50→100 ทอง/สปิน
+
+### Changed
+- `js/ui.js` `SLOT_COST`: 50 → 100 ทองถาวร
+- `Tower Quest 🏰.html` line 770: อัปเดตข้อความแสดงราคา "50 ทองถาวร / สปิน" → "100 ทองถาวร / สปิน"
+
 ## v3.11.90 — คาสิโน: ประวัติผลสล็อตล่าสุด
 
 ### Added
