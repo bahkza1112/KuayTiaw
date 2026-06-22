@@ -1,6 +1,12 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.93';
+const GAME_VERSION='3.11.94';
 const PATCH_NOTES=[
+  {ver:'3.11.94',date:'2026-06-23',title:'♠ มินิเกมใหม่: แบล็คแจ็ค!',notes:[
+    'เปิดจากคาสิโน → แท็บ ♠ แบล็คแจ็ค',
+    'รองรับทั้งทองถาวร 💰 และเพชร 💎',
+    'ไพ่มี animation บินลง, พลิกเปิด, bust shake, win glow',
+    'Blackjack จ่าย ×2.5 · Double Down · Dealer หยุด Soft 17',
+  ]},
   {ver:'3.11.93',date:'2026-06-23',title:'💰 ปรับรางวัลสล็อต GREAT/NICE เพิ่มขึ้น',notes:[
     'GREAT (🔮×3): +💰1000 → +💰2000',
     'NICE (💰×3): +💰500 → +💰1000',
@@ -4080,4 +4086,215 @@ function spinSlot(){
   stopReel(0,1200);
   stopReel(1,1600);
   stopReel(2,2000);
+}
+
+/* ══ CASINO TABS ══ */
+function openCasinoTab(tab){
+  const isSlot=tab==='slot';
+  document.getElementById('casinoSlotPanel').style.display=isSlot?'':'none';
+  document.getElementById('casinoBJPanel').style.display=isSlot?'none':'';
+  document.getElementById('casinoTabSlot').classList.toggle('active',isSlot);
+  document.getElementById('casinoTabBJ').classList.toggle('active',!isSlot);
+  if(!isSlot) _bjRefreshBalance();
+}
+
+/* ══ BLACKJACK ══ */
+const _BJ_RANKS=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const _BJ_SUITS=['♠','♥','♦','♣'];
+const _BJ_REDS=['♥','♦'];
+let _bjDeck=[],_bjPlayer=[],_bjDealer=[],_bjBet=0,_bjCur='gold',_bjPhase='idle';
+
+function _bjMkDeck(){
+  const d=[];
+  for(const s of _BJ_SUITS)for(const r of _BJ_RANKS)d.push({r,s});
+  for(let i=d.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]];}
+  return d;
+}
+function _bjDraw(){return _bjDeck.pop();}
+function _bjRv(r){if(r==='A')return 11;if(['J','Q','K'].includes(r))return 10;return+r;}
+function _bjHv(h){let s=0,a=0;for(const c of h){s+=_bjRv(c.r);if(c.r==='A')a++;}while(s>21&&a-->0)s-=10;return s;}
+
+function _bjCurBal(){return _bjCur==='gold'?loadPGold():loadGems();}
+function _bjDeductBal(n){if(_bjCur==='gold')savePGold(Math.max(0,loadPGold()-n));else saveGems(Math.max(0,loadGems()-n));}
+function _bjAddBal(n){if(_bjCur==='gold')addPGold(n);else addGems(n);}
+function _bjIcon(){return _bjCur==='gold'?'💰':'💎';}
+
+function _bjRefreshBalance(){
+  const el=document.getElementById('bjBalDisplay');
+  if(el) el.textContent=_bjIcon()+' '+_bjCurBal().toLocaleString();
+  document.getElementById('bjBetDisplay').textContent=_bjIcon()+' '+_bjBet;
+}
+
+function bjSwitchCur(c){
+  if(_bjPhase!=='idle') return;
+  _bjCur=c; _bjBet=0;
+  document.getElementById('bjTabGold').classList.toggle('active',c==='gold');
+  document.getElementById('bjTabGem').classList.toggle('active',c==='gem');
+  _bjRefreshBalance();
+}
+function bjAddBet(n){
+  if(_bjPhase!=='idle') return;
+  _bjBet=Math.min(_bjBet+n,_bjCurBal());
+  _bjRefreshBalance();
+}
+function bjSetBet(n){
+  if(_bjPhase!=='idle') return;
+  _bjBet=n; _bjRefreshBalance();
+}
+
+function _bjMkCard(c,hidden,delayMs){
+  const el=document.createElement('div');
+  const red=!hidden&&_BJ_REDS.includes(c.s);
+  el.className='bj-card bj-dealing'+(hidden?' back':red?' red':'');
+  el.style.animationDelay=delayMs+'ms';
+  if(!hidden){
+    el.innerHTML=
+      '<div class="bj-ct"><span class="bj-rank">'+c.r+'</span><span class="bj-suit-sm">'+c.s+'</span></div>'+
+      '<span class="bj-suit-lg">'+c.s+'</span>'+
+      '<div class="bj-cb"><span class="bj-rank">'+c.r+'</span><span class="bj-suit-sm">'+c.s+'</span></div>';
+  }
+  return el;
+}
+
+function _bjSetScore(id,val,isBust){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.textContent=val;
+  el.className='bj-score'+(isBust?' bust':'');
+  el.style.animation='none'; void el.offsetWidth;
+  el.style.animation='bjScorePop .28s ease both';
+}
+function _bjUpdateScores(hideDealer){
+  _bjSetScore('bjPlayerScore',_bjHv(_bjPlayer)||'—',_bjHv(_bjPlayer)>21);
+  if(hideDealer){
+    const el=document.getElementById('bjDealerScore');
+    if(el){el.textContent=_bjDealer[0]?_bjRv(_bjDealer[0].r)+'…':'—';el.className='bj-score';}
+  } else {
+    _bjSetScore('bjDealerScore',_bjHv(_bjDealer)||'—',_bjHv(_bjDealer)>21);
+  }
+}
+
+function _bjFlipHidden(cb){
+  const backs=document.querySelectorAll('#bjDealerCards .back');
+  if(!backs.length){cb&&cb();return;}
+  const el=backs[0]; const c=_bjDealer[1];
+  el.style.animation='bjFlipX .34s ease forwards';
+  setTimeout(()=>{
+    const red=_BJ_REDS.includes(c.s);
+    el.className='bj-card'+(red?' red':'');
+    el.innerHTML=
+      '<div class="bj-ct"><span class="bj-rank">'+c.r+'</span><span class="bj-suit-sm">'+c.s+'</span></div>'+
+      '<span class="bj-suit-lg">'+c.s+'</span>'+
+      '<div class="bj-cb"><span class="bj-rank">'+c.r+'</span><span class="bj-suit-sm">'+c.s+'</span></div>';
+    el.style.animation='bjFlipX .26s ease reverse forwards';
+    setTimeout(()=>{el.style.animation='';cb&&cb();},180);
+  },170);
+}
+
+function _bjAddCardAnim(c,containerId,cb){
+  const el=_bjMkCard(c,false,0);
+  document.getElementById(containerId).appendChild(el);
+  setTimeout(()=>cb&&cb(),430);
+}
+
+function _bjSetResult(msg,type){
+  const b=document.getElementById('bjResult');
+  if(!b) return;
+  b.style.display='block';
+  b.style.animation='none'; void b.offsetWidth; b.style.animation='';
+  b.textContent=msg; b.className='bj-result '+type;
+  if(type==='win'){
+    const t=document.getElementById('bjTable');
+    if(t){t.style.animation='none';void t.offsetWidth;t.style.animation='bjWinGlow .7s ease';}
+  }
+}
+
+function _bjSetBtns(playing){
+  document.getElementById('bjBtnDeal').disabled=playing;
+  document.getElementById('bjBtnHit').disabled=!playing;
+  document.getElementById('bjBtnStand').disabled=!playing;
+  document.getElementById('bjBtnDouble').disabled=!playing||_bjPlayer.length!==2;
+}
+
+function bjDeal(){
+  if(!_bjBet||_bjBet>_bjCurBal()){showToast('ตั้งเดิมพันก่อน!');return;}
+  _bjDeductBal(_bjBet);
+  _bjDeck=_bjMkDeck();_bjPlayer=[];_bjDealer=[];_bjPhase='playing';
+  document.getElementById('bjResult').style.display='none';
+  document.getElementById('bjDealerCards').innerHTML='';
+  document.getElementById('bjPlayerCards').innerHTML='';
+  document.getElementById('bjPlayerScore').textContent='—';
+  document.getElementById('bjDealerScore').textContent='—';
+  const seq=[_bjDraw(),_bjDraw(),_bjDraw(),_bjDraw()];
+  _bjPlayer=[seq[0],seq[2]]; _bjDealer=[seq[1],seq[3]];
+  const dc=document.getElementById('bjDealerCards');
+  const pc=document.getElementById('bjPlayerCards');
+  dc.appendChild(_bjMkCard(_bjDealer[0],false,0));
+  pc.appendChild(_bjMkCard(_bjPlayer[0],false,180));
+  dc.appendChild(_bjMkCard(_bjDealer[1],true,360));
+  pc.appendChild(_bjMkCard(_bjPlayer[1],false,540));
+  setTimeout(()=>{
+    _bjUpdateScores(true); _bjSetBtns(true); _bjRefreshBalance();
+    if(_bjHv(_bjPlayer)===21){
+      setTimeout(()=>{
+        _bjFlipHidden(()=>{
+          _bjUpdateScores(false);
+          const win=Math.round(_bjBet*1.5);
+          if(_bjHv(_bjDealer)===21){_bjAddBal(_bjBet);_bjEnd('เสมอ Blackjack — คืนเดิมพัน','draw');}
+          else{_bjAddBal(_bjBet+win);_bjEnd('🎉 Blackjack! +'+_bjIcon()+win,'win');}
+        });
+      },200);
+    }
+  },760);
+}
+
+function bjHit(){
+  const c=_bjDraw(); _bjPlayer.push(c);
+  document.getElementById('bjBtnDouble').disabled=true;
+  _bjAddCardAnim(c,'bjPlayerCards',()=>{
+    _bjUpdateScores(true);
+    if(_bjHv(_bjPlayer)>21){
+      document.querySelectorAll('#bjPlayerCards .bj-card').forEach(e=>e.classList.add('bj-busting'));
+      setTimeout(()=>_bjEnd('💥 บัสต์! เสีย '+_bjIcon()+_bjBet,'lose'),360);
+    }
+  });
+}
+
+function bjStand(){
+  _bjSetBtns(false);
+  _bjFlipHidden(()=>{_bjUpdateScores(false);_bjRunDealer();});
+}
+
+function _bjRunDealer(){
+  if(_bjHv(_bjDealer)<17){
+    const c=_bjDraw(); _bjDealer.push(c);
+    _bjAddCardAnim(c,'bjDealerCards',()=>{_bjUpdateScores(false);setTimeout(_bjRunDealer,220);});
+  } else {
+    const pv=_bjHv(_bjPlayer),dv=_bjHv(_bjDealer);
+    if(dv>21||pv>dv){_bjAddBal(_bjBet*2);_bjEnd('✨ ชนะ! +'+_bjIcon()+_bjBet,'win');}
+    else if(pv===dv){_bjAddBal(_bjBet);_bjEnd('เสมอ — คืนเดิมพัน','draw');}
+    else _bjEnd('แพ้ เสีย '+_bjIcon()+_bjBet,'lose');
+  }
+}
+
+function bjDouble(){
+  if(_bjBet>_bjCurBal()){showToast('ไม่พอ Double');return;}
+  _bjDeductBal(_bjBet); _bjBet*=2;
+  document.getElementById('bjBtnDouble').disabled=true;
+  document.getElementById('bjBtnHit').disabled=true;
+  _bjRefreshBalance();
+  const c=_bjDraw(); _bjPlayer.push(c);
+  _bjAddCardAnim(c,'bjPlayerCards',()=>{
+    _bjUpdateScores(true);
+    if(_bjHv(_bjPlayer)>21){
+      document.querySelectorAll('#bjPlayerCards .bj-card').forEach(e=>e.classList.add('bj-busting'));
+      setTimeout(()=>_bjEnd('💥 บัสต์! เสีย '+_bjIcon()+_bjBet,'lose'),360);
+    } else setTimeout(bjStand,300);
+  });
+}
+
+function _bjEnd(msg,type){
+  _bjPhase='idle'; _bjSetBtns(false); _bjRefreshBalance();
+  _bjSetResult(msg,type);
+  showToast(msg);
 }

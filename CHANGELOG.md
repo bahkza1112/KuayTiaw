@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.94 — มินิเกมใหม่: แบล็คแจ็ค
+
+### Added
+- `Tower Quest 🏰.html`: แท็บ casino-tabs (สล็อต / แบล็คแจ็ค), `#casinoBJPanel` พร้อม UI ครบ
+- `css/main.css`: `.casino-tab`, `.bj-*` card styles + animations (bjDealIn, bjFlipX, bjBust, bjWinGlow)
+- `js/ui.js`: `openCasinoTab()`, `bjDeal()`, `bjHit()`, `bjStand()`, `bjDouble()`, `bjSwitchCur()`, `_bjRunDealer()`, `_bjFlipHidden()` ฯลฯ
+
+### Changed
+- `Tower Quest 🏰.html`: ข้อความปุ่ม slot "50" → "100" (sync กับ SLOT_COST)
+
 ## v3.11.93 — ปรับรางวัลสล็อต GREAT/NICE เพิ่มขึ้น
 
 ### Changed
