@@ -278,16 +278,45 @@ function clearWeather(silent){
   if(hud){hud.style.display='none';hud.classList.remove('active');}
 }
 function toggleWeatherPopup(){
-  if(!G||!G.weather||!G.weather.active) return;
+  if(!G) return;
   const popup=document.getElementById('weatherPopup');
   if(!popup) return;
   if(popup.style.display!=='none'){closeWeatherPopup();return;}
-  const w=WEATHERS.find(x=>x.id===G.weather.active);
-  if(!w) return;
-  document.getElementById('wpIcon').textContent=w.icon;
-  document.getElementById('wpName').textContent=w.name;
-  document.getElementById('wpDesc').textContent=w.desc;
-  popup.style.borderColor=getWeatherColor(w.id)+'55';
+  // build pool for current stage/endgame
+  let pool=[];
+  if(typeof isEndgame!=='undefined'&&isEndgame){
+    pool=['fog','blizzard','lightning','darknight','heatwave','rain','tornado','sun'];
+  } else if(currentStage){
+    const ids=STAGE_WEATHER[Math.min(currentStage.id,STAGE_WEATHER.length-1)]||[];
+    pool=ids;
+  }
+  const activeId=G.weather&&G.weather.active?G.weather.active:null;
+  const activeW=activeId?WEATHERS.find(x=>x.id===activeId):null;
+  // header
+  let html='<div id="wpHeader">'+(activeW?activeW.icon+' สภาพอากาศปัจจุบัน':'🌤️ ไม่มีสภาพอากาศ')+'</div>';
+  if(pool.length){
+    html+='<div id="wpSubtitle">สภาพอากาศที่อาจเกิดในด่านนี้</div>';
+    html+='<div id="wpList">';
+    pool.forEach(wid=>{
+      const w=WEATHERS.find(x=>x.id===wid);
+      if(!w) return;
+      const isActive=wid===activeId;
+      const col=isActive?getWeatherColor(wid):'rgba(255,255,255,.08)';
+      const border=isActive?getWeatherColor(wid)+'88':'rgba(255,255,255,.12)';
+      html+=`<div class="wp-row${isActive?' wp-row-active':''}" style="border-color:${border};background:${col}${isActive?'22':''};">
+        <span class="wp-row-icon">${w.icon}</span>
+        <div class="wp-row-info">
+          <div class="wp-row-name">${w.name}${isActive?' <span class="wp-active-badge">กำลังเกิด</span>':''}</div>
+          <div class="wp-row-desc">${w.desc}</div>
+        </div>
+      </div>`;
+    });
+    html+='</div>';
+  } else if(!activeW){
+    html+='<div id="wpSubtitle" style="margin-top:6px;">ไม่มีสภาพอากาศพิเศษ</div>';
+  }
+  html+='<div id="wpClose" onclick="closeWeatherPopup()">✕ ปิด</div>';
+  popup.innerHTML=html;
   popup.style.display='block';
   document.addEventListener('click',_wpOutsideClick,{once:true,capture:true});
 }

@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.85 — Popup สภาพอากาศแสดงทุกสภาพที่เป็นไปได้ในด่าน
+
+### Changed
+- `js/game.js` `toggleWeatherPopup()`: แสดงรายการสภาพอากาศทั้งหมดที่อาจเกิดในด่านนั้น (จาก `STAGE_WEATHER`) พร้อม highlight + badge "กำลังเกิด" ให้อันที่ active; Endgame แสดงสภาพอากาศทุกชนิด
+- `css/main.css`: เพิ่ม style `.wp-row`, `.wp-row-active`, `.wp-row-icon`, `.wp-row-name`, `.wp-row-desc`, `.wp-active-badge`, `#wpHeader`, `#wpSubtitle`, `#wpList`
+- `Tower Quest 🏰.html` `#weatherPopup`: เหลือแค่ container เปล่า (innerHTML render จาก JS)
+
 ## v3.11.84 — กดดูรายละเอียดสภาพอากาศ
 
 ### Added

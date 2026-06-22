@@ -528,16 +528,22 @@ body{background:#0d1117;display:flex;align-items:flex-start;justify-content:cent
   border:1px solid rgba(255,255,255,.15);transition:box-shadow .3s;}
 .weather-hud.active{box-shadow:0 0 10px rgba(255,255,255,.2);}
 #weatherPopup{position:fixed;top:50px;left:50%;transform:translateX(-50%);
-  background:rgba(8,14,24,.96);border:1.5px solid rgba(180,220,255,.25);border-radius:14px;
-  padding:16px 20px 14px;z-index:9998;min-width:180px;max-width:260px;text-align:center;
-  box-shadow:0 6px 28px rgba(0,0,0,.7),0 0 18px rgba(100,200,255,.12);
-  animation:wpIn .18s cubic-bezier(.34,1.56,.64,1);}
+  background:rgba(8,14,24,.97);border:1.5px solid rgba(180,220,255,.2);border-radius:14px;
+  padding:14px 16px 12px;z-index:9998;min-width:220px;max-width:280px;
+  box-shadow:0 8px 32px rgba(0,0,0,.75);animation:wpIn .18s cubic-bezier(.34,1.56,.64,1);}
 @keyframes wpIn{from{opacity:0;transform:translateX(-50%) scale(.85);}to{opacity:1;transform:translateX(-50%) scale(1);}}
-#wpIcon{font-size:36px;line-height:1.1;margin-bottom:6px;}
-#wpName{font-size:15px;font-weight:900;color:#fff;margin-bottom:6px;}
-#wpDesc{font-size:12px;color:rgba(200,230,255,.75);line-height:1.5;}
-#wpClose{margin-top:12px;font-size:11px;color:rgba(255,255,255,.4);cursor:pointer;padding:2px 10px;border:1px solid rgba(255,255,255,.15);border-radius:20px;display:inline-block;}
-#wpClose:hover{color:#fff;border-color:rgba(255,255,255,.4);}
+#wpHeader{font-size:13px;font-weight:900;color:#fff;margin-bottom:4px;}
+#wpSubtitle{font-size:10px;color:rgba(255,255,255,.4);margin-bottom:8px;}
+#wpList{display:flex;flex-direction:column;gap:5px;max-height:260px;overflow-y:auto;}
+.wp-row{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:9px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);}
+.wp-row-active{background:rgba(100,200,255,.08);}
+.wp-row-icon{font-size:20px;flex-shrink:0;}
+.wp-row-info{flex:1;min-width:0;}
+.wp-row-name{font-size:12px;font-weight:700;color:#fff;}
+.wp-row-desc{font-size:10px;color:rgba(200,220,255,.6);margin-top:1px;}
+.wp-active-badge{font-size:9px;background:rgba(100,200,255,.25);color:#80d8ff;border-radius:6px;padding:1px 5px;margin-left:4px;font-weight:700;}
+#wpClose{margin-top:10px;font-size:10px;color:rgba(255,255,255,.35);cursor:pointer;padding:3px 10px;border:1px solid rgba(255,255,255,.12);border-radius:20px;display:inline-block;width:100%;text-align:center;box-sizing:border-box;}
+#wpClose:hover{color:#fff;border-color:rgba(255,255,255,.35);}
 /* ── TOWER POPUP (G1) ── */
 #towerPopup{position:absolute;background:rgba(8,18,8,.97);border:2px solid #4caf50;border-radius:14px;padding:0;z-index:22;min-width:190px;pointer-events:none;overflow:hidden;box-shadow:0 6px 28px rgba(0,0,0,.75),0 0 20px rgba(76,175,80,.2);transform:scale(.88);opacity:0;display:none;transition:transform .14s cubic-bezier(.34,1.56,.64,1),opacity .12s;}
 #towerPopup.show{transform:scale(1);opacity:1;display:block;pointer-events:auto;}
