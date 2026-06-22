@@ -350,7 +350,8 @@ function initGame(){
 
 function restartGame(){
   document.getElementById('endOverlay').style.display='none';
-  initGame();
+  if(isEndgame) _doStartEndgame();
+  else initGame();
 }
 function goStageSelect(){
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
@@ -2471,6 +2472,7 @@ function startEndgame(){
 }
 function _doStartEndgame(){
   isEndgame=true; egRound=0;
+  G=null; // reset ทุกสถิติ เวฟ kills score ให้เป็น 0 สำหรับ run ใหม่
   currentStage={id:99,name:'Endgame',icon:'🔥',waves:999,
     enemyTypes:_getEgEnemyPool(),unlockedTowers:[...selectedTowersForStage],unlocks:null,
     bossChance:.10,

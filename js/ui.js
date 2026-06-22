@@ -1,6 +1,10 @@
 /* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.69';
+const GAME_VERSION='3.11.70';
 const PATCH_NOTES=[
+  {ver:'3.11.70',date:'2026-06-22',title:'🐛 แก้บัค: Endgame เล่นใหม่ เวฟ/สถิติรีเป็น 0',notes:[
+    'กด "เล่นใหม่" จาก Endgame ตอนนี้รีเซ็ต wave/score/kills/combo เป็น 0 ถูกต้อง',
+    'แก้ restartGame() ใช้ _doStartEndgame() แทน initGame() ตอนอยู่ใน Endgame',
+  ]},
   {ver:'3.11.69',date:'2026-06-22',title:'👤 โปรไฟล์: แสดง avatar+ชื่อในเกมแทน Google pic',notes:[
     'รูปโปรไฟล์ใช้ avatar ในเกมเสมอ (ไม่แสดงรูป Google อีกต่อไป)',
     'ชื่อที่แสดงคือชื่อที่ผู้เล่นตั้งเอง (ถ้ายังไม่ตั้งจะใช้ชื่อ Google แทน)',
