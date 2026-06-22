@@ -2,6 +2,21 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.74 — Endgame infinite scaling (no HP/Shield cap)
+
+### Changed
+- **Removed Endgame HP cap** (`js/game.js` `getEgEnemyHP`): previously `roundBonus` was
+  capped at `7.0×` (normal) / `4.6×` (boss) causing difficulty to plateau at round ~20.
+  Now uses uncapped linear scaling `1 + egRound * roundScale` (Normal: 0.22/round, Boss: 0.15/round).
+  Endgame now gets harder indefinitely — no wall for maxed players.
+- **Removed Endgame reward cap** (`getEgRewardBonus`): was capped at `2.0×`, now
+  `1 + egRound * 0.10` with no cap. Gold earned scales with enemy HP so late-game
+  killing feels more rewarding.
+- **Removed Endgame shield cap** (`spawnEgEnemy`): shield now scales as
+  `shBase * (1 + egRound * 0.25)` with no cap, matching HP curve.
+- **Speed scaling reduced slightly** (`getEgEnemySpd`): `0.05 → 0.04` per round
+  to avoid enemies becoming untrackable too quickly.
+
 ## v3.11.73 — Difficulty-scaled score + special waves + stage-11 opening
 
 ### Changed

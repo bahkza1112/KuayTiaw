@@ -1,4 +1,4 @@
-/* ══ STAGE DEFINITIONS ══ */
+﻿/* ══ STAGE DEFINITIONS ══ */
 const STAGES=[
   {id:0,name:'Grassland',icon:'🌿',
    desc:'ทุ่งหญ้าสงบสุข เรียนรู้พื้นฐานการป้องกันป้อมปราการ',
@@ -2546,27 +2546,23 @@ function initEgGame(){
 function getEgEnemyHP(ti,wave){
   // boss types (4=บอส, 9=จอมมาร) scale ช้ากว่า เพื่อไม่ให้ unkillable เร็วเกิน
   const isBossType=MTYPE[ti]===1;
-  const roundScale=isBossType?0.18:0.30;
-  // v3.1.0: ขยาย cap 3.5/5.0→4.6/7.0 ให้ความท้าทายเพิ่มต่อจนถึง round ~20 (เดิมแบนราบที่ ~14)
-  const roundBonus=Math.min(1+egRound*roundScale, isBossType?4.6:7.0); // cap
+  const roundScale=isBossType?0.15:0.22;
+  const roundBonus=1+egRound*roundScale; // ไม่มี cap → สเกลต่อไปเรื่อยๆ
   return CFG.m_hp[ti]*(1+wave*CFG.waveMult)*roundBonus*EG_DIFF_MULT[egDiff];
 }
 function getEgEnemySpd(ti){
-  const roundBonus=1+egRound*0.05;
+  const roundBonus=1+egRound*0.04;
   return Math.min(CFG.m_spd[ti]*roundBonus*EG_DIFF_MULT[egDiff],CFG.spdCap);
 }
 function getEgRewardBonus(){
-  // ก่อนหน้านี้ reward เพิ่มแบบ flat (+2/round) ทำให้ reward/HP ร่วงหนักในรอบหลังๆ
-  // ตอนนี้สเกลแบบ capped multiplier ให้ตามทันการสเกล HP ได้บางส่วน
-  // v3.1.0: ขยาย cap 3.0→4.0 ให้สอดคล้องกับ HP cap ที่ขยายเป็น 7.0/4.6 (แบนราบที่ round ~20 แทน ~14)
-  return Math.min(1+egRound*0.08, 2.0);
+  // reward สเกลตาม HP — ไม่มี cap เพื่อให้คุ้มกว่าเดิมในรอบหลังๆ
+  return 1+egRound*0.10;
 }
 
 function spawnEgEnemy(ti){
   const hp=getEgEnemyHP(ti,G.wave);
   const shBase=MSHIELD[ti]||0;
-  const shieldCap=MTYPE[ti]===1?4.6:7.0; // same cap as HP roundBonus, so reward/HP flattens too
-  const sh=shBase>0?Math.round(shBase*Math.min(1+egRound*.3,shieldCap)):0;
+  const sh=shBase>0?Math.round(shBase*(1+egRound*.25)):0;
   G.enemies.push({
     ti,pi:0,prog:0,
     x:EG_PATH[0][0]*CS+CS/2,y:EG_PATH[0][1]*CS+CS/2,
