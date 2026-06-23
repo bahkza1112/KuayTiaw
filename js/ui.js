@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.98';
+const GAME_VERSION='3.11.99';
 const PATCH_NOTES=[
+  {ver:'3.11.99',date:'2026-06-23',title:'🃏 ปรับ Blackjack: ชนะ ×1.9 + แก้ text result',notes:[
+    'Blackjack ชนะปกติจ่าย ×1.9 (เดิม ×2.5) — สมดุลกว่า',
+    'แก้ข้อความผลชนะโผล่ HTML tag แทนไอคอน ◇',
+  ]},
   {ver:'3.11.98',date:'2026-06-23',title:'🔒 ล็อค Avatar — ปลดด้วย ◇300 หรือ 💰1000',notes:[
     'Avatar ฟรี: 🏰 เท่านั้น — อีก 19 อันล็อคอยู่',
     'กดที่ Avatar ที่ล็อค → Popup ให้เลือกชำระ ◇300 หรือ 💰1000',
@@ -4278,7 +4282,7 @@ function _bjSetResult(msg,type){
   if(!b) return;
   b.style.display='block';
   b.style.animation='none'; void b.offsetWidth; b.style.animation='';
-  b.textContent=msg; b.className='bj-result '+type;
+  b.innerHTML=msg; b.className='bj-result '+type;
   if(type==='win'){
     const t=document.getElementById('bjTable');
     if(t){t.style.animation='none';void t.offsetWidth;t.style.animation='bjWinGlow .7s ease';}
@@ -4315,7 +4319,7 @@ function bjDeal(){
       setTimeout(()=>{
         _bjFlipHidden(()=>{
           _bjUpdateScores(false);
-          const win=Math.round(_bjBet*1.5);
+          const win=Math.round(_bjBet*0.9);
           if(_bjHv(_bjDealer)===21){_bjAddBal(_bjBet);_bjEnd('เสมอ Blackjack — คืนเดิมพัน','draw');}
           else{_bjAddBal(_bjBet+win);_bjEnd('🎉 Blackjack! +'+_bjIcon()+win,'win');}
         });

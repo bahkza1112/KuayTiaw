@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.99 — ปรับ Blackjack payout + แก้ result text
+
+### Fixed
+- `js/ui.js`: `_bjSetResult` เปลี่ยน `textContent` → `innerHTML` — ◇ ไอคอนในข้อความผลแสดงถูกต้อง
+
+### Changed
+- `js/ui.js`: Blackjack win = `_bjBet*0.9` (รวม ×1.9 จากเดิม ×2.5) — สมดุลกว่า
+
 ## v3.11.98 — ล็อค Avatar — ปลดด้วยมณีหรือทอง
 
 ### Added
