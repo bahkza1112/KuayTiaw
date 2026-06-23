@@ -1092,7 +1092,7 @@ body{background:#0d1117;display:flex;align-items:flex-start;justify-content:cent
 /* ── ACHIEVEMENT SYSTEM ── */
 /* notification banner */
 #achNotif{position:fixed;top:-90px;left:50%;transform:translateX(-50%) scale(.85);
-  width:min(340px,92vw);background:linear-gradient(135deg,#1a2a0a,#2a3a1a);
+  width:min(340px,92vw);background:linear-gradient(135deg,#0d1b2a,#1a2a3a);
   border:2px solid #ffe082;border-radius:16px;padding:12px 16px;
   display:flex;align-items:center;gap:12px;z-index:200;
   box-shadow:0 6px 24px rgba(0,0,0,.7);transition:top .45s cubic-bezier(.34,1.56,.64,1),transform .45s cubic-bezier(.34,1.56,.64,1),box-shadow .3s,border-color .3s;}
@@ -1113,7 +1113,7 @@ body{background:#0d1117;display:flex;align-items:flex-start;justify-content:cent
 .ach-notif-text{}
 .ach-notif-label{font-size:9px;color:#ffe082;font-weight:700;letter-spacing:2px;margin-bottom:2px;text-shadow:0 0 8px rgba(255,224,130,.5);}
 .ach-notif-name{font-size:15px;font-weight:900;color:#fff;}
-.ach-notif-desc{font-size:10px;color:#8bc34a;margin-top:1px;}
+.ach-notif-desc{font-size:10px;color:#e0f0ff;margin-top:1px;}
 /* achievement grid */
 .ach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:12px;}
 .ach-card{background:rgba(255,255,255,.05);border:2px solid #2a3a2a;border-radius:12px;
