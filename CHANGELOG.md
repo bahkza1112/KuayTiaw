@@ -2,6 +2,19 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.12.7 — Weather Rebalance
+
+### Changed
+- `js/game.js` WEATHERS: อัปเดตทุก effect ให้รุนแรงขึ้น
+  - 🧊 blizzard: `iceImmune` → `slowImmune` (บล็อกสโลจากทุกป้อม)
+  - ⚡ lightning: ป้อมถูกฟ้าผ่า 40%→50%
+  - 🔥 heatwave: `iceRateMult=0.3` → `iceDisabled=true` (หยุดยิงสนิท)
+  - 🌧️ rain: `splashMult=0.6` → `0.3` (ลด 70%)
+  - 🌪️ tornado: `dodgeChance=0.25` → `0.5`
+  - ☀️ sun: `goldMineMult=0.5` → `0` (หยุดผลิตสนิท)
+- `js/game.js` slow apply (story+endgame): เปลี่ยน check `iceImmune&&type===1` → `slowImmune`
+- `js/game.js` heatwave ice disable: เพิ่ม check `iceDisabled` ก่อนยิงทั้ง story+endgame
+
 ## v3.12.6 — Milestone เฉพาะโหมดยาก
 
 ### Changed

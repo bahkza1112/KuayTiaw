@@ -205,7 +205,7 @@ function mkWeatherState(){
   return {
     active:null,
     rangeMult:1, spdMult:1, hpMult:1,
-    iceImmune:false, iceRateMult:1,
+    slowImmune:false, iceDisabled:false, iceRateMult:1,
     splashMult:1, dodgeChance:0, goldMineMult:1,
     struckTowers:[], lightningTimer:0,
   };
@@ -214,26 +214,26 @@ const WEATHERS=[
   {id:'fog',icon:'🌫️',name:'หมอกหนา',desc:'ระยะป้อมลด 50%',color:'rgba(180,180,200,.18)',
    apply:(G)=>{if(G.weather)G.weather.rangeMult=0.5;},
    unapply:(G)=>{if(G.weather)G.weather.rangeMult=1;}},
-  {id:'blizzard',icon:'🧊',name:'พายุหิมะ',desc:'ศัตรูเร็วขึ้น 50%, ต้านทานน้ำแข็ง',color:'rgba(100,200,255,.15)',
-   apply:(G)=>{if(G.weather){G.weather.spdMult=1.5;G.weather.iceImmune=true;}},
-   unapply:(G)=>{if(G.weather){G.weather.spdMult=1;G.weather.iceImmune=false;}}},
-  {id:'lightning',icon:'⚡',name:'พายุฟ้าผ่า',desc:'ป้อม 40% ใช้งานไม่ได้ สุ่มใหม่ทุก 10 วินาที',color:'rgba(255,240,100,.1)',
+  {id:'blizzard',icon:'🧊',name:'พายุหิมะ',desc:'ศัตรูเร็วขึ้น 50%, ไม่โดนแช่แข็ง/สโล',color:'rgba(100,200,255,.15)',
+   apply:(G)=>{if(G.weather){G.weather.spdMult=1.5;G.weather.slowImmune=true;}},
+   unapply:(G)=>{if(G.weather){G.weather.spdMult=1;G.weather.slowImmune=false;}}},
+  {id:'lightning',icon:'⚡',name:'พายุฟ้าผ่า',desc:'ป้อม 50% ใช้งานไม่ได้ สุ่มใหม่ทุก 10 วินาที',color:'rgba(255,240,100,.1)',
    apply:(G)=>{if(G.weather)G.weather.lightningTimer=0;applyLightningStrike();},
    unapply:(G)=>{if(G.weather){G.weather.struckTowers=[];G.weather.lightningTimer=0;}}},
   {id:'darknight',icon:'🌑',name:'ราตรีมืดมิด',desc:'ศัตรู HP +50%, เร็วขึ้น +40%',color:'rgba(20,0,40,.55)',
    apply:(G)=>{if(G.weather){G.weather.hpMult=1.5;G.weather.spdMult=1.4;}},
    unapply:(G)=>{if(G.weather){G.weather.hpMult=1;G.weather.spdMult=1;}}},
-  {id:'heatwave',icon:'🔥',name:'คลื่นความร้อน',desc:'ป้อมน้ำแข็งยิงช้าลง 70%',color:'rgba(255,120,0,.12)',
-   apply:(G)=>{if(G.weather)G.weather.iceRateMult=0.3;},
-   unapply:(G)=>{if(G.weather)G.weather.iceRateMult=1;}},
-  {id:'rain',icon:'🌧️',name:'ฝนตกหนัก',desc:'พื้นที่กระเด็นปืนใหญ่ & เวทมนตร์ลด 40%',color:'rgba(50,100,200,.15)',
-   apply:(G)=>{if(G.weather)G.weather.splashMult=0.6;},
+  {id:'heatwave',icon:'🔥',name:'คลื่นความร้อน',desc:'ป้อมน้ำแข็งยิงไม่ทำงาน',color:'rgba(255,120,0,.12)',
+   apply:(G)=>{if(G.weather)G.weather.iceDisabled=true;},
+   unapply:(G)=>{if(G.weather)G.weather.iceDisabled=false;}},
+  {id:'rain',icon:'🌧️',name:'ฝนตกหนัก',desc:'splash ปืนใหญ่ & เวทมนตร์ลด 70%',color:'rgba(50,100,200,.15)',
+   apply:(G)=>{if(G.weather)G.weather.splashMult=0.3;},
    unapply:(G)=>{if(G.weather)G.weather.splashMult=1;}},
-  {id:'tornado',icon:'🌪️',name:'พายุทอร์นาโด',desc:'ศัตรูหลบกระสุนได้ 25%',color:'rgba(150,150,150,.2)',
-   apply:(G)=>{if(G.weather)G.weather.dodgeChance=0.25;},
+  {id:'tornado',icon:'🌪️',name:'พายุทอร์นาโด',desc:'ศัตรูหลบกระสุนได้ 50%',color:'rgba(150,150,150,.2)',
+   apply:(G)=>{if(G.weather)G.weather.dodgeChance=0.5;},
    unapply:(G)=>{if(G.weather)G.weather.dodgeChance=0;}},
-  {id:'sun',icon:'☀️',name:'แดดแผดเผา',desc:'เหมืองทองได้ทองลด 50%',color:'rgba(255,220,0,.1)',
-   apply:(G)=>{if(G.weather)G.weather.goldMineMult=0.5;},
+  {id:'sun',icon:'☀️',name:'แดดแผดเผา',desc:'เหมืองทองหยุดทำงาน',color:'rgba(255,220,0,.1)',
+   apply:(G)=>{if(G.weather)G.weather.goldMineMult=0;},
    unapply:(G)=>{if(G.weather)G.weather.goldMineMult=1;}},
 ];
 const STAGE_WEATHER=[
@@ -348,7 +348,7 @@ function applyLightningStrike(){
   if(!G||!G.weather||G.weather.active!=='lightning') return;
   const n=G.towers.length;
   if(!n) return;
-  const count=Math.max(1,Math.ceil(n*0.4));
+  const count=Math.max(1,Math.ceil(n*0.5));
   // store direct tower references (not indices) so selling/placing towers mid-storm can't desync the struck set
   const pool=G.towers.slice();
   for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
@@ -1012,8 +1012,8 @@ function update(dt){
     if(tw.type===3&&shamanInRange) best=shamanInRange;
     if(best) tw.angle=Math.atan2(best.y/CS-cy,best.x/CS-cx);
     if(best&&tw.cd<=0){
-      const _rateMultW=(tw.type===1&&G.weather&&G.weather.iceRateMult)?G.weather.iceRateMult:1;
-      tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.rateLv||tw.lv)*_rateMultW*(G.skillRateMult||1));
+      if(tw.type===1&&G.weather&&G.weather.iceDisabled) return; // 🔥 heatwave: ice tower disabled
+      tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.rateLv||tw.lv)*(G.skillRateMult||1));
       // ⚡ สายความเร็ว Lv.4+ ปลดล็อก "ยิงรัว" — มีโอกาสคูลดาวน์สั้นลงทันที
       if((tw.rateLv||tw.lv)>=4&&Math.random()<0.2){
         tw.cd*=0.45;
@@ -1160,7 +1160,7 @@ function update(dt){
           }
         }
       }
-      if(p.slow>0&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)&&!(G.weather&&G.weather.iceImmune&&p.type===1)){
+      if(p.slow>0&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)&&!(G.weather&&G.weather.slowImmune)){
         // ❄️ Ice Awaken: ติดแข็ง (หยุดสนิท) 3 วินาที — Support ตื่นใกล้เคียงเพิ่มเป็น 6 วินาที
         if(p._awakened&&p.type===1){ p.target.slow=0; p.target.slowT=3*(p._supBoost||1); }
         else { p.target.slow=p.slow; p.target.slowT=2; }
@@ -2815,8 +2815,8 @@ function updateEg(dt){
     if(tw.type===3&&shamanInRange) best=shamanInRange;
     if(best) tw.angle=Math.atan2(best.y/CS-cy,best.x/CS-cx);
     if(best&&tw.cd<=0){
-      const _rateMultW2=(tw.type===1&&G.weather&&G.weather.iceRateMult)?G.weather.iceRateMult:1;
-      tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.rateLv||tw.lv)*_rateMultW2*(G.skillRateMult||1));
+      if(tw.type===1&&G.weather&&G.weather.iceDisabled) return; // 🔥 heatwave: ice tower disabled
+      tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.rateLv||tw.lv)*(G.skillRateMult||1));
       // ⚡ สายความเร็ว Lv.4+ ปลดล็อก "ยิงรัว" — มีโอกาสคูลดาวน์สั้นลงทันที
       if((tw.rateLv||tw.lv)>=4&&Math.random()<0.2){
         tw.cd*=0.45;
@@ -2895,7 +2895,7 @@ function updateEg(dt){
           G.fxRings.push({x:e.x,y:e.y,r:2,maxR:ESIZES[e.ti]*1.6,life:.5,lw:2,col:'#9575cd',delay:0});
         }
       }
-      if(p.slow>0&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)){
+      if(p.slow>0&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)&&!(G.weather&&G.weather.slowImmune)){
         // ❄️ Ice Awaken: ติดแข็ง (หยุดสนิท) 3 วินาที — Support ตื่นใกล้เคียงเพิ่มเป็น 6 วินาที
         if(p._awakened&&p.type===1){ p.target.slow=0; p.target.slowT=3*(p._supBoost||1); }
         else { p.target.slow=p.slow; p.target.slowT=2; }
