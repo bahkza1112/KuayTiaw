@@ -1,6 +1,9 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.96';
+const GAME_VERSION='3.11.97';
 const PATCH_NOTES=[
+  {ver:'3.11.97',date:'2026-06-23',title:'🔧 แก้ Avatar วาดเองโผล่เป็น text ในหน้าโปรไฟล์',notes:[
+    'Avatar ที่วาดเองแสดงเป็นรูปภาพในกริด ไม่โผล่ data URI อีกต่อไป',
+  ]},
   {ver:'3.11.96',date:'2026-06-23',title:'🔧 แก้ไอคอนมณีวิญญาณโผล่เป็น HTML text',notes:[
     'ตารางรางวัลสล็อต, BJ balance, เดิมพัน, แจ้งเตือน Achievement — แสดงไอคอน ◇ ถูกต้อง',
   ]},
@@ -3462,7 +3465,7 @@ function openProfile(){
   // avatar grid
   const grid=document.getElementById('profileAvatarGrid');
   if(grid){
-    grid.innerHTML=PROFILE_AVATARS.map(e=>`<button class="profile-avatar-btn${e===av?' selected':''}" onclick="selectAvatar('${e}')" data-av="${e}">${e}</button>`).join('');
+    grid.innerHTML=PROFILE_AVATARS.map((e,i)=>{const disp=e.startsWith('data:')?`<img src="${e}" style="width:28px;height:28px;object-fit:cover;border-radius:4px;">`:e;return `<button class="profile-avatar-btn${e===av?' selected':''}" onclick="selectAvatar(PROFILE_AVATARS[${i}])" data-avi="${i}">${disp}</button>`;}).join('');
   }
   // name input
   const inp=document.getElementById('profileNameInput');
@@ -3503,9 +3506,10 @@ function updateAvatarDisplay(){
 }
 function selectAvatar(e){
   localStorage.setItem('tq_avatar',e);
-  document.querySelectorAll('.profile-avatar-btn').forEach(b=>b.classList.toggle('selected',b.dataset.av===e));
+  const idx=PROFILE_AVATARS.indexOf(e);
+  document.querySelectorAll('.profile-avatar-btn').forEach(b=>b.classList.toggle('selected',b.dataset.avi==idx));
   const avBig=document.getElementById('profileAvatarBig');
-  if(avBig){avBig.textContent=e;avBig.style.backgroundImage='';}
+  if(avBig){if(e.startsWith('data:')){avBig.textContent='';avBig.style.backgroundImage=`url(${e})`;avBig.style.backgroundSize='cover';}else{avBig.textContent=e;avBig.style.backgroundImage='';}}
   updateAvatarDisplay();
 }
 

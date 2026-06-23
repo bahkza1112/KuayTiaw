@@ -2,6 +2,12 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.97 — แก้ Avatar วาดเองโผล่เป็น text ในหน้าโปรไฟล์
+
+### Fixed
+- `js/ui.js`: `profileAvatarGrid` — ใช้ index แทน data URI ใน onclick/data-avi; render `<img>` สำหรับ data URI
+- `selectAvatar()` — เปรียบเทียบด้วย index, แสดง avatar วาดเองใน preview ด้านบนด้วย backgroundImage
+
 ## v3.11.96 — แก้ไอคอนมณีวิญญาณโผล่เป็น HTML text
 
 ### Fixed
