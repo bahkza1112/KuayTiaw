@@ -1,6 +1,12 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.97';
+const GAME_VERSION='3.11.98';
 const PATCH_NOTES=[
+  {ver:'3.11.98',date:'2026-06-23',title:'🔒 ล็อค Avatar — ปลดด้วย ◇300 หรือ 💰1000',notes:[
+    'Avatar ฟรี: 🏰 เท่านั้น — อีก 19 อันล็อคอยู่',
+    'กดที่ Avatar ที่ล็อค → Popup ให้เลือกชำระ ◇300 หรือ 💰1000',
+    'ปลดล็อคครั้งเดียว ได้ใช้ถาวร',
+    'Avatar วาดเองยังใช้ได้ฟรีเสมอ',
+  ]},
   {ver:'3.11.97',date:'2026-06-23',title:'🔧 แก้ Avatar วาดเองโผล่เป็น text ในหน้าโปรไฟล์',notes:[
     'Avatar ที่วาดเองแสดงเป็นรูปภาพในกริด ไม่โผล่ data URI อีกต่อไป',
   ]},
@@ -3428,9 +3434,60 @@ const CUTSCENES = [
 
 /* ══ PROFILE ══ */
 const PROFILE_AVATARS=['⚔️','🛡️','🧙','🏹','🗡️','🔥','❄️','⚡','🌑','<span class="gico"></span>','👑','🐉','🦅','🐺','🦁','🌟','💀','🎯','🌊','🏰'];
+const AV_FREE_IDX=19; // 🏰 ฟรี
+const AV_UNLOCK_GEMS=300;
+const AV_UNLOCK_GOLD=1000;
+function _avUnlocked(){try{return JSON.parse(localStorage.getItem('tq_av_unlocked')||'[]');}catch{return [];}}
+function _isAvUnlocked(i){return i===AV_FREE_IDX||_avUnlocked().includes(i);}
+function _showAvUnlockPopup(i){
+  const e=PROFILE_AVATARS[i];
+  const gems=loadGems(),gold=loadPGold();
+  const canGems=gems>=AV_UNLOCK_GEMS,canGold=gold>=AV_UNLOCK_GOLD;
+  const pop=document.createElement('div');pop.className='av-unlock-popup';
+  pop.innerHTML=`<div class="av-unlock-box">
+    <div class="av-preview">${e}</div>
+    <h3>ปลดล็อค Avatar</h3>
+    <p>เลือกวิธีชำระเพื่อปลดล็อคถาวร</p>
+    <div class="av-unlock-opts">
+      <button class="av-unlock-opt gems${canGems?'':' disabled'}" onclick="_avPay(${i},'gems')" ${canGems?'':'disabled'}>
+        <span class="opt-price"><span class="gico"></span> ${AV_UNLOCK_GEMS}</span>
+        <span style="font-size:10px;color:#b388ff;">มณีวิญญาณ</span>
+        ${canGems?'':`<span style="font-size:9px;color:#f44;">ไม่พอ (มี ${gems})</span>`}
+      </button>
+      <button class="av-unlock-opt gold${canGold?'':' disabled'}" onclick="_avPay(${i},'gold')" ${canGold?'':'disabled'}>
+        <span class="opt-price">💰 ${AV_UNLOCK_GOLD}</span>
+        <span style="font-size:10px;color:#ffd24d;">ทองถาวร</span>
+        ${canGold?'':`<span style="font-size:9px;color:#f44;">ไม่พอ (มี ${gold})</span>`}
+      </button>
+    </div>
+    <button class="av-unlock-cancel" onclick="this.closest('.av-unlock-popup').remove()">ยกเลิก</button>
+  </div>`;
+  document.body.appendChild(pop);
+  pop.addEventListener('click',ev=>{if(ev.target===pop)pop.remove();});
+}
+function _avPay(i,cur){
+  if(cur==='gems'){if(loadGems()<AV_UNLOCK_GEMS){showToast('มณีไม่พอ');return;}saveGems(loadGems()-AV_UNLOCK_GEMS);}
+  else{if(loadPGold()<AV_UNLOCK_GOLD){showToast('ทองไม่พอ');return;}savePGold(loadPGold()-AV_UNLOCK_GOLD);}
+  const ul=_avUnlocked();if(!ul.includes(i))ul.push(i);
+  localStorage.setItem('tq_av_unlocked',JSON.stringify(ul));
+  document.querySelector('.av-unlock-popup')?.remove();
+  showToast('✅ ปลดล็อค Avatar แล้ว!');
+  selectAvatar(PROFILE_AVATARS[i]);
+  // refresh grid
+  const av=localStorage.getItem('tq_avatar')||'🏰';
+  const grid=document.getElementById('profileAvatarGrid');
+  if(grid) grid.innerHTML=PROFILE_AVATARS.map((e,idx)=>{
+    const locked=!_isAvUnlocked(idx);
+    const disp=e.startsWith('data:')?`<img src="${e}" style="width:28px;height:28px;object-fit:cover;border-radius:4px;">`:e;
+    return `<button class="profile-avatar-btn${e===av?' selected':''}${locked?' locked':''}" onclick="${locked?`_showAvUnlockPopup(${idx})`:`selectAvatar(PROFILE_AVATARS[${idx}])`}" data-avi="${idx}">${disp}</button>`;
+  }).join('');
+}
 function openProfile(){
   showScreen('profile',true);
-  const av=localStorage.getItem('tq_avatar')||'⚔️';
+  let av=localStorage.getItem('tq_avatar')||'🏰';
+  // ถ้า avatar ปัจจุบันเป็น emoji ที่ล็อค → reset เป็น 🏰
+  const avIdx=PROFILE_AVATARS.indexOf(av);
+  if(avIdx>=0&&!_isAvUnlocked(avIdx)){av='🏰';localStorage.setItem('tq_avatar','🏰');}
   const nm=localStorage.getItem('tq_displayName')||localStorage.getItem('tq_last_name')||'';
   // Google pic
   const gPic=document.getElementById('profileGooglePic');
@@ -3465,7 +3522,11 @@ function openProfile(){
   // avatar grid
   const grid=document.getElementById('profileAvatarGrid');
   if(grid){
-    grid.innerHTML=PROFILE_AVATARS.map((e,i)=>{const disp=e.startsWith('data:')?`<img src="${e}" style="width:28px;height:28px;object-fit:cover;border-radius:4px;">`:e;return `<button class="profile-avatar-btn${e===av?' selected':''}" onclick="selectAvatar(PROFILE_AVATARS[${i}])" data-avi="${i}">${disp}</button>`;}).join('');
+    grid.innerHTML=PROFILE_AVATARS.map((e,i)=>{
+      const locked=!_isAvUnlocked(i);
+      const disp=e.startsWith('data:')?`<img src="${e}" style="width:28px;height:28px;object-fit:cover;border-radius:4px;">`:e;
+      return `<button class="profile-avatar-btn${e===av?' selected':''}${locked?' locked':''}" onclick="${locked?`_showAvUnlockPopup(${i})`:`selectAvatar(PROFILE_AVATARS[${i}])`}" data-avi="${i}">${disp}</button>`;
+    }).join('');
   }
   // name input
   const inp=document.getElementById('profileNameInput');

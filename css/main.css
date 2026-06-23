@@ -318,8 +318,23 @@ body{background:#0d1117;display:flex;align-items:flex-start;justify-content:cent
 /* cheat grid */
 .dev-cheat-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
 .dev-cheat-3{grid-template-columns:1fr 1fr 1fr;}
-.profile-avatar-btn{width:44px;height:44px;border-radius:12px;border:2px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.profile-avatar-btn{width:44px;height:44px;border-radius:12px;border:2px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;position:relative;}
 .profile-avatar-btn:hover,.profile-avatar-btn.selected{border-color:#ffd24d;background:rgba(255,210,77,.15);transform:scale(1.12);}
+.profile-avatar-btn.locked{opacity:.45;cursor:pointer;}
+.profile-avatar-btn.locked::after{content:'🔒';position:absolute;bottom:-4px;right:-4px;font-size:11px;line-height:1;}
+.av-unlock-popup{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.av-unlock-box{background:linear-gradient(160deg,#1a1a2e,#16213e);border:1px solid rgba(179,136,255,.4);border-radius:18px;padding:28px 24px;max-width:300px;width:90%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.6);}
+.av-unlock-box .av-preview{font-size:52px;margin-bottom:10px;}
+.av-unlock-box h3{color:#ffd24d;font-size:16px;margin:0 0 6px;}
+.av-unlock-box p{color:#aaa;font-size:12px;margin:0 0 18px;}
+.av-unlock-opts{display:flex;gap:10px;justify-content:center;margin-bottom:14px;}
+.av-unlock-opt{flex:1;padding:12px 8px;border-radius:12px;border:2px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);cursor:pointer;color:#fff;font-size:13px;font-weight:700;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.av-unlock-opt:hover{transform:scale(1.05);}
+.av-unlock-opt.gems{border-color:#b388ff;} .av-unlock-opt.gems:hover{background:rgba(179,136,255,.2);}
+.av-unlock-opt.gold{border-color:#ffd24d;} .av-unlock-opt.gold:hover{background:rgba(255,210,77,.15);}
+.av-unlock-opt .opt-price{font-size:16px;font-weight:900;}
+.av-unlock-cancel{background:transparent;border:none;color:#666;font-size:12px;cursor:pointer;padding:4px 8px;}
+.av-unlock-cancel:hover{color:#aaa;}
 /* DRAW AVATAR */
 .draw-wrap{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px;display:flex;flex-direction:column;align-items:center;gap:10px;}
 .draw-canvas{border-radius:10px;cursor:crosshair;touch-action:none;box-shadow:0 0 0 2px rgba(255,255,255,.12),0 4px 20px rgba(0,0,0,.4);background:#1a1a2e;}

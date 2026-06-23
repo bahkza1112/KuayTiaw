@@ -2,6 +2,19 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.98 — ล็อค Avatar — ปลดด้วยมณีหรือทอง
+
+### Added
+- `js/ui.js`: `AV_FREE_IDX=19` (🏰), `AV_UNLOCK_GEMS=300`, `AV_UNLOCK_GOLD=1000`
+- `_avUnlocked()`, `_isAvUnlocked(i)` — อ่าน `tq_av_unlocked` (localStorage array of indices)
+- `_showAvUnlockPopup(i)` — popup เลือกชำระ ◇300 หรือ 💰1000
+- `_avPay(i, cur)` — หักค่า, บันทึกใน `tq_av_unlocked`, refresh grid
+- `css/main.css`: `.profile-avatar-btn.locked`, `.av-unlock-popup/box/opts` styles
+
+### Changed
+- Grid rendering ใน `openProfile()` — locked avatars แสดง 🔒 overlay + onclick เปิด popup
+- `openProfile()` — reset avatar เป็น 🏰 ถ้า current avatar เป็น emoji ที่ล็อค
+
 ## v3.11.97 — แก้ Avatar วาดเองโผล่เป็น text ในหน้าโปรไฟล์
 
 ### Fixed
