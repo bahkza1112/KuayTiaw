@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.12.1';
+const GAME_VERSION='3.12.2';
 const PATCH_NOTES=[
+  {ver:'3.12.2',date:'2026-06-23',title:'🔧 แก้บัคปุ่มเวอร์ชัน + เรียงอันดับรางวัลถูกต้อง',notes:[
+    'แก้บัคกด verBtn แล้ว error เพราะ listener เก่าซ้ำซ้อน',
+    'เรียงคะแนน leaderboard ก่อนแจกรางวัลรายสัปดาห์ (ให้ถูกอันดับ)',
+  ]},
   {ver:'3.12.1',date:'2026-06-23',title:'🏆 Leaderboard รายสัปดาห์ + รางวัลอันดับ',notes:[
     'รีเซ็ต TOP 10 ทุก 7 วัน — countdown แสดงในหน้าอันดับ',
     'อันดับ 1: ◇2000+🎫50 · 2: ◇1000+🎫25 · 3: ◇500+🎫10',
@@ -4004,39 +4008,29 @@ for(let _i=0;_i<9;_i++){
 }
 document.getElementById('devIngameBtn').addEventListener('click',()=>{if(!G||G.over||G.win)return;openDev(false);});
 document.getElementById('devCloseBtn').addEventListener('click',closeDev);
-// 🔧 hidden Dev access: click #verBtn 5× in 2s → password prompt
-(function(){
-  const DEV_PWD='kt1233';
-  let _clicks=0,_timer=null;
-  function _reset(){_clicks=0;if(_timer){clearTimeout(_timer);_timer=null;}}
-  function _showPwdPrompt(){
-    const pop=document.createElement('div');pop.className='av-unlock-popup';pop.id='devPwdPop';
-    pop.innerHTML=`<div class="av-unlock-box" style="max-width:280px;">
-      <div style="font-size:32px;margin-bottom:8px;">🔧</div>
-      <h3 style="color:#ffd24d;margin:0 0 12px;">Dev Access</h3>
-      <input id="devPwdInput" type="password" placeholder="รหัสผ่าน" style="width:100%;box-sizing:border-box;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-size:15px;margin-bottom:12px;">
-      <div style="display:flex;gap:8px;">
-        <button class="slot-spin-btn" style="flex:1;padding:10px;font-size:14px;" onclick="_devPwdSubmit()">เข้า</button>
-        <button class="av-unlock-cancel" style="padding:10px 14px;" onclick="document.getElementById('devPwdPop')?.remove()">ยกเลิก</button>
-      </div>
-    </div>`;
-    document.body.appendChild(pop);
-    setTimeout(()=>document.getElementById('devPwdInput')?.focus(),100);
-    document.getElementById('devPwdInput').addEventListener('keydown',e=>{if(e.key==='Enter')_devPwdSubmit();});
-    pop.addEventListener('click',ev=>{if(ev.target===pop)pop.remove();});
-  }
-  window._devPwdSubmit=function(){
-    const val=document.getElementById('devPwdInput')?.value||'';
-    if(val===DEV_PWD){document.getElementById('devPwdPop')?.remove();openDev(true);}
-    else{const inp=document.getElementById('devPwdInput');if(inp){inp.style.borderColor='#f44';inp.value='';inp.placeholder='รหัสผิด ลองใหม่';}}
-  };
-  const btn=document.getElementById('verBtn');if(!btn)return;
-  btn.addEventListener('click',()=>{
-    _clicks++;
-    if(_timer){clearTimeout(_timer);}_timer=setTimeout(_reset,2000);
-    if(_clicks>=5){_reset();_showPwdPrompt();}
-  });
-})();
+// 🔧 Dev password prompt — triggered by verBtn 5-click sequence above
+const _DEV_PWD='kt1233';
+function _showDevPwdPrompt(){
+  const pop=document.createElement('div');pop.className='av-unlock-popup';pop.id='devPwdPop';
+  pop.innerHTML=`<div class="av-unlock-box" style="max-width:280px;">
+    <div style="font-size:32px;margin-bottom:8px;">🔧</div>
+    <h3 style="color:#ffd24d;margin:0 0 12px;">Dev Access</h3>
+    <input id="devPwdInput" type="password" placeholder="รหัสผ่าน" style="width:100%;box-sizing:border-box;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-size:15px;margin-bottom:12px;">
+    <div style="display:flex;gap:8px;">
+      <button class="slot-spin-btn" style="flex:1;padding:10px;font-size:14px;" onclick="_devPwdSubmit()">เข้า</button>
+      <button class="av-unlock-cancel" style="padding:10px 14px;" onclick="document.getElementById('devPwdPop')?.remove()">ยกเลิก</button>
+    </div>
+  </div>`;
+  document.body.appendChild(pop);
+  setTimeout(()=>document.getElementById('devPwdInput')?.focus(),100);
+  document.getElementById('devPwdInput').addEventListener('keydown',e=>{if(e.key==='Enter')_devPwdSubmit();});
+  pop.addEventListener('click',ev=>{if(ev.target===pop)pop.remove();});
+}
+function _devPwdSubmit(){
+  const val=document.getElementById('devPwdInput')?.value||'';
+  if(val===_DEV_PWD){document.getElementById('devPwdPop')?.remove();openDev(true);}
+  else{const inp=document.getElementById('devPwdInput');if(inp){inp.style.borderColor='#f44';inp.value='';inp.placeholder='รหัสผิด ลองใหม่';}}
+}
 document.getElementById('codexNavBtn').addEventListener('click',openCodex);
 document.getElementById('codexBackBtn').addEventListener('click',()=>showScreen('mm',true));
 document.getElementById('egMenuBtn').addEventListener('click',openEgMenu);
@@ -4044,7 +4038,16 @@ document.getElementById('egBackBtn').addEventListener('click',()=>showScreen('mm
 document.getElementById('lbNavBtn').addEventListener('click',openLeaderboard);
 document.getElementById('lbBackBtn').addEventListener('click',()=>showScreen('mm',true));
 document.getElementById('profileBackBtn').addEventListener('click',()=>showScreen('mm',true));
-document.getElementById('verBtn').addEventListener('click',openWhatsNew);
+(function(){
+  let _vc=0,_vt=null;
+  document.getElementById('verBtn').addEventListener('click',()=>{
+    _vc++;
+    if(_vt) clearTimeout(_vt);
+    _vt=setTimeout(()=>{_vc=0;_vt=null;},2000);
+    if(_vc>=5){_vc=0;clearTimeout(_vt);_vt=null;_showDevPwdPrompt();}
+    else openWhatsNew();
+  });
+})();
 document.getElementById('whatsnewBackBtn').addEventListener('click',()=>showScreen('mm',true));
 document.getElementById('ssBackBtn').addEventListener('click',()=>showScreen('mm',true));
 document.getElementById('tsBackBtn').addEventListener('click',()=>{

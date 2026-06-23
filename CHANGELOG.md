@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.12.2 — แก้บัค verBtn + เรียงอันดับรางวัล
+
+### Fixed
+- `js/ui.js`: ลบ dead code ใน dev panel IIFE ที่อ้าง `_clicks`/`_timer`/`_reset`/`_showPwdPrompt` ซึ่งไม่ได้นิยามไว้ → ไม่ throw ReferenceError อีก
+- `js/ui.js`: `_showDevPwdPrompt` และ `_devPwdSubmit` เป็น global function แทน — verBtn listener เรียกได้ถูกต้อง
+- `server.js`: `checkSeasonReset()` เรียง lb ก่อน slice เพื่อแจกรางวัลถูกอันดับ (เดิมไม่ sort ก่อน slice)
+
 ## v3.12.1 — Leaderboard รายสัปดาห์ + รางวัลอันดับ
 
 ### Added

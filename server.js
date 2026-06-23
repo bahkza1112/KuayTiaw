@@ -52,7 +52,7 @@ function checkSeasonReset() {
   const season = loadSeason();
   if (Date.now() - season.start < SEASON_MS) return season;
   // snapshot top 10 and assign rewards
-  const lb = loadLb();
+  const lb = loadLb().sort((a,b)=>b.score-a.score);
   const rewards = loadRewards();
   lb.slice(0,10).forEach((entry,i) => {
     if (entry.uid && LB_PRIZE[i]) {
