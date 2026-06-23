@@ -1,6 +1,11 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.12.2';
+const GAME_VERSION='3.12.3';
 const PATCH_NOTES=[
+  {ver:'3.12.3',date:'2026-06-23',title:'⚡ ปรับ performance — ลดกระตุกตอนเร่งความเร็ว',notes:[
+    'เร่ง 2× render 30fps / เร่ง 3× render 20fps — ลด CPU load 50-66%',
+    'เปลี่ยน splice→swap-pop ทุก array (enemies/projs/particles/fx)',
+    'จำกัดกระสุนสูงสุด 250 ตัว + ตัวเลขความเสียหายสูงสุด 60 ตัว',
+  ]},
   {ver:'3.12.2',date:'2026-06-23',title:'🔧 แก้บัคปุ่มเวอร์ชัน + เรียงอันดับรางวัลถูกต้อง',notes:[
     'แก้บัคกด verBtn แล้ว error เพราะ listener เก่าซ้ำซ้อน',
     'เรียงคะแนน leaderboard ก่อนแจกรางวัลรายสัปดาห์ (ให้ถูกอันดับ)',

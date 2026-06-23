@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.12.3 — Performance: ลดกระตุกตอนเร่งความเร็ว
+
+### Changed
+- `js/game.js`: render loop ที่ speed 2× ข้าม 1 frame (30fps render), speed 3× ข้าม 2 frame (20fps render) — ลด CPU render load 50-66%
+- `js/game.js`: เปลี่ยน `splice(i,1)` → swap-and-pop (`arr[i]=arr[last];arr.pop()`) ในทุก array ที่ loop backward: `G.enemies`, `G.projs`, `G.particles`, `G.fxRings`, `G.fxTrails`, `G.fxFlash`, `G.dmgNums`
+- `js/game.js`: จำกัด `G.projs` ≤ 250 และ `G.dmgNums` ≤ 60 ก่อนเข้า loop
+
 ## v3.12.2 — แก้บัค verBtn + เรียงอันดับรางวัล
 
 ### Fixed

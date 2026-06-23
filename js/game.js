@@ -390,17 +390,18 @@ function initGame(){
   updateMenuStats();
   _initRunSkill(); // ⭐ ตั้งค่าการ์ดสกิลที่ใส่ไว้ (อ่าน tq_askill; ไม่ consume)
   startBgm();
-  let last=performance.now();
+  let last=performance.now(),_renderTick=0;
   function loop(ts){
     /* BUG FIX: guard against stale loops after goMenu/goStageSelect */
     if(!G){return;}
     if(paused){rafId=requestAnimationFrame(loop);return;}
     const rdt=(ts-last)/1000; last=ts;
     const dt=Math.min(rdt,.1)*speed;
-    if(G.hitStopT>0){ G.hitStopT-=rdt; render(); } // hit-stop: freeze sim, keep drawing
-    else { update(dt); render(); }
+    _renderTick++;
+    const _doRender=speed<=1||(_renderTick%speed===0);
+    if(G.hitStopT>0){ G.hitStopT-=rdt; render(); }
+    else { update(dt); if(_doRender) render(); }
     if(!G.over&&!G.win) rafId=requestAnimationFrame(loop);
-    // else loop stops naturally
   }
   rafId=requestAnimationFrame(loop);
 }
@@ -821,7 +822,7 @@ function update(dt){
   const plen=currentPath.length;
   for(let i=G.enemies.length-1;i>=0;i--){
     const e=G.enemies[i];
-    if(!e.alive){G.enemies.splice(i,1);continue;}
+    if(!e.alive){G.enemies[i]=G.enemies[G.enemies.length-1];G.enemies.pop();continue;}
     if(e.slowT>0){e.slowT-=dt;if(e.slowT<=0)e.slow=1;}
     if(e._enrageT>0) e._enrageT-=dt;
     if(e._dodgeFlash>0) e._dodgeFlash-=dt;
@@ -1122,10 +1123,11 @@ function update(dt){
       }
     }
   });
-  // projectiles
+  // projectiles — cap ไม่เกิน 250 ตัว (กันกระสุนล้น)
+  if(G.projs.length>250) G.projs.length=250;
   for(let i=G.projs.length-1;i>=0;i--){
     const p=G.projs[i];
-    if(!p.alive){G.projs.splice(i,1);continue;}
+    if(!p.alive){G.projs[i]=G.projs[G.projs.length-1];G.projs.pop();continue;}
     const tx=p.target&&p.target.alive?p.target.x:p.tx;
     const ty=p.target&&p.target.alive?p.target.y:p.ty;
     const dx=tx-p.x,dy=ty-p.y,d=Math.hypot(dx,dy);
@@ -1244,7 +1246,7 @@ function update(dt){
         }
         G.enemies.forEach(e=>{if(e.alive&&(!e.isAir||TCANAIR[p.type])&&Math.hypot(e.x-tx,e.y-ty)<=p.splash*CS) e.hitFlash=.8;});
       }
-      G.projs.splice(i,1);
+      G.projs[i]=G.projs[G.projs.length-1];G.projs.pop();
     } else {
       // add trail point
       if(G.fxTrails.length<200)
@@ -1261,12 +1263,12 @@ function update(dt){
     const r=G.fxRings[i];
     if(r.delay>0){r.delay-=dt;continue;}
     r.r+=r.maxR*dt*3.5; r.life-=dt*2.8;
-    if(r.life<=0) G.fxRings.splice(i,1);
+    if(r.life<=0){G.fxRings[i]=G.fxRings[G.fxRings.length-1];G.fxRings.pop();}
   }
   // FX trails
   for(let i=G.fxTrails.length-1;i>=0;i--){
     const t=G.fxTrails[i]; t.life-=dt*6;
-    if(t.life<=0) G.fxTrails.splice(i,1);
+    if(t.life<=0){G.fxTrails[i]=G.fxTrails[G.fxTrails.length-1];G.fxTrails.pop();}
   }
   // particles — trim hard when many enemies on screen
   if(G.enemies.length>12&&G.particles.length>30) G.particles.length=30;
@@ -1274,20 +1276,21 @@ function update(dt){
     const p=G.particles[i];
     p.x+=p.vx||0; p.y+=p.vy; p.life-=dt*(p.decay||1.4);
     if(p.scale) p.scale=Math.max(.4,p.scale-dt*1.5);
-    if(p.life<=0) G.particles.splice(i,1);
+    if(p.life<=0){G.particles[i]=G.particles[G.particles.length-1];G.particles.pop();}
   }
   // combo timer decay
   if(G.comboT>0){G.comboT-=dt;if(G.comboT<=0){G.comboN=0;G.comboT=0;}}
   // muzzle flashes decay
   for(let i=G.fxFlash.length-1;i>=0;i--){
-    G.fxFlash[i].life-=dt; if(G.fxFlash[i].life<=0) G.fxFlash.splice(i,1);
+    G.fxFlash[i].life-=dt; if(G.fxFlash[i].life<=0){G.fxFlash[i]=G.fxFlash[G.fxFlash.length-1];G.fxFlash.pop();}
   }
   // floating damage numbers
+  if(G.dmgNums.length>60) G.dmgNums.length=60;
   for(let i=G.dmgNums.length-1;i>=0;i--){
     const n=G.dmgNums[i];
     n.x+=n.vx||0; n.y+=n.vy; n.vy*=.92;
     n.life-=dt*(n.decay||1.0);
-    if(n.life<=0) G.dmgNums.splice(i,1);
+    if(n.life<=0){G.dmgNums[i]=G.dmgNums[G.dmgNums.length-1];G.dmgNums.pop();}
   }
   // boss warning decay
   if(G.bossWarning&&G.bossWarning.t>0) G.bossWarning.t-=dt;
@@ -2585,14 +2588,16 @@ function initEgGame(){
   updateHUD();
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
   startBgm();
-  let last=performance.now();
+  let last=performance.now(),_renderTick=0;
   function loop(ts){
     if(!G) return;
     if(paused){rafId=requestAnimationFrame(loop);return;}
     const rdt=(ts-last)/1000; last=ts;
     const dt=Math.min(rdt,.1)*speed;
+    _renderTick++;
+    const _doRender=speed<=1||(_renderTick%speed===0);
     if(G.hitStopT>0){ G.hitStopT-=rdt; render(); }
-    else { updateEg(dt); render(); }
+    else { updateEg(dt); if(_doRender) render(); }
     if(!G.over&&!G.win) rafId=requestAnimationFrame(loop);
   }
   rafId=requestAnimationFrame(loop);
@@ -2678,7 +2683,7 @@ function updateEg(dt){
   const plen=EG_PATH.length;
   for(let i=G.enemies.length-1;i>=0;i--){
     const e=G.enemies[i];
-    if(!e.alive){G.enemies.splice(i,1);continue;}
+    if(!e.alive){G.enemies[i]=G.enemies[G.enemies.length-1];G.enemies.pop();continue;}
     if(e.slowT>0){e.slowT-=dt;if(e.slowT<=0)e.slow=1;}
     if(e._enrageT>0) e._enrageT-=dt;
     if(e._dodgeFlash>0) e._dodgeFlash-=dt;
