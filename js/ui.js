@@ -1,6 +1,9 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.95';
+const GAME_VERSION='3.11.96';
 const PATCH_NOTES=[
+  {ver:'3.11.96',date:'2026-06-23',title:'🔧 แก้ไอคอนมณีวิญญาณโผล่เป็น HTML text',notes:[
+    'ตารางรางวัลสล็อต, BJ balance, เดิมพัน, แจ้งเตือน Achievement — แสดงไอคอน ◇ ถูกต้อง',
+  ]},
   {ver:'3.11.95',date:'2026-06-23',title:'🏆 อันดับไม่ซ้ำเมื่อเปลี่ยนชื่อ',notes:[
     'ผู้เล่นคนเดียวกันมีแถวเดียวในอันดับ ไม่ว่าจะเปลี่ยนชื่อกี่ครั้ง',
     'ใช้ Device ID สำหรับผู้เล่นทั่วไป, Google ID สำหรับผู้เล่นที่ล็อกอิน',
@@ -1178,9 +1181,9 @@ function _renderSkillGachaUI(){
   // ปุ่มแลกตั๋ว: โชว์มณีปัจจุบัน + dim เมื่อมณีไม่พอ (ต้องการ GEM_PER_TICKET)
   const g=loadGems();
   const exb=document.getElementById('skillExchangeBtn');
-  if(exb){const ok=g>=GEM_PER_TICKET;exb.textContent=`🔁 แลก <span class="gico"></span>${GEM_PER_TICKET} → 🎫1  (มี <span class="gico"></span>${g})`;exb.style.opacity=ok?'1':'.45';exb.style.cursor=ok?'pointer':'not-allowed';}
+  if(exb){const ok=g>=GEM_PER_TICKET;exb.innerHTML=`🔁 แลก <span class="gico"></span>${GEM_PER_TICKET} → 🎫1  (มี <span class="gico"></span>${g})`;exb.style.opacity=ok?'1':'.45';exb.style.cursor=ok?'pointer':'not-allowed';}
   const exb10=document.getElementById('skillExchangeBtn10');
-  if(exb10){const ok10=g>=GEM_PER_TICKET*10;exb10.textContent=`🔁 แลก <span class="gico"></span>${GEM_PER_TICKET*10} → 🎫10`;exb10.style.opacity=ok10?'1':'.45';exb10.style.cursor=ok10?'pointer':'not-allowed';}
+  if(exb10){const ok10=g>=GEM_PER_TICKET*10;exb10.innerHTML=`🔁 แลก <span class="gico"></span>${GEM_PER_TICKET*10} → 🎫10`;exb10.style.opacity=ok10?'1':'.45';exb10.style.cursor=ok10?'pointer':'not-allowed';}
   if(!_skBusy){
     document.getElementById('skillGachaGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;color:#444;padding:40px 0;font-size:13px;">กดสุ่มเพื่อเริ่ม ⭐</div>';
     document.getElementById('skillGachaSkipRow').style.display='none';
@@ -3947,11 +3950,13 @@ function _renderCasinoUI(){
   const ot=document.getElementById('slotOddsTable');
   if(ot&&!ot.innerHTML){
     const names={1:'<span class="gico"></span><span class="gico"></span><span class="gico"></span>',3:'⭐⭐⭐',10:'🔮🔮🔮',30:'💰💰💰',100:'คู่ใดก็ได้',856:'ไม่ตรง'};
+    const _g=n=>`+<span class="gico"></span>${n.toLocaleString()}`;
+    const _rwds=o=>{const p=[];if(o.tickets)p.push(`+🎫${o.tickets}`);if(o.gold)p.push(`+💰${o.gold.toLocaleString()}`);if(o.gems)p.push(_g(o.gems));return p.join(' ')||'—';};
     ot.innerHTML=SLOT_OUTCOMES.map(o=>`
       <div class="gacha-odds-row">
         <span style="font-family:monospace;color:rgba(179,136,255,.6);">${String(o.w/10).padStart(4,' ')}%</span>
         <span style="color:#ffd54f;">${names[o.w]}</span>
-        <span style="color:#aaa;font-size:10px;">${o.label.replace(/^[^\s]+\s/,'')}</span>
+        <span style="color:#aaa;font-size:10px;">${_rwds(o)}</span>
       </div>`).join('');
   }
 }
@@ -3988,12 +3993,13 @@ function _slotWinFx(outcome,reels){
   // win text
   const wt=document.createElement('div'); wt.className='slot-win-text';
   const [col,txt]=isJP?['#FFD700','<span class="gico"></span> JACKPOT!']:isSP?['#87CEEB','⭐ SUPER!']:isGR?['#CE93D8','🔮 GREAT!']:['#FFB300','💰 NICE!'];
-  wt.textContent=txt;
+  wt.innerHTML=txt;
   wt.style.cssText=`color:${col};text-shadow:0 0 40px ${col},0 0 80px ${col}99,0 4px 20px rgba(0,0,0,.95);`;
   ov.appendChild(wt);
   // reward sub-text
   const ws=document.createElement('div'); ws.className='slot-win-sub';
-  ws.textContent=outcome.label.replace(/^[^\s🎫💰<span class="gico"></span>⭐🔮]+\s/,'').replace(/^[^\s]+\s/,'');
+  const _rp=o=>{const p=[];if(o.tickets)p.push(`+🎫${o.tickets}`);if(o.gold)p.push(`+💰${o.gold.toLocaleString()}`);if(o.gems)p.push(`+<span class="gico"></span>${o.gems.toLocaleString()}`);return p.join(' ')||'';};
+  ws.innerHTML=_rp(outcome);
   ov.appendChild(ws);
   machine.appendChild(ov);
   // fade out
@@ -4126,8 +4132,8 @@ function _bjIcon(){return _bjCur==='gold'?'💰':'<span class="gico"></span>';}
 
 function _bjRefreshBalance(){
   const el=document.getElementById('bjBalDisplay');
-  if(el) el.textContent=_bjIcon()+' '+_bjCurBal().toLocaleString();
-  document.getElementById('bjBetDisplay').textContent=_bjIcon()+' '+_bjBet;
+  if(el) el.innerHTML=_bjIcon()+' '+_bjCurBal().toLocaleString();
+  document.getElementById('bjBetDisplay').innerHTML=_bjIcon()+' '+_bjBet;
 }
 
 function bjSwitchCur(c){

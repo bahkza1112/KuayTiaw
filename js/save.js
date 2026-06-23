@@ -597,7 +597,7 @@ function _showNextAchNotif(){
   const el=document.getElementById('achNotif');
   document.getElementById('achNotifIco').textContent=ach.icon;
   document.getElementById('achNotifName').textContent=ach.name;
-  document.getElementById('achNotifDesc').textContent=ach.desc+(ach.reward?'  <span class="gico"></span> +'+ach.reward:'');
+  document.getElementById('achNotifDesc').innerHTML=ach.desc+(ach.reward?'  <span class="gico"></span> +'+ach.reward:'');
   el.className='cat-'+ach.cat; // 🎖️ รีเซ็ตคลาสกรอบเรืองแสงตามหมวดของ achievement นี้
   el.classList.add('show');
   setTimeout(()=>{

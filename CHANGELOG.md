@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.96 — แก้ไอคอนมณีวิญญาณโผล่เป็น HTML text
+
+### Fixed
+- `js/ui.js`: เปลี่ยน `textContent` → `innerHTML` ในจุดที่มี `<span class="gico">` — ตารางรางวัลสล็อต, win overlay, BJ balance, BJ เดิมพัน, ปุ่มแลกตั๋ว
+- `js/save.js`: `achNotifDesc` แสดงไอคอน ◇ ในแจ้งเตือน Achievement ถูกต้อง
+- ตารางรางวัลสล็อต: สร้าง reward string โดยตรงแทนการตัด label string ด้วย regex
+
 ## v3.11.95 — อันดับ Leaderboard ไม่ซ้ำต่อผู้เล่น
 
 ### Added
