@@ -2779,7 +2779,7 @@ function _showLbRewardPopup(claimed){
     if(rew.gems)    parts.push(`<span class="gico"></span> ${rew.gems.toLocaleString()}`);
     if(rew.tickets) parts.push(`🎫 ${rew.tickets}`);
     if(rew.pgold)   parts.push(`💰 ${rew.pgold.toLocaleString()}`);
-    return `<div class="lb-rew-line">🏆 อันดับ ${rew.rank} รอบที่ ${rew.season}: ${parts.join(' + ')}</div>`;
+    return `<div class="lb-rew-line">🏆 อันดับ ${rew.rank} SS${rew.season}: ${parts.join(' + ')}</div>`;
   }).join('');
   const pop=document.createElement('div');pop.className='av-unlock-popup';
   pop.innerHTML=`<div class="av-unlock-box" style="max-width:340px;">
@@ -3892,10 +3892,10 @@ function renderLb(){
         });
         if(!sorted.length) h='<div class="lb-empty">ยังไม่มีข้อมูล</div>';
         // countdown
-        if(d.resetAt){const rem=d.resetAt-Date.now();const sub=document.getElementById('lbSeasonSub');if(sub)sub.textContent='รอบที่ '+(d.season||'?')+' · รีเซ็ตใน '+_fmtCountdown(rem);}
+        if(d.resetAt){const rem=d.resetAt-Date.now();const sub=document.getElementById('lbSeasonSub');if(sub)sub.textContent='SS'+(d.season||'?')+' · รีเซ็ตใน '+_fmtCountdown(rem);}
         body.innerHTML=_svBanner+h+_prizeTable;
         // update sub after re-render
-        if(d.resetAt){const rem=d.resetAt-Date.now();const sub=document.getElementById('lbSeasonSub');if(sub)sub.textContent='รอบที่ '+(d.season||'?')+' · รีเซ็ตใน '+_fmtCountdown(rem);}
+        if(d.resetAt){const rem=d.resetAt-Date.now();const sub=document.getElementById('lbSeasonSub');if(sub)sub.textContent='SS'+(d.season||'?')+' · รีเซ็ตใน '+_fmtCountdown(rem);}
       })
       .catch(()=>{
         const allRuns=[...runs].filter(r=>r.mode==='endgame');
