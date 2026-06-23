@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.12.5 — Endgame Diff UI — Perk Cards
+
+### Added
+- `Tower Quest 🏰.html`: diff cards บนหน้า Endgame menu แสดง perks ของแต่ละระดับความยาก (✅/❌)
+- `css/main.css`: `.eg-diff-perks`, `.eg-perk-y` (สีเขียว), `.eg-perk-n` (สีเทา ขีดฆ่า)
+
+### Fixed
+- `Tower Quest 🏰.html`: ศัตรูยาก ×1.5 → ×1.8 ให้ตรงกับ `EG_DIFF_MULT[2]=1.8` จริงในโค้ด
+
 ## v3.12.4 — UI Hints + Balance Endgame/Casino
 
 ### Added

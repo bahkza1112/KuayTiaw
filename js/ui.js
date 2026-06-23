@@ -1,6 +1,11 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.12.4';
+const GAME_VERSION='3.12.5';
 const PATCH_NOTES=[
+  {ver:'3.12.5',date:'2026-06-24',title:'🎮 หน้าเลือกความยาก Endgame — แสดง perks ของแต่ละระดับ',notes:[
+    'การ์ดแต่ละ diff แสดงว่าได้/ไม่ได้อะไร (ทองต่อ wave, ทองต่อ round, ฟื้น ❤️, milestone รางวัล)',
+    '✅ สีเขียว = ได้รับ · ❌ ขีดฆ่าสีเทา = ไม่ได้รับ',
+    'แก้ศัตรูยาก ×1.5 → ×1.8 ให้ตรงกับ EG_DIFF_MULT จริง',
+  ]},
   {ver:'3.12.4',date:'2026-06-24',title:'🎮 UI hints + balance Endgame/Casino',notes:[
     'Tooltip บนปุ่ม HUD: wave preview, อัตโนมัติ, เร่งความเร็ว, ซัพพอร์ต, เหมืองทอง, สกิล, PG Gold, สภาพอากาศ',
     'one-shot hint: วางป้อมครั้งแรก → แนะนำ tap upgrade/ขาย',
