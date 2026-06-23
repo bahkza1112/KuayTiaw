@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.12.6 — Milestone เฉพาะโหมดยาก
+
+### Changed
+- `js/game.js`: milestone (💎 gems ทุก 10 wave, 🎫 tickets ทุก wave x5) ย้ายไปเป็นของโหมดยาก (`egDiff===2`) แทนที่จะเป็นของ ง่าย+ปกติ
+- `js/game.js`: heal ❤️+1 ยังคงอยู่ใน `egDiff!==2` (ง่าย+ปกติ) แยกออกจาก milestone block
+- `Tower Quest 🏰.html`: diff cards milestone row อัปเดต ❌→✅ ตรงโหมดยาก, ✅→❌ ตรงง่าย/ปกติ
+
 ## v3.12.5 — Endgame Diff UI — Perk Cards
 
 ### Added

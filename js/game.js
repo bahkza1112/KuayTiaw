@@ -2988,8 +2988,8 @@ function updateEg(dt){
     clearWeather(); // 🌦 clear weather when Endgame wave ends
     const bonus=egDiff===0?20+G.wave*3+egRound*6:0; if(bonus>0){G.gold+=bonus; updateHUD();}
     if(typeof questProgress==='function') questProgress('wave',G.wave); // 📅 daily quest: reach wave
-    if(egDiff!==2){
-      // 💎 หมุดหมาย Endgame: ทุก 10 เวฟ ได้มณีวิญญาณก้อนใหญ่ (รับครั้งเดียวต่อรัน)
+    if(egDiff===2){
+      // 💎 หมุดหมาย Endgame: ทุก 10 เวฟ ได้มณีวิญญาณก้อนใหญ่ (รับครั้งเดียวต่อรัน) — เฉพาะยากเท่านั้น
       if(G.wave>0&&G.wave%10===0){
         if(!G.egMilestones)G.egMilestones={};
         if(!G.egMilestones[G.wave]){
@@ -3011,9 +3011,9 @@ function updateEg(dt){
           addParticle(COLS*CS/2,ROWS*CS/2-30,'🎫 +1','#b388ff');
         }
       }
-      // heal 1 HP per wave clear
-      if(G.hp<G.maxHp){G.hp=Math.min(G.maxHp,G.hp+1);updateHUD();}
     }
+    // heal 1 HP per wave clear — ง่าย + ปกติ เท่านั้น
+    if(egDiff!==2&&G.hp<G.maxHp){G.hp=Math.min(G.maxHp,G.hp+1);updateHUD();}
     const drops=rollEndgameMaterialDrops();
     const matIcons=['🪨','🔘','🌟'];
     let msg='🌊 Wave '+G.wave+' ผ่าน!'+(bonus>0?' +'+bonus+' ทอง':'')+( egDiff!==2?' ❤️+1':'');

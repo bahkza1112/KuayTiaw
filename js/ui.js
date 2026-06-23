@@ -1,6 +1,12 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.12.5';
+const GAME_VERSION='3.12.6';
 const PATCH_NOTES=[
+  {ver:'3.12.6',date:'2026-06-24',title:'⚖️ Milestone gems/tickets — เฉพาะโหมดยากเท่านั้น',notes:[
+    'Milestone (💎 Soul Gems ทุก 10 wave, 🎫 ตั๋วสกิลทุก wave x5) ย้ายมาอยู่ในโหมดยากแทน',
+    'ง่าย/ปกติ ไม่ได้ milestone อีกต่อไป',
+    'ฟื้น ❤️+1 ยังคงเป็นของ ง่าย+ปกติ เท่านั้น (ยากไม่ได้)',
+    'อัปเดตการ์ดเลือก diff ให้แสดงสถานะ milestone ใหม่',
+  ]},
   {ver:'3.12.5',date:'2026-06-24',title:'🎮 หน้าเลือกความยาก Endgame — แสดง perks ของแต่ละระดับ',notes:[
     'การ์ดแต่ละ diff แสดงว่าได้/ไม่ได้อะไร (ทองต่อ wave, ทองต่อ round, ฟื้น ❤️, milestone รางวัล)',
     '✅ สีเขียว = ได้รับ · ❌ ขีดฆ่าสีเทา = ไม่ได้รับ',
