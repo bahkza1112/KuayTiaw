@@ -335,7 +335,7 @@
       <h2 id="endTitle">🏆 ชนะ!</h2>
       <div class="star-row" id="starRow"></div>
       <p id="endScore"></p>
-      <div class="reward-row" id="endRewardRow" style="display:none">💎 <span id="endGemGain">+0</span> Soul Gems</div>
+      <div class="reward-row" id="endRewardRow" style="display:none"><span class="gico"></span> <span id="endGemGain">+0</span> Soul Gems</div>
       <div class="end-stats" id="endStats" style="display:none"></div>
       <div class="unlock-banner" id="unlockBanner" style="display:none"></div>
       <button class="obtn blue" id="nextStageBtn" style="display:none" onclick="goNextStage()">▶ ด่านต่อไป</button>
@@ -426,20 +426,20 @@
   </div>
   <div class="eg-body" style="gap:14px;">
     <div class="gacha-tabs">
-      <button class="gacha-tab active" onclick="openGacha()">💎 ตู้รางวัล</button>
+      <button class="gacha-tab active" onclick="openGacha()"><span class="gico"></span> ตู้รางวัล</button>
       <button class="gacha-tab" id="gachaTabSkill" onclick="openSkillGacha()">⭐ ตู้การ์ดสกิล</button>
     </div>
     <div class="gacha-gem-bar">
-      <span>💎 มณีวิญญาณ:</span>
+      <span><span class="gico"></span> มณีวิญญาณ:</span>
       <span id="gachaGemCount" style="font-weight:900;color:#80d8ff;"></span>
-      <span style="margin-left:auto;font-size:10px;color:#888;">30 💎 ต่อครั้ง</span>
+      <span style="margin-left:auto;font-size:10px;color:#888;">30 <span class="gico"></span> ต่อครั้ง</span>
     </div>
     <!-- cards grid -->
     <div class="gacha-grid" id="gachaGrid"></div>
     <!-- buttons -->
     <div id="gachaBtns" style="display:flex;gap:10px;margin-top:4px;">
-      <button class="gacha-pull-btn" id="gachaPull1" onclick="startGacha(1)">สุ่ม ×1<br><span style="font-size:10px;font-weight:400;opacity:.8;">30 💎</span></button>
-      <button class="gacha-pull-btn gacha-pull10" id="gachaPull10" onclick="startGacha(10)">สุ่ม ×10<br><span style="font-size:10px;font-weight:400;opacity:.8;"><span style="text-decoration:line-through;opacity:.5;">300</span> 270 💎 <span style="color:#69f0ae;">ลด 10%</span></span></button>
+      <button class="gacha-pull-btn" id="gachaPull1" onclick="startGacha(1)">สุ่ม ×1<br><span style="font-size:10px;font-weight:400;opacity:.8;">30 <span class="gico"></span></span></button>
+      <button class="gacha-pull-btn gacha-pull10" id="gachaPull10" onclick="startGacha(10)">สุ่ม ×10<br><span style="font-size:10px;font-weight:400;opacity:.8;"><span style="text-decoration:line-through;opacity:.5;">300</span> 270 <span class="gico"></span> <span style="color:#69f0ae;">ลด 10%</span></span></button>
     </div>
     <div id="gachaSkipRow" style="display:none;text-align:center;">
       <button class="gacha-skip-btn" onclick="skipGachaReveal()">ข้าม →</button>
@@ -466,7 +466,7 @@
   </div>
   <div class="eg-body" style="gap:14px;">
     <div class="gacha-tabs">
-      <button class="gacha-tab" onclick="openGacha()">💎 ตู้รางวัล</button>
+      <button class="gacha-tab" onclick="openGacha()"><span class="gico"></span> ตู้รางวัล</button>
       <button class="gacha-tab active" onclick="openSkillGacha()">⭐ ตู้การ์ดสกิล</button>
     </div>
     <div class="gacha-gem-bar" style="background:linear-gradient(90deg,rgba(126,87,194,.25),rgba(49,27,146,.15));">
@@ -486,8 +486,8 @@
       🔒 ค้ำประกัน Legendary (🛡️ กำแพงวิญญาณ) ทุก 30 ครั้ง — <span id="skillGachaPityInfo"></span>
     </div>
     <div style="display:flex;gap:6px;">
-      <button class="skill-banner-link" id="skillExchangeBtn" style="flex:1;background:linear-gradient(90deg,rgba(0,150,136,.25),rgba(0,77,64,.15));border-color:rgba(128,216,255,.4);color:#80d8ff;" onclick="_doExchangeTicket(1)">🔁 แลก 💎50 → 🎫1</button>
-      <button class="skill-banner-link" id="skillExchangeBtn10" style="flex:1;background:linear-gradient(90deg,rgba(0,150,136,.25),rgba(0,77,64,.15));border-color:rgba(128,216,255,.4);color:#80d8ff;" onclick="_doExchangeTicket(10)">🔁 แลก 💎500 → 🎫10</button>
+      <button class="skill-banner-link" id="skillExchangeBtn" style="flex:1;background:linear-gradient(90deg,rgba(0,150,136,.25),rgba(0,77,64,.15));border-color:rgba(128,216,255,.4);color:#80d8ff;" onclick="_doExchangeTicket(1)">🔁 แลก <span class="gico"></span>50 → 🎫1</button>
+      <button class="skill-banner-link" id="skillExchangeBtn10" style="flex:1;background:linear-gradient(90deg,rgba(0,150,136,.25),rgba(0,77,64,.15));border-color:rgba(128,216,255,.4);color:#80d8ff;" onclick="_doExchangeTicket(10)">🔁 แลก <span class="gico"></span>500 → 🎫10</button>
     </div>
     <div class="gacha-odds-toggle" onclick="toggleSkillOdds()">
       <span>📋 อัตราการออก</span><span id="skillOddsArrow">▼ ดูรายละเอียด</span>
@@ -796,7 +796,7 @@
     <div class="bj-topbar">
       <div class="bj-cur-tabs">
         <button class="bj-cur-tab active" id="bjTabGold" onclick="bjSwitchCur('gold')">💰 ทองถาวร</button>
-        <button class="bj-cur-tab" id="bjTabGem" onclick="bjSwitchCur('gem')">💎 เพชร</button>
+        <button class="bj-cur-tab" id="bjTabGem" onclick="bjSwitchCur('gem')"><span class="gico"></span> เพชร</button>
       </div>
       <div class="bj-balance" id="bjBalDisplay">💰 0</div>
     </div>

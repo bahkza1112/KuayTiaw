@@ -1,9 +1,9 @@
-/* ══ WHAT'S NEW (patch notes) ══ */
+﻿/* ══ WHAT'S NEW (patch notes) ══ */
 const GAME_VERSION='3.11.94';
 const PATCH_NOTES=[
   {ver:'3.11.94',date:'2026-06-23',title:'♠ มินิเกมใหม่: แบล็คแจ็ค!',notes:[
     'เปิดจากคาสิโน → แท็บ ♠ แบล็คแจ็ค',
-    'รองรับทั้งทองถาวร 💰 และเพชร 💎',
+    'รองรับทั้งทองถาวร 💰 และเพชร <span class="gico"></span>',
     'ไพ่มี animation บินลง, พลิกเปิด, bust shake, win glow',
     'Blackjack จ่าย ×2.5 · Double Down · Dealer หยุด Soft 17',
   ]},
@@ -71,9 +71,9 @@ const PATCH_NOTES=[
   ]},
   {ver:'3.11.76',date:'2026-06-22',title:'🏆 Achievement Endgame Wave 25 / 50 / 100',notes:[
     'เพิ่ม Achievement ใหม่ 3 รางวัล สำหรับ Endgame โหมด Infinite',
-    '🌊 ผู้พิทักษ์นิรันดร์ — อยู่รอดถึง Wave 25 (💎 +80)',
-    '🔱 ราชันแห่งความวุ่นวาย — อยู่รอดถึง Wave 50 (💎 +200)',
-    '💀 ตำนานไม่มีวันสิ้น — อยู่รอดถึง Wave 100 (💎 +500)',
+    '🌊 ผู้พิทักษ์นิรันดร์ — อยู่รอดถึง Wave 25 (<span class="gico"></span> +80)',
+    '🔱 ราชันแห่งความวุ่นวาย — อยู่รอดถึง Wave 50 (<span class="gico"></span> +200)',
+    '💀 ตำนานไม่มีวันสิ้น — อยู่รอดถึง Wave 100 (<span class="gico"></span> +500)',
   ]},
   {ver:'3.11.75',date:'2026-06-22',title:'🔧 แก้สถิติหายเมื่อเปลี่ยนชื่อ',notes:[
     'เปลี่ยนชื่อแล้วสถิติ Endgame ไม่หายอีกต่อไป',
@@ -227,7 +227,7 @@ const PATCH_NOTES=[
     'ปุ่มลูกศร › แทน star ลอยมุมขวา, รางวัลซ้อนด้านขวาของการ์ด',
   ]},
   {ver:'3.11.39',date:'2026-06-21',title:'🎰 สล็อต Win Effects ระเบิด',notes:[
-    'JACKPOT 💎: overlay ทอง + confetti 55 ชิ้น + เขย่าจอ + glow พัลส์',
+    'JACKPOT <span class="gico"></span>: overlay ทอง + confetti 55 ชิ้น + เขย่าจอ + glow พัลส์',
     'SUPER ⭐: overlay ฟ้า + confetti 28 ชิ้น + glow พัลส์',
     'GREAT 🔮: overlay ม่วง + glow พัลส์',
     'NICE 💰: overlay ส้มทอง + glow พัลส์',
@@ -259,13 +259,13 @@ const PATCH_NOTES=[
     'ปรับหน้า leaderboard — 4 tabs มี icon + table style พร้อมปุ่มลบ',
     'หน้า "ของฉัน" ใหม่ — hero card + แยก section เอนด์เกม/เนื้อเรื่อง/รวม',
     'ปุ่มสุ่มชื่อไทย 🎲 ในหน้าโปรไฟล์',
-    'ปรับรางวัล slot machine: GREAT +💰1000 +💎500, NICE +💰500 +💎250',
+    'ปรับรางวัล slot machine: GREAT +💰1000 +<span class="gico"></span>500, NICE +💰500 +<span class="gico"></span>250',
   ]},
   {ver:'3.11.32',date:'2026-06-21',title:'👤 Cloud Save + โปรไฟล์ผู้เล่น',notes:[
     'เพิ่มระบบ Cloud Save — เข้าสู่ระบบด้วย Google เพื่อ sync ข้อมูลข้ามเครื่อง',
     'เพิ่มหน้าโปรไฟล์ — เลือก Avatar emoji และตั้งชื่อที่แสดงในอันดับ',
     'สามารถเล่นแบบ Guest (ไม่ sync) ได้โดยไม่ต้อง login',
-    'ปรับ UI มุมซ้ายบน — รวมทอง 🪙 และเพชร 💎 ไว้ใน resource bar เดียว',
+    'ปรับ UI มุมซ้ายบน — รวมทอง 🪙 และเพชร <span class="gico"></span> ไว้ใน resource bar เดียว',
     'ลบ energy bar (สายฟ้า) ออก',
   ]},
   {ver:'3.11.31',date:'2026-06-21',title:'📋 Dev Console — Copy CFG JSON',notes:[
@@ -288,7 +288,7 @@ const PATCH_NOTES=[
   {ver:'3.11.26',date:'2026-06-21',title:'🎰 คาสิโน — สล็อตแมชชีน',notes:[
     'เพิ่มหน้าคาสิโน เข้าได้จากปุ่ม "คาสิโน" ใน bottom nav',
     'สล็อตแมชชีน: ใช้ 50 ทองถาวร/สปิน · แอนิเมชันหมุนรีล 3 ช่อง',
-    'รางวัล: 💎×3=+🎫50+💰5000+💎3000 · ⭐×3=+🎫25+💰2500+💎1500 · 🔮×3=+💰2000+💎1000 · 💰×3=+💰500+💎500 · คู่=+💰30 · ไม่ตรง=เศษหินมืด',
+    'รางวัล: <span class="gico"></span>×3=+🎫50+💰5000+<span class="gico"></span>3000 · ⭐×3=+🎫25+💰2500+<span class="gico"></span>1500 · 🔮×3=+💰2000+<span class="gico"></span>1000 · 💰×3=+💰500+<span class="gico"></span>500 · คู่=+💰30 · ไม่ตรง=เศษหินมืด',
     'ตารางรางวัลพร้อม % แสดงในหน้าเดียวกัน',
   ]},
   {ver:'3.11.25',date:'2026-06-21',title:'🎨 ไอคอน SVG เศษหินมืด + ตารางอัตราการ์ดสกิล',notes:[
@@ -297,7 +297,7 @@ const PATCH_NOTES=[
   ]},
   {ver:'3.11.24',date:'2026-06-21',title:'🔹 เปลี่ยนชื่อ เศษสีน้ำเงิน → เศษหินมืด',notes:[
     'เปลี่ยนชื่อ "เศษสีน้ำเงิน" เป็น "เศษหินมืด" ทุกที่ในเกม',
-    'เพิ่มปุ่มแลกตั๋วสกิล ×10 (💎500 → 🎫10)',
+    'เพิ่มปุ่มแลกตั๋วสกิล ×10 (<span class="gico"></span>500 → 🎫10)',
     'เลขในตารางอัตราการ์ดสกิลสุ่มในช่วง 011–999',
   ]},
   {ver:'3.11.23',date:'2026-06-21',title:'🌳 ทาเลนต์: รวมสาย โจมตี / ป้องกัน / สกิล เป็นเลเวล 1–100',notes:[
@@ -414,7 +414,7 @@ const PATCH_NOTES=[
   {ver:'3.10.7',date:'2026-06-19',title:'⭐ ดาวให้ดาเมจมากขึ้น + ปรับ UI หลายจุด',notes:[
     'โบนัสดาเมจตามดาว: ★2=+50% · ★3=+110% · ★4=+200% (เดิม +15/30/50%) — อัพดาวรู้สึกได้จริงๆ',
     'ปุ่มสกิล FAB เป็นสี่เหลี่ยม กดได้ทันที ไม่ลากขยับ อยู่มุมล่างซ้ายของแถบป้อม',
-    'หน้าเลือกด่าน: แสดงรางวัล 💎 ต่อดาว (1ดาว=10 / 2ดาว=20 / 3ดาว=30)',
+    'หน้าเลือกด่าน: แสดงรางวัล <span class="gico"></span> ต่อดาว (1ดาว=10 / 2ดาว=20 / 3ดาว=30)',
     'เปลี่ยนชื่อวัตถุดิบ: แกนเวทย์ / เศษแกนเวทย์',
     'ต้นไม้ หิน พุ่มไม้ ในสนามดูเป็น 2.5D มีด้านบน-ด้านข้างชัดเจน',
     'การ์ดเลือกป้อม 4 คอลัมน์ ขนาดกะทัดรัด รูปป้อมใหญ่ขึ้น 25%',
@@ -466,9 +466,9 @@ const PATCH_NOTES=[
     'ยังการันตี Legendary (🛡️ กำแพงวิญญาณ) เมื่อสุ่มครบ 30 ครั้ง',
   ]},
   {ver:'3.9.2',date:'2026-06-19',title:'🎫 แก้ตู้กาชาให้ชัดเจนขึ้น',notes:[
-    'เพิ่มแท็บสลับ "💎 ตู้รางวัล" / "⭐ ตู้การ์ดสกิล" ที่หัวทั้งสองหน้า — แยกตู้ชัด ไม่งง',
+    'เพิ่มแท็บสลับ "<span class="gico"></span> ตู้รางวัล" / "⭐ ตู้การ์ดสกิล" ที่หัวทั้งสองหน้า — แยกตู้ชัด ไม่งง',
     'แก้ไอคอนตั๋ว 🎫 ที่บางเครื่องขึ้นเป็นกล่องสี่เหลี่ยม',
-    'ปุ่มแลกตั๋ว: โชว์จำนวนมณีปัจจุบัน + จางลงเมื่อมณีไม่พอ (ต้องมี 💎50)',
+    'ปุ่มแลกตั๋ว: โชว์จำนวนมณีปัจจุบัน + จางลงเมื่อมณีไม่พอ (ต้องมี <span class="gico"></span>50)',
   ]},
   {ver:'3.9.1',date:'2026-06-19',title:'⭐ หน้าข้อมูลสกิล + ปรับสมดุล',notes:[
     'เพิ่มหน้าข้อมูลการ์ดสกิล — แตะการ์ดในแท็บ "⭐ สกิล" เพื่อดูตารางสเกลทุกดาว ★1–★5',
@@ -478,14 +478,14 @@ const PATCH_NOTES=[
     'ระบบใหม่: การ์ดสกิลกดใช้เองตอนเล่น — มีปุ่มสกิลพร้อม cooldown ในสนาม (ทั้ง Story + Endgame)',
     '5 ใบ: ☄️ อุกกาบาต · ❄️ แช่แข็งสนาม · 💰 โกลด์รัช · ⚡ พลังโจมตี · 🛡️ กำแพงวิญญาณ',
     'สุ่มจาก "ตู้สุ่มการ์ดสกิล" ด้วย 🎫 ตั๋วสกิล (เข้าจากหน้ากาชา) · ได้ใบซ้ำ = อัพดาว ★ สูงสุด ★5 (แรงขึ้น + cooldown ลด)',
-    'ได้ตั๋วจาก: ภารกิจรายวัน · login · เคลียร์ด่านได้ดาวใหม่ · หมุดหมาย Endgame เวฟ 15/25/35 · แลก 💎50→🎫1',
+    'ได้ตั๋วจาก: ภารกิจรายวัน · login · เคลียร์ด่านได้ดาวใหม่ · หมุดหมาย Endgame เวฟ 15/25/35 · แลก <span class="gico"></span>50→🎫1',
     'เลือกใส่การ์ด 1 ใบก่อนเข้าด่านที่แท็บ "⭐ สกิล" ในกระเป๋า',
     'ทาเลนต์สายใหม่ ⭐ สกิล: ลด cooldown สกิลสูงสุด −20%',
   ]},
   {ver:'3.8.11',date:'2026-06-18',title:'📊 สถิติจบเกม + หมุดหมาย Endgame',notes:[
     'หน้าจบเกมโชว์สถิติใหม่: จำนวนศัตรูที่ฆ่า · คอมโบสูงสุด · ดาเมจรวม · DPS แต่ละชนิดป้อม',
     'รู้แล้วว่าป้อมไหนทำงานหนักสุด — ปรับ build รอบหน้าได้แม่นขึ้น',
-    'Endgame: ทุก 10 เวฟ (10/20/30…) ได้ 💎 มณีวิญญาณก้อนใหญ่ทันที ไม่ต้องรอจบรัน',
+    'Endgame: ทุก 10 เวฟ (10/20/30…) ได้ <span class="gico"></span> มณีวิญญาณก้อนใหญ่ทันที ไม่ต้องรอจบรัน',
     'ยิ่งเวฟสูง + ความยากสูง มณีหมุดหมายยิ่งเยอะ',
   ]},
   {ver:'3.8.10',date:'2026-06-18',title:'↪️ ย้ายป้อมได้ในช่วงรอเวฟ',notes:[
@@ -497,7 +497,7 @@ const PATCH_NOTES=[
     'ลบแถว "ไม่ได้รางวัล 90%" ที่ค้างอยู่ในตารางอัตรา — แสดงดัด 74.9% ถูกต้องแถวเดียว',
   ]},
   {ver:'3.8.8',date:'2026-06-18',title:'🏆 Achievement รางวัลมณีวิญญาณ + พรีวิวคลื่นถัดไป',notes:[
-    'Achievement ทุกรายการตอนนี้ให้ 💎 มณีวิญญาณเมื่อ unlock ครั้งแรก (20–200 มณีตามความยาก)',
+    'Achievement ทุกรายการตอนนี้ให้ <span class="gico"></span> มณีวิญญาณเมื่อ unlock ครั้งแรก (20–200 มณีตามความยาก)',
     'การแจ้งเตือน Achievement แสดงจำนวนมณีที่ได้รับด้วย',
     'เพิ่ม Wave Preview ในโหมด Story — หลังจบ Wave จะแสดงคร่าวๆ ว่าคลื่นหน้าจะมีศัตรูอะไรบ้าง',
     'Wave Preview ใช้ได้ทั้ง Story และ Endgame และจะหายไปเองเมื่อกด "เริ่ม Wave"',
@@ -562,7 +562,7 @@ const PATCH_NOTES=[
     '(เวิร์กชอปยังกดเข้าจากเหรียญทองมุมบนได้เหมือนเดิม)',
   ]},
   {ver:'3.6.1',date:'2026-06-17',title:'🎰 กาชา: ส่วนลด ×10 + แก้ตารางอัตรา',notes:[
-    'สุ่ม ×10 ลดราคาเหลือ 270💎 (เดิม 300💎) — เท่ากับสุ่มฟรี 1 ครั้ง!',
+    'สุ่ม ×10 ลดราคาเหลือ 270<span class="gico"></span> (เดิม 300<span class="gico"></span>) — เท่ากับสุ่มฟรี 1 ครั้ง!',
     'แก้ตารางอัตรา: เลข 011–999 ได้ 🔹 เศษหินมืด ×1 เป็นรางวัลปลอบใจ (เดิมเขียนว่า "ไม่ได้รางวัล")',
     'เพิ่มข้อมูลค้ำประกัน 001 ทุก 90 ครั้ง ในตารางอัตรา',
   ]},
@@ -591,7 +591,7 @@ const PATCH_NOTES=[
   ]},
   {ver:'3.5.2',date:'2026-06-16',title:'📋 กาชา: ตารางอัตราออก + Dev cheats',notes:[
     'เพิ่มตาราง "อัตราการออก" ในตู้กาชา — กดเพื่อดู % โอกาสของรางวัลแต่ละชิ้น',
-    'Dev Panel: เพิ่ม 💎 มณีวิญญาณ (+100/+999/รีเซ็ต), เพิ่มวัสดุคราฟ, รีเซ็ต Pity',
+    'Dev Panel: เพิ่ม <span class="gico"></span> มณีวิญญาณ (+100/+999/รีเซ็ต), เพิ่มวัสดุคราฟ, รีเซ็ต Pity',
   ]},
   {ver:'3.5.1',date:'2026-06-16',title:'🎰 กาชา: สล็อตแมชชีนลุ้นเลข',notes:[
     'ขยาย pool เป็น 001–999: เลข 011–999 ไม่ได้รางวัล (90%), 001–010 มีรางวัล (10%)',
@@ -599,7 +599,7 @@ const PATCH_NOTES=[
     'เห็น "0" แล้ว "0" อีกตัว — ลุ้นว่าหลักสุดท้ายจะได้รางวัลหรือเปล่า!',
   ]},
   {ver:'3.5.0',date:'2026-06-16',title:'✨ ระบบกาชาตู้สุ่มรางวัล',notes:[
-    'เพิ่มตู้สุ่มรางวัล 001–010 ใช้ 💎 มณีวิญญาณ 30 ดวงต่อครั้ง',
+    'เพิ่มตู้สุ่มรางวัล 001–010 ใช้ <span class="gico"></span> มณีวิญญาณ 30 ดวงต่อครั้ง',
     'รางวัลมี 10 ระดับ: 001 ปลดล็อกป้อมมนตราโมฆะ, 002-006 วัสดุคราฟ, 007-010 ไอเทมบัฟและทองถาวร',
     'สุ่มทีละ 1 หรือ 10 ใบ (มีปุ่มข้ามแอนิเมชัน), ค้ำประกัน 001 ทุก 90 ครั้ง',
   ]},
@@ -620,7 +620,7 @@ const PATCH_NOTES=[
   {ver:'3.2.0',date:'2026-06-16',title:'🎁 หน้าจอจบด่านสไตล์กล่องรางวัล',notes:[
     'หน้าจอจบด่านปรับใหม่: ไอคอนกล่องรางวัล (👑/🎁/📦/💀) และกรอบเรืองแสงเปลี่ยนสีตามจำนวนดาวที่ได้',
     'ดาวที่ได้จะค่อย ๆ เด้งขึ้นทีละดวงพร้อมแสงเรืองสีทอง',
-    'แสดงจำนวน 💎 Soul Gems ที่ได้รับทันทีในหน้าจอจบด่าน เมื่อทำลายสถิติดาวเดิมได้',
+    'แสดงจำนวน <span class="gico"></span> Soul Gems ที่ได้รับทันทีในหน้าจอจบด่าน เมื่อทำลายสถิติดาวเดิมได้',
     'หน้า Codex แท็บป้อม: ไอคอนป้อมมีกรอบเรืองแสงสีตามชนิดป้อม ทั้งในกริดและหน้ารายละเอียด',
     'หน้าเลือกด่าน: การ์ดด่านที่เคลียร์แล้วมีกรอบเรืองแสง + ป้ายกล่องรางวัล (👑/🎁/📦) ตามจำนวนดาวที่ทำได้',
     'แจ้งเตือนปลดล็อกความสำเร็จ: เด้งเข้าแบบยุบ-ขยาย และกรอบเรืองแสงเปลี่ยนสีตามหมวดความสำเร็จ',
@@ -689,7 +689,7 @@ const PATCH_NOTES=[
     'ลดขนาดสไปรท์ป้อม 2.5D ลงเล็กน้อย ไม่ให้ล้นออกนอกช่องมากเกินไป มองเห็นแผนที่และศัตรูได้ชัดเจนขึ้น'
   ]},
   {ver:'1.13.0',date:'2026-06-15',title:'🎖️ รางวัลใหม่: Soul Gems &amp; ป้อมมนตราโมฆะ',notes:[
-    'เพิ่ม Achievement ใหม่ 2 รายการ — 💎 "นักสะสมมณีวิญญาณ" (สะสม Soul Gems รวม 1,000) และ 🌑 "ผู้เชี่ยวชาญโมฆะ" (ปลดล็อกป้อมมนตราโมฆะที่เวิร์กชอป)',
+    'เพิ่ม Achievement ใหม่ 2 รายการ — <span class="gico"></span> "นักสะสมมณีวิญญาณ" (สะสม Soul Gems รวม 1,000) และ 🌑 "ผู้เชี่ยวชาญโมฆะ" (ปลดล็อกป้อมมนตราโมฆะที่เวิร์กชอป)',
     'แก้ไข Achievement "สถาปนิก" (ปลดล็อก Tower ทุกแบบ) ที่เคยปลดไม่ได้เนื่องจากนับป้อมมนตราโมฆะตกหล่น'
   ]},
   {ver:'1.12.12',date:'2026-06-15',title:'🎨 ปรับโฉมหน้าเอนด์เกม/เวิร์กชอป',notes:[
@@ -736,10 +736,10 @@ const PATCH_NOTES=[
     'ขยายขนาดปุ่มไอคอนใน HUD (หยุดชั่วคราว, ความเร็ว, ตั้งค่า, Dev) ให้กดง่ายขึ้นบนมือถือ (ขั้นต่ำ ~38x38px)',
     'ย้ายปุ่มความเร็ว (1×/2×/3×) จาก HUD บนไปอยู่แถวเดียวกับปุ่มส่งคลื่น/อัตโนมัติ ให้กดง่ายขึ้นระหว่างเล่น'
   ]},
-  {ver:'1.12.0',date:'2026-06-14',title:'💎 Soul Gems, Workshop และป้อมมนตราโมฆะ!',notes:[
-    'เพิ่มสกุลเงินใหม่ 💎 มณีวิญญาณ (Soul Gems) — ได้รับเมื่อทำดาวในด่านเนื้อเรื่องเพิ่มขึ้นเป็นครั้งแรก และเมื่อจบเกม Endgame',
+  {ver:'1.12.0',date:'2026-06-14',title:'<span class="gico"></span> Soul Gems, Workshop และป้อมมนตราโมฆะ!',notes:[
+    'เพิ่มสกุลเงินใหม่ <span class="gico"></span> มณีวิญญาณ (Soul Gems) — ได้รับเมื่อทำดาวในด่านเนื้อเรื่องเพิ่มขึ้นเป็นครั้งแรก และเมื่อจบเกม Endgame',
     'Endgame: เคลียร์เวฟจะมีโอกาสดรอปวัสดุพิเศษ 🪨 หินมืด, 🔘 เศษแกนเวท, 🌟 ดาวตก (โอกาสคงที่ตามความยาก)',
-    'เพิ่มหน้า 🛠️ Workshop ในเมนูหลัก — ใช้ 💎 และวัสดุปลดล็อกป้อมใหม่ถาวร',
+    'เพิ่มหน้า 🛠️ Workshop ในเมนูหลัก — ใช้ <span class="gico"></span> และวัสดุปลดล็อกป้อมใหม่ถาวร',
     'เพิ่มป้อมที่ 9: 🌑 ป้อมมนตราโมฆะ — มีโอกาสติด "Void Mark" ให้ศัตรู เพิ่มดาเมจที่รับจากป้อมทุกชนิด ใช้ได้เฉพาะ Endgame',
     'Endgame ตอนนี้ต้องเลือกป้อมก่อนเริ่มเกม จำนวนป้อมที่เลือกได้ขึ้นกับความยาก (ง่าย 7 / ปกติ 6 / ยาก 5)'
   ]},
@@ -1035,7 +1035,7 @@ function _cardBackHTML(result){
 function startGacha(n){
   if(_gachaBusy) return;
   const results=doGachaPulls(n);
-  if(!results){showToast('💎 มณีวิญญาณไม่พอ!');return;}
+  if(!results){showToast('<span class="gico"></span> มณีวิญญาณไม่พอ!');return;}
   _gachaResults=results;
   _gachaFlipped=new Array(n).fill(false);
   _gachaBusy=true;
@@ -1173,9 +1173,9 @@ function _renderSkillGachaUI(){
   // ปุ่มแลกตั๋ว: โชว์มณีปัจจุบัน + dim เมื่อมณีไม่พอ (ต้องการ GEM_PER_TICKET)
   const g=loadGems();
   const exb=document.getElementById('skillExchangeBtn');
-  if(exb){const ok=g>=GEM_PER_TICKET;exb.textContent=`🔁 แลก 💎${GEM_PER_TICKET} → 🎫1  (มี 💎${g})`;exb.style.opacity=ok?'1':'.45';exb.style.cursor=ok?'pointer':'not-allowed';}
+  if(exb){const ok=g>=GEM_PER_TICKET;exb.textContent=`🔁 แลก <span class="gico"></span>${GEM_PER_TICKET} → 🎫1  (มี <span class="gico"></span>${g})`;exb.style.opacity=ok?'1':'.45';exb.style.cursor=ok?'pointer':'not-allowed';}
   const exb10=document.getElementById('skillExchangeBtn10');
-  if(exb10){const ok10=g>=GEM_PER_TICKET*10;exb10.textContent=`🔁 แลก 💎${GEM_PER_TICKET*10} → 🎫10`;exb10.style.opacity=ok10?'1':'.45';exb10.style.cursor=ok10?'pointer':'not-allowed';}
+  if(exb10){const ok10=g>=GEM_PER_TICKET*10;exb10.textContent=`🔁 แลก <span class="gico"></span>${GEM_PER_TICKET*10} → 🎫10`;exb10.style.opacity=ok10?'1':'.45';exb10.style.cursor=ok10?'pointer':'not-allowed';}
   if(!_skBusy){
     document.getElementById('skillGachaGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;color:#444;padding:40px 0;font-size:13px;">กดสุ่มเพื่อเริ่ม ⭐</div>';
     document.getElementById('skillGachaSkipRow').style.display='none';
@@ -1291,7 +1291,7 @@ function renderBag(){
     // วัสดุ + เศษสะสม
     const gems=loadGems();
     const matDefs=[
-      {icon:'💎',name:'มณีวิญญาณ',col:'#80d8ff',qty:gems,desc:'ใช้คราฟป้อมมนตราโมฆะใน Workshop'},
+      {icon:'<span class="gico"></span>',name:'มณีวิญญาณ',col:'#80d8ff',qty:gems,desc:'ใช้คราฟป้อมมนตราโมฆะใน Workshop'},
       {icon:MAT_ICONS[0],name:MAT_NAMES[0],col:'#90caf9',qty:mats[0]||0,desc:'วัสดุสามัญจากการเล่น'},
       {icon:MAT_ICONS[1],name:MAT_NAMES[1],col:'#ce93d8',qty:mats[1]||0,desc:'วัสดุหายากจากการเล่น'},
       {icon:MAT_ICONS[2],name:MAT_NAMES[2],col:'#ffe082',qty:mats[2]||0,desc:'วัสดุพิเศษจากการเล่น'},
@@ -1519,7 +1519,7 @@ function renderWorkshop(){
   if(unlocked){craftBtn.style.display='none';if(reqNote)reqNote.style.display='none';}
   else if(finalCleared){
     const reqs=[
-      {icon:'💎',name:'มณีวิญญาณ',have:gems,need:VOID_RECIPE.gems},
+      {icon:'<span class="gico"></span>',name:'มณีวิญญาณ',have:gems,need:VOID_RECIPE.gems},
       {icon:MAT_ICONS[0],name:MAT_NAMES[0],have:mats[0]||0,need:VOID_RECIPE.mats[0]},
       {icon:MAT_ICONS[1],name:MAT_NAMES[1],have:mats[1]||0,need:VOID_RECIPE.mats[1]},
       {icon:MAT_ICONS[2],name:MAT_NAMES[2],have:mats[2]||0,need:VOID_RECIPE.mats[2]},
@@ -1637,7 +1637,7 @@ function claimStoryMission(id){
   if(m.tickets){const t=Number(localStorage.getItem('tq_tickets')||0);localStorage.setItem('tq_tickets',t+m.tickets);}
   claimed.add(id); saveStoryClaimed(claimed);
   if(window.cloudSave) cloudSave();
-  showToast(`🎁 รับแล้ว! +💰${m.gold||0} +💎${m.gems||0} +🎫${m.tickets||0}`);
+  showToast(`🎁 รับแล้ว! +💰${m.gold||0} +<span class="gico"></span>${m.gems||0} +🎫${m.tickets||0}`);
   renderStoryMissions(); updateMenuStats();
 }
 
@@ -1667,7 +1667,7 @@ function renderStoryMissions(){
         :canClaim
           ?`<button onclick="claimStoryMission('${m.id}')" style="background:linear-gradient(180deg,#ffd24d,#ff9800);color:#1a0a00;border:none;border-radius:8px;padding:7px 14px;font-size:11px;font-weight:900;cursor:pointer;flex-shrink:0;box-shadow:0 0 10px rgba(255,152,0,.5);">🎁 รับ!</button>`
           :`<button disabled style="background:rgba(255,255,255,.06);color:rgba(255,255,255,.25);border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;flex-shrink:0;">🔒</button>`;
-      const rwChips=`<span style="font-size:9px;background:rgba(255,200,0,.1);border:1px solid rgba(255,200,0,.2);border-radius:6px;padding:1px 5px;color:#ffd24d;">💰${m.gold}</span> <span style="font-size:9px;background:rgba(100,181,246,.1);border:1px solid rgba(100,181,246,.2);border-radius:6px;padding:1px 5px;color:#90caf9;">💎${m.gems}</span> <span style="font-size:9px;background:rgba(129,212,250,.1);border:1px solid rgba(129,212,250,.2);border-radius:6px;padding:1px 5px;color:#80deea;">🎫${m.tickets}</span>`;
+      const rwChips=`<span style="font-size:9px;background:rgba(255,200,0,.1);border:1px solid rgba(255,200,0,.2);border-radius:6px;padding:1px 5px;color:#ffd24d;">💰${m.gold}</span> <span style="font-size:9px;background:rgba(100,181,246,.1);border:1px solid rgba(100,181,246,.2);border-radius:6px;padding:1px 5px;color:#90caf9;"><span class="gico"></span>${m.gems}</span> <span style="font-size:9px;background:rgba(129,212,250,.1);border:1px solid rgba(129,212,250,.2);border-radius:6px;padding:1px 5px;color:#80deea;">🎫${m.tickets}</span>`;
       return `<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,${canClaim?'.18':isClaimed?'.05':'.07'});border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;${isClaimed?'opacity:.55':''}">
         <div style="font-size:22px;flex-shrink:0;width:32px;text-align:center;">${icon}</div>
         <div style="flex:1;min-width:0;">
@@ -1806,7 +1806,7 @@ function renderStageSelect(){
     const chestIcon=stars>=3?'👑':stars===2?'🎁':stars===1?'📦':'';
     const starPct=Math.round(stars/3*100);
     const starPips=[1,2,3].map(n=>`<span class="stage-star-pip${stars>=n?'':' empty'}">⭐</span>`).join('');
-    const rewardRows=unlocked?[10,20,30].map((g,i)=>{const got=stars>i;return`<span class="srw${got?' srw-got':''}">${'★'.repeat(i+1)} <span class="srw-gem">💎${g}</span>${got?' ✓':''}</span>`;}).join(''):'';
+    const rewardRows=unlocked?[10,20,30].map((g,i)=>{const got=stars>i;return`<span class="srw${got?' srw-got':''}">${'★'.repeat(i+1)} <span class="srw-gem"><span class="gico"></span>${g}</span>${got?' ✓':''}</span>`;}).join(''):'';
     html+=`<div class="stage-card${unlocked?'':' locked'}${tierClass}" onclick="${unlocked?'startStage('+si+')':'void(0)'}">
       <div class="stage-icon">${s.icon}</div>
       <div class="stage-info">
@@ -2016,13 +2016,13 @@ const MENU_TOUR_STEPS=[
    msg:'โหมดเอาตัวรอดไม่จำกัดเวฟ\nท้าทายที่สุด มีอันดับเซิร์ฟ\nปลดล็อกหลังจบเนื้อเรื่อง'},
   {screen:'mm',target:'.mm-resource-bar',anchor:'below',
    title:'💰 ทรัพยากร (ทอง + เจม)',
-   msg:'ทอง💰 ซื้อ/อัปเกรดป้อมในเกม\nเจม💎 ใช้ใน Workshop และกาชา\nกดแถบนี้เพื่อเปิด Workshop'},
+   msg:'ทอง💰 ซื้อ/อัปเกรดป้อมในเกม\nเจม<span class="gico"></span> ใช้ใน Workshop และกาชา\nกดแถบนี้เพื่อเปิด Workshop'},
   {screen:'workshop',open:'openWorkshop',target:'#workshopNavBtn',anchor:'above',
    title:'🛠️ เวิร์กชอป',
    msg:'สะสมวัสดุจาก Endgame\nนำมา Craft ปลดล็อกป้อมใหม่\nและอัปเกรด Awaken ป้อม'},
   {screen:'gacha',open:'openGacha',target:'#gachaNavBtn',anchor:'above',
    title:'🎁 กาชา',
-   msg:'ใช้เจม💎 หมุนตู้รางวัล\nรับโปชั่น เจม การ์ดสกิล\nมีตู้ปกติ + ตู้การ์ดสกิลพิเศษ'},
+   msg:'ใช้เจม<span class="gico"></span> หมุนตู้รางวัล\nรับโปชั่น เจม การ์ดสกิล\nมีตู้ปกติ + ตู้การ์ดสกิลพิเศษ'},
   {screen:'bag',open:'openBag',target:'#bagNavBtn',anchor:'above',
    title:'🎒 กระเป๋า',
    msg:'เก็บไอเทมและการ์ดสกิล\nการ์ดสกิลใช้ระหว่างเล่น\nเพิ่มพลังพิเศษให้ป้อม'},
@@ -3047,11 +3047,11 @@ function renderDevCheat(){
       <div class="dev-cheat-btn green" onclick="cheat('pgold9999')">+9999 🪙</div>
       <div class="dev-cheat-btn" onclick="cheat('hp10')">HP=10</div>
     </div>
-    <div class="dev-cheat-sub" style="margin-top:10px;">มณี 💎 & ตั๋ว 🎫</div>
+    <div class="dev-cheat-sub" style="margin-top:10px;">มณี <span class="gico"></span> & ตั๋ว 🎫</div>
     <div class="dev-cheat-grid dev-cheat-3">
-      <div class="dev-cheat-btn green" onclick="cheat('gem100')">+100 💎</div>
-      <div class="dev-cheat-btn green" onclick="cheat('gem999')">+999 💎</div>
-      <div class="dev-cheat-btn" onclick="cheat('gem0')">💎=0</div>
+      <div class="dev-cheat-btn green" onclick="cheat('gem100')">+100 <span class="gico"></span></div>
+      <div class="dev-cheat-btn green" onclick="cheat('gem999')">+999 <span class="gico"></span></div>
+      <div class="dev-cheat-btn" onclick="cheat('gem0')"><span class="gico"></span>=0</div>
     </div>
     <div class="dev-cheat-grid dev-cheat-3" style="margin-top:9px;">
       <div class="dev-cheat-btn green" onclick="cheat('ticket10')">+10 🎫</div>
@@ -3183,9 +3183,9 @@ function cheat(cmd){
     case 'reset_ach':
       localStorage.removeItem('tq_ach');localStorage.removeItem('tq_achstats');localStorage.removeItem('tq_ach_seen');
       _updateAchBadge();showToast('↺ Reset Achievement แล้ว!');break;
-    case 'gem100': saveGems(loadGems()+100);showToast('💎 +100 มณีวิญญาณ!');break;
-    case 'gem999': saveGems(loadGems()+999);showToast('💎 +999 มณีวิญญาณ!');break;
-    case 'gem0': saveGems(0);showToast('💎 ตั้งมณีเป็น 0 แล้ว');break;
+    case 'gem100': saveGems(loadGems()+100);showToast('<span class="gico"></span> +100 มณีวิญญาณ!');break;
+    case 'gem999': saveGems(loadGems()+999);showToast('<span class="gico"></span> +999 มณีวิญญาณ!');break;
+    case 'gem0': saveGems(0);showToast('<span class="gico"></span> ตั้งมณีเป็น 0 แล้ว');break;
     case 'pity0': saveGachaPity(0);showToast('🔄 รีเซ็ต Pity แล้ว');break;
     case 'pgold500': addPGold(500);showToast('🪙 +500 ทองถาวร!');break;
     case 'pgold9999': addPGold(9999);showToast('🪙 +9999 ทองถาวร!');break;
@@ -3416,7 +3416,7 @@ const CUTSCENES = [
 ];
 
 /* ══ PROFILE ══ */
-const PROFILE_AVATARS=['⚔️','🛡️','🧙','🏹','🗡️','🔥','❄️','⚡','🌑','💎','👑','🐉','🦅','🐺','🦁','🌟','💀','🎯','🌊','🏰'];
+const PROFILE_AVATARS=['⚔️','🛡️','🧙','🏹','🗡️','🔥','❄️','⚡','🌑','<span class="gico"></span>','👑','🐉','🦅','🐺','🦁','🌟','💀','🎯','🌊','🏰'];
 function openProfile(){
   showScreen('profile',true);
   const av=localStorage.getItem('tq_avatar')||'⚔️';
@@ -3906,8 +3906,8 @@ updateMenuStats();
 const SLOT_COST=100;
 const SLOT_SPIN_SYMS=['💎','⭐','🔮','💰','🔷','🌙','🎯','🌸'];
 const SLOT_OUTCOMES=[
-  {w:1,  s:['💎','💎','💎'], gold:5000,gems:3000,tickets:50, label:'💎 JACKPOT! +🎫50 +💰5000 +💎3000'},
-  {w:3,  s:['⭐','⭐','⭐'], gold:2500,gems:1500,tickets:25, label:'⭐ SUPER!  +🎫25 +💰2500 +💎1500'},
+  {w:1,  s:['💎','💎','💎'], gold:5000,gems:3000,tickets:50, label:'<span class="gico"></span> JACKPOT! +🎫50 +💰5000 +<span class="gico"></span>3000'},
+  {w:3,  s:['⭐','⭐','⭐'], gold:2500,gems:1500,tickets:25, label:'⭐ SUPER!  +🎫25 +💰2500 +<span class="gico"></span>1500'},
   {w:10, s:['🔮','🔮','🔮'],gold:2000,gems:0,   tickets:0,  label:'🔮 GREAT! +💰2000'},
   {w:30, s:['💰','💰','💰'],gold:1000,gems:0,   tickets:0,  label:'💰 NICE!  +💰1000'},
   {w:100,s:null,pair:true,  gold:30,  gems:0,   tickets:0,  label:'คู่! +💰30'},
@@ -3941,7 +3941,7 @@ function _renderCasinoUI(){
   const btn=document.getElementById('slotSpinBtn');if(btn){btn.disabled=_slotBusy||pg<SLOT_COST;btn.textContent='🎰 หมุน! (💰 '+SLOT_COST+')'}
   const ot=document.getElementById('slotOddsTable');
   if(ot&&!ot.innerHTML){
-    const names={1:'💎💎💎',3:'⭐⭐⭐',10:'🔮🔮🔮',30:'💰💰💰',100:'คู่ใดก็ได้',856:'ไม่ตรง'};
+    const names={1:'<span class="gico"></span><span class="gico"></span><span class="gico"></span>',3:'⭐⭐⭐',10:'🔮🔮🔮',30:'💰💰💰',100:'คู่ใดก็ได้',856:'ไม่ตรง'};
     ot.innerHTML=SLOT_OUTCOMES.map(o=>`
       <div class="gacha-odds-row">
         <span style="font-family:monospace;color:rgba(179,136,255,.6);">${String(o.w/10).padStart(4,' ')}%</span>
@@ -3982,13 +3982,13 @@ function _slotWinFx(outcome,reels){
   }
   // win text
   const wt=document.createElement('div'); wt.className='slot-win-text';
-  const [col,txt]=isJP?['#FFD700','💎 JACKPOT!']:isSP?['#87CEEB','⭐ SUPER!']:isGR?['#CE93D8','🔮 GREAT!']:['#FFB300','💰 NICE!'];
+  const [col,txt]=isJP?['#FFD700','<span class="gico"></span> JACKPOT!']:isSP?['#87CEEB','⭐ SUPER!']:isGR?['#CE93D8','🔮 GREAT!']:['#FFB300','💰 NICE!'];
   wt.textContent=txt;
   wt.style.cssText=`color:${col};text-shadow:0 0 40px ${col},0 0 80px ${col}99,0 4px 20px rgba(0,0,0,.95);`;
   ov.appendChild(wt);
   // reward sub-text
   const ws=document.createElement('div'); ws.className='slot-win-sub';
-  ws.textContent=outcome.label.replace(/^[^\s🎫💰💎⭐🔮]+\s/,'').replace(/^[^\s]+\s/,'');
+  ws.textContent=outcome.label.replace(/^[^\s🎫💰<span class="gico"></span>⭐🔮]+\s/,'').replace(/^[^\s]+\s/,'');
   ov.appendChild(ws);
   machine.appendChild(ov);
   // fade out
@@ -4117,7 +4117,7 @@ function _bjHv(h){let s=0,a=0;for(const c of h){s+=_bjRv(c.r);if(c.r==='A')a++;}
 function _bjCurBal(){return _bjCur==='gold'?loadPGold():loadGems();}
 function _bjDeductBal(n){if(_bjCur==='gold')savePGold(Math.max(0,loadPGold()-n));else saveGems(Math.max(0,loadGems()-n));}
 function _bjAddBal(n){if(_bjCur==='gold')addPGold(n);else addGems(n);}
-function _bjIcon(){return _bjCur==='gold'?'💰':'💎';}
+function _bjIcon(){return _bjCur==='gold'?'💰':'<span class="gico"></span>';}
 
 function _bjRefreshBalance(){
   const el=document.getElementById('bjBalDisplay');

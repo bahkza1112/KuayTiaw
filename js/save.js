@@ -1,4 +1,4 @@
-
+﻿
 /* ══ AVATAR COMPRESS ══ */
 function _compressAvatar(src,cb){
   if(!src||!src.startsWith('data:')){cb(src||'🎮');return;}
@@ -29,8 +29,8 @@ function saveProgress(si,stars){
       if(gain>0) addGems(gain);
       if(pgGain>0) addPGold(pgGain);
       addTickets(1); // 🎫 สถิติดาวใหม่ครั้งแรก → ตั๋วสกิล +1
-      if(gain>0&&pgGain>0) showToast('💎 +'+gain+'  🪙 +'+pgGain+'  🎫 +1!');
-      else if(gain>0) showToast('💎 +'+gain+' Soul Gems  🎫 +1!');
+      if(gain>0&&pgGain>0) showToast('<span class="gico"></span> +'+gain+'  🪙 +'+pgGain+'  🎫 +1!');
+      else if(gain>0) showToast('<span class="gico"></span> +'+gain+' Soul Gems  🎫 +1!');
       else if(pgGain>0) showToast('🪙 +'+pgGain+' ทองถาวร  🎫 +1!');
       else showToast('🎫 +1 ตั๋วสกิล!');
     }
@@ -244,14 +244,14 @@ function addTickets(n){
   saveTickets(loadTickets()+Math.floor(n));
   if(typeof updateMenuStats==='function') updateMenuStats();
 }
-const GEM_PER_TICKET=50; // 💎 แลกตั๋วสกิล
+const GEM_PER_TICKET=50; // <span class="gico"></span> แลกตั๋วสกิล
 function exchangeGemForTicket(n){
   n=Math.max(1,Math.floor(n||1));
   const need=GEM_PER_TICKET*n, g=loadGems();
-  if(g<need){showToast('💎 มณีไม่พอ (ต้องการ 💎'+need+')');return false;}
+  if(g<need){showToast('<span class="gico"></span> มณีไม่พอ (ต้องการ <span class="gico"></span>'+need+')');return false;}
   saveGems(g-need); addTickets(n);
   if(typeof updateMenuStats==='function') updateMenuStats();
-  showToast('🔁 แลก 💎'+need+' → 🎫'+n+' สำเร็จ!');
+  showToast('🔁 แลก <span class="gico"></span>'+need+' → 🎫'+n+' สำเร็จ!');
   return true;
 }
 /* การ์ดที่ใส่ใช้ในรัน (1 ใบ) */
@@ -407,7 +407,7 @@ function isVoidUnlocked(){return localStorage.getItem('tq_voidUnlocked')==='1';}
 function setVoidUnlocked(){localStorage.setItem('tq_voidUnlocked','1');}
 function awardEndgameGems(finalWave,diff){
   const gemsEarned=Math.floor(Math.floor(finalWave/2)*(1+diff*0.5));
-  if(gemsEarned>0){ addGems(gemsEarned); showToast('💎 +'+gemsEarned+' Soul Gems (Endgame)!'); }
+  if(gemsEarned>0){ addGems(gemsEarned); showToast('<span class="gico"></span> +'+gemsEarned+' Soul Gems (Endgame)!'); }
   return gemsEarned;
 }
 function isStageUnlocked(si){
@@ -435,7 +435,7 @@ function _todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getM
 function _daysBetween(a,b){return Math.round((Date.parse(b)-Date.parse(a))/86400000);}
 /* 7-day login reward cycle */
 const LOGIN_REWARDS=[
-  {icon:'💎',label:'300 มณีวิญญาณ + ไอเท็มบัพ ×1',   grant(){addGems(300);addBagItem('dmg_pot',1);addBagItem('hp_pot',1);addBagItem('gold_pot',1);}},
+  {icon:'<span class="gico"></span>',label:'300 มณีวิญญาณ + ไอเท็มบัพ ×1',   grant(){addGems(300);addBagItem('dmg_pot',1);addBagItem('hp_pot',1);addBagItem('gold_pot',1);}},
   {icon:'🎫',label:'ตั๋ว 20 ใบ + ไอเท็มบัพ ×2',        grant(){addTickets(20);addBagItem('dmg_pot',2);addBagItem('hp_pot',2);addBagItem('gold_pot',2);}},
   {icon:'🪙',label:'ทอง 500 + ไอเท็มบัพ ×3',           grant(){addPGold(500);addBagItem('dmg_pot',3);addBagItem('hp_pot',3);addBagItem('gold_pot',3);}},
   {icon:'💰',label:'ทอง 1000',                          grant(){addPGold(1000);}},
@@ -467,13 +467,13 @@ function claimDailyLogin(){
 }
 /* Daily quests — 3 chosen deterministically per day from pool */
 const QUEST_POOL=[
-  {id:'kill60', icon:'⚔️',type:'kill', goal:60,  desc:'กำจัดศัตรู 60 ตัว',       grant(){addGems(30);},     rwTxt:'💎 30'},
-  {id:'kill150',icon:'💀',type:'kill', goal:150, desc:'กำจัดศัตรู 150 ตัว',      grant(){addGems(60);},     rwTxt:'💎 60'},
-  {id:'clear2', icon:'🏁',type:'clear',goal:2,   desc:'ผ่านด่าน 2 ครั้ง',        grant(){addGems(40);},     rwTxt:'💎 40'},
+  {id:'kill60', icon:'⚔️',type:'kill', goal:60,  desc:'กำจัดศัตรู 60 ตัว',       grant(){addGems(30);},     rwTxt:'<span class="gico"></span> 30'},
+  {id:'kill150',icon:'💀',type:'kill', goal:150, desc:'กำจัดศัตรู 150 ตัว',      grant(){addGems(60);},     rwTxt:'<span class="gico"></span> 60'},
+  {id:'clear2', icon:'🏁',type:'clear',goal:2,   desc:'ผ่านด่าน 2 ครั้ง',        grant(){addGems(40);},     rwTxt:'<span class="gico"></span> 40'},
   {id:'combo8', icon:'⚡',type:'combo',goal:8,   desc:'ทำคอมโบ ×8',             grant(){addBagItem('shard_c',3);}, rwTxt:'🔹 ×3'},
-  {id:'build12',icon:'🏗️',type:'build',goal:12,  desc:'สร้างป้อม 12 หลัง',       grant(){addGems(35);},     rwTxt:'💎 35'},
+  {id:'build12',icon:'🏗️',type:'build',goal:12,  desc:'สร้างป้อม 12 หลัง',       grant(){addGems(35);},     rwTxt:'<span class="gico"></span> 35'},
   {id:'gold600',icon:'💰',type:'gold', goal:600, desc:'เก็บทองรวม 600 (จากศัตรู)',grant(){addPGold(80);},    rwTxt:'🪙 80'},
-  {id:'wave15', icon:'🌊',type:'wave', goal:15,  desc:'ไปถึงคลื่น 15 (เอนด์เกม)', grant(){addGems(50);},     rwTxt:'💎 50'},
+  {id:'wave15', icon:'🌊',type:'wave', goal:15,  desc:'ไปถึงคลื่น 15 (เอนด์เกม)', grant(){addGems(50);},     rwTxt:'<span class="gico"></span> 50'},
 ];
 const _QUEST_MAX_TYPES=['combo','wave']; // these track max value, others accumulate
 function loadQuestProg(){
@@ -550,14 +550,14 @@ const ACHIEVEMENTS=[
   {id:'sl_pair',  icon:'💰',cat:'casino',name:'คู่แรกในชีวิต',     desc:'ได้ผล "คู่" ในสล็อตครั้งแรก',                    reward:30},
   {id:'sl_great', icon:'🔮',cat:'casino',name:'โชคดีเข้าช่วย',     desc:'ได้ GREAT (🔮🔮🔮) ครั้งแรก',                     reward:50},
   {id:'sl_super', icon:'⭐',cat:'casino',name:'ดาวตกสามดวง',       desc:'ได้ SUPER (⭐⭐⭐) ครั้งแรก',                     reward:150},
-  {id:'sl_jp',    icon:'💎',cat:'casino',name:'ราชันแจ็กพอต',      desc:'ได้ JACKPOT (💎💎💎) ครั้งแรก',                   reward:999},
+  {id:'sl_jp',    icon:'<span class="gico"></span>',cat:'casino',name:'ราชันแจ็กพอต',      desc:'ได้ JACKPOT (<span class="gico"></span><span class="gico"></span><span class="gico"></span>) ครั้งแรก',                   reward:999},
   {id:'sl_100',   icon:'🎲',cat:'casino',name:'นักพนันตัวจริง',    desc:'หมุนสล็อตรวม 100 ครั้ง',                          reward:10},
   {id:'sl_dry50', icon:'😤',cat:'casino',name:'ขาดทุนแต่ไม่แคร์', desc:'หมุน 50 ครั้งติดโดยไม่ได้ GREAT ขึ้นไป',          reward:2},
   {id:'sl_dry100',icon:'⛏️',cat:'casino',name:'ราชานักขุดเกลือ',   desc:'หมุน 100 ครั้งติดโดยไม่ได้ GREAT ขึ้นไป',         reward:1},
   // Collection
   {id:'cdx_m',icon:'📖',cat:'collect',name:'นักวิชาการ',    desc:'พบ Monster ทุกตัวใน Codex',      reward:80},
   {id:'cdx_t',icon:'🏗️',cat:'collect',name:'สถาปนิก',       desc:'ปลดล็อก Tower ทุกแบบ',           reward:100},
-  {id:'gem1k',icon:'💎',cat:'collect',name:'นักสะสมมณีวิญญาณ',desc:'สะสม Soul Gems รวม 1,000',     reward:50},
+  {id:'gem1k',icon:'<span class="gico"></span>',cat:'collect',name:'นักสะสมมณีวิญญาณ',desc:'สะสม Soul Gems รวม 1,000',     reward:50},
   {id:'void1',icon:'🌑',cat:'collect',name:'ผู้เชี่ยวชาญโมฆะ', desc:'ปลดล็อกป้อมมนตราโมฆะที่เวิร์กชอป',reward:100},
   {id:'sk_all5',icon:'🃏',cat:'collect',name:'นักสะสมการ์ด', desc:'เก็บการ์ดสกิลครบทั้ง 5 ใบ',      reward:100},
   {id:'sk_max', icon:'⭐',cat:'collect',name:'สกิลสูงสุด',   desc:'อัพการ์ดสกิลใบใดก็ได้ถึง ★5',   reward:150},
@@ -586,7 +586,7 @@ function _showNextAchNotif(){
   const el=document.getElementById('achNotif');
   document.getElementById('achNotifIco').textContent=ach.icon;
   document.getElementById('achNotifName').textContent=ach.name;
-  document.getElementById('achNotifDesc').textContent=ach.desc+(ach.reward?'  💎 +'+ach.reward:'');
+  document.getElementById('achNotifDesc').textContent=ach.desc+(ach.reward?'  <span class="gico"></span> +'+ach.reward:'');
   el.className='cat-'+ach.cat; // 🎖️ รีเซ็ตคลาสกรอบเรืองแสงตามหมวดของ achievement นี้
   el.classList.add('show');
   setTimeout(()=>{
