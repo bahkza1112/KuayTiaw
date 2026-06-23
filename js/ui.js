@@ -4091,8 +4091,8 @@ const SLOT_SPIN_SYMS=['💎','⭐','🔮','💰','🔷','🌙','🎯','🌸'];
 const SLOT_OUTCOMES=[
   {w:1,  s:['💎','💎','💎'], gold:5000,gems:3000,tickets:50, label:'<span class="gico"></span> JACKPOT! +🎫50 +💰5000 +<span class="gico"></span>3000'},
   {w:3,  s:['⭐','⭐','⭐'], gold:2500,gems:1500,tickets:25, label:'⭐ SUPER!  +🎫25 +💰2500 +<span class="gico"></span>1500'},
-  {w:10, s:['🔮','🔮','🔮'],gold:2000,gems:0,   tickets:0,  label:'🔮 GREAT! +💰2000'},
-  {w:30, s:['💰','💰','💰'],gold:1000,gems:0,   tickets:0,  label:'💰 NICE!  +💰1000'},
+  {w:10, s:['🔮','🔮','🔮'],gold:1000,gems:0,   tickets:0,  label:'🔮 GREAT! +💰1000'},
+  {w:30, s:['💰','💰','💰'],gold:500, gems:0,   tickets:0,  label:'💰 NICE!  +💰500'},
   {w:100,s:null,pair:true,  gold:30,  gems:0,   tickets:0,  label:'คู่! +💰30'},
   {w:856,s:null,miss:true,  gold:0,   gems:0,   tickets:0,  label:'ไม่ตรง — ไม่ได้อะไร'},
 ];
