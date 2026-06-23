@@ -451,14 +451,14 @@ function pausedRestart(){
 }
 let _settingsPausedGame=false;
 function openSettings(){
-  if(!G||G.over||G.win||document.getElementById('pauseScreen').style.display==='flex') return;
-  if(!paused){paused=true;document.getElementById('pauseBtn').textContent='▶';_settingsPausedGame=true;}
-  else _settingsPausedGame=false;
-  document.getElementById('settSpeedBtn').textContent=speed+'×';
+  const inGame=G&&!G.over&&!G.win;
+  if(inGame&&document.getElementById('pauseScreen').style.display==='flex') return;
+  if(inGame){
+    if(!paused){paused=true;document.getElementById('pauseBtn').textContent='▶';_settingsPausedGame=true;}
+    else _settingsPausedGame=false;
+  }
   document.getElementById('settSfxBtn').textContent=_sfxOn?'🔊':'🔇';
   document.getElementById('settVolSlider').value=Math.round(_sfxVol*100);
-  document.getElementById('settAutoBtn').classList.toggle('on',autoWave);
-  document.getElementById('settAutoBtn').textContent=autoWave?'🔁 อัตโนมัติ ON':'🔁 อัตโนมัติ';
   document.getElementById('settingsScreen').style.display='flex';
 }
 function closeSettings(){

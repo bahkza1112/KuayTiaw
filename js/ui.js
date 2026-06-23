@@ -3986,11 +3986,6 @@ document.getElementById('speedBtn').addEventListener('click',function(){
   this.textContent=speed+'×';
 });
 document.getElementById('settingsBtn').addEventListener('click',openSettings);
-document.getElementById('settSpeedBtn').addEventListener('click',function(){
-  speed=speed===1?2:speed===2?3:1;
-  this.textContent=speed+'×';
-  document.getElementById('speedBtn').textContent=speed+'×';
-});
 document.getElementById('settSfxBtn').addEventListener('click',function(){
   toggleSfx();
   this.textContent=_sfxOn?'🔊':'🔇';
@@ -4001,11 +3996,6 @@ document.getElementById('settBgmBtn').addEventListener('click',function(){
 });
 document.getElementById('settVolSlider').addEventListener('input',function(){
   _sfxVol=this.value/100;
-});
-document.getElementById('settAutoBtn').addEventListener('click',function(){
-  toggleAutoWave();
-  this.classList.toggle('on',autoWave);
-  this.textContent=autoWave?'🔁 อัตโนมัติ ON':'🔁 อัตโนมัติ';
 });
 for(let _i=0;_i<9;_i++){
   const _tb=document.getElementById('tb'+_i);

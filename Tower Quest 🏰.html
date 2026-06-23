@@ -53,6 +53,7 @@
     <span style="color:#fff;font-size:12px;font-weight:700;">โปรไฟล์</span>
   </div>
   <div id="tourStartBtn" onclick="startMenuTour()" style="position:absolute;top:100px;left:14px;z-index:10;background:rgba(100,200,255,.08);border:1px solid rgba(100,200,255,.2);color:rgba(150,220,255,.7);font-size:10px;padding:5px 12px;border-radius:50px;cursor:pointer;">❓ แนะนำเมนู</div>
+  <div id="menuSettingsBtn" onclick="openSettings()" style="position:absolute;top:136px;left:14px;z-index:10;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:rgba(200,200,200,.7);font-size:10px;padding:5px 12px;border-radius:50px;cursor:pointer;">⚙ ตั้งค่า</div>
 
   <!-- logo -->
   <div class="island" id="logoIsland">🏰</div>
@@ -355,11 +356,9 @@
   <div class="pausescreen" id="settingsScreen">
     <div class="obox">
       <h2>⚙ ตั้งค่า</h2>
-      <div class="settings-row"><span>⚡ ความเร็ว</span><button class="speedbtn" id="settSpeedBtn">1×</button></div>
       <div class="settings-row"><span>🔊 เสียง</span><button class="speedbtn" id="settSfxBtn">🔊</button></div>
       <div class="settings-row"><span>🎵 เพลงพื้นหลัง</span><button class="speedbtn" id="settBgmBtn">🎵</button></div>
       <div class="settings-row"><span>🔉 ระดับเสียง</span><input type="range" id="settVolSlider" min="0" max="100" value="35"></div>
-      <div class="settings-row"><span>🔁 ส่งคลื่นอัตโนมัติ</span><button class="autobtn" id="settAutoBtn">🔁 อัตโนมัติ</button></div>
       <button class="obtn" onclick="closeSettings()">✔ ปิด</button>
     </div>
   </div>
