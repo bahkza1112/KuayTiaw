@@ -335,6 +335,14 @@ body{background:#0d1117;display:flex;align-items:flex-start;justify-content:cent
 .av-unlock-opt .opt-price{font-size:16px;font-weight:900;}
 .av-unlock-cancel{background:transparent;border:none;color:#666;font-size:12px;cursor:pointer;padding:4px 8px;}
 .av-unlock-cancel:hover{color:#aaa;}
+/* LEADERBOARD PRIZE */
+.lb-prize-box{background:rgba(255,210,77,.06);border:1px solid rgba(255,210,77,.2);border-radius:12px;padding:14px 16px;margin-top:14px;}
+.lb-prize-title{color:#ffd24d;font-size:13px;font-weight:700;margin-bottom:10px;}
+.lb-prize-row{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.06);color:#e0e0e0;}
+.lb-prize-row:last-of-type{border-bottom:none;}
+.lb-prize-note{color:#f44;font-size:10px;margin-top:8px;text-align:center;}
+.lb-rew-line{padding:3px 0;border-bottom:1px solid rgba(255,255,255,.08);}
+.lb-rew-line:last-child{border-bottom:none;}
 /* DRAW AVATAR */
 .draw-wrap{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px;display:flex;flex-direction:column;align-items:center;gap:10px;}
 .draw-canvas{border-radius:10px;cursor:crosshair;touch-action:none;box-shadow:0 0 0 2px rgba(255,255,255,.12),0 4px 20px rgba(0,0,0,.4);background:#1a1a2e;}

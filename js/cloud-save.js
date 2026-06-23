@@ -100,6 +100,31 @@ async function cloudInit() {
   // auto-save ทุก 60 วิ
   setInterval(cloudSave, 60000);
   window.addEventListener('beforeunload', () => { cloudSave(); });
+  // check pending leaderboard rewards
+  if (cloudUser && cloudAvailable) _checkLbRewards();
+}
+
+async function _checkLbRewards() {
+  try {
+    const r = await fetch('/api/leaderboard/claim', { headers: authHeaders() });
+    if (!r.ok) return;
+    const { pending } = await r.json();
+    if (!pending || !pending.length) return;
+    // claim all
+    const cr = await fetch('/api/leaderboard/claim', { method:'POST', headers: authHeaders() });
+    if (!cr.ok) return;
+    const { claimed } = await cr.json();
+    if (!claimed || !claimed.length) return;
+    // apply rewards
+    claimed.forEach(rew => {
+      if (rew.gems)    { if(typeof addGems==='function') addGems(rew.gems); }
+      if (rew.tickets) { if(typeof addTickets==='function') addTickets(rew.tickets); }
+      if (rew.pgold)   { if(typeof addPGold==='function') addPGold(rew.pgold); }
+    });
+    cloudSave();
+    // show popup
+    if (typeof _showLbRewardPopup === 'function') _showLbRewardPopup(claimed);
+  } catch(e) {}
 }
 
 // เรียกหลังโหลด DOM

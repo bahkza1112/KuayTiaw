@@ -1,6 +1,12 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.12.0';
+const GAME_VERSION='3.12.1';
 const PATCH_NOTES=[
+  {ver:'3.12.1',date:'2026-06-23',title:'🏆 Leaderboard รายสัปดาห์ + รางวัลอันดับ',notes:[
+    'รีเซ็ต TOP 10 ทุก 7 วัน — countdown แสดงในหน้าอันดับ',
+    'อันดับ 1: ◇2000+🎫50 · 2: ◇1000+🎫25 · 3: ◇500+🎫10',
+    'อันดับ 4–6: 💰500 · 7–10: 💰200 ทองถาวร',
+    'รับของหลัง reset เมื่อเข้าเกมครั้งแรก (ต้อง Login Google)',
+  ]},
   {ver:'3.12.0',date:'2026-06-23',title:'🎰 สล็อต: ใช้มณีวิญญาณ ◇50 ต่อสปินได้แล้ว',notes:[
     'เพิ่มปุ่ม "💰 ทอง / ◇ มณี" ให้เลือกสกุลก่อนหมุน',
     'มณีวิญญาณ: 50 ต่อสปิน — ทองถาวร: 100 ต่อสปิน (เดิม)',
@@ -2767,6 +2773,23 @@ function addParticle(x,y,txt,col){
   if(!G) return;
   G.particles.push({x,y,txt,col,life:1,vy:-1.5-Math.random()*.5});
 }
+function _showLbRewardPopup(claimed){
+  const lines=claimed.map(rew=>{
+    const parts=[];
+    if(rew.gems)    parts.push(`<span class="gico"></span> ${rew.gems.toLocaleString()}`);
+    if(rew.tickets) parts.push(`🎫 ${rew.tickets}`);
+    if(rew.pgold)   parts.push(`💰 ${rew.pgold.toLocaleString()}`);
+    return `<div class="lb-rew-line">🏆 อันดับ ${rew.rank} รอบที่ ${rew.season}: ${parts.join(' + ')}</div>`;
+  }).join('');
+  const pop=document.createElement('div');pop.className='av-unlock-popup';
+  pop.innerHTML=`<div class="av-unlock-box" style="max-width:340px;">
+    <div style="font-size:48px;margin-bottom:8px;">🎁</div>
+    <h3 style="color:#ffd24d;margin:0 0 8px;">รางวัลอันดับมาแล้ว!</h3>
+    <div style="color:#e0e0e0;font-size:13px;margin-bottom:18px;line-height:1.7;">${lines}</div>
+    <button class="slot-spin-btn" style="padding:10px 32px;font-size:14px;" onclick="this.closest('.av-unlock-popup').remove()">รับรางวัล ✓</button>
+  </div>`;
+  document.body.appendChild(pop);
+}
 function showToast(msg){
   const el=document.getElementById('toast');
   if(!el) return;
@@ -3823,12 +3846,56 @@ function renderLb(){
       });
       return h;
     };
-    const _svBanner=`<div class="lb-sv-hd"><div class="lb-sv-crown">👑</div><div class="lb-sv-title">TOP 10 เซิฟเวอร์</div><div class="lb-sv-sub">เรียงตามคะแนนสูงสุด</div></div>`;
+    const _LB_PRIZE_HTML=[
+      `🥇 <span class="gico"></span>2000 + 🎫50`,
+      `🥈 <span class="gico"></span>1000 + 🎫25`,
+      `🥉 <span class="gico"></span>500 + 🎫10`,
+      `4–6 💰500 ทองถาวร`,`4–6 💰500 ทองถาวร`,`4–6 💰500 ทองถาวร`,
+      `7–10 💰200 ทองถาวร`,`7–10 💰200 ทองถาวร`,`7–10 💰200 ทองถาวร`,`7–10 💰200 ทองถาวร`,
+    ];
+    const _prizeLabel=(i)=>{
+      if(i===0) return `<span class="gico"></span>2000 + 🎫50`;
+      if(i===1) return `<span class="gico"></span>1000 + 🎫25`;
+      if(i===2) return `<span class="gico"></span>500 + 🎫10`;
+      if(i<=5)  return `💰500`;
+      return `💰200`;
+    };
+    const _fmtCountdown=ms=>{if(ms<=0)return'รีเซ็ตเร็วๆนี้';const d=Math.floor(ms/86400000),h=Math.floor((ms%86400000)/3600000),m=Math.floor((ms%3600000)/60000);return(d?d+'ว ':'')+h+'ช '+m+'น';};
+    const _svBanner=`<div class="lb-sv-hd"><div class="lb-sv-crown">👑</div><div class="lb-sv-title">TOP 10 เซิฟเวอร์</div><div class="lb-sv-sub" id="lbSeasonSub">เรียงตามคะแนนสูงสุด</div></div>`;
+    const _prizeTable=`<div class="lb-prize-box"><div class="lb-prize-title">🏆 รางวัลประจำรอบ</div><div class="lb-prize-row"><span>🥇 อันดับ 1</span><span><span class="gico"></span> 2000 + 🎫 50</span></div><div class="lb-prize-row"><span>🥈 อันดับ 2</span><span><span class="gico"></span> 1000 + 🎫 25</span></div><div class="lb-prize-row"><span>🥉 อันดับ 3</span><span><span class="gico"></span> 500 + 🎫 10</span></div><div class="lb-prize-row"><span>4–6 อันดับ</span><span>💰 500 ทองถาวร</span></div><div class="lb-prize-row"><span>7–10 อันดับ</span><span>💰 200 ทองถาวร</span></div><div class="lb-prize-note">⚠️ ต้อง Login Google เพื่อรับรางวัล</div></div>`;
     body.innerHTML=_svBanner+'<div class="lb-empty" style="color:#aaa;padding:20px;">⏳ กำลังโหลด...</div>';
     fetch('/api/leaderboard',{signal:AbortSignal.timeout(5000)})
       .then(r=>r.json())
       .then(d=>{
-        body.innerHTML=_svBanner+_renderCombined(d.entries||[]);
+        const entries=d.entries||[];
+        // patch prize into render
+        const sorted=[...entries].sort((a,b)=>b.score-a.score).slice(0,10);
+        const myName=lastName;
+        const myAv=localStorage.getItem('tq_avatar')||'🎮';
+        const _gridCols2='40px 38px 1fr 52px 80px 56px 90px';
+        let h=`<div class="lbt-header" style="grid-template-columns:${_gridCols2};"><span>#</span><span></span><span>ชื่อ</span><span>ระดับ</span><span>⭐ คะแนน</span><span>🌊 เวฟ</span><span style="color:#ffd24d;">🎁 รางวัล</span></div>`;
+        const _diffEmoji2={'ง่าย':'🟢','ปกติ':'🟡','ยาก':'🔴'};
+        sorted.forEach((r,i)=>{
+          const me=r.name===myName;
+          const rc=`lbt-row${i===0?' lbt-row-1':i===1?' lbt-row-2':i===2?' lbt-row-3':''}${me?' lbt-me':''}`;
+          const av=me?myAv:(r.avatar||'🎮');
+          const avHtml=av.startsWith('data:')?`<img src="${av}" style="width:26px;height:26px;border-radius:50%;object-fit:cover;vertical-align:middle;">`:`<span style="font-size:20px;line-height:26px;">${av}</span>`;
+          h+=`<div class="${rc}" style="grid-template-columns:${_gridCols2};align-items:center;">
+            <span class="lbt-rank">${_rankBadge(i)}</span>
+            <span style="display:flex;align-items:center;justify-content:center;">${avHtml}</span>
+            <span class="lbt-name">${r.name}</span>
+            <span style="display:flex;flex-direction:column;align-items:center;line-height:1.05;"><span style="font-size:13px;">${_diffEmoji2[r.diff]||'⚪'}</span><span style="font-size:8.5px;color:#aaa;">${r.diff||'—'}</span></span>
+            <span class="lbt-score">${r.score.toLocaleString()}</span>
+            <span class="lbt-score" style="color:#80cbc4;">${r.wave}</span>
+            <span style="font-size:10px;color:#ffd24d;text-align:right;">${_prizeLabel(i)}</span>
+          </div>`;
+        });
+        if(!sorted.length) h='<div class="lb-empty">ยังไม่มีข้อมูล</div>';
+        // countdown
+        if(d.resetAt){const rem=d.resetAt-Date.now();const sub=document.getElementById('lbSeasonSub');if(sub)sub.textContent='รอบที่ '+(d.season||'?')+' · รีเซ็ตใน '+_fmtCountdown(rem);}
+        body.innerHTML=_svBanner+h+_prizeTable;
+        // update sub after re-render
+        if(d.resetAt){const rem=d.resetAt-Date.now();const sub=document.getElementById('lbSeasonSub');if(sub)sub.textContent='รอบที่ '+(d.season||'?')+' · รีเซ็ตใน '+_fmtCountdown(rem);}
       })
       .catch(()=>{
         const allRuns=[...runs].filter(r=>r.mode==='endgame');

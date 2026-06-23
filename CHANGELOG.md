@@ -2,6 +2,19 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.12.1 — Leaderboard รายสัปดาห์ + รางวัลอันดับ
+
+### Added
+- `server.js`: `SEASON_FILE`, `REWARDS_FILE`, `LB_PRIZE[]`, `checkSeasonReset()` — reset ทุก 7 วัน, snapshot rewards ก่อน reset
+- `server.js`: `GET /api/leaderboard/claim` + `POST /api/leaderboard/claim` (auth required)
+- `server.js`: `GET /api/leaderboard` ส่ง `season` + `resetAt` กลับมาด้วย
+- `js/cloud-save.js`: `_checkLbRewards()` — เรียกหลัง login, claim + apply rewards อัตโนมัติ
+- `js/ui.js`: `_showLbRewardPopup(claimed)` — popup แจ้งรางวัลที่ได้รับ
+- `css/main.css`: `.lb-prize-box`, `.lb-prize-row`, `.lb-prize-note`, `.lb-rew-line`
+
+### Changed
+- หน้า TOP 10: แสดง countdown รีเซ็ต + คอลัมน์รางวัล + ตารางรางวัลด้านล่าง
+
 ## v3.12.0 — สล็อต: รองรับมณีวิญญาณ ◇50 ต่อสปิน
 
 ### Added

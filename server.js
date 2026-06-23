@@ -10,15 +10,53 @@ const PORT = process.env.PORT || 3000;
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
-const SAVES_FILE = path.join(__dirname, 'data', 'saves.json');
-const LB_FILE    = path.join(__dirname, 'data', 'leaderboard.json');
+const SAVES_FILE   = path.join(__dirname, 'data', 'saves.json');
+const LB_FILE      = path.join(__dirname, 'data', 'leaderboard.json');
+const SEASON_FILE  = path.join(__dirname, 'data', 'season.json');
+const REWARDS_FILE = path.join(__dirname, 'data', 'lb_rewards.json');
 
 // Ensure data directory exists
 if (!fs.existsSync(path.join(__dirname, 'data'))) {
   fs.mkdirSync(path.join(__dirname, 'data'));
 }
-if (!fs.existsSync(SAVES_FILE)) fs.writeFileSync(SAVES_FILE, '{}', 'utf8');
-if (!fs.existsSync(LB_FILE))    fs.writeFileSync(LB_FILE, '[]', 'utf8');
+if (!fs.existsSync(SAVES_FILE))   fs.writeFileSync(SAVES_FILE, '{}', 'utf8');
+if (!fs.existsSync(LB_FILE))      fs.writeFileSync(LB_FILE, '[]', 'utf8');
+if (!fs.existsSync(SEASON_FILE))  fs.writeFileSync(SEASON_FILE, JSON.stringify({start:Date.now(),num:1}), 'utf8');
+if (!fs.existsSync(REWARDS_FILE)) fs.writeFileSync(REWARDS_FILE, '{}', 'utf8');
+
+// ── Season ────────────────────────────────────────
+const SEASON_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+const LB_PRIZE = [
+  {gems:2000, tickets:50},  // 1st
+  {gems:1000, tickets:25},  // 2nd
+  {gems:500,  tickets:10},  // 3rd
+  {pgold:500},{pgold:500},{pgold:500}, // 4-6
+  {pgold:200},{pgold:200},{pgold:200},{pgold:200}, // 7-10
+];
+function loadSeason() { try { return JSON.parse(fs.readFileSync(SEASON_FILE,'utf8')); } catch { return {start:Date.now(),num:1}; } }
+function writeSeason(d) { fs.writeFileSync(SEASON_FILE, JSON.stringify(d), 'utf8'); }
+function loadRewards() { try { return JSON.parse(fs.readFileSync(REWARDS_FILE,'utf8')); } catch { return {}; } }
+function writeRewards(d) { fs.writeFileSync(REWARDS_FILE, JSON.stringify(d,null,2), 'utf8'); }
+
+function checkSeasonReset() {
+  const season = loadSeason();
+  if (Date.now() - season.start < SEASON_MS) return season;
+  // snapshot top 10 and assign rewards
+  const lb = loadLb();
+  const rewards = loadRewards();
+  lb.slice(0,10).forEach((entry,i) => {
+    if (entry.uid && LB_PRIZE[i]) {
+      if (!rewards[entry.uid]) rewards[entry.uid] = [];
+      rewards[entry.uid].push({rank:i+1, season:season.num, ...LB_PRIZE[i], ts:Date.now()});
+    }
+  });
+  writeRewards(rewards);
+  writeLb([]);
+  const next = {start:Date.now(), num:season.num+1};
+  writeSeason(next);
+  console.log(`Season ${season.num} ended → Season ${next.num} started`);
+  return next;
+}
 
 function loadSaves() {
   try { return JSON.parse(fs.readFileSync(SAVES_FILE, 'utf8')); }
@@ -140,8 +178,27 @@ app.post('/api/save', authMiddleware, (req, res) => {
 
 // ── Leaderboard ───────────────────────────────────
 app.get('/api/leaderboard', (req, res) => {
+  const season = checkSeasonReset();
   const lb = loadLb().sort((a,b)=>b.score-a.score).slice(0,10);
-  res.json({ entries: lb });
+  const resetAt = season.start + SEASON_MS;
+  res.json({ entries: lb, season: season.num, resetAt });
+});
+
+// ── Season Rewards ────────────────────────────────
+app.get('/api/leaderboard/claim', authMiddleware, (req, res) => {
+  const rewards = loadRewards();
+  const pending = rewards[req.authUser.id] || [];
+  res.json({ pending });
+});
+
+app.post('/api/leaderboard/claim', authMiddleware, (req, res) => {
+  const rewards = loadRewards();
+  const uid = req.authUser.id;
+  const pending = rewards[uid] || [];
+  if (!pending.length) return res.json({ ok:true, claimed:[] });
+  delete rewards[uid];
+  writeRewards(rewards);
+  res.json({ ok:true, claimed: pending });
 });
 
 app.post('/api/leaderboard', (req, res) => {
