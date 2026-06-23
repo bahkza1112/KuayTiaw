@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.12.0 — สล็อต: รองรับมณีวิญญาณ ◇50 ต่อสปิน
+
+### Added
+- `Tower Quest 🏰.html`: ปุ่ม toggle `slotCurGold` / `slotCurGems` เหนือ cost info
+- `js/ui.js`: `SLOT_COST_GEMS=50`, `_slotCur` state, `setSlotCur(cur)` function
+- `css/main.css`: `.slot-cur-btn`, `.slot-cur-btn.active` styles
+
+### Changed
+- `_renderCasinoUI()`: แสดงยอด/ราคาตามสกุลที่เลือก
+- `spinSlot()`: หัก gems หรือ gold ตาม `_slotCur`
+
 ## v3.11.99 — ปรับ Blackjack payout + แก้ result text
 
 ### Fixed

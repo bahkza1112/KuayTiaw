@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.11.99';
+const GAME_VERSION='3.12.0';
 const PATCH_NOTES=[
+  {ver:'3.12.0',date:'2026-06-23',title:'🎰 สล็อต: ใช้มณีวิญญาณ ◇50 ต่อสปินได้แล้ว',notes:[
+    'เพิ่มปุ่ม "💰 ทอง / ◇ มณี" ให้เลือกสกุลก่อนหมุน',
+    'มณีวิญญาณ: 50 ต่อสปิน — ทองถาวร: 100 ต่อสปิน (เดิม)',
+  ]},
   {ver:'3.11.99',date:'2026-06-23',title:'🃏 ปรับ Blackjack: ชนะ ×1.9 + แก้ text result',notes:[
     'Blackjack ชนะปกติจ่าย ×1.9 (เดิม ×2.5) — สมดุลกว่า',
     'แก้ข้อความผลชนะโผล่ HTML tag แทนไอคอน ◇',
@@ -3981,6 +3985,14 @@ updateMenuStats();
 
 /* ══ SLOT MACHINE ══ */
 const SLOT_COST=100;
+const SLOT_COST_GEMS=50;
+let _slotCur='gold'; // 'gold' | 'gems'
+function setSlotCur(cur){
+  _slotCur=cur;
+  document.getElementById('slotCurGold')?.classList.toggle('active',cur==='gold');
+  document.getElementById('slotCurGems')?.classList.toggle('active',cur==='gems');
+  _renderCasinoUI();
+}
 const SLOT_SPIN_SYMS=['💎','⭐','🔮','💰','🔷','🌙','🎯','🌸'];
 const SLOT_OUTCOMES=[
   {w:1,  s:['💎','💎','💎'], gold:5000,gems:3000,tickets:50, label:'<span class="gico"></span> JACKPOT! +🎫50 +💰5000 +<span class="gico"></span>3000'},
@@ -4013,9 +4025,14 @@ function _renderSlotHistory(){
     </div>`).join('');
 }
 function _renderCasinoUI(){
-  const pg=loadPGold();
-  const el=document.getElementById('slotGoldDisplay');if(el) el.textContent=pg.toLocaleString();
-  const btn=document.getElementById('slotSpinBtn');if(btn){btn.disabled=_slotBusy||pg<SLOT_COST;btn.textContent='🎰 หมุน! (💰 '+SLOT_COST+')'}
+  const isGems=_slotCur==='gems';
+  const bal=isGems?loadGems():loadPGold();
+  const cost=isGems?SLOT_COST_GEMS:SLOT_COST;
+  const el=document.getElementById('slotGoldDisplay');
+  if(el){el.innerHTML=(isGems?'<span class="gico"></span> ':'💰 ')+bal.toLocaleString();}
+  const info=document.getElementById('slotCostInfo');
+  if(info){info.innerHTML=(isGems?`<span class="gico"></span> ${cost} มณีวิญญาณ / สปิน &nbsp;|&nbsp; มี: <span style="font-size:15px;font-weight:900;color:#b388ff;">${bal.toLocaleString()}</span>`:`💰 ${cost} ทองถาวร / สปิน &nbsp;|&nbsp; มี: <span style="font-size:15px;font-weight:900;color:#ffd54f;">${bal.toLocaleString()}</span>`);}
+  const btn=document.getElementById('slotSpinBtn');if(btn){btn.disabled=_slotBusy||bal<cost;btn.innerHTML='🎰 หมุน! ('+(isGems?`<span class="gico"></span> ${cost}`:`💰 ${cost}`)+')'}
   const ot=document.getElementById('slotOddsTable');
   if(ot&&!ot.innerHTML){
     const names={1:'<span class="gico"></span><span class="gico"></span><span class="gico"></span>',3:'⭐⭐⭐',10:'🔮🔮🔮',30:'💰💰💰',100:'คู่ใดก็ได้',856:'ไม่ตรง'};
@@ -4088,12 +4105,14 @@ function toggleAutoSpin(){
 }
 function spinSlot(){
   if(_slotBusy) return;
-  const pg=loadPGold();
-  if(pg<SLOT_COST){
+  const isGems=_slotCur==='gems';
+  const cost=isGems?SLOT_COST_GEMS:SLOT_COST;
+  const bal=isGems?loadGems():loadPGold();
+  if(bal<cost){
     if(_slotAutoOn){ _slotAutoOn=false; const b=document.getElementById('slotAutoBtn'); if(b){b.textContent='▶ Auto';b.classList.remove('slot-auto-active');} }
-    showToast('💰 ทองถาวรไม่พอ (ต้องการ '+SLOT_COST+')');return;
+    showToast(isGems?'มณีไม่พอ (ต้องการ '+cost+')':'💰 ทองถาวรไม่พอ (ต้องการ '+cost+')');return;
   }
-  savePGold(pg-SLOT_COST);
+  if(isGems) saveGems(bal-cost); else savePGold(bal-cost);
   _slotBusy=true;
   const btn=document.getElementById('slotSpinBtn');if(btn)btn.disabled=true;
   const res=document.getElementById('slotResult');if(res)res.textContent='🎰 กำลังหมุน...';

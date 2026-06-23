@@ -425,6 +425,8 @@ body{background:#0d1117;display:flex;align-items:flex-start;justify-content:cent
 .slot-win-sub{position:relative;font-size:14px;font-weight:700;color:#fff;text-align:center;margin-top:8px;opacity:0;animation:slotWinSub .4s ease .45s forwards;text-shadow:0 2px 8px rgba(0,0,0,.9);}
 .slot-confetti{position:absolute;border-radius:2px;animation:slotConfettiFall 1.4s ease forwards;}
 .slot-result{min-height:36px;font-size:14px;font-weight:700;color:#ffd54f;padding:6px 0 10px;letter-spacing:.3px;}
+.slot-cur-btn{padding:6px 18px;border-radius:50px;border:2px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#aaa;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;}
+.slot-cur-btn.active{border-color:#ffd24d;background:rgba(255,210,77,.15);color:#ffd24d;}
 .slot-spin-btn{background:linear-gradient(180deg,#ffd54f,#f9a825);color:#3e2000;border:none;border-radius:50px;padding:14px 52px;font-size:17px;font-weight:900;cursor:pointer;letter-spacing:1px;box-shadow:0 4px 20px rgba(255,215,0,.4);transition:all .15s;}
 .slot-spin-btn:hover:not(:disabled){box-shadow:0 4px 28px rgba(255,215,0,.65);transform:translateY(-1px);}
 .slot-spin-btn:disabled{opacity:.35;cursor:not-allowed;transform:none;}
