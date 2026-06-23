@@ -1,6 +1,9 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.12.8';
+const GAME_VERSION='3.12.9';
 const PATCH_NOTES=[
+  {ver:'3.12.9',date:'2026-06-24',title:'🌦 Stage 8 เพิ่ม 🌪️ tornado ใน weather pool',notes:[
+    'Stage 8: pool เปลี่ยนจาก 🌑⚡🧊 → 🌑⚡🧊🌪️',
+  ]},
   {ver:'3.12.8',date:'2026-06-24',title:'🌦 เพิ่มความหลากหลายสภาพอากาศต่อด่าน',notes:[
     'แต่ละ stage มี weather pool มากขึ้น — เจอสภาพอากาศหลากหลายกว่าเดิม',
     'Stage 11 มีโอกาสเจอสภาพอากาศทั้ง 8 ประเภท',

@@ -244,7 +244,7 @@ const STAGE_WEATHER=[
   ['sun','rain','blizzard'],                                    // Stage 5
   ['lightning','blizzard','tornado'],                           // Stage 6
   ['fog','rain','tornado','heatwave'],                          // Stage 7
-  ['darknight','lightning','blizzard'],                         // Stage 8
+  ['darknight','lightning','blizzard','tornado'],               // Stage 8
   ['darknight','blizzard','lightning','tornado','heatwave'],    // Stage 9
   ['darknight','lightning','blizzard','tornado','fog','rain'],  // Stage 10: full chaos
   ['darknight','lightning','blizzard','tornado','fog','rain','heatwave','sun'], // Stage 11: all 8
