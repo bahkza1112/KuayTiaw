@@ -2172,6 +2172,15 @@ function tryPlaceTower(type,col,row){
   addParticle(col*CS+CS/2,row*CS+CS/2,'✅ สร้างแล้ว!','#ffe234');
   if(typeof questProgress==='function') questProgress('build',1); // 📅 daily quest
   updateHUD();
+  if(!localStorage.getItem('tq_hint_place')){
+    localStorage.setItem('tq_hint_place','1');
+    setTimeout(()=>showToast('💡 แตะป้อมที่วางแล้วเพื่อ upgrade / ขาย'),1200);
+  }
+  const sameType=G.towers.filter(t=>t.type===type).length;
+  if(sameType>=2&&!localStorage.getItem('tq_hint_merge')){
+    localStorage.setItem('tq_hint_merge','1');
+    setTimeout(()=>showToast('💡 ลาก 2 ป้อมชนิดเดียวกัน ★ เท่ากัน ทับกันเพื่อรวม → ★ สูงขึ้น!'),2400);
+  }
   return true;
 }
 function onCanvasClick(e){

@@ -389,6 +389,10 @@ function showTowerPopup(tw,px,py){
   const _awCost=awakenCost();
   const canAwaken=tw.star>=3&&!tw.awakened&&G.gold>=_awCost;
   const showAwakenBtn=tw.star>=3&&!tw.awakened;
+  if(showAwakenBtn&&!localStorage.getItem('tq_hint_awaken')){
+    localStorage.setItem('tq_hint_awaken','1');
+    setTimeout(()=>showToast('⚡ ป้อมถึง 3★ แล้ว! กด Awaken เพื่อปลดพลังพิเศษ'),400);
+  }
   const starStr='★'.repeat(tw.star);
   const synHtml=(tw._drainT>0)?
     `<div class="tp-syn-row"><div class="tp-syn-label">🌑 สถานะ</div><div class="tp-syn-item" style="background:rgba(126,87,194,.15);border-color:rgba(126,87,194,.4);"><div class="tp-syn-name" style="color:#b39ddb;">🌑 ถูกดูดพลัง!</div><div class="tp-syn-desc">บัฟ/Awaken ของป้อมนี้ถูกระงับชั่วคราวโดยเงามืด</div></div></div>`
@@ -413,7 +417,9 @@ function showTowerPopup(tw,px,py){
     statsHtml+=`<div class="tp-stat">💰 ทองต่อครั้ง <small style="opacity:.5">Lv.${tw.rngLv}</small><span>+${amt}${tw.awakened?' (x2 อเวค)':''}</span></div>`;
   } else if(tw.type===4){ // 💚 ซัพพอร์ต — ระยะ/กันหยุดป้อม
     const rngVal=getTowerRange(4,tw.rngLv).toFixed(1);
-    const resist=Math.round(getSupportResist(tw.col,tw.row)*100);
+    const ownBase=tw.awakened?1:(STAR_RESIST[(tw.star||1)-1]||0);
+    const ownBonus=((tw.rateLv||1)-1)*.05;
+    const resist=Math.round(Math.min(1,ownBase+ownBonus)*100);
     statsHtml+=`<div class="tp-stat">📡 ระยะ <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${rngVal} ช่อง</span></div>`;
     statsHtml+=`<div class="tp-stat">🛡️ กันหยุดป้อม <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${resist}%${tw.awakened?' (อเวค)':''}</span></div>`;
   } else { // ปืนใหญ่/น้ำแข็ง/เวทมนตร์/ธนู/สายฟ้า/ป้อมมนตราโมฆะ — ระยะ/ความเร็ว
