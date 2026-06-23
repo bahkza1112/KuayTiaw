@@ -3511,7 +3511,7 @@ function _avPay(i,cur){
   const ul=_avUnlocked();if(!ul.includes(i))ul.push(i);
   localStorage.setItem('tq_av_unlocked',JSON.stringify(ul));
   document.querySelector('.av-unlock-popup')?.remove();
-  showToast('✅ ปลดล็อค Avatar แล้ว!');
+  showToast('✅ ปลดล็อค '+PROFILE_AVATARS[i]+' แล้ว!');
   selectAvatar(PROFILE_AVATARS[i]);
   // refresh grid
   const av=localStorage.getItem('tq_avatar')||'🏰';
