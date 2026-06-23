@@ -1,4 +1,15 @@
 ﻿
+/* ══ PLAYER ID ══ */
+function getPlayerId(){
+  try{
+    const cu=JSON.parse(localStorage.getItem('tq_cloud_user')||'null');
+    if(cu&&cu.id) return cu.id;
+  }catch(e){}
+  let did=localStorage.getItem('tq_device_id');
+  if(!did){did='d_'+Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem('tq_device_id',did);}
+  return did;
+}
+
 /* ══ AVATAR COMPRESS ══ */
 function _compressAvatar(src,cb){
   if(!src||!src.startsWith('data:')){cb(src||'🎮');return;}
@@ -424,7 +435,7 @@ function _submitStoryLb(){
   const _slav=localStorage.getItem('tq_avatar')||'🎮';
   _compressAvatar(_slav,function(avatar){
     fetch('/api/story-leaderboard',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({name,totalStars,stagesCleared,avatar,date:new Date().toLocaleDateString('th-TH')})})
+      body:JSON.stringify({name,totalStars,stagesCleared,avatar,date:new Date().toLocaleDateString('th-TH'),uid:getPlayerId()})})
       .then(r=>r.json()).then(d=>{ if(d.rank&&d.rank<=10) showToast('⭐ ติด TOP '+d.rank+' กระดานดาว!'); })
       .catch(()=>{});
   });
@@ -748,7 +759,7 @@ function skipSave(){
     _compressAvatar(_av,function(avatar){
       const run={name,score:G.score,wave:G.wave,mode:'endgame',diff:EG_DIFF_NAMES[egDiff],
         stage:null,round:egRound+1,kills:G.kills||0,maxCombo:G.maxCombo||1,
-        avatar,date:new Date().toLocaleDateString('th-TH'),ts:Date.now()};
+        avatar,date:new Date().toLocaleDateString('th-TH'),ts:Date.now(),uid:getPlayerId()};
       fetch('/api/leaderboard',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(run)})
         .then(r=>r.json()).then(d=>{ if(d.rank&&d.rank<=10) showToast('🏆 ติด TOP '+d.rank+' ของเซิฟ!'); })
         .catch(()=>{});
@@ -767,7 +778,7 @@ function confirmSave(){
     mode:'endgame', diff:EG_DIFF_NAMES[egDiff],
     stage:null, round:egRound+1,
     kills:G.kills||0, maxCombo:G.maxCombo||1,
-    date:new Date().toLocaleDateString('th-TH'), ts:Date.now()
+    date:new Date().toLocaleDateString('th-TH'), ts:Date.now(), uid:getPlayerId()
   };
   const runs=JSON.parse(localStorage.getItem('tq_runs')||'[]');
   runs.unshift({...runBase,avatar:_cav.startsWith('data:')?'👤':_cav});

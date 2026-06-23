@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.11.95 — อันดับ Leaderboard ไม่ซ้ำต่อผู้เล่น
+
+### Added
+- `js/save.js`: `getPlayerId()` — คืน Google UID (ถ้า login) หรือ `tq_device_id` (random สร้างครั้งแรก)
+- ส่ง `uid` ไปพร้อมทุก POST `/api/leaderboard` และ `/api/story-leaderboard`
+
+### Changed
+- `server.js`: `/api/leaderboard` POST — dedup by `uid` (เมื่อมี) หรือ `name` (fallback); อัพเดตเฉพาะเมื่อ score สูงกว่าเดิม
+- `server.js`: `/api/story-leaderboard` POST — dedup by `uid` หรือ `name` เช่นกัน
+
 ## v3.11.94 — มินิเกมใหม่: แบล็คแจ็ค
 
 ### Added
