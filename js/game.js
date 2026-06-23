@@ -2577,7 +2577,7 @@ function initEgGame(){
   // สะสม kills/score/combo ข้าม round
   G.kills=prevKills; G.score=prevScore; G.maxCombo=prevMaxCombo;
   currentStage.enemyTypes=_getEgEnemyPool(); // อัปเดต pool ตาม round ปัจจุบัน
-  G.gold=CFG.startGold+egRound*35; // bonus gold per round
+  G.gold=CFG.startGold+(egDiff===0?egRound*35:0); // bonus gold per round (เฉพาะโหมดง่าย)
   G.hp=CFG.baseHP; G.maxHp=CFG.baseHP;
   if(typeof applyTalents==='function') applyTalents(); // 🌳 talent tree (gold/HP/dmg/goldMult)
   _initRunSkill(); // ⭐ ตั้งค่าการ์ดสกิลที่ใส่ไว้
@@ -2986,35 +2986,37 @@ function updateEg(dt){
     G.goldWaveMult=1; // 💰 จบเวฟทอง — รีเซ็ตตัวคูณทอง
     if(egDiff===2&&G.weather&&G.weather.active) unlockAchievement('eghw'); // 🌩️ Hard + weather wave clear
     clearWeather(); // 🌦 clear weather when Endgame wave ends
-    const bonus=20+G.wave*3+egRound*6; G.gold+=bonus; updateHUD();
+    const bonus=egDiff===0?20+G.wave*3+egRound*6:0; if(bonus>0){G.gold+=bonus; updateHUD();}
     if(typeof questProgress==='function') questProgress('wave',G.wave); // 📅 daily quest: reach wave
-    // 💎 หมุดหมาย Endgame: ทุก 10 เวฟ ได้มณีวิญญาณก้อนใหญ่ (รับครั้งเดียวต่อรัน)
-    if(G.wave>0&&G.wave%10===0){
-      if(!G.egMilestones)G.egMilestones={};
-      if(!G.egMilestones[G.wave]){
-        G.egMilestones[G.wave]=1;
-        const mg=Math.floor(20*(G.wave/10)*(1+egDiff*0.5));
-        addGems(mg);
-        showToast('💎 หมุดหมาย Wave '+G.wave+'! +'+mg+' Soul Gems');
-        addParticle(COLS*CS/2,ROWS*CS/2-30,'💎 +'+mg,'#b388ff');
+    if(egDiff!==2){
+      // 💎 หมุดหมาย Endgame: ทุก 10 เวฟ ได้มณีวิญญาณก้อนใหญ่ (รับครั้งเดียวต่อรัน)
+      if(G.wave>0&&G.wave%10===0){
+        if(!G.egMilestones)G.egMilestones={};
+        if(!G.egMilestones[G.wave]){
+          G.egMilestones[G.wave]=1;
+          const mg=Math.floor(20*(G.wave/10)*(1+egDiff*0.5));
+          addGems(mg);
+          showToast('💎 หมุดหมาย Wave '+G.wave+'! +'+mg+' Soul Gems');
+          addParticle(COLS*CS/2,ROWS*CS/2-30,'💎 +'+mg,'#b388ff');
+        }
       }
-    }
-    // 🎫 หมุดหมายตั๋วสกิล: เวฟ 15/25/35… (สลับกับหมุดหมายมณี)
-    if(G.wave>=15&&G.wave%10===5){
-      if(!G.egMilestones)G.egMilestones={};
-      const tkey='t'+G.wave;
-      if(!G.egMilestones[tkey]){
-        G.egMilestones[tkey]=1;
-        if(typeof addTickets==='function') addTickets(1);
-        showToast('🎫 หมุดหมาย Wave '+G.wave+'! +1 ตั๋วสกิล');
-        addParticle(COLS*CS/2,ROWS*CS/2-30,'🎫 +1','#b388ff');
+      // 🎫 หมุดหมายตั๋วสกิล: เวฟ 15/25/35… (สลับกับหมุดหมายมณี)
+      if(G.wave>=15&&G.wave%10===5){
+        if(!G.egMilestones)G.egMilestones={};
+        const tkey='t'+G.wave;
+        if(!G.egMilestones[tkey]){
+          G.egMilestones[tkey]=1;
+          if(typeof addTickets==='function') addTickets(1);
+          showToast('🎫 หมุดหมาย Wave '+G.wave+'! +1 ตั๋วสกิล');
+          addParticle(COLS*CS/2,ROWS*CS/2-30,'🎫 +1','#b388ff');
+        }
       }
+      // heal 1 HP per wave clear
+      if(G.hp<G.maxHp){G.hp=Math.min(G.maxHp,G.hp+1);updateHUD();}
     }
-    // heal 1 HP per wave clear
-    if(G.hp<G.maxHp){G.hp=Math.min(G.maxHp,G.hp+1);updateHUD();}
     const drops=rollEndgameMaterialDrops();
     const matIcons=['🪨','🔘','🌟'];
-    let msg='🌊 Wave '+G.wave+' ผ่าน! +'+bonus+' ทอง ❤️+1';
+    let msg='🌊 Wave '+G.wave+' ผ่าน!'+(bonus>0?' +'+bonus+' ทอง':'')+( egDiff!==2?' ❤️+1':'');
     if(drops.length) msg+=' '+drops.map(d=>matIcons[d]).join('');
     addParticle(COLS*CS/2,ROWS*CS/2,'🎉 +'+bonus+' ทอง','#ffe234');
     showToast(msg);
