@@ -3993,6 +3993,12 @@ function setSlotCur(cur){
   document.getElementById('slotCurGems')?.classList.toggle('active',cur==='gems');
   _renderCasinoUI();
 }
+function _updateSlotCurBtns(){
+  const bg=document.getElementById('slotCurGold');
+  if(bg) bg.innerHTML='💰 '+loadPGold().toLocaleString();
+  const bm=document.getElementById('slotCurGems');
+  if(bm) bm.innerHTML='<span class="gico"></span> '+loadGems().toLocaleString();
+}
 const SLOT_SPIN_SYMS=['💎','⭐','🔮','💰','🔷','🌙','🎯','🌸'];
 const SLOT_OUTCOMES=[
   {w:1,  s:['💎','💎','💎'], gold:5000,gems:3000,tickets:50, label:'<span class="gico"></span> JACKPOT! +🎫50 +💰5000 +<span class="gico"></span>3000'},
@@ -4025,6 +4031,7 @@ function _renderSlotHistory(){
     </div>`).join('');
 }
 function _renderCasinoUI(){
+  _updateSlotCurBtns();
   const isGems=_slotCur==='gems';
   const bal=isGems?loadGems():loadPGold();
   const cost=isGems?SLOT_COST_GEMS:SLOT_COST;
@@ -4222,6 +4229,10 @@ function _bjRefreshBalance(){
   const el=document.getElementById('bjBalDisplay');
   if(el) el.innerHTML=_bjIcon()+' '+_bjCurBal().toLocaleString();
   document.getElementById('bjBetDisplay').innerHTML=_bjIcon()+' '+_bjBet;
+  const tg=document.getElementById('bjTabGold');
+  if(tg) tg.innerHTML='💰 '+loadPGold().toLocaleString();
+  const tgem=document.getElementById('bjTabGem');
+  if(tgem) tgem.innerHTML='<span class="gico"></span> '+loadGems().toLocaleString();
 }
 
 function bjSwitchCur(c){
