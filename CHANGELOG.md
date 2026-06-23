@@ -2,6 +2,26 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.12.4 — UI Hints + Balance Endgame/Casino
+
+### Added
+- `Tower Quest 🏰.html` / `css/main.css`: `[data-tip]::after` tooltip CSS — ลอยเหนือปุ่มเมื่อ hover
+- Tooltip บนปุ่ม: waveBtn, autoBtn, speedBtn, #tb4 ซัพพอร์ต, #tb6 เหมืองทอง, #skillBtn, .mm-resource-bar (PG Gold), #weatherHud
+- `js/game.js`: one-shot hint `tq_hint_place` — วางป้อมครั้งแรก แนะนำ tap upgrade/ขาย
+- `js/game.js`: one-shot hint `tq_hint_merge` — ป้อมชนิดเดียวกัน 2+ แนะนำ merge ★
+- `js/tower.js`: one-shot hint `tq_hint_awaken` — popup ป้อม 3★ ครั้งแรก แนะนำ Awaken
+
+### Fixed
+- `js/tower.js`: support tower popup คำนวณ resist จากตัวเองโดยตรง (ไม่ใช้ getSupportResist ที่สแกนรอบข้าง) → ป้อม 1★ ไม่แสดง resist ของ 2★ อีกต่อไป
+- `css/main.css`: แก้ `[data-tip]{position:relative}` ที่ทับ `position:absolute` ของ .mm-resource-bar
+- `Tower Quest 🏰.html`: แก้ข้อความกฎแบล็คแจ็ค ×2.5 → ×1.9 ให้ตรงกับ payout จริง
+
+### Changed
+- `js/ui.js`: avatar unlock toast ระบุชื่อ emoji ที่ปลดล็อก
+- `js/game.js`: Endgame ยาก — ตัด heal/wave, wave bonus gold, round bonus gold, milestone ออกทั้งหมด
+- `js/game.js`: Endgame ปกติ — ตัด wave bonus gold, round bonus gold ออก (heal + milestone ยังได้)
+- `js/ui.js`: slot GREAT 2000→1000, NICE 1000→500
+
 ## v3.12.3 — Performance: ลดกระตุกตอนเร่งความเร็ว
 
 ### Changed

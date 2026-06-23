@@ -1,6 +1,17 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.12.3';
+const GAME_VERSION='3.12.4';
 const PATCH_NOTES=[
+  {ver:'3.12.4',date:'2026-06-24',title:'🎮 UI hints + balance Endgame/Casino',notes:[
+    'Tooltip บนปุ่ม HUD: wave preview, อัตโนมัติ, เร่งความเร็ว, ซัพพอร์ต, เหมืองทอง, สกิล, PG Gold, สภาพอากาศ',
+    'one-shot hint: วางป้อมครั้งแรก → แนะนำ tap upgrade/ขาย',
+    'one-shot hint: ป้อมชนิดเดียวกัน 2+ → แนะนำ merge ★',
+    'one-shot hint: ป้อม 3★ ครั้งแรก → แนะนำ Awaken',
+    'แก้บัค: popup ซัพพอร์ต 1★ แสดง resist ของ 2★ ที่อยู่ใกล้ๆ',
+    'Endgame ยาก: ตัด heal/wave, wave bonus gold, round bonus gold, milestone ออก',
+    'Endgame ปกติ: ตัด wave bonus gold, round bonus gold ออก (heal + milestone ยังได้)',
+    'สล็อต GREAT 2000→1000, NICE 1000→500',
+    'แก้ข้อความกฎแบล็คแจ็ค ×2.5 → ×1.9 ให้ตรงกับ payout จริง',
+  ]},
   {ver:'3.12.3',date:'2026-06-23',title:'⚡ ปรับ performance — ลดกระตุกตอนเร่งความเร็ว',notes:[
     'เร่ง 2× render 30fps / เร่ง 3× render 20fps — ลด CPU load 50-66%',
     'เปลี่ยน splice→swap-pop ทุก array (enemies/projs/particles/fx)',
