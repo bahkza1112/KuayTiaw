@@ -237,11 +237,17 @@ const WEATHERS=[
    unapply:(G)=>{if(G.weather)G.weather.goldMineMult=1;}},
 ];
 const STAGE_WEATHER=[
-  ['fog','rain'],['fog','darknight'],['heatwave','tornado'],
-  ['heatwave','sun','tornado'],['sun','rain'],['lightning','blizzard'],
-  ['fog','rain','tornado'],['darknight','lightning'],['darknight','blizzard','lightning'],
-  ['darknight','lightning','blizzard','tornado'], // Stage 10: Dark Tower Summit — final showdown, full chaos
-  ['darknight','lightning','blizzard','tornado','fog'], // Stage 11: Shadow Remnant — true final, all chaos + fog
+  ['fog','rain','sun'],                                          // Stage 1
+  ['fog','darknight','rain'],                                    // Stage 2
+  ['heatwave','tornado','fog'],                                  // Stage 3
+  ['heatwave','sun','tornado','rain'],                          // Stage 4
+  ['sun','rain','blizzard'],                                    // Stage 5
+  ['lightning','blizzard','tornado'],                           // Stage 6
+  ['fog','rain','tornado','heatwave'],                          // Stage 7
+  ['darknight','lightning','blizzard'],                         // Stage 8
+  ['darknight','blizzard','lightning','tornado','heatwave'],    // Stage 9
+  ['darknight','lightning','blizzard','tornado','fog','rain'],  // Stage 10: full chaos
+  ['darknight','lightning','blizzard','tornado','fog','rain','heatwave','sun'], // Stage 11: all 8
 ];
 function rollWeather(stageId){
   if(!G) return;

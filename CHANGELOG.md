@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.12.8 — Weather Pool Expansion
+
+### Changed
+- `js/game.js` STAGE_WEATHER: เพิ่ม weather pool ต่อ stage ให้มีตัวเลือกมากขึ้น
+  - Stage 1-5: เพิ่ม 1 ประเภทต่อ stage
+  - Stage 6-9: เพิ่ม 1-2 ประเภทต่อ stage
+  - Stage 10: ครบ 6 ประเภท
+  - Stage 11: ครบทั้ง 8 ประเภท
+
 ## v3.12.7 — Weather Rebalance
 
 ### Changed
