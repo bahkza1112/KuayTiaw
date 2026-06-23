@@ -24,6 +24,16 @@ if (!fs.existsSync(LB_FILE))      fs.writeFileSync(LB_FILE, '[]', 'utf8');
 if (!fs.existsSync(SEASON_FILE))  fs.writeFileSync(SEASON_FILE, JSON.stringify({start:Date.now(),num:1}), 'utf8');
 if (!fs.existsSync(REWARDS_FILE)) fs.writeFileSync(REWARDS_FILE, '{}', 'utf8');
 
+// ── One-time season reset (remove flag file to re-trigger) ──
+const RESET_FLAG = path.join(__dirname, 'data', 'reset_ss1.flag');
+if (!fs.existsSync(RESET_FLAG)) {
+  fs.writeFileSync(LB_FILE, '[]', 'utf8');
+  fs.writeFileSync(REWARDS_FILE, '{}', 'utf8');
+  fs.writeFileSync(SEASON_FILE, JSON.stringify({start:Date.now(),num:1}), 'utf8');
+  fs.writeFileSync(RESET_FLAG, new Date().toISOString(), 'utf8');
+  console.log('✅ Season reset: leaderboard + rewards cleared, SS1 started');
+}
+
 // ── Season ────────────────────────────────────────
 const SEASON_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 const LB_PRIZE = [
