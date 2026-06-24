@@ -3422,7 +3422,7 @@ function _lbAdminCard(e,i,apiPath){
   const rank=i+1;
   const hasUid=e.uid?'🔑':'👤';
   const uidLabel=e.uid?`UID: ${e.uid.slice(0,16)}…`:'UID: ไม่มี (เล่นก่อน login)';
-  const diff=e.diff===2?'🔴 ยาก':e.diff===1?'🟡 ปาน':e.diff===0?'🟢 ง่าย':'—';
+  const diff=e.diff==='ยาก'?'🔴 ยาก':e.diff==='ปกติ'?'🟡 ปกติ':e.diff==='ง่าย'?'🟢 ง่าย':e.diff||'—';
   const waveInfo=e.round>1?`Round ${e.round} · Wave ${e.wave}`:e.wave?`Wave ${e.wave}`:'';
   const starsInfo=e.totalStars!=null?`⭐ ${e.totalStars} ดาว · ${e.stagesCleared||0} ด่าน`:'';
   const scoreInfo=e.score!=null?`${(e.score||0).toLocaleString()} คะแนน`:'';
@@ -3741,7 +3741,7 @@ function openProfile(){
     const bestScore=egRuns.length?Math.max(...egRuns.map(r=>r.score||0)):0;
     const totalStars=Object.values(prog).reduce((a,b)=>a+(b||0),0);
     const stagesCleared=Object.keys(prog).filter(k=>(prog[k]||0)>=1).length;
-    const TOTAL_ST=typeof STAGES!=='undefined'?STAGES.length:20;
+    const TOTAL_ST=typeof STAGES!=='undefined'?STAGES.filter(s=>!s.comingSoon).length:20;
     const achArr=JSON.parse(localStorage.getItem('tq_ach')||'[]');
     const achDone=Array.isArray(achArr)?achArr.length:Object.values(achArr).filter(Boolean).length;
     statBox.innerHTML=`<div style="font-size:11px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:1px;margin-bottom:10px;">📊 สถิติ</div>
