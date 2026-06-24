@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.13.2';
+const GAME_VERSION='3.13.3';
 const PATCH_NOTES=[
+  {ver:'3.13.3',date:'2026-06-24',title:'✨ 4★ และ Awaken มี Effect พิเศษแตกต่างกัน',notes:[
+    '4★ MAX: flash ขาวขนาดใหญ่ + shake มากขึ้น + ข้อความ "★★★★ MAX!" + ring ออกไปทั่วจอ',
+    'Awaken ⚡: flash เหลืองใหญ่ + hit-stop 0.20s + "⚡ AWAKENED!" ลอยขึ้น',
+  ]},
   {ver:'3.13.2',date:'2026-06-24',title:'✨ Merge animation — flash + hit-stop + ข้อความใหญ่',notes:[
     'รวมป้อม ★ → แสงทองใหญ่ + สั่นจอเล็กน้อย + หยุดเกม 0.12s ให้เห็น effect',
     'ข้อความ ★★★ UP! ลอยขึ้นชัดเจน + ดาว 16 ดวงพุ่งออก',

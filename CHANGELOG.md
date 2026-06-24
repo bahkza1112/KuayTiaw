@@ -2,6 +2,21 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.13.3 — 4★ และ Awaken Effect พิเศษ
+
+### Changed
+- `js/game.js` `tryMergeTowers()`: 4★ มี effect แยกจาก ★2/★3
+  - hit-stop 0.22s (เดิม 0.12s), shake 0.2 (เดิม 0.08)
+  - fxFlash ขาวขนาด CS×5 + inner orange flash
+  - ring ออก 4 วง ใหญ่สุด CS×7 (ครอบคลุมทั้งจอ)
+  - particles 24 ดวง (เดิม 16), ข้อความ "★★★★ MAX!" scale 2.8
+- `js/tower.js` `doAwakenTower()`: effect ใหม่ทั้งหมด
+  - hit-stop 0.20s, shake 0.18
+  - fxFlash เหลือง CS×4.5 + white inner
+  - ring 3 วง + วงจาง CS×5.5
+  - particles 20 ดวง (⚡ + ✦ สลับกัน)
+  - dmgNums "⚡ AWAKENED!" scale 2.5
+
 ## v3.13.2 — Merge Tower Animation
 
 ### Changed

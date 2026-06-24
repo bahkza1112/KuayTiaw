@@ -519,16 +519,20 @@ function awakenTowerFromPopup(){
   G.gold-=_awC; tw.awakened=true;
   tw.spawnAnim=0.8;
   const ax=tw.col*CS+CS/2, ay=tw.row*CS+CS/2;
-  // FX — golden burst
-  G.fxRings.push({x:ax,y:ay,r:0,maxR:CS*2.2,life:1,lw:3,col:'#ffe082',delay:0});
-  G.fxRings.push({x:ax,y:ay,r:0,maxR:CS*1.4,life:.7,lw:5,col:'#fff9c4',delay:.05});
-  for(let k=0;k<12;k++){
-    const ang=k/12*Math.PI*2;
-    G.particles.push({x:ax,y:ay,txt:'✦',col:'#ffe082',
-      life:1.1,vy:Math.sin(ang)*2.2,vx:Math.cos(ang)*2.2,decay:1.6,scale:.9});
+  // FX — Awaken burst (stronger than merge)
+  G.hitStopT=0.20;
+  G.shakeT=Math.min((G.shakeT||0)+0.18,0.45);
+  G.fxFlash.push({x:ax,y:ay,r:CS*4.5,life:0.40,col:'#ffe082'});
+  G.fxFlash.push({x:ax,y:ay,r:CS*2,life:0.25,col:'#fff9c4'});
+  G.fxRings.push({x:ax,y:ay,r:0,maxR:CS*4,life:1.2,lw:5,col:'#ffe082',delay:0});
+  G.fxRings.push({x:ax,y:ay,r:0,maxR:CS*2.5,life:.9,lw:7,col:'#fff9c4',delay:.06});
+  G.fxRings.push({x:ax,y:ay,r:0,maxR:CS*5.5,life:.6,lw:2,col:'rgba(255,224,130,.4)',delay:.15});
+  for(let k=0;k<20;k++){
+    const ang=k/20*Math.PI*2,spd=2+Math.random()*2.5;
+    G.particles.push({x:ax,y:ay,txt:k%3===0?'⚡':'✦',col:k%2===0?'#ffe082':'#fff9c4',
+      life:1.5,vy:Math.sin(ang)*spd,vx:Math.cos(ang)*spd,decay:1.1,scale:0.9+Math.random()*0.6});
   }
-  G.particles.push({x:ax,y:ay-CS*.4,txt:'⚡ AWAKENED!',col:'#ffe082',
-    life:1.6,vy:-1.4,vx:0,decay:.8,scale:1.2});
+  G.dmgNums.push({x:ax,y:ay-CS*.6,txt:'⚡ AWAKENED!',col:'#ffe082',life:1.8,vy:-2,vx:0,decay:0.55,scale:2.5});
   updateHUD();
   showToast(`⚡ ${TNAMES[tw.type]} อเวคแล้ว! ปลดล็อกพลังพิเศษ!`);
   hideTowerPopup();
