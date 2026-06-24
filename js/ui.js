@@ -3469,7 +3469,7 @@ async function renderDevLbAdmin(body){
 }
 function _lbAdminLogin(){
   const v=document.getElementById('lbAdminPwd')?.value;
-  if(v==='kt1233'){_lbAdminUnlocked=true;renderDevPanel();}
+  if(v==='bahk1600401210'){_lbAdminUnlocked=true;renderDevPanel();}
   else{showToast('❌ รหัสผิด');document.getElementById('lbAdminPwd').value='';}
 }
 async function devDeleteLbEntry(rank){
