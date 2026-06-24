@@ -3,7 +3,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Tower Quest 🏰 v3.13.4</title>
-<link rel="stylesheet" href="css/main.css?v=3.13.3">
+<link rel="stylesheet" href="css/main.css?v=3.13.4">
 </head>
 <body>
 
@@ -351,15 +351,6 @@
       <button class="obtn" onclick="togglePause()">▶ เล่นต่อ</button>
       <button class="obtn" style="background:linear-gradient(180deg,#66bb6a,#2e7d32);color:#fff;" onclick="pausedRestart()">🔄 เริ่มใหม่</button>
       <button class="obtn sec" onclick="showScreen('mm',true)">🏠 เมนูหลัก</button>
-    </div>
-  </div>
-  <div class="pausescreen" id="settingsScreen">
-    <div class="obox">
-      <h2>⚙ ตั้งค่า</h2>
-      <div class="settings-row"><span>🔊 เสียง</span><button class="speedbtn" id="settSfxBtn">🔊</button></div>
-      <div class="settings-row"><span>🎵 เพลงพื้นหลัง</span><button class="speedbtn" id="settBgmBtn">🎵</button></div>
-      <div class="settings-row"><span>🔉 ระดับเสียง</span><input type="range" id="settVolSlider" min="0" max="100" value="35"></div>
-      <button class="obtn" onclick="closeSettings()">✔ ปิด</button>
     </div>
   </div>
   <div class="toast" id="toast"></div>
@@ -860,6 +851,16 @@
   </div>
 </div>
 
+</div>
+<!-- Settings overlay — outside #gp so it works from both menu and in-game -->
+<div class="pausescreen" id="settingsScreen">
+  <div class="obox">
+    <h2>⚙ ตั้งค่า</h2>
+    <div class="settings-row"><span>🔊 เสียง</span><button class="speedbtn" id="settSfxBtn">🔊</button></div>
+    <div class="settings-row"><span>🎵 เพลงพื้นหลัง</span><button class="speedbtn" id="settBgmBtn">🎵</button></div>
+    <div class="settings-row"><span>🔉 ระดับเสียง</span><input type="range" id="settVolSlider" min="0" max="100" value="35"></div>
+    <button class="obtn" onclick="closeSettings()">✔ ปิด</button>
+  </div>
 </div>
 <script src="js/cloud-save.js?v=3.13.3"></script>
 <script src="js/save.js?v=3.13.3"></script>
