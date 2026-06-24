@@ -2736,9 +2736,10 @@ function startEgWave(){
     const el=document.getElementById('egMilestoneHud');
     if(!el) return;
     const w=G.wave;
-    const nextBoss=w%10===0?10:10-(w%10); // เวฟถัดไปที่ mod=0
-    const nextGold=w%10>=7?10-(w%10)+7:7-(w%10);
-    const nextSwarm=w%10>=4&&w%10<7?7-(w%10):w%10>=7?10-(w%10)+4:4-(w%10);
+    const _mod=w%10;
+    const nextBoss=_mod===0?10:10-_mod;
+    const nextGold=_mod>=7?10-_mod+7:7-_mod;
+    const nextSwarm=_mod<4?4-_mod:_mod===4?10:14-_mod;
     // หา milestone ที่ใกล้ที่สุด
     const cands=[];
     if(nextBoss<=10) cands.push({n:nextBoss,label:'👹-'+nextBoss});
