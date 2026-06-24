@@ -3742,8 +3742,8 @@ function openProfile(){
     const totalStars=Object.values(prog).reduce((a,b)=>a+(b||0),0);
     const stagesCleared=Object.keys(prog).filter(k=>(prog[k]||0)>=1).length;
     const TOTAL_ST=typeof STAGES!=='undefined'?STAGES.length:20;
-    const achCount=JSON.parse(localStorage.getItem('tq_ach')||'{}');
-    const achDone=Object.values(achCount).filter(Boolean).length;
+    const achArr=JSON.parse(localStorage.getItem('tq_ach')||'[]');
+    const achDone=Array.isArray(achArr)?achArr.length:Object.values(achArr).filter(Boolean).length;
     statBox.innerHTML=`<div style="font-size:11px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:1px;margin-bottom:10px;">📊 สถิติ</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
         <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:10px;text-align:center;">

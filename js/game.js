@@ -2463,11 +2463,10 @@ function _showMerge4Confirm(src,target){
     G.fxRings.push({x:mx,y:my,r:0,maxR:CS*5.5,life:.7,lw:2,col:'#ffecb3',delay:.12});
     G.fxRings.push({x:mx,y:my,r:0,maxR:CS*7,life:.5,lw:2,col:'rgba(255,200,50,.4)',delay:.2});
     for(let k=0;k<24;k++){const ang=k/24*Math.PI*2,spd=2.5+Math.random()*2;G.particles.push({x:mx,y:my,txt:k%2===0?'✦':'★',col:k%2===0?'#ffd54f':'#fff9c4',life:1.6,vy:Math.sin(ang)*spd,vx:Math.cos(ang)*spd,decay:1.1,scale:1+Math.random()*0.5});}
-    G.dmgNums.push({x:mx,y:my-CS*.6,txt:'★★★★ MAX!',col:'#fff9c4',life:2.2,vy:-CS*0.9,scale:1.6});
+    G.dmgNums.push({x:mx,y:my-CS*.5,txt:'★★★★ MAX!',col:'#ffeb3b',life:1.8,vy:-2,vx:0,decay:0.6,scale:2.8});
     if(G.dmgNums.length>60) G.dmgNums.splice(0,G.dmgNums.length-60);
-    if(typeof upgradeTower==='function') upgradeTower(merged);
+    showToast(`✨ ${TNAMES[target.type]} รวมสำเร็จ! → ★★★★ (รับแต้มสกิลใหม่ 4 แต้ม)`);
     updateHUD();
-    if(typeof autoSave==='function') autoSave();
   };
 }
 
