@@ -4258,9 +4258,10 @@ document.getElementById('lbNavBtn').addEventListener('click',openLeaderboard);
 document.getElementById('lbBackBtn').addEventListener('click',()=>showScreen('mm',true));
 document.getElementById('profileBackBtn').addEventListener('click',()=>showScreen('mm',true));
 (function(){
-  // set verBtn text from GAME_VERSION — never hardcode in HTML
+  // set verBtn + title from GAME_VERSION — never hardcode in HTML
   const _vb=document.getElementById('verBtn');
   if(_vb){const _nb=_vb.querySelector('#newsBadge');_vb.textContent='📰 v'+GAME_VERSION+' — มีอะไรใหม่';if(_nb)_vb.appendChild(_nb);}
+  document.title='Tower Quest 🏰 v'+GAME_VERSION;
   let _vc=0,_vt=null;
   document.getElementById('verBtn').addEventListener('click',()=>{
     _vc++;
