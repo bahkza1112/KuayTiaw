@@ -2394,22 +2394,19 @@ function tryMergeTowers(src,target){
   if(G.gmTimers) delete G.gmTimers[src.col+'_'+src.row];
   G.towers.push(merged);
   const mx=target.col*CS+CS/2,my=target.row*CS+CS/2;
-  // ── Merge VFX ──
-  const _is4star=newStar===4;
-  G.hitStopT=_is4star?0.22:0.12;
-  G.shakeT=Math.min(G.shakeT+(_is4star?0.2:0.08),_is4star?0.5:0.25);
-  G.fxFlash.push({x:mx,y:my,r:CS*(_is4star?5:3.5),life:_is4star?0.45:0.32,maxLife:_is4star?0.45:0.32,col:_is4star?'#fff9c4':'#ffd54f'});
-  if(_is4star) G.fxFlash.push({x:mx,y:my,r:CS*2.5,life:0.28,maxLife:0.28,col:'#ff6f00'}); // inner orange flash
-  G.fxRings.push({x:mx,y:my,r:0,maxR:CS*(_is4star?4.5:2.8),life:1.2,lw:_is4star?6:4,col:'#ffd54f',delay:0});
-  G.fxRings.push({x:mx,y:my,r:0,maxR:CS*(_is4star?3:1.6),life:.9,lw:_is4star?8:6,col:'#fff9c4',delay:.05});
-  G.fxRings.push({x:mx,y:my,r:0,maxR:CS*(_is4star?5.5:2),life:.7,lw:2,col:'#ffecb3',delay:.12});
-  if(_is4star) G.fxRings.push({x:mx,y:my,r:0,maxR:CS*7,life:.5,lw:2,col:'rgba(255,200,50,.4)',delay:.2});
-  const _cnt=_is4star?24:16;
+  // ── Merge VFX (1-3★ only; 4★ is handled by _showMerge4Confirm) ──
+  G.hitStopT=0.12;
+  G.shakeT=Math.min(G.shakeT+0.08,0.25);
+  G.fxFlash.push({x:mx,y:my,r:CS*3.5,life:0.32,maxLife:0.32,col:'#ffd54f'});
+  G.fxRings.push({x:mx,y:my,r:0,maxR:CS*2.8,life:1.2,lw:4,col:'#ffd54f',delay:0});
+  G.fxRings.push({x:mx,y:my,r:0,maxR:CS*1.6,life:.9,lw:6,col:'#fff9c4',delay:.05});
+  G.fxRings.push({x:mx,y:my,r:0,maxR:CS*2,life:.7,lw:2,col:'#ffecb3',delay:.12});
+  const _cnt=16;
   for(let k=0;k<_cnt;k++){
-    const ang=k/_cnt*Math.PI*2,spd=(_is4star?2.5:1.8)+Math.random()*2;
-    G.particles.push({x:mx,y:my,txt:_is4star?'✦':'★',col:k%2===0?'#ffd54f':'#fff9c4',life:_is4star?1.6:1.3,vy:Math.sin(ang)*spd,vx:Math.cos(ang)*spd,decay:_is4star?1.1:1.3,scale:(_is4star?1:0.8)+Math.random()*0.5});
+    const ang=k/_cnt*Math.PI*2,spd=1.8+Math.random()*2;
+    G.particles.push({x:mx,y:my,txt:'★',col:k%2===0?'#ffd54f':'#fff9c4',life:1.3,vy:Math.sin(ang)*spd,vx:Math.cos(ang)*spd,decay:1.3,scale:0.8+Math.random()*0.5});
   }
-  G.dmgNums.push({x:mx,y:my-CS*.5,txt:_is4star?'★★★★ MAX!':'★'.repeat(newStar)+' UP!',col:_is4star?'#ffeb3b':'#ffd54f',life:_is4star?1.8:1.4,vy:-2,vx:0,decay:0.6,scale:_is4star?2.8:2.2});
+  G.dmgNums.push({x:mx,y:my-CS*.5,txt:'★'.repeat(newStar)+' UP!',col:'#ffd54f',life:1.4,vy:-2,vx:0,decay:0.6,scale:2.2});
   showToast(`✨ ${TNAMES[target.type]} รวมสำเร็จ! → ${'★'.repeat(newStar)} (รับแต้มสกิลใหม่ ${newStar} แต้ม)`);
   updateHUD();
   return true;
