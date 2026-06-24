@@ -3734,6 +3734,7 @@ function openProfile(){
   // stat summary
   const statBox=document.getElementById('profileStatSummary');
   if(statBox){
+    try{
     const runs=JSON.parse(localStorage.getItem('tq_runs')||'[]');
     const prog=JSON.parse(localStorage.getItem('tq_progress')||'{}');
     const egRuns=runs.filter(r=>r.mode==='endgame');
@@ -3768,6 +3769,7 @@ function openProfile(){
         <span style="font-size:14px;font-weight:900;color:#ce93d8;">${achDone} รางวัล</span>
       </div>`;
     statBox.style.display='block';
+    }catch(e){statBox.style.display='none';}
   }
   // reset draw panel to collapsed on open
   const dp=document.getElementById('drawPanel');
