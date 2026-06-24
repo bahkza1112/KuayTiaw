@@ -3412,19 +3412,26 @@ async function renderDevLbAdmin(body){
     const d=await r.json();
     const rows=d.entries||[];
     let html='<div class="dev-section"><div class="dev-section-title">🏆 Leaderboard Admin — ลบรายการซ้ำ/ผิด</div>';
-    html+='<div style="font-size:10px;color:#888;margin-bottom:10px;">กด ✕ เพื่อลบ entry ออกจากตาราง (ใช้รหัส dev)</div>';
+    html+='<div style="font-size:10px;color:#888;margin-bottom:10px;">🔑 = login Google &nbsp;|&nbsp; 👤 = ไม่มี uid (เล่นก่อน login)</div>';
     if(!rows.length){html+='<div style="color:#555;font-size:12px;">ไม่มีข้อมูล</div>';}
     rows.forEach((e,i)=>{
       const rank=i+1;
       const hasUid=e.uid?'🔑':'👤';
-      const uidShort=e.uid?e.uid.slice(0,8)+'…':'(ไม่มี uid)';
-      html+=`<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid #1a1a1a;font-size:11px;">
-        <span style="width:20px;color:#888;flex-shrink:0;">${rank}</span>
-        <span style="font-size:14px;">${hasUid}</span>
-        <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.name}</span>
-        <span style="color:#ffe082;flex-shrink:0;">${(e.score||0).toLocaleString()}</span>
-        <span style="color:#555;font-size:9px;flex-shrink:0;">${uidShort}</span>
-        <button onclick="devDeleteLbEntry(${rank})" style="background:rgba(239,83,80,.15);border:1px solid #ef5350;border-radius:6px;color:#ef5350;font-size:10px;padding:3px 8px;cursor:pointer;flex-shrink:0;">✕ ลบ</button>
+      const diff=e.diff===2?'🔴 ยาก':e.diff===1?'🟡 ปาน':'🟢 ง่าย';
+      const waveInfo=e.round>1?`Round ${e.round} · Wave ${e.wave}`:`Wave ${e.wave}`;
+      html+=`<div style="border:1px solid #222;border-radius:10px;padding:10px 12px;margin-bottom:8px;background:#0d0d0d;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span style="color:#555;font-size:11px;width:18px;flex-shrink:0;">#${rank}</span>
+          <span style="font-size:16px;flex-shrink:0;">${hasUid}</span>
+          <span style="font-size:15px;font-weight:700;color:#fff;flex:1;">${e.name}</span>
+          <button onclick="devDeleteLbEntry(${rank})" style="background:rgba(239,83,80,.2);border:1px solid #ef5350;border-radius:8px;color:#ef5350;font-size:11px;font-weight:700;padding:4px 12px;cursor:pointer;flex-shrink:0;">✕ ลบ</button>
+        </div>
+        <div style="display:flex;gap:12px;font-size:11px;color:#888;flex-wrap:wrap;">
+          <span style="color:#ffe082;font-weight:700;">${(e.score||0).toLocaleString()}</span>
+          <span>${diff}</span>
+          <span>🌊 ${waveInfo}</span>
+          <span style="color:#555;font-size:10px;">${e.uid?e.uid.slice(0,12)+'…':'ไม่มี uid'}</span>
+        </div>
       </div>`;
     });
     html+='</div>';
