@@ -1,9 +1,6 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.13.12';
+const GAME_VERSION='3.13.11';
 const PATCH_NOTES=[
-  {ver:'3.13.12',date:'2026-06-24',title:'🐛 แก้ tooltip ล้นหน้าจอ',notes:[
-    'tooltip ของ PG Gold / HUD ตอนนี้ตัดบรรทัดได้ ไม่ล้นขอบจอแล้ว',
-  ]},
   {ver:'3.13.11',date:'2026-06-24',title:'✨ การ์ดรางวัลแสดงจำนวน Soul Gems ที่ได้รับ',notes:[
     'ทุก achievement card แสดง 💎 +X ด้านล่าง — เห็นทันทีว่าปลดล็อกได้อะไร',
   ]},
