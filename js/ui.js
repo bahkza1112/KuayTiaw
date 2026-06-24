@@ -1,9 +1,6 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.13.13';
+const GAME_VERSION='3.13.12';
 const PATCH_NOTES=[
-  {ver:'3.13.13',date:'2026-06-24',title:'🐛 แก้ resource bar ถูก browser tab bar ทับ',notes:[
-    'เพิ่ม viewport-fit=cover + env(safe-area-inset-top) — แถบทองและ gems ไม่ถูก browser chrome บังอีกต่อไป',
-  ]},
   {ver:'3.13.12',date:'2026-06-24',title:'🐛 แก้ tooltip ล้นหน้าจอ',notes:[
     'tooltip ของ PG Gold / HUD ตอนนี้ตัดบรรทัดได้ ไม่ล้นขอบจอแล้ว',
   ]},

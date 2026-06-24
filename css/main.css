@@ -41,7 +41,7 @@ body{background:#0d1117;display:flex;align-items:flex-start;justify-content:cent
 .bbattle::after{content:'';position:absolute;top:0;left:-75%;width:50%;height:100%;background:linear-gradient(115deg,transparent,rgba(255,255,255,.65),transparent);transform:skewX(-20deg);animation:btnShine 4s ease-in-out infinite;}
 @keyframes btnShine{0%,55%{left:-75%}85%,100%{left:130%}}
 .topbar{position:absolute;top:16px;width:calc(100% - 120px);display:flex;justify-content:space-between;align-items:center;}
-.mm-resource-bar{position:absolute;top:max(14px,env(safe-area-inset-top,0px));left:14px;z-index:10;display:flex;align-items:center;gap:0;background:rgba(0,0,0,.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:6px 14px;cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.mm-resource-bar{position:absolute;top:14px;left:14px;z-index:10;display:flex;align-items:center;gap:0;background:rgba(0,0,0,.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:6px 14px;cursor:pointer;transition:transform .15s,box-shadow .15s;}
 .mm-resource-bar:hover{transform:scale(1.04);box-shadow:0 0 14px rgba(255,210,77,.3);}
 .mm-res-item{display:flex;align-items:center;gap:6px;color:#fff;font-weight:700;font-size:13px;}
 .mm-res-divider{width:1px;height:14px;background:rgba(255,255,255,.15);margin:0 10px;}
