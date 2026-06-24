@@ -1,6 +1,9 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.13.7';
+const GAME_VERSION='3.13.8';
 const PATCH_NOTES=[
+  {ver:'3.13.8',date:'2026-06-24',title:'🐛 แก้บัค ☀️ แดดแผดเผาไม่หยุดเหมืองทอง',notes:[
+    'แก้เหมืองทองยังผลิตทองได้เต็มระหว่าง ☀️ แดดแผดเผา — เกิดจาก goldMineMult=0 ถูกอ่านเป็น falsy',
+  ]},
   {ver:'3.13.7',date:'2026-06-24',title:'✨ Countdown สด + Confirm 4★ + สถิติในโปรไฟล์',notes:[
     'Leaderboard countdown อัปเดตทุกนาทีโดยอัตโนมัติ ไม่ค้างอีกต่อไป',
     'Merge 3★→4★ จะขอยืนยันก่อนเสมอ ป้องกัน drag พลาด — กด ✔ ยืนยัน หรือ ✕ ยกเลิก',

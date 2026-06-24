@@ -1117,7 +1117,7 @@ function update(dt){
     if(G.gmTimers[key]>=getGoldMineInterval(tw.rateLv)){
       G.gmTimers[key]=0;
       // 💰 Gold Mine Awaken: ผลผลิตทอง x2
-      const goldAmt=Math.round(getGoldMineAmt(tw.rngLv)*((G.weather&&G.weather.goldMineMult)?G.weather.goldMineMult:1)*(tw.awakened?2:1));
+      const goldAmt=Math.round(getGoldMineAmt(tw.rngLv)*(G.weather&&G.weather.goldMineMult!=null?G.weather.goldMineMult:1)*(tw.awakened?2:1));
       G.gold+=goldAmt; updateHUD();
       addParticle(tw.col*CS+CS/2,tw.row*CS+CS/2,'+'+goldAmt+'💰','#ffd54f');
       // flying coin particles — skip when particle pool is busy
@@ -2885,7 +2885,7 @@ function updateEg(dt){
     if(G.gmTimers[key]>=getGoldMineInterval(tw.rateLv)){
       G.gmTimers[key]=0;
       // 💰 Gold Mine Awaken: ผลผลิตทอง x2
-      const goldAmt=Math.round(getGoldMineAmt(tw.rngLv)*((G.weather&&G.weather.goldMineMult)?G.weather.goldMineMult:1)*(tw.awakened?2:1));
+      const goldAmt=Math.round(getGoldMineAmt(tw.rngLv)*(G.weather&&G.weather.goldMineMult!=null?G.weather.goldMineMult:1)*(tw.awakened?2:1));
       G.gold+=goldAmt; updateHUD();
       addParticle(tw.col*CS+CS/2,tw.row*CS+CS/2,'+'+goldAmt+'💰','#ffd54f');
     }

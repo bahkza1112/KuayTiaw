@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.13.8 — Bug Fix: Sun weather gold mine
+
+### Fixed
+- `js/game.js`: ☀️ แดดแผดเผา (`goldMineMult=0`) ไม่ทำงานในทั้ง story และ endgame เพราะ `0` เป็น falsy ใน JS ทำให้ตกหล่นไปใช้ค่า `1` แทน — แก้ด้วย `goldMineMult!=null` check
+
 ## v3.13.7 — Countdown auto-refresh + 4★ merge confirm + profile stats
 
 ### Added
