@@ -1,6 +1,9 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.13.10';
+const GAME_VERSION='3.13.11';
 const PATCH_NOTES=[
+  {ver:'3.13.11',date:'2026-06-24',title:'✨ การ์ดรางวัลแสดงจำนวน Soul Gems ที่ได้รับ',notes:[
+    'ทุก achievement card แสดง 💎 +X ด้านล่าง — เห็นทันทีว่าปลดล็อกได้อะไร',
+  ]},
   {ver:'3.13.10',date:'2026-06-24',title:'✨ badge "N" สีแดงบน Achievement ที่ปลดล็อกใหม่',notes:[
     'รางวัลที่เพิ่งปลดล็อกจะมีป้าย N สีแดงมุมซ้ายบน — หายไปเมื่อเปิดดูแท็บรางวัล',
   ]},
@@ -1076,6 +1079,7 @@ function renderAchievTab(){
         <div class="ach-ico">${a.icon}</div>
         <div class="ach-name">${a.name}</div>
         <div class="ach-desc">${a.desc}</div>
+        ${a.reward?`<div class="ach-reward"><span class="gico"></span> +${a.reward}</div>`:''}
       </div>`;
     });
     html+=`</div>`;

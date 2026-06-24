@@ -2,6 +2,12 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.13.11 — Achievement Reward Display
+
+### Added
+- `js/ui.js` `renderAchievTab()`: card แสดง `💎 +X` ด้านล่างสำหรับทุก achievement ที่มี reward
+- `css/main.css` `.ach-reward`: สไตล์สีม่วงอ่อน
+
 ## v3.13.10 — Achievement "N" New Badge
 
 ### Added
