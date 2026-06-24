@@ -522,8 +522,8 @@ function awakenTowerFromPopup(){
   // FX — Awaken burst (stronger than merge)
   G.hitStopT=0.20;
   G.shakeT=Math.min((G.shakeT||0)+0.18,0.45);
-  G.fxFlash.push({x:ax,y:ay,r:CS*4.5,life:0.40,col:'#ffe082'});
-  G.fxFlash.push({x:ax,y:ay,r:CS*2,life:0.25,col:'#fff9c4'});
+  G.fxFlash.push({x:ax,y:ay,r:CS*4.5,life:0.40,maxLife:0.40,col:'#ffe082'});
+  G.fxFlash.push({x:ax,y:ay,r:CS*2,life:0.25,maxLife:0.25,col:'#fff9c4'});
   G.fxRings.push({x:ax,y:ay,r:0,maxR:CS*4,life:1.2,lw:5,col:'#ffe082',delay:0});
   G.fxRings.push({x:ax,y:ay,r:0,maxR:CS*2.5,life:.9,lw:7,col:'#fff9c4',delay:.06});
   G.fxRings.push({x:ax,y:ay,r:0,maxR:CS*5.5,life:.6,lw:2,col:'rgba(255,224,130,.4)',delay:.15});

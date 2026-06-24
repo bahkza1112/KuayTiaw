@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.13.4 — Bug Fix: VFX alpha, dmgNums cap, badge รางวัล
+
+### Fixed
+- `js/game.js` render fxFlash: alpha formula `f.life/.18` hardcoded → เปลี่ยนเป็น `f.life/(f.maxLife||.18)` ทำให้ flash 4★/Awaken (life 0.28–0.45) fade ถูกต้อง ไม่ติด clamp ที่ 1
+- `js/game.js` `js/tower.js`: เพิ่ม `maxLife` ให้กับ fxFlash push ทุกจุดที่ใช้ life ≠ 0.18
+- `js/game.js` dmgNums cap: `G.dmgNums.length=60` ตัด entry ใหม่ทิ้ง → เปลี่ยนเป็น `splice(0,...)` ตัด entry เก่าออกแทน ทำให้ "★★★★ MAX!" / "⚡ AWAKENED!" ไม่โดน drop ระหว่าง wave ใหญ่
+- `js/cloud-save.js` `_checkLbRewards()`: badge แดงแสดงอยู่ระหว่าง popup เปิด ซ่อนหลังผู้เล่นกด "รับรางวัล ✓" (เดิมซ่อนทันทีหลัง POST สำเร็จ ผู้เล่นแทบไม่เห็น)
+- `js/cloud-save.js`: badge ซ่อนเสมอเมื่อ claim สำเร็จ แม้ claimed array จะว่างเปล่า (เดิมค้างถาวร)
+- `js/ui.js` `_showLbRewardPopup()`: รับ callback `onClose` สำหรับซ่อน badge หลัง popup ปิด
+
 ## v3.13.3 — 4★ และ Awaken Effect พิเศษ
 
 ### Changed

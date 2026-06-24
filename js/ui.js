@@ -1,6 +1,12 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.13.3';
+const GAME_VERSION='3.13.4';
 const PATCH_NOTES=[
+  {ver:'3.13.4',date:'2026-06-24',title:'🐛 แก้บัค VFX + Badge รางวัล + AWAKENED! text',notes:[
+    'แก้ flash 4★/Awaken fade ผิด — ตอนนี้ค่อยๆ สว่างแล้วจางถูกต้องแล้ว',
+    'แก้ข้อความ "AWAKENED!" / "★★★★ MAX!" โดนตัดทิ้งตอน wave ใหญ่',
+    'Badge รางวัล season แสดงถูกต้อง — เห็นชัดขณะ popup เปิดอยู่ แล้วหายหลังกด รับรางวัล',
+    'แก้ badge ค้างถาวรถ้า claim ได้รางวัลว่างเปล่า',
+  ]},
   {ver:'3.13.3',date:'2026-06-24',title:'✨ 4★ และ Awaken มี Effect พิเศษแตกต่างกัน',notes:[
     '4★ MAX: flash ขาวขนาดใหญ่ + shake มากขึ้น + ข้อความ "★★★★ MAX!" + ring ออกไปทั่วจอ',
     'Awaken ⚡: flash เหลืองใหญ่ + hit-stop 0.20s + "⚡ AWAKENED!" ลอยขึ้น',
@@ -2835,7 +2841,7 @@ function addParticle(x,y,txt,col){
   if(!G) return;
   G.particles.push({x,y,txt,col,life:1,vy:-1.5-Math.random()*.5});
 }
-function _showLbRewardPopup(claimed){
+function _showLbRewardPopup(claimed,onClose){
   const lines=claimed.map(rew=>{
     const parts=[];
     if(rew.gems)    parts.push(`<span class="gico"></span> ${rew.gems.toLocaleString()}`);
@@ -2848,9 +2854,10 @@ function _showLbRewardPopup(claimed){
     <div style="font-size:48px;margin-bottom:8px;">🎁</div>
     <h3 style="color:#ffd24d;margin:0 0 8px;">รางวัลอันดับมาแล้ว!</h3>
     <div style="color:#e0e0e0;font-size:13px;margin-bottom:18px;line-height:1.7;">${lines}</div>
-    <button class="slot-spin-btn" style="padding:10px 32px;font-size:14px;" onclick="this.closest('.av-unlock-popup').remove()">รับรางวัล ✓</button>
+    <button class="slot-spin-btn" style="padding:10px 32px;font-size:14px;" id="_lbRewOkBtn">รับรางวัล ✓</button>
   </div>`;
   document.body.appendChild(pop);
+  pop.querySelector('#_lbRewOkBtn').addEventListener('click',()=>{pop.remove();if(typeof onClose==='function')onClose();});
 }
 function showToast(msg){
   const el=document.getElementById('toast');

@@ -1291,7 +1291,7 @@ function update(dt){
     G.fxFlash[i].life-=dt; if(G.fxFlash[i].life<=0){G.fxFlash[i]=G.fxFlash[G.fxFlash.length-1];G.fxFlash.pop();}
   }
   // floating damage numbers
-  if(G.dmgNums.length>60) G.dmgNums.length=60;
+  if(G.dmgNums.length>60) G.dmgNums.splice(0,G.dmgNums.length-60);
   for(let i=G.dmgNums.length-1;i>=0;i--){
     const n=G.dmgNums[i];
     n.x+=n.vx||0; n.y+=n.vy; n.vy*=.92;
@@ -1539,7 +1539,7 @@ function render(){
   }
   // muzzle flashes
   G.fxFlash.forEach(f=>{
-    const fa=Math.max(0,f.life/.18);
+    const fa=Math.max(0,f.life/(f.maxLife||.18));
     ctx.save();
     ctx.globalAlpha=fa*.7;
     ctx.shadowColor=f.col;ctx.shadowBlur=f.r*.9;
@@ -2372,8 +2372,8 @@ function tryMergeTowers(src,target){
   const _is4star=newStar===4;
   G.hitStopT=_is4star?0.22:0.12;
   G.shakeT=Math.min(G.shakeT+(_is4star?0.2:0.08),_is4star?0.5:0.25);
-  G.fxFlash.push({x:mx,y:my,r:CS*(_is4star?5:3.5),life:_is4star?0.45:0.32,col:_is4star?'#fff9c4':'#ffd54f'});
-  if(_is4star) G.fxFlash.push({x:mx,y:my,r:CS*2.5,life:0.28,col:'#ff6f00'}); // inner orange flash
+  G.fxFlash.push({x:mx,y:my,r:CS*(_is4star?5:3.5),life:_is4star?0.45:0.32,maxLife:_is4star?0.45:0.32,col:_is4star?'#fff9c4':'#ffd54f'});
+  if(_is4star) G.fxFlash.push({x:mx,y:my,r:CS*2.5,life:0.28,maxLife:0.28,col:'#ff6f00'}); // inner orange flash
   G.fxRings.push({x:mx,y:my,r:0,maxR:CS*(_is4star?4.5:2.8),life:1.2,lw:_is4star?6:4,col:'#ffd54f',delay:0});
   G.fxRings.push({x:mx,y:my,r:0,maxR:CS*(_is4star?3:1.6),life:.9,lw:_is4star?8:6,col:'#fff9c4',delay:.05});
   G.fxRings.push({x:mx,y:my,r:0,maxR:CS*(_is4star?5.5:2),life:.7,lw:2,col:'#ffecb3',delay:.12});

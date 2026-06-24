@@ -110,16 +110,14 @@ async function _checkLbRewards() {
     if (!r.ok) return;
     const { pending } = await r.json();
     if (!pending || !pending.length) return;
-    // แสดง badge แดงที่ปุ่มอันดับ
-    const _badge = document.getElementById('lbRewardBadge');
-    if (_badge) _badge.style.display = 'block';
     // claim all
     const cr = await fetch('/api/leaderboard/claim', { method:'POST', headers: authHeaders() });
     if (!cr.ok) return;
     const { claimed } = await cr.json();
-    if (!claimed || !claimed.length) return;
-    // ซ่อน badge หลัง claim สำเร็จ
+    // ซ่อน badge เสมอหลัง claim (ไม่ว่า claimed จะว่างหรือไม่)
+    const _badge = document.getElementById('lbRewardBadge');
     if (_badge) _badge.style.display = 'none';
+    if (!claimed || !claimed.length) return;
     // apply rewards
     claimed.forEach(rew => {
       if (rew.gems)    { if(typeof addGems==='function') addGems(rew.gems); }
@@ -127,8 +125,10 @@ async function _checkLbRewards() {
       if (rew.pgold)   { if(typeof addPGold==='function') addPGold(rew.pgold); }
     });
     cloudSave();
-    // show popup
-    if (typeof _showLbRewardPopup === 'function') _showLbRewardPopup(claimed);
+    // show popup — badge จะแสดงระหว่าง popup เปิดอยู่ ซ่อนเมื่อกด "รับรางวัล"
+    const _badgeRef = document.getElementById('lbRewardBadge');
+    if (_badgeRef) _badgeRef.style.display = 'block';
+    if (typeof _showLbRewardPopup === 'function') _showLbRewardPopup(claimed, ()=>{ if(_badgeRef) _badgeRef.style.display='none'; });
   } catch(e) {}
 }
 
