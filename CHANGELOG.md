@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.13.9 — Bug Fix: Blizzard + verBtn auto
+
+### Fixed
+- `js/game.js` `_castFreeze()`: 🧊 Blizzard `slowImmune` ไม่ครอบคลุมสกิล Freeze AoE — ศัตรูยังถูกแช่แข็งได้แม้ภูมิคุ้มกัน ตอนนี้ตรวจสอบก่อน cast
+
+### Changed
+- `js/ui.js`: `verBtn` ข้อความตั้งค่าจาก `GAME_VERSION` อัตโนมัติตอน load — ไม่ต้องแก้ HTML ทุก version bump อีกต่อไป
+
 ## v3.13.8 — Bug Fix: Sun weather gold mine
 
 ### Fixed

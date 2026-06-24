@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.13.8';
+const GAME_VERSION='3.13.9';
 const PATCH_NOTES=[
+  {ver:'3.13.9',date:'2026-06-24',title:'🐛 แก้ Blizzard ไม่บล็อกสกิล Freeze + verBtn อัตโนมัติ',notes:[
+    '🧊 Blizzard slowImmune ตอนนี้ครอบคลุมสกิล Freeze ด้วย (เดิมยังแช่ศัตรูได้แม้มี blizzard)',
+    'verBtn แสดงเลข version จาก GAME_VERSION อัตโนมัติ ไม่ต้องแก้ HTML ทุก version',
+  ]},
   {ver:'3.13.8',date:'2026-06-24',title:'🐛 แก้บัค ☀️ แดดแผดเผาไม่หยุดเหมืองทอง',notes:[
     'แก้เหมืองทองยังผลิตทองได้เต็มระหว่าง ☀️ แดดแผดเผา — เกิดจาก goldMineMult=0 ถูกอ่านเป็น falsy',
   ]},
@@ -4254,6 +4258,9 @@ document.getElementById('lbNavBtn').addEventListener('click',openLeaderboard);
 document.getElementById('lbBackBtn').addEventListener('click',()=>showScreen('mm',true));
 document.getElementById('profileBackBtn').addEventListener('click',()=>showScreen('mm',true));
 (function(){
+  // set verBtn text from GAME_VERSION — never hardcode in HTML
+  const _vb=document.getElementById('verBtn');
+  if(_vb){const _nb=_vb.querySelector('#newsBadge');_vb.textContent='📰 v'+GAME_VERSION+' — มีอะไรใหม่';if(_nb)_vb.appendChild(_nb);}
   let _vc=0,_vt=null;
   document.getElementById('verBtn').addEventListener('click',()=>{
     _vc++;

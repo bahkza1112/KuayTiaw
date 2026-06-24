@@ -2553,7 +2553,8 @@ function _castMeteorAt(col,row){
   G.skillAiming=false; _startSkillCd();
 }
 function _castFreeze(st){
-  let n=0;G.enemies.forEach(e=>{if(e.alive){e.slow=0;e.slowT=Math.max(e.slowT||0,st.dur);n++;
+  const _freezeBlocked=G.weather&&G.weather.slowImmune;
+  let n=0;G.enemies.forEach(e=>{if(e.alive&&!_freezeBlocked){e.slow=0;e.slowT=Math.max(e.slowT||0,st.dur);n++;
     G.particles.push({x:e.x,y:e.y-ESIZES[e.ti]-6,txt:'❄',col:'#80d8ff',life:.9,vy:-1,vx:0,decay:1.4,scale:.9});}});
   G.fxFlash.push({x:COLS*CS/2,y:ROWS*CS/2,r:Math.max(COLS,ROWS)*CS,life:.4,col:'rgba(128,216,255,.25)'});
   addParticle(COLS*CS/2,ROWS*CS/2,'❄️ แช่แข็งสนาม '+st.dur+'s','#80d8ff');
