@@ -2450,6 +2450,7 @@ function _showMerge4Confirm(src,target){
   ov.querySelector('#merge4No').onclick=()=>{ov.style.display='none';};
   ov.querySelector('#merge4Yes').onclick=()=>{
     ov.style.display='none';
+    if(!G) return;
     G.towers=G.towers.filter(t=>t!==src&&t!==target);
     const merged={col:target.col,row:target.row,type:target.type,star:4,lv:1,dmgLv:1,rngLv:1,rateLv:1,cd:0,angle:0,spawnAnim:1.0,awakened:false};
     if(G.gmTimers) delete G.gmTimers[src.col+'_'+src.row];
