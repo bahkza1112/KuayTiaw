@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.13.1';
+const GAME_VERSION='3.13.2';
 const PATCH_NOTES=[
+  {ver:'3.13.2',date:'2026-06-24',title:'✨ Merge animation — flash + hit-stop + ข้อความใหญ่',notes:[
+    'รวมป้อม ★ → แสงทองใหญ่ + สั่นจอเล็กน้อย + หยุดเกม 0.12s ให้เห็น effect',
+    'ข้อความ ★★★ UP! ลอยขึ้นชัดเจน + ดาว 16 ดวงพุ่งออก',
+  ]},
   {ver:'3.13.1',date:'2026-06-24',title:'🔴 badge แจ้งเตือนรางวัล season ที่ปุ่มอันดับ',notes:[
     'เมื่อมีรางวัลรอรับหลัง season reset — จุดแดงกะพริบที่ปุ่ม "อันดับ" ใน bottom nav',
     'จุดหายหลังรับรางวัลสำเร็จ',

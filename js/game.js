@@ -2368,13 +2368,19 @@ function tryMergeTowers(src,target){
   if(G.gmTimers) delete G.gmTimers[src.col+'_'+src.row];
   G.towers.push(merged);
   const mx=target.col*CS+CS/2,my=target.row*CS+CS/2;
-  G.fxRings.push({x:mx,y:my,r:0,maxR:CS*2,life:1,lw:3,col:'#ffd54f',delay:0});
-  G.fxRings.push({x:mx,y:my,r:0,maxR:CS*1.3,life:.7,lw:5,col:'#fff9c4',delay:.05});
-  for(let k=0;k<10;k++){
-    const ang=k/10*Math.PI*2;
-    G.particles.push({x:mx,y:my,txt:'★',col:'#ffd54f',life:1.1,vy:Math.sin(ang)*2.2,vx:Math.cos(ang)*2.2,decay:1.6,scale:1});
+  // ── Merge VFX ──
+  G.hitStopT=0.12; // หยุด simulation ให้เห็น effect ชัด
+  G.shakeT=Math.min(G.shakeT+0.08,0.25); // สั่นเล็กน้อย
+  G.fxFlash.push({x:mx,y:my,r:CS*3.5,life:0.32,col:'#ffd54f'}); // วงแสงทองใหญ่
+  G.fxRings.push({x:mx,y:my,r:0,maxR:CS*2.8,life:1,lw:4,col:'#ffd54f',delay:0});
+  G.fxRings.push({x:mx,y:my,r:0,maxR:CS*1.6,life:.8,lw:6,col:'#fff9c4',delay:.04});
+  G.fxRings.push({x:mx,y:my,r:0,maxR:CS*2,life:.6,lw:2,col:'#ffecb3',delay:.10});
+  for(let k=0;k<16;k++){
+    const ang=k/16*Math.PI*2,spd=1.8+Math.random()*2;
+    G.particles.push({x:mx,y:my,txt:'★',col:k%2===0?'#ffd54f':'#fff9c4',life:1.3,vy:Math.sin(ang)*spd,vx:Math.cos(ang)*spd,decay:1.3,scale:0.8+Math.random()*0.5});
   }
-  addParticle(mx,my-CS*.4,'✨ รวมเป็น '+'★'.repeat(newStar)+'!','#ffd54f');
+  // ข้อความใหญ่ลอยขึ้น — ใช้ dmgNums เพื่อ font ใหญ่
+  G.dmgNums.push({x:mx,y:my-CS*.5,txt:'★'.repeat(newStar)+' UP!',col:'#ffd54f',life:1.4,vy:-1.8,vx:0,decay:0.7,scale:2.2});
   showToast(`✨ ${TNAMES[target.type]} รวมสำเร็จ! → ${'★'.repeat(newStar)} (รับแต้มสกิลใหม่ ${newStar} แต้ม)`);
   updateHUD();
   return true;

@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.13.2 — Merge Tower Animation
+
+### Changed
+- `js/game.js` `tryMergeTowers()`: เพิ่ม VFX ชัดเจนขึ้น
+  - `G.hitStopT=0.12` — หยุด simulation 0.12s ให้ผู้เล่นเห็น effect
+  - `G.fxFlash` วงแสงทองขนาด `CS×3.5` — flash ชัดมาก
+  - เพิ่มวง ring จาก 2 → 3 วง ใหญ่ขึ้น
+  - ดาว★ particle จาก 10 → 16 ดวง
+  - `G.dmgNums` ข้อความ "★★★ UP!" font size ~29px ลอยขึ้น
+  - สั่นจอเล็กน้อย `shakeT+0.08`
+
 ## v3.13.1 — Badge แจ้งเตือนรางวัล Season
 
 ### Added
