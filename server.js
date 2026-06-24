@@ -283,6 +283,18 @@ app.post('/api/story-leaderboard', (req, res) => {
   res.json({ ok:true, rank });
 });
 
+// ── Admin: delete story leaderboard entry by rank ─────────────────────────────
+app.delete('/api/story-leaderboard/:rank', (req, res) => {
+  const adminKey = req.headers['x-admin-key'];
+  if (adminKey !== process.env.ADMIN_KEY && adminKey !== 'kt1233') return res.status(403).json({ error: 'forbidden' });
+  const lb = loadSlb().sort((a,b)=>b.totalStars-a.totalStars||b.stagesCleared-a.stagesCleared);
+  const idx = parseInt(req.params.rank) - 1;
+  if (idx < 0 || idx >= lb.length) return res.status(404).json({ error: 'not found' });
+  const removed = lb.splice(idx, 1)[0];
+  writeSlb(lb);
+  res.json({ ok: true, removed });
+});
+
 app.listen(PORT, () => {
   console.log(`✅ Tower Quest server: http://localhost:${PORT}`);
 });

@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.13.6 — LB Admin: password gate + story leaderboard + card redesign
+
+### Added
+- `js/ui.js` `renderDevLbAdmin()`: ต้องใส่รหัส `kt1233` ก่อนเข้าแท็บ LB Admin ได้
+- `js/ui.js` `renderDevLbAdmin()`: เพิ่มส่วน ⭐ Story Leaderboard (กระดานดาว) ด้านล่าง — ลบรายการได้ด้วย `devDeleteSlbEntry()`
+- `js/ui.js` `_lbAdminCard()`: card ดีไซน์ใหม่ — กรอบ 4 ด้าน, แสดง "UID: ..." ชัดเจน, info แยกบรรทัดในกล่องด้านใน
+- `server.js`: endpoint `DELETE /api/story-leaderboard/:rank` ลบรายการ story leaderboard (admin-key required)
+
 ## v3.13.5 — Merge hint visual + Wave preview special + Endgame milestone HUD
 
 ### Added

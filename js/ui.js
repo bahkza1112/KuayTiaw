@@ -1,6 +1,11 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.13.5';
+const GAME_VERSION='3.13.6';
 const PATCH_NOTES=[
+  {ver:'3.13.6',date:'2026-06-24',title:'🔒 LB Admin — รหัสผ่าน + กระดานดาว + ดีไซน์ใหม่',notes:[
+    'Dev Panel แท็บ LB Admin ต้องใส่รหัสก่อนเข้าได้ — ป้องกันการลบผิดพลาด',
+    'แสดง "UID: ..." แบบชัดเจนในทุก card พร้อมดีไซน์กรอบสวยขึ้น',
+    'เพิ่มส่วนจัดการ ⭐ Story Leaderboard (กระดานดาว) — ลบรายการได้แล้ว',
+  ]},
   {ver:'3.13.5',date:'2026-06-24',title:'✨ Merge hint visual + Wave preview + Endgame milestone',notes:[
     'ป้อมที่ merge ได้จะกะพริบขอบทองตอนแสดง hint ครั้งแรก ให้เห็นชัดขึ้น',
     'Wave preview แสดง label พิเศษ: 👹 บอสรัช / 💰 เวฟทอง / 🐝 เวฟฝูง + % โอกาสบอส',
@@ -3405,47 +3410,85 @@ function renderDevDebug(){
   </div>`;
 }
 
+let _lbAdminUnlocked=false;
+function _lbAdminCard(e,i,apiPath){
+  const rank=i+1;
+  const hasUid=e.uid?'🔑':'👤';
+  const uidLabel=e.uid?`UID: ${e.uid.slice(0,16)}…`:'UID: ไม่มี (เล่นก่อน login)';
+  const diff=e.diff===2?'🔴 ยาก':e.diff===1?'🟡 ปาน':e.diff===0?'🟢 ง่าย':'—';
+  const waveInfo=e.round>1?`Round ${e.round} · Wave ${e.wave}`:e.wave?`Wave ${e.wave}`:'';
+  const starsInfo=e.totalStars!=null?`⭐ ${e.totalStars} ดาว · ${e.stagesCleared||0} ด่าน`:'';
+  const scoreInfo=e.score!=null?`${(e.score||0).toLocaleString()} คะแนน`:'';
+  const fnName=apiPath==='/api/leaderboard'?'devDeleteLbEntry':'devDeleteSlbEntry';
+  return `<div style="background:#111;border:1px solid #2a2a2a;border-radius:12px;padding:12px 14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.4);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+      <div style="background:#1a1a1a;border:1px solid #333;border-radius:8px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#888;flex-shrink:0;">#${rank}</div>
+      <span style="font-size:18px;flex-shrink:0;">${hasUid}</span>
+      <span style="font-size:16px;font-weight:800;color:#fff;flex:1;min-width:0;">${e.name}</span>
+      <button onclick="${fnName}(${rank})" style="background:linear-gradient(135deg,rgba(239,83,80,.25),rgba(183,28,28,.2));border:1px solid #ef5350;border-radius:8px;color:#ef5350;font-size:12px;font-weight:700;padding:5px 14px;cursor:pointer;flex-shrink:0;transition:all .15s;">✕ ลบ</button>
+    </div>
+    <div style="background:#0a0a0a;border:1px solid #1e1e1e;border-radius:8px;padding:8px 10px;font-size:11px;line-height:1.9;color:#888;">
+      ${scoreInfo?`<div>📊 <span style="color:#ffe082;font-weight:700;">${scoreInfo}</span></div>`:''}
+      ${starsInfo?`<div>🌟 <span style="color:#ffd54f;">${starsInfo}</span></div>`:''}
+      ${diff!=='—'?`<div>⚔️ ความยาก: ${diff}</div>`:''}
+      ${waveInfo?`<div>🌊 ${waveInfo}</div>`:''}
+      <div style="color:#444;font-size:10px;margin-top:4px;">${uidLabel}</div>
+    </div>
+  </div>`;
+}
 async function renderDevLbAdmin(body){
+  if(!_lbAdminUnlocked){
+    body.innerHTML=`<div style="padding:24px 16px;text-align:center;">
+      <div style="font-size:32px;margin-bottom:12px;">🔒</div>
+      <div style="color:#aaa;font-size:13px;margin-bottom:16px;">ป้อนรหัสเพื่อเข้า LB Admin</div>
+      <input id="lbAdminPwd" type="password" placeholder="รหัสผ่าน" style="background:#111;border:1px solid #333;border-radius:8px;color:#fff;padding:10px 14px;font-size:14px;width:180px;text-align:center;outline:none;margin-bottom:12px;display:block;margin-left:auto;margin-right:auto;">
+      <button onclick="_lbAdminLogin()" style="background:linear-gradient(135deg,#ff9800,#e65100);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;padding:10px 28px;cursor:pointer;">🔓 เข้าสู่ระบบ</button>
+    </div>`;
+    const inp=body.querySelector('#lbAdminPwd');
+    if(inp) inp.addEventListener('keydown',e=>{if(e.key==='Enter')_lbAdminLogin();});
+    return;
+  }
   body.innerHTML='<div style="padding:16px;color:#aaa;font-size:12px;">⏳ โหลด leaderboard...</div>';
   try{
-    const r=await fetch('/api/leaderboard');
-    const d=await r.json();
-    const rows=d.entries||[];
-    let html='<div class="dev-section"><div class="dev-section-title">🏆 Leaderboard Admin — ลบรายการซ้ำ/ผิด</div>';
-    html+='<div style="font-size:10px;color:#888;margin-bottom:10px;">🔑 = login Google &nbsp;|&nbsp; 👤 = ไม่มี uid (เล่นก่อน login)</div>';
-    if(!rows.length){html+='<div style="color:#555;font-size:12px;">ไม่มีข้อมูล</div>';}
-    rows.forEach((e,i)=>{
-      const rank=i+1;
-      const hasUid=e.uid?'🔑':'👤';
-      const diff=e.diff===2?'🔴 ยาก':e.diff===1?'🟡 ปาน':'🟢 ง่าย';
-      const waveInfo=e.round>1?`Round ${e.round} · Wave ${e.wave}`:`Wave ${e.wave}`;
-      html+=`<div style="border:1px solid #222;border-radius:10px;padding:10px 12px;margin-bottom:8px;background:#0d0d0d;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-          <span style="color:#555;font-size:11px;width:18px;flex-shrink:0;">#${rank}</span>
-          <span style="font-size:16px;flex-shrink:0;">${hasUid}</span>
-          <span style="font-size:15px;font-weight:700;color:#fff;flex:1;">${e.name}</span>
-          <button onclick="devDeleteLbEntry(${rank})" style="background:rgba(239,83,80,.2);border:1px solid #ef5350;border-radius:8px;color:#ef5350;font-size:11px;font-weight:700;padding:4px 12px;cursor:pointer;flex-shrink:0;">✕ ลบ</button>
-        </div>
-        <div style="display:flex;gap:12px;font-size:11px;color:#888;flex-wrap:wrap;">
-          <span style="color:#ffe082;font-weight:700;">${(e.score||0).toLocaleString()}</span>
-          <span>${diff}</span>
-          <span>🌊 ${waveInfo}</span>
-          <span style="color:#555;font-size:10px;">${e.uid?e.uid.slice(0,12)+'…':'ไม่มี uid'}</span>
-        </div>
-      </div>`;
-    });
+    const [r1,r2]=await Promise.all([fetch('/api/leaderboard'),fetch('/api/story-leaderboard')]);
+    const [d1,d2]=await Promise.all([r1.json(),r2.json()]);
+    let html='';
+    // Endgame LB
+    html+=`<div class="dev-section"><div class="dev-section-title">🔥 Endgame Leaderboard (${d1.entries?.length||0} รายการ)</div>`;
+    html+='<div style="font-size:10px;color:#666;margin-bottom:12px;">🔑 = login Google &nbsp;·&nbsp; 👤 = ไม่มี uid</div>';
+    if(!(d1.entries?.length)){html+='<div style="color:#555;font-size:12px;padding:8px 0;">ไม่มีข้อมูล</div>';}
+    (d1.entries||[]).forEach((e,i)=>{ html+=_lbAdminCard(e,i,'/api/leaderboard'); });
+    html+='</div>';
+    // Story LB
+    html+=`<div class="dev-section" style="margin-top:8px;"><div class="dev-section-title">⭐ Story Leaderboard (${d2.entries?.length||0} รายการ)</div>`;
+    if(!(d2.entries?.length)){html+='<div style="color:#555;font-size:12px;padding:8px 0;">ไม่มีข้อมูล</div>';}
+    (d2.entries||[]).forEach((e,i)=>{ html+=_lbAdminCard(e,i,'/api/story-leaderboard'); });
     html+='</div>';
     body.innerHTML=html;
   }catch(e){body.innerHTML=`<div style="padding:16px;color:#ef5350;font-size:12px;">❌ โหลดไม่ได้: ${e.message}</div>`;}
 }
+function _lbAdminLogin(){
+  const v=document.getElementById('lbAdminPwd')?.value;
+  if(v==='kt1233'){_lbAdminUnlocked=true;renderDevPanel();}
+  else{showToast('❌ รหัสผิด');document.getElementById('lbAdminPwd').value='';}
+}
 async function devDeleteLbEntry(rank){
-  if(!confirm(`ลบ rank #${rank} ออกจาก leaderboard?`)) return;
+  if(!confirm(`ลบ Endgame rank #${rank} ?`)) return;
   try{
     const r=await fetch('/api/leaderboard/'+rank,{method:'DELETE',headers:{'x-admin-key':'kt1233'}});
     const d=await r.json();
-    if(d.ok){showToast(`✅ ลบ "${d.removed?.name}" rank #${rank} แล้ว`);renderDevPanel();}
-    else showToast('❌ ลบไม่ได้: '+(d.error||'unknown'));
-  }catch(e){showToast('❌ error: '+e.message);}
+    if(d.ok){showToast(`✅ ลบ "${d.removed?.name}" แล้ว`);renderDevPanel();}
+    else showToast('❌ '+(d.error||'unknown'));
+  }catch(e){showToast('❌ '+e.message);}
+}
+async function devDeleteSlbEntry(rank){
+  if(!confirm(`ลบ Story rank #${rank} ?`)) return;
+  try{
+    const r=await fetch('/api/story-leaderboard/'+rank,{method:'DELETE',headers:{'x-admin-key':'kt1233'}});
+    const d=await r.json();
+    if(d.ok){showToast(`✅ ลบ "${d.removed?.name}" แล้ว`);renderDevPanel();}
+    else showToast('❌ '+(d.error||'unknown'));
+  }catch(e){showToast('❌ '+e.message);}
 }
 function devCopyConfig(){
   const json=JSON.stringify(CFG,null,2);
