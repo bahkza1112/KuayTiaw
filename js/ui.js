@@ -4110,6 +4110,15 @@ document.getElementById('profileBackBtn').addEventListener('click',()=>showScree
     _vt=setTimeout(()=>{if(_vc>0)openWhatsNew();_vc=0;_vt=null;},400);
   });
 })();
+(function(){
+  let _sc=0,_st=null;
+  document.getElementById('stageBadge').addEventListener('click',()=>{
+    _sc++;
+    if(_st) clearTimeout(_st);
+    if(_sc>=5){_sc=0;_st=null;_showDevPwdPrompt();return;}
+    _st=setTimeout(()=>{_sc=0;_st=null;},2000);
+  });
+})();
 document.getElementById('whatsnewBackBtn').addEventListener('click',()=>showScreen('mm',true));
 document.getElementById('ssBackBtn').addEventListener('click',()=>showScreen('mm',true));
 document.getElementById('tsBackBtn').addEventListener('click',()=>{
