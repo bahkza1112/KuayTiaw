@@ -3111,7 +3111,7 @@ function closeDev(){
 }
 function switchDevTab(i){
   devTab=i;
-  for(let j=0;j<5;j++){const el=document.getElementById('dtab'+j);if(el)el.classList.toggle('active',j===i);}
+  for(let j=0;j<6;j++){const el=document.getElementById('dtab'+j);if(el)el.classList.toggle('active',j===i);}
   renderDevPanel();
 }
 function renderDevPanel(){
@@ -3120,7 +3120,8 @@ function renderDevPanel(){
   else if(devTab===1)body.innerHTML=renderDevMonster();
   else if(devTab===2)body.innerHTML=renderDevTower();
   else if(devTab===3)body.innerHTML=renderDevCheat();
-  else body.innerHTML=renderDevDebug();
+  else if(devTab===4)body.innerHTML=renderDevDebug();
+  else renderDevLbAdmin(body);
   if(devTab===0) setTimeout(drawCurveGraph,60);
 }
 function renderDevCurve(){
@@ -3404,6 +3405,41 @@ function renderDevDebug(){
   </div>`;
 }
 
+async function renderDevLbAdmin(body){
+  body.innerHTML='<div style="padding:16px;color:#aaa;font-size:12px;">⏳ โหลด leaderboard...</div>';
+  try{
+    const r=await fetch('/api/leaderboard');
+    const d=await r.json();
+    const rows=d.entries||[];
+    let html='<div class="dev-section"><div class="dev-section-title">🏆 Leaderboard Admin — ลบรายการซ้ำ/ผิด</div>';
+    html+='<div style="font-size:10px;color:#888;margin-bottom:10px;">กด ✕ เพื่อลบ entry ออกจากตาราง (ใช้รหัส dev)</div>';
+    if(!rows.length){html+='<div style="color:#555;font-size:12px;">ไม่มีข้อมูล</div>';}
+    rows.forEach((e,i)=>{
+      const rank=i+1;
+      const hasUid=e.uid?'🔑':'👤';
+      const uidShort=e.uid?e.uid.slice(0,8)+'…':'(ไม่มี uid)';
+      html+=`<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid #1a1a1a;font-size:11px;">
+        <span style="width:20px;color:#888;flex-shrink:0;">${rank}</span>
+        <span style="font-size:14px;">${hasUid}</span>
+        <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.name}</span>
+        <span style="color:#ffe082;flex-shrink:0;">${(e.score||0).toLocaleString()}</span>
+        <span style="color:#555;font-size:9px;flex-shrink:0;">${uidShort}</span>
+        <button onclick="devDeleteLbEntry(${rank})" style="background:rgba(239,83,80,.15);border:1px solid #ef5350;border-radius:6px;color:#ef5350;font-size:10px;padding:3px 8px;cursor:pointer;flex-shrink:0;">✕ ลบ</button>
+      </div>`;
+    });
+    html+='</div>';
+    body.innerHTML=html;
+  }catch(e){body.innerHTML=`<div style="padding:16px;color:#ef5350;font-size:12px;">❌ โหลดไม่ได้: ${e.message}</div>`;}
+}
+async function devDeleteLbEntry(rank){
+  if(!confirm(`ลบ rank #${rank} ออกจาก leaderboard?`)) return;
+  try{
+    const r=await fetch('/api/leaderboard/'+rank,{method:'DELETE',headers:{'x-admin-key':'kt1233'}});
+    const d=await r.json();
+    if(d.ok){showToast(`✅ ลบ "${d.removed?.name}" rank #${rank} แล้ว`);renderDevPanel();}
+    else showToast('❌ ลบไม่ได้: '+(d.error||'unknown'));
+  }catch(e){showToast('❌ error: '+e.message);}
+}
 function devCopyConfig(){
   const json=JSON.stringify(CFG,null,2);
   const btn=document.getElementById('devCopyBtn');

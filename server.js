@@ -224,8 +224,10 @@ app.post('/api/leaderboard', (req, res) => {
   if (!name || typeof score !== 'number' || typeof wave !== 'number') {
     return res.status(400).json({ error: 'invalid' });
   }
-  const lb = loadLb();
+  let lb = loadLb();
   const entry = { name: String(name).slice(0,30), score, wave, diff, kills:kills||0, maxCombo:maxCombo||1, round:round||1, avatar:avatar?String(avatar).slice(0,3000):'🎮', date: date||new Date().toLocaleDateString('th-TH'), ts: Date.now(), uid: uid||null };
+  // ถ้า submit ด้วย uid → ลบ entry เก่าที่ไม่มี uid และชื่อเดียวกันออก (กัน ghost entry จากก่อน login)
+  if (uid) lb = lb.filter(e => !(!e.uid && e.name === entry.name));
   // dedup: keep best score per uid (or per name if no uid)
   const key = uid ? (e=>e.uid===uid) : (e=>!e.uid&&e.name===entry.name);
   const idx = lb.findIndex(key);
@@ -240,6 +242,18 @@ app.post('/api/leaderboard', (req, res) => {
   writeLb(lb);
   const rank = lb.findIndex(key) + 1;
   res.json({ ok: true, rank });
+});
+
+// ── Admin: delete leaderboard entry by rank (1-based) ─────────────────────────
+app.delete('/api/leaderboard/:rank', (req, res) => {
+  const adminKey = req.headers['x-admin-key'];
+  if (adminKey !== process.env.ADMIN_KEY && adminKey !== 'kt1233') return res.status(403).json({ error: 'forbidden' });
+  const lb = loadLb().sort((a,b)=>b.score-a.score);
+  const idx = parseInt(req.params.rank) - 1;
+  if (idx < 0 || idx >= lb.length) return res.status(404).json({ error: 'not found' });
+  const removed = lb.splice(idx, 1)[0];
+  writeLb(lb);
+  res.json({ ok: true, removed });
 });
 
 // ── Story Leaderboard ─────────────────────────────
