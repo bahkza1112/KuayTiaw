@@ -2,6 +2,12 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.13.1 — Badge แจ้งเตือนรางวัล Season
+
+### Added
+- `Tower Quest 🏰.html`: `#lbRewardBadge` — dot แดงบนปุ่ม "อันดับ" ใน bottom nav
+- `js/cloud-save.js`: `_checkLbRewards()` แสดง badge ทันทีที่พบ pending rewards, ซ่อนหลัง claim สำเร็จ
+
 ## v3.13.0 — Leaderboard แสดง rank ตัวเองนอก TOP 10
 
 ### Added

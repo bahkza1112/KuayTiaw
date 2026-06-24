@@ -110,11 +110,16 @@ async function _checkLbRewards() {
     if (!r.ok) return;
     const { pending } = await r.json();
     if (!pending || !pending.length) return;
+    // แสดง badge แดงที่ปุ่มอันดับ
+    const _badge = document.getElementById('lbRewardBadge');
+    if (_badge) _badge.style.display = 'block';
     // claim all
     const cr = await fetch('/api/leaderboard/claim', { method:'POST', headers: authHeaders() });
     if (!cr.ok) return;
     const { claimed } = await cr.json();
     if (!claimed || !claimed.length) return;
+    // ซ่อน badge หลัง claim สำเร็จ
+    if (_badge) _badge.style.display = 'none';
     // apply rewards
     claimed.forEach(rew => {
       if (rew.gems)    { if(typeof addGems==='function') addGems(rew.gems); }

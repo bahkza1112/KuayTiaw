@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.13.0';
+const GAME_VERSION='3.13.1';
 const PATCH_NOTES=[
+  {ver:'3.13.1',date:'2026-06-24',title:'🔴 badge แจ้งเตือนรางวัล season ที่ปุ่มอันดับ',notes:[
+    'เมื่อมีรางวัลรอรับหลัง season reset — จุดแดงกะพริบที่ปุ่ม "อันดับ" ใน bottom nav',
+    'จุดหายหลังรับรางวัลสำเร็จ',
+  ]},
   {ver:'3.13.0',date:'2026-06-24',title:'🏆 Leaderboard แสดง rank ของตัวเองถ้าอยู่นอก TOP 10',notes:[
     'ถ้าอยู่อันดับ 11 ขึ้นไป จะเห็นแถวของตัวเองด้านล่างตาราง พร้อม rank จริง',
     'ไฮไลต์สีทองเหมือนแถว TOP 10',
