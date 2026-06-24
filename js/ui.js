@@ -1,6 +1,11 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.13.6';
+const GAME_VERSION='3.13.7';
 const PATCH_NOTES=[
+  {ver:'3.13.7',date:'2026-06-24',title:'✨ Countdown สด + Confirm 4★ + สถิติในโปรไฟล์',notes:[
+    'Leaderboard countdown อัปเดตทุกนาทีโดยอัตโนมัติ ไม่ค้างอีกต่อไป',
+    'Merge 3★→4★ จะขอยืนยันก่อนเสมอ ป้องกัน drag พลาด — กด ✔ ยืนยัน หรือ ✕ ยกเลิก',
+    'หน้าโปรไฟล์แสดง stat สรุป: ดาวรวม / ด่านที่ผ่าน / เวฟสูงสุด / คะแนนสูงสุด / รางวัล',
+  ]},
   {ver:'3.13.6',date:'2026-06-24',title:'🔒 LB Admin — รหัสผ่าน + กระดานดาว + ดีไซน์ใหม่',notes:[
     'Dev Panel แท็บ LB Admin ต้องใส่รหัสก่อนเข้าได้ — ป้องกันการลบผิดพลาด',
     'แสดง "UID: ..." แบบชัดเจนในทุก card พร้อมดีไซน์กรอบสวยขึ้น',
@@ -1068,6 +1073,7 @@ function renderAchievTab(){
 /* ══ SCREEN MANAGEMENT ══ */
 function hideAll(){['mm','stagesel','gp','codex','devpanel','egmenu','leaderboard','whatsnew','towersel','storyscr','workshop','bag','gacha','skillgacha','daily','casino','profile'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const cs=document.getElementById('cutscene');if(cs)cs.style.display='none';}
 function showScreen(id,flex){
+  if(id!=='leaderboard'&&_lbCountdownTimer){clearInterval(_lbCountdownTimer);_lbCountdownTimer=0;}
   hideAll();
   const el=document.getElementById(id);
   el.style.display=flex?'flex':'block';
@@ -3411,6 +3417,7 @@ function renderDevDebug(){
 }
 
 let _lbAdminUnlocked=false;
+let _lbCountdownTimer=0,_lbResetAt=0,_lbSeasonNum=0;
 function _lbAdminCard(e,i,apiPath){
   const rank=i+1;
   const hasUid=e.uid?'🔑':'👤';
@@ -3724,6 +3731,44 @@ function openProfile(){
   if(inp) inp.value=nm;
   const msg=document.getElementById('profileSaveMsg');
   if(msg) msg.style.display='none';
+  // stat summary
+  const statBox=document.getElementById('profileStatSummary');
+  if(statBox){
+    const runs=JSON.parse(localStorage.getItem('tq_runs')||'[]');
+    const prog=JSON.parse(localStorage.getItem('tq_progress')||'{}');
+    const egRuns=runs.filter(r=>r.mode==='endgame');
+    const bestWave=egRuns.length?Math.max(...egRuns.map(r=>r.wave||0)):0;
+    const bestScore=egRuns.length?Math.max(...egRuns.map(r=>r.score||0)):0;
+    const totalStars=Object.values(prog).reduce((a,b)=>a+(b||0),0);
+    const stagesCleared=Object.keys(prog).filter(k=>(prog[k]||0)>=1).length;
+    const TOTAL_ST=typeof STAGES!=='undefined'?STAGES.length:20;
+    const achCount=JSON.parse(localStorage.getItem('tq_ach')||'{}');
+    const achDone=Object.values(achCount).filter(Boolean).length;
+    statBox.innerHTML=`<div style="font-size:11px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:1px;margin-bottom:10px;">📊 สถิติ</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:10px;text-align:center;">
+          <div style="font-size:20px;font-weight:900;color:#ffd54f;">${totalStars}★</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;">ดาวรวม</div>
+        </div>
+        <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:10px;text-align:center;">
+          <div style="font-size:20px;font-weight:900;color:#80cbc4;">${stagesCleared}/${TOTAL_ST}</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;">ด่านที่ผ่าน</div>
+        </div>
+        <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:10px;text-align:center;">
+          <div style="font-size:20px;font-weight:900;color:#ff8a65;">${bestWave||'—'}</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;">🌊 เวฟสูงสุด</div>
+        </div>
+        <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:10px;text-align:center;">
+          <div style="font-size:17px;font-weight:900;color:#ffe082;">${bestScore?bestScore.toLocaleString():'—'}</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;">⭐ คะแนนสูงสุด</div>
+        </div>
+      </div>
+      <div style="margin-top:8px;background:rgba(255,255,255,.04);border-radius:10px;padding:10px;display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-size:11px;color:rgba(255,255,255,.5);">🏅 รางวัลที่ได้</span>
+        <span style="font-size:14px;font-weight:900;color:#ce93d8;">${achDone} รางวัล</span>
+      </div>`;
+    statBox.style.display='block';
+  }
   // reset draw panel to collapsed on open
   const dp=document.getElementById('drawPanel');
   const da=document.getElementById('drawToggleArrow');
@@ -4067,10 +4112,14 @@ function renderLb(){
             <span style="font-size:10px;color:#aaa;text-align:right;">—</span>
           </div>`;
         }
-        // countdown
-        if(d.resetAt){const rem=d.resetAt-Date.now();const sub=document.getElementById('lbSeasonSub');if(sub)sub.textContent='SS'+(d.season||'?')+' · รีเซ็ตใน '+_fmtCountdown(rem);}
         body.innerHTML=_svBanner+h+_prizeTable;
-        if(d.resetAt){const rem=d.resetAt-Date.now();const sub=document.getElementById('lbSeasonSub');if(sub)sub.textContent='SS'+(d.season||'?')+' · รีเซ็ตใน '+_fmtCountdown(rem);}
+        if(d.resetAt){
+          _lbResetAt=d.resetAt;_lbSeasonNum=d.season||1;
+          const _updCD=()=>{const sub=document.getElementById('lbSeasonSub');if(!sub){clearInterval(_lbCountdownTimer);_lbCountdownTimer=0;return;}sub.textContent='SS'+_lbSeasonNum+' · รีเซ็ตใน '+_fmtCountdown(_lbResetAt-Date.now());};
+          _updCD();
+          if(_lbCountdownTimer) clearInterval(_lbCountdownTimer);
+          _lbCountdownTimer=setInterval(_updCD,60000);
+        }
       })
       .catch(()=>{
         const allRuns=[...runs].filter(r=>r.mode==='endgame');

@@ -2388,6 +2388,7 @@ function tryMergeTowers(src,target){
   const curStar=target.star||1;
   if(curStar>=4){showToast('🔝 ป้อม 4★ คือขั้นสูงสุดแล้ว!');return false;}
   const newStar=curStar+1;
+  if(newStar===4){_showMerge4Confirm(src,target);return false;}
   G.towers=G.towers.filter(t=>t!==src&&t!==target);
   const merged={col:target.col,row:target.row,type:target.type,star:newStar,lv:1,dmgLv:1,rngLv:1,rateLv:1,cd:0,angle:0,spawnAnim:1.0,awakened:false};
   if(G.gmTimers) delete G.gmTimers[src.col+'_'+src.row];
@@ -2430,6 +2431,44 @@ function tryMoveTower(tw,col,row){
   addParticle(nx,ny-CS*.35,'↪️ ย้ายแล้ว','#64b5f6');
   updateHUD();
   return true;
+}
+
+function _showMerge4Confirm(src,target){
+  const tname=(typeof TNAMES!=='undefined'&&TNAMES[target.type])||target.type;
+  let ov=document.getElementById('merge4ConfirmOv');
+  if(!ov){ov=document.createElement('div');ov.id='merge4ConfirmOv';ov.style.cssText='position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;';document.body.appendChild(ov);}
+  ov.innerHTML=`<div style="background:linear-gradient(160deg,#1a1200,#2a1a00);border:2px solid #ffd54f;border-radius:18px;padding:24px 22px;max-width:280px;text-align:center;box-shadow:0 0 40px rgba(255,200,50,.3);">
+    <div style="font-size:36px;margin-bottom:8px;">⭐⭐⭐⭐</div>
+    <div style="color:#ffe082;font-size:16px;font-weight:900;margin-bottom:6px;">รวมเป็น 4★?</div>
+    <div style="color:rgba(255,255,255,.65);font-size:12px;line-height:1.6;margin-bottom:20px;">ป้อม <b style="color:#fff;">${tname}</b> จะถูกรวม<br>เป็น <b style="color:#ffe082;">4★ ขั้นสูงสุด</b> — ย้อนกลับไม่ได้</div>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <button id="merge4No" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:12px;color:rgba(255,255,255,.7);font-size:14px;font-weight:700;padding:11px 28px;cursor:pointer;">✕ ยกเลิก</button>
+      <button id="merge4Yes" style="background:linear-gradient(135deg,#ffd54f,#ff9800);border:none;border-radius:12px;color:#1a0800;font-size:14px;font-weight:900;padding:11px 28px;cursor:pointer;">✔ ยืนยัน</button>
+    </div>
+  </div>`;
+  ov.style.display='flex';
+  ov.querySelector('#merge4No').onclick=()=>{ov.style.display='none';};
+  ov.querySelector('#merge4Yes').onclick=()=>{
+    ov.style.display='none';
+    G.towers=G.towers.filter(t=>t!==src&&t!==target);
+    const merged={col:target.col,row:target.row,type:target.type,star:4,lv:1,dmgLv:1,rngLv:1,rateLv:1,cd:0,angle:0,spawnAnim:1.0,awakened:false};
+    if(G.gmTimers) delete G.gmTimers[src.col+'_'+src.row];
+    G.towers.push(merged);
+    const mx=target.col*CS+CS/2,my=target.row*CS+CS/2;
+    G.hitStopT=0.22;G.shakeT=Math.min(G.shakeT+0.2,0.5);
+    G.fxFlash.push({x:mx,y:my,r:CS*5,life:0.45,maxLife:0.45,col:'#fff9c4'});
+    G.fxFlash.push({x:mx,y:my,r:CS*2.5,life:0.28,maxLife:0.28,col:'#ff6f00'});
+    G.fxRings.push({x:mx,y:my,r:0,maxR:CS*4.5,life:1.2,lw:6,col:'#ffd54f',delay:0});
+    G.fxRings.push({x:mx,y:my,r:0,maxR:CS*3,life:.9,lw:8,col:'#fff9c4',delay:.05});
+    G.fxRings.push({x:mx,y:my,r:0,maxR:CS*5.5,life:.7,lw:2,col:'#ffecb3',delay:.12});
+    G.fxRings.push({x:mx,y:my,r:0,maxR:CS*7,life:.5,lw:2,col:'rgba(255,200,50,.4)',delay:.2});
+    for(let k=0;k<24;k++){const ang=k/24*Math.PI*2,spd=2.5+Math.random()*2;G.particles.push({x:mx,y:my,txt:k%2===0?'✦':'★',col:k%2===0?'#ffd54f':'#fff9c4',life:1.6,vy:Math.sin(ang)*spd,vx:Math.cos(ang)*spd,decay:1.1,scale:1+Math.random()*0.5});}
+    G.dmgNums.push({x:mx,y:my-CS*.6,txt:'★★★★ MAX!',col:'#fff9c4',life:2.2,vy:-CS*0.9,scale:1.6});
+    if(G.dmgNums.length>60) G.dmgNums.splice(0,G.dmgNums.length-60);
+    if(typeof upgradeTower==='function') upgradeTower(merged);
+    updateHUD();
+    if(typeof autoSave==='function') autoSave();
+  };
 }
 
 /* ══ ⭐ ACTIVE SKILL RUNTIME (v4.0.0 — Phase 3) ══

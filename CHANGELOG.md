@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.13.7 — Countdown auto-refresh + 4★ merge confirm + profile stats
+
+### Added
+- `js/ui.js` `_lbCountdownTimer`: Leaderboard season countdown อัปเดตทุก 60s อัตโนมัติ ไม่ค้างถ้าเปิดหน้าทิ้งไว้นาน; timer ถูก clear เมื่อออกจากหน้า LB
+- `js/game.js` `_showMerge4Confirm()`: popup ยืนยันก่อน merge 3★→4★ — แสดงชื่อป้อม, คำเตือน, ปุ่ม ✔ ยืนยัน / ✕ ยกเลิก
+- `Tower Quest 🏰.html` `#profileStatSummary`: div สถิติในหน้าโปรไฟล์
+- `js/ui.js` `openProfile()`: populate stat summary (ดาวรวม / ด่านที่ผ่าน / เวฟสูงสุด / คะแนนสูงสุด / รางวัล)
+
 ## v3.13.6 — LB Admin: password gate + story leaderboard + card redesign
 
 ### Added
