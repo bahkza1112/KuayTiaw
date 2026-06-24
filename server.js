@@ -189,9 +189,17 @@ app.post('/api/save', authMiddleware, (req, res) => {
 // ── Leaderboard ───────────────────────────────────
 app.get('/api/leaderboard', (req, res) => {
   const season = checkSeasonReset();
-  const lb = loadLb().sort((a,b)=>b.score-a.score).slice(0,10);
+  const sorted = loadLb().sort((a,b)=>b.score-a.score);
+  const entries = sorted.slice(0,10);
   const resetAt = season.start + SEASON_MS;
-  res.json({ entries: lb, season: season.num, resetAt });
+  // ส่ง rank ของผู้เล่นกลับมาด้วยถ้าอยู่นอก TOP 10
+  let myEntry = null;
+  const uid = req.query.uid;
+  if(uid) {
+    const idx = sorted.findIndex(e => e.uid === uid);
+    if(idx >= 10) myEntry = { rank: idx+1, ...sorted[idx] };
+  }
+  res.json({ entries, season: season.num, resetAt, myEntry });
 });
 
 // ── Season Rewards ────────────────────────────────

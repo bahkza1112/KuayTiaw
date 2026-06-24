@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.12.9';
+const GAME_VERSION='3.13.0';
 const PATCH_NOTES=[
+  {ver:'3.13.0',date:'2026-06-24',title:'🏆 Leaderboard แสดง rank ของตัวเองถ้าอยู่นอก TOP 10',notes:[
+    'ถ้าอยู่อันดับ 11 ขึ้นไป จะเห็นแถวของตัวเองด้านล่างตาราง พร้อม rank จริง',
+    'ไฮไลต์สีทองเหมือนแถว TOP 10',
+  ]},
   {ver:'3.12.9',date:'2026-06-24',title:'🌦 Stage 8 เพิ่ม 🌪️ tornado ใน weather pool',notes:[
     'Stage 8: pool เปลี่ยนจาก 🌑⚡🧊 → 🌑⚡🧊🌪️',
   ]},
@@ -3910,19 +3914,19 @@ function renderLb(){
     const _svBanner=`<div class="lb-sv-hd"><div class="lb-sv-crown">👑</div><div class="lb-sv-title">TOP 10 เซิฟเวอร์</div><div class="lb-sv-sub" id="lbSeasonSub">เรียงตามคะแนนสูงสุด</div></div>`;
     const _prizeTable=`<div class="lb-prize-box"><div class="lb-prize-title">🏆 รางวัลประจำรอบ</div><div class="lb-prize-row"><span>🥇 อันดับ 1</span><span><span class="gico"></span> 2000 + 🎫 50</span></div><div class="lb-prize-row"><span>🥈 อันดับ 2</span><span><span class="gico"></span> 1000 + 🎫 25</span></div><div class="lb-prize-row"><span>🥉 อันดับ 3</span><span><span class="gico"></span> 500 + 🎫 10</span></div><div class="lb-prize-row"><span>4–6 อันดับ</span><span>💰 500 ทองถาวร</span></div><div class="lb-prize-row"><span>7–10 อันดับ</span><span>💰 200 ทองถาวร</span></div><div class="lb-prize-note">⚠️ ต้อง Login Google เพื่อรับรางวัล</div></div>`;
     body.innerHTML=_svBanner+'<div class="lb-empty" style="color:#aaa;padding:20px;">⏳ กำลังโหลด...</div>';
-    fetch('/api/leaderboard',{signal:AbortSignal.timeout(5000)})
+    const _myUid=typeof getPlayerId==='function'?getPlayerId():'';
+    fetch('/api/leaderboard?uid='+encodeURIComponent(_myUid),{signal:AbortSignal.timeout(5000)})
       .then(r=>r.json())
       .then(d=>{
         const entries=d.entries||[];
-        // patch prize into render
         const sorted=[...entries].sort((a,b)=>b.score-a.score).slice(0,10);
-        const myName=lastName;
+        const myUid=_myUid;
         const myAv=localStorage.getItem('tq_avatar')||'🎮';
         const _gridCols2='40px 38px 1fr 52px 80px 56px 90px';
         let h=`<div class="lbt-header" style="grid-template-columns:${_gridCols2};"><span>#</span><span></span><span>ชื่อ</span><span>ระดับ</span><span>⭐ คะแนน</span><span>🌊 เวฟ</span><span style="color:#ffd24d;">🎁 รางวัล</span></div>`;
         const _diffEmoji2={'ง่าย':'🟢','ปกติ':'🟡','ยาก':'🔴'};
         sorted.forEach((r,i)=>{
-          const me=r.name===myName;
+          const me=r.uid?r.uid===myUid:r.name===lastName;
           const rc=`lbt-row${i===0?' lbt-row-1':i===1?' lbt-row-2':i===2?' lbt-row-3':''}${me?' lbt-me':''}`;
           const av=me?myAv:(r.avatar||'🎮');
           const avHtml=av.startsWith('data:')?`<img src="${av}" style="width:26px;height:26px;border-radius:50%;object-fit:cover;vertical-align:middle;">`:`<span style="font-size:20px;line-height:26px;">${av}</span>`;
@@ -3937,10 +3941,25 @@ function renderLb(){
           </div>`;
         });
         if(!sorted.length) h='<div class="lb-empty">ยังไม่มีข้อมูล</div>';
+        // แสดง rank ของตัวเองถ้าอยู่นอก TOP 10
+        if(d.myEntry){
+          const me=d.myEntry;
+          const av=myAv;
+          const avHtml=av.startsWith('data:')?`<img src="${av}" style="width:26px;height:26px;border-radius:50%;object-fit:cover;vertical-align:middle;">`:`<span style="font-size:20px;line-height:26px;">${av}</span>`;
+          h+=`<div style="text-align:center;color:rgba(255,255,255,.25);font-size:11px;padding:6px 0;letter-spacing:2px;">· · ·</div>`;
+          h+=`<div class="lbt-row lbt-me" style="grid-template-columns:${_gridCols2};align-items:center;border:1px solid rgba(255,210,77,.35);border-radius:8px;">
+            <span class="lbt-rank"><span class="lb-rank-num">${me.rank}</span></span>
+            <span style="display:flex;align-items:center;justify-content:center;">${avHtml}</span>
+            <span class="lbt-name">${me.name}</span>
+            <span style="display:flex;flex-direction:column;align-items:center;line-height:1.05;"><span style="font-size:13px;">${_diffEmoji2[me.diff]||'⚪'}</span><span style="font-size:8.5px;color:#aaa;">${me.diff||'—'}</span></span>
+            <span class="lbt-score">${me.score.toLocaleString()}</span>
+            <span class="lbt-score" style="color:#80cbc4;">${me.wave}</span>
+            <span style="font-size:10px;color:#aaa;text-align:right;">—</span>
+          </div>`;
+        }
         // countdown
         if(d.resetAt){const rem=d.resetAt-Date.now();const sub=document.getElementById('lbSeasonSub');if(sub)sub.textContent='SS'+(d.season||'?')+' · รีเซ็ตใน '+_fmtCountdown(rem);}
         body.innerHTML=_svBanner+h+_prizeTable;
-        // update sub after re-render
         if(d.resetAt){const rem=d.resetAt-Date.now();const sub=document.getElementById('lbSeasonSub');if(sub)sub.textContent='SS'+(d.season||'?')+' · รีเซ็ตใน '+_fmtCountdown(rem);}
       })
       .catch(()=>{

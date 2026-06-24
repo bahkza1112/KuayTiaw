@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.13.0 — Leaderboard แสดง rank ตัวเองนอก TOP 10
+
+### Added
+- `server.js`: `GET /api/leaderboard?uid=xxx` — หา rank ของ uid ในตาราง full sorted, ส่ง `myEntry:{rank,...}` กลับถ้าอยู่อันดับ 11+
+- `js/ui.js`: หลัง render TOP 10 ถ้า `d.myEntry` มีค่า → แสดง `···` separator + แถวของตัวเองพร้อม border ทอง
+- ใช้ `uid` แทน `name` ในการ match แถว "ตัวเอง" ใน TOP 10 (กันกรณีชื่อซ้ำ)
+
 ## v3.12.8 — Weather Pool Expansion
 
 ### Changed
