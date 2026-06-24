@@ -30,15 +30,24 @@ function authHeaders() {
   return tok ? { 'X-Auth-Token': tok } : {};
 }
 
+let _saveFailT = 0;
 async function cloudSave() {
   if (!cloudUser || !cloudAvailable) return;
   try {
-    await fetch('/api/save', {
+    const r = await fetch('/api/save', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...authHeaders() },
       body: JSON.stringify(getAllTqKeys()),
     });
-  } catch (e) { /* silent fail */ }
+    if (!r.ok) throw new Error('http '+r.status);
+    _saveFailT = 0;
+  } catch (e) {
+    const now = Date.now();
+    if (now - _saveFailT > 120000) { // แจ้งเตือนซ้ำได้ทุก 2 นาทีเท่านั้น
+      _saveFailT = now;
+      if (typeof showToast === 'function') showToast('⚠️ บันทึกข้อมูลไม่สำเร็จ — ตรวจสอบการเชื่อมต่อ');
+    }
+  }
 }
 
 async function cloudInit() {
