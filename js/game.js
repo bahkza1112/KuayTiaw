@@ -2142,11 +2142,11 @@ function showWavePreview(){
   if(typeof isEndgame!=='undefined'&&isEndgame){
     avail=_getEgEnemyPool();
     bChance=0.08+(typeof egRound!=='undefined'?egRound:.0)*.015;
-    // เวฟพิเศษ Endgame: boss=×10, gold=×7, swarm=×4
-    const mod=nextWave%10;
+    // เวฟพิเศษ Endgame: boss=×10, gold=×7, swarm=×4 (เริ่ม wave 6+ เหมือน startEgWave)
+    if(nextWave>=6){const mod=nextWave%10;
     if(mod===0) specialLabel='<div style="color:#ff6b6b;font-weight:700;font-size:11px;margin-bottom:4px;">👹 บอสรัช! ศัตรู boss ออกถี่มาก</div>';
     else if(mod===7) specialLabel='<div style="color:#ffd54f;font-weight:700;font-size:11px;margin-bottom:4px;">💰 เวฟทอง — ทองรับ ×2</div>';
-    else if(mod===4) specialLabel='<div style="color:#aed581;font-weight:700;font-size:11px;margin-bottom:4px;">🐝 เวฟฝูง — ศัตรูออกมาก +60%</div>';
+    else if(mod===4) specialLabel='<div style="color:#aed581;font-weight:700;font-size:11px;margin-bottom:4px;">🐝 เวฟฝูง — ศัตรูออกมาก +60%</div>';}
   } else {
     avail=currentStage.enemyTypes;
     bChance=currentStage.bossChance!==undefined?currentStage.bossChance:CFG.bossChance;
