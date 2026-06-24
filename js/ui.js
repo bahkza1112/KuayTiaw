@@ -1,6 +1,9 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.13.9';
+const GAME_VERSION='3.13.10';
 const PATCH_NOTES=[
+  {ver:'3.13.10',date:'2026-06-24',title:'✨ badge "N" สีแดงบน Achievement ที่ปลดล็อกใหม่',notes:[
+    'รางวัลที่เพิ่งปลดล็อกจะมีป้าย N สีแดงมุมซ้ายบน — หายไปเมื่อเปิดดูแท็บรางวัล',
+  ]},
   {ver:'3.13.9',date:'2026-06-24',title:'🐛 แก้ Blizzard ไม่บล็อกสกิล Freeze + verBtn อัตโนมัติ',notes:[
     '🧊 Blizzard slowImmune ตอนนี้ครอบคลุมสกิล Freeze ด้วย (เดิมยังแช่ศัตรูได้แม้มี blizzard)',
     'verBtn แสดงเลข version จาก GAME_VERSION อัตโนมัติ ไม่ต้องแก้ HTML ทุก version',
@@ -1053,6 +1056,7 @@ function _updateNewsBadge(){
 
 function renderAchievTab(){
   const unlocked=loadAchievements();
+  const seen=new Set(JSON.parse(localStorage.getItem('tq_ach_seen')||'[]'));
   const total=ACHIEVEMENTS.length;
   const done=[...unlocked].filter(id=>ACHIEVEMENTS.find(a=>a.id===id)).length;
   let html=`<div class="ach-count">🎖️ ปลดล็อกแล้ว ${done} / ${total}</div>
@@ -1065,8 +1069,10 @@ function renderAchievTab(){
     html+=`<div class="ach-cat-label">${ACH_CATS[cat]}</div><div class="ach-grid">`;
     items.forEach(a=>{
       const isUnlocked=unlocked.has(a.id);
+      const isNew=isUnlocked&&!seen.has(a.id);
       html+=`<div class="ach-card ${isUnlocked?'unlocked':'locked'}">
         ${isUnlocked?'<div class="ach-done">✓</div>':''}
+        ${isNew?'<div class="ach-new-badge">N</div>':''}
         <div class="ach-ico">${a.icon}</div>
         <div class="ach-name">${a.name}</div>
         <div class="ach-desc">${a.desc}</div>

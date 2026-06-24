@@ -2,6 +2,12 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.13.10 — Achievement "N" New Badge
+
+### Added
+- `js/ui.js` `renderAchievTab()`: card รางวัลที่ unlock ใหม่ (ยังไม่ได้เปิดดู) แสดง badge "N" สีแดงมุมซ้ายบน
+- `css/main.css` `.ach-new-badge`: สไตล์ badge สีแดง absolute top-left บน ach-card
+
 ## v3.13.9 — Bug Fix: Blizzard + verBtn auto
 
 ### Fixed
