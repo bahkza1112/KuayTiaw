@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.13.5 — Merge hint visual + Wave preview special + Endgame milestone HUD
+
+### Added
+- `js/game.js` `G.mergeHintPulseT`: ป้อมที่ merge ได้กะพริบขอบทอง 4 วินาทีตอนแสดง hint ครั้งแรก
+- `js/game.js` `showWavePreview()`: label พิเศษ 👹/💰/🐝 สำหรับ Endgame + "⚠️ อาจมีบอส X%" สำหรับ story
+- `Tower Quest 🏰.html`: `#egMilestoneHud` — span ใน wave HUD แสดง next milestone เวฟถัดไปใน Endgame (👹-3 / 💰-2 ฯลฯ)
+- `js/game.js` `startEgWave()`: อัปเดต `#egMilestoneHud` หลังแต่ละเวฟ
+- `js/game.js` `startStage()`: ซ่อน `#egMilestoneHud` ตอนเล่น story mode
+
 ## v3.13.4 — Bug Fix: VFX alpha, dmgNums cap, badge รางวัล
 
 ### Fixed

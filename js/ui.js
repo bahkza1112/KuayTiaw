@@ -1,6 +1,11 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.13.4';
+const GAME_VERSION='3.13.5';
 const PATCH_NOTES=[
+  {ver:'3.13.5',date:'2026-06-24',title:'✨ Merge hint visual + Wave preview + Endgame milestone',notes:[
+    'ป้อมที่ merge ได้จะกะพริบขอบทองตอนแสดง hint ครั้งแรก ให้เห็นชัดขึ้น',
+    'Wave preview แสดง label พิเศษ: 👹 บอสรัช / 💰 เวฟทอง / 🐝 เวฟฝูง + % โอกาสบอส',
+    'Endgame HUD แสดง milestone ถัดไป (👹/💰/🐝 อีก X เวฟ) ข้างตัวเลขเวฟ',
+  ]},
   {ver:'3.13.4',date:'2026-06-24',title:'🐛 แก้บัค VFX + Badge รางวัล + AWAKENED! text',notes:[
     'แก้ flash 4★/Awaken fade ผิด — ตอนนี้ค่อยๆ สว่างแล้วจางถูกต้องแล้ว',
     'แก้ข้อความ "AWAKENED!" / "★★★★ MAX!" โดนตัดทิ้งตอน wave ใหญ่',

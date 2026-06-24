@@ -193,7 +193,7 @@ function mkState(){
     gold:CFG.startGold,hp:CFG.baseHP,maxHp:CFG.baseHP,
     wave:0,score:0,selTwr:-1,waveActive:false,
     over:false,win:false,queue:[],spawnT:0,mx:-1,my:-1,
-    selTowerInfo:null,gmTimers:{},shakeT:0,hitStopT:0,waveBanner:null,bossWarning:null,
+    selTowerInfo:null,gmTimers:{},shakeT:0,hitStopT:0,waveBanner:null,bossWarning:null,mergeHintPulseT:0,
     kills:0,comboN:0,comboT:0,maxCombo:0,dmgBuff:1,
     dmgByType:{},battleT:0,egMilestones:{}, /* สถิติจบเกม + หมุดหมาย Endgame */
     skillId:null,skillCd:0,skillCdMax:0,skillAiming:false, /* ⭐ การ์ดสกิลกดเอง */
@@ -383,6 +383,7 @@ function initGame(){
   document.getElementById('waveBtn').disabled=false;
   document.getElementById('waveTxt').textContent='0';
   document.getElementById('maxWaveTxt').textContent=s.waves;
+  const _smh=document.getElementById('egMilestoneHud');if(_smh){_smh.style.display='none';_smh.textContent='';}
   document.getElementById('stageBadge').textContent='S'+(s.id+1)+' '+s.icon;
   // BUG FIX: reset selTwr highlight on restart
   for(let i=0;i<9;i++){const b=document.getElementById('tb'+i);if(b)b.classList.remove('sel','locked-tower');}
@@ -1300,6 +1301,7 @@ function update(dt){
   }
   // boss warning decay
   if(G.bossWarning&&G.bossWarning.t>0) G.bossWarning.t-=dt;
+  if(G.mergeHintPulseT>0) G.mergeHintPulseT=Math.max(0,G.mergeHintPulseT-dt);
   // V1: screen shake decay
   if(G.shakeT>0) G.shakeT=Math.max(0,G.shakeT-dt*3.8);
   // V5: wave banner decay
@@ -1714,6 +1716,20 @@ function render(){
       ctx.shadowBlur=0;
       ctx.restore();
     }
+    // merge hint pulse — กะพริบบนป้อมที่ merge ได้ตอนแสดง hint ครั้งแรก
+    if(G.mergeHintPulseT>0){
+      const _pair=G.towers.find(t=>t!==tw&&t.type===tw.type&&t.star===tw.star);
+      if(_pair){
+        const _pa=Math.abs(Math.sin(G.mergeHintPulseT*6))*.9;
+        ctx.save();
+        ctx.globalAlpha=_pa;
+        ctx.shadowBlur=14;ctx.shadowColor='#ffe082';
+        ctx.strokeStyle='#ffe082';ctx.lineWidth=3;
+        ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x+1,y+1,CS-2,CS-2,8);else ctx.rect(x+1,y+1,CS-2,CS-2);
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
     // star float — ดาวลอยเหนือป้อม ไม่มีกรอบ
     {
       const _st=tw.star||1;
@@ -2122,13 +2138,19 @@ function render(){
 function showWavePreview(){
   if(!G||G.waveActive||G.over||G.win) return;
   const nextWave=G.wave+1;
-  let avail,bChance;
+  let avail,bChance,specialLabel='';
   if(typeof isEndgame!=='undefined'&&isEndgame){
     avail=_getEgEnemyPool();
     bChance=0.08+(typeof egRound!=='undefined'?egRound:.0)*.015;
+    // เวฟพิเศษ Endgame: boss=×10, gold=×7, swarm=×4
+    const mod=nextWave%10;
+    if(mod===0) specialLabel='<div style="color:#ff6b6b;font-weight:700;font-size:11px;margin-bottom:4px;">👹 บอสรัช! ศัตรู boss ออกถี่มาก</div>';
+    else if(mod===7) specialLabel='<div style="color:#ffd54f;font-weight:700;font-size:11px;margin-bottom:4px;">💰 เวฟทอง — ทองรับ ×2</div>';
+    else if(mod===4) specialLabel='<div style="color:#aed581;font-weight:700;font-size:11px;margin-bottom:4px;">🐝 เวฟฝูง — ศัตรูออกมาก +60%</div>';
   } else {
     avail=currentStage.enemyTypes;
     bChance=currentStage.bossChance!==undefined?currentStage.bossChance:CFG.bossChance;
+    if(bChance>0) specialLabel=`<div style="color:#ff8a65;font-size:10px;margin-bottom:4px;">⚠️ อาจมีบอส (${Math.round(bChance*100)}%)</div>`;
   }
   // simulate what enemies will spawn
   const count=CFG.enemyPerWaveBase+nextWave*CFG.enemyPerWaveInc;
@@ -2140,7 +2162,7 @@ function showWavePreview(){
     if(avail.includes(9)&&nextWave>=9&&Math.random()<bChance*.8) ei=9;
     tally[ei]=(tally[ei]||0)+1;
   }
-  let html='';
+  let html=specialLabel;
   Object.entries(tally).sort((a,b)=>a[0]-b[0]).forEach(([ti,cnt])=>{
     html+=`<div class="wave-preview-enemy"><img src="${getEnemyIconURL(parseInt(ti),30)}" width="30" height="30" style="display:block;margin:0 auto 2px;">${ENAMES[parseInt(ti)]}<br><span style="color:#ffe082;">×${cnt}</span></div>`;
   });
@@ -2185,7 +2207,10 @@ function tryPlaceTower(type,col,row){
   const sameType=G.towers.filter(t=>t.type===type).length;
   if(sameType>=2&&!localStorage.getItem('tq_hint_merge')){
     localStorage.setItem('tq_hint_merge','1');
-    setTimeout(()=>showToast('💡 ลาก 2 ป้อมชนิดเดียวกัน ★ เท่ากัน ทับกันเพื่อรวม → ★ สูงขึ้น!'),2400);
+    setTimeout(()=>{
+      showToast('💡 ลาก 2 ป้อมชนิดเดียวกัน ★ เท่ากัน ทับกันเพื่อรวม → ★ สูงขึ้น!');
+      if(G) G.mergeHintPulseT=4.0; // pulse highlight บนป้อมที่ merge ได้ 4 วินาที
+    },2400);
   }
   return true;
 }
@@ -2600,6 +2625,7 @@ function initEgGame(){
   document.getElementById('pauseScreen').style.display='none';
   document.getElementById('waveBtn').disabled=false;
   document.getElementById('maxWaveTxt').textContent='∞';
+  const _egMh=document.getElementById('egMilestoneHud');if(_egMh)_egMh.style.display='inline';
   document.getElementById('stageBadge').textContent='🔥 Round '+(egRound+1);
   document.getElementById('stageBadge').className='eg-round-badge';
   for(let i=0;i<9;i++){const b=document.getElementById('tb'+i);if(b){b.classList.remove('sel','locked-tower');const c=document.getElementById('tc'+i);if(c)c.textContent='💰'+getTowerCost(i);}}
@@ -2666,6 +2692,23 @@ function startEgWave(){
   egRound=Math.floor((G.wave-1)/EG_WAVES_PER_ROUND);
   currentStage.enemyTypes=_getEgEnemyPool();
   document.getElementById('stageBadge').textContent='🔥 Round '+(egRound+1);
+  // milestone HUD — บอกเวฟพิเศษถัดไป
+  (()=>{
+    const el=document.getElementById('egMilestoneHud');
+    if(!el) return;
+    const w=G.wave;
+    const nextBoss=w%10===0?10:10-(w%10); // เวฟถัดไปที่ mod=0
+    const nextGold=w%10>=7?10-(w%10)+7:7-(w%10);
+    const nextSwarm=w%10>=4&&w%10<7?7-(w%10):w%10>=7?10-(w%10)+4:4-(w%10);
+    // หา milestone ที่ใกล้ที่สุด
+    const cands=[];
+    if(nextBoss<=10) cands.push({n:nextBoss,label:'👹-'+nextBoss});
+    if(nextGold>0&&nextGold<=10) cands.push({n:nextGold,label:'💰-'+nextGold});
+    if(nextSwarm>0&&nextSwarm<=10) cands.push({n:nextSwarm,label:'🐝-'+nextSwarm});
+    cands.sort((a,b)=>a.n-b.n);
+    el.textContent=cands.length?cands[0].label:'';
+    el.style.display=cands.length?'':'none';
+  })();
   document.getElementById('waveBtn').disabled=true;
   G.waveActive=true; G.queue=[]; G.spawnT=0;
   rollWeather(currentStage.id); // 🌦 roll random weather for this Endgame wave
