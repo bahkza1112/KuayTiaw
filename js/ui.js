@@ -4106,9 +4106,8 @@ document.getElementById('profileBackBtn').addEventListener('click',()=>showScree
   document.getElementById('verBtn').addEventListener('click',()=>{
     _vc++;
     if(_vt) clearTimeout(_vt);
-    _vt=setTimeout(()=>{_vc=0;_vt=null;},2000);
-    if(_vc>=5){_vc=0;clearTimeout(_vt);_vt=null;_showDevPwdPrompt();}
-    else openWhatsNew();
+    if(_vc>=5){_vc=0;_vt=null;_showDevPwdPrompt();return;}
+    _vt=setTimeout(()=>{if(_vc>0)openWhatsNew();_vc=0;_vt=null;},400);
   });
 })();
 document.getElementById('whatsnewBackBtn').addEventListener('click',()=>showScreen('mm',true));
