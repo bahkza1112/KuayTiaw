@@ -2298,7 +2298,7 @@ function tryPlaceTower(type,col,row){
   // decoration check — เหมืองทองขุดฟรี, อื่นๆ บล็อก
   const _dt=getDecoType(col,row);
   if(_dt!==null){
-    if(type===6){G.dugCells.add(col+','+row);delete G.obstacles[col+','+row];G.obstaclesCleared++;}
+    if(type===6){G.dugCells.add(col+','+row);delete G.obstacles[col+','+row];G.obstaclesCleared++;_updateDigCost();}
     else{showToast('⛏️ เลือกเครื่องมือขุดก่อน ('+getDigCost(_dt)+' ทอง)');return false;}
   }
   const cost=getTowerCost(type);
@@ -2340,10 +2340,7 @@ function onCanvasClick(e){
   if(col<0||col>=COLS||row<0||row>=ROWS) return;
   if(G.skillAiming){_castMeteorAt(col,row);return;} // ☄️ เล็งอุกกาบาต → ทิ้งตรงจุด
   G.selTowerInfo=null; hideTowerPopup(); // deselect range on any click
-  if(G.selDig){
-    if(!digCell(col,row)) showToast('⛏️ เลือกช่องที่มีฉากเพื่อขุด');
-    return;
-  }
+  if(G.selDig){ digCell(col,row); return; }
   if(G.selTwr>=0){
     tryPlaceTower(G.selTwr,col,row);
   } else {
