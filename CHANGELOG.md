@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.15.1 — Bug fixes: Dig Tool
+
+### Fixed
+- `onCanvasClick`: ลบ duplicate toast — `digCell` จัดการ toast ของตัวเองแล้ว, ไม่ต้อง showToast ซ้ำ
+- `tryPlaceTower` gold mine path: เรียก `_updateDigCost()` หลัง `obstaclesCleared++` เพื่ออัพเดตราคาปุ่ม ⛏️
+
+---
+
 ## v3.15.0 — Dig Tool: ขุดฉากออกสร้างป้อม
 
 ### Added
