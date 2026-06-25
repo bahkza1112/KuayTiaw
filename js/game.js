@@ -1416,7 +1416,9 @@ function render(){
   for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
     if(currentPset.has(c+','+r)) continue;
     if(G.towers.find(t=>t.col===c&&t.row===r)) continue;
-    const h=(c*17+r*13+_sid*31)%100;
+    // obstacle cells: บังคับ h ให้ตรง type (t:2=ต้นไม้ h<22, t:1=หิน h22-38, t:0=พุ่มไม้ h38-48)
+    const _obsT=G.obstacles&&G.obstacles[c+','+r];
+    const h=_obsT!==undefined?[40,25,10][_obsT]:(c*17+r*13+_sid*31)%100;
     const tx=c*CS, ty=r*CS;
     const ox=((c*11+r*7)%24)-12, oy=((c*7+r*9)%18)-9; // offset within tile
     const cx2=tx+CS*.5+ox, cy2=ty+CS*.5+oy;
@@ -1510,32 +1512,15 @@ function render(){
     ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillText('▶',0,0);ctx.restore();
   }
-  // ── OBSTACLES ──
-  if(G.obstacles){
-    const _hk=G.mx>=0?G.mx+','+G.my:null;
-    for(const key in G.obstacles){
-      const [oc,or]=key.split(',').map(Number);
-      const tx=oc*CS,ty=or*CS;
-      const ot=G.obstacles[key];
-      const _hov=key===_hk;
-      // tinted background
-      const _cols=[['#2e7d32','#1b5e20'],['#616161','#424242'],['#4e342e','#3e2723']];
-      ctx.fillStyle=_cols[ot][0]+((_hov)?'dd':'99');
-      ctx.fillRect(tx+2,ty+2,CS-4,CS-4);
-      if(_hov){ctx.strokeStyle='#ffe082';ctx.lineWidth=2;ctx.strokeRect(tx+2,ty+2,CS-4,CS-4);}
-      // obstacle emoji
-      ctx.font=Math.round(CS*.52)+'px Arial';ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.globalAlpha=_hov?.95:.75;
-      ctx.fillText(OBS_ICONS[ot],tx+CS*.5,ty+CS*.52);
-      ctx.globalAlpha=1;
-      // cost label on hover
-      if(_hov){
-        const cost=getObstacleCost(ot);
-        ctx.font='bold 9px Arial';ctx.fillStyle='#ffe082';ctx.textAlign='center';ctx.textBaseline='top';
-        ctx.fillText('⛏️'+cost+'g',tx+CS*.5,ty+2);
-      }
+  // ── OBSTACLE HOVER HIGHLIGHT ──
+  if(G.obstacles&&G.mx>=0){
+    const _hk=G.mx+','+G.my;
+    const _ot=G.obstacles[_hk];
+    if(_ot!==undefined){
+      const tx=G.mx*CS,ty=G.my*CS;
+      ctx.globalAlpha=.32;ctx.fillStyle='#ffe082';ctx.fillRect(tx,ty,CS,CS);ctx.globalAlpha=1;
+      ctx.strokeStyle='#ffe082';ctx.lineWidth=2;ctx.strokeRect(tx+1,ty+1,CS-2,CS-2);
     }
-    ctx.textAlign='left';ctx.textBaseline='alphabetic';
   }
   // base castle — glowing platform
   const L=currentPath[currentPath.length-1];
