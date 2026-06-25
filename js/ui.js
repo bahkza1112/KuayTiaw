@@ -1,6 +1,12 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.14.2';
+const GAME_VERSION='3.14.3';
 const PATCH_NOTES=[
+  {ver:'3.14.3',date:'2026-06-25',title:'⚡ Performance: ลด lag ตอนมอนเยอะ',notes:[
+    'ตัดการปล่อย ambient particle (ควัน/iskra/orb) เมื่อมีมอนสเตอร์บนจอ >12 ตัว',
+    'จำกัด particle สูงสุด 30 ตัวใน Endless Mode เหมือน Story Mode',
+    'shadowBlur บน fxFlash ถูก cap ที่ 40px — ป้องกัน GPU หนักจาก wave flash ขนาดใหญ่',
+    'shadow บน particle ถูกข้ามในโหมด perf (มอน >12) — ลด GPU load ได้มาก',
+  ]},
   {ver:'3.14.2',date:'2026-06-25',title:'✨ Wave Cinematic + Ambient Particles',notes:[
     'เริ่มคลื่นใหม่: flash สว่าง + particle พุ่งจากขอบจอเข้าหากลาง',
     'คลื่น Boss: แบนเนอร์ "💀 BOSS WAVE" + flash สีแดง + หน้าจอสั่นเล็กน้อย',

@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.14.3 — Performance: ลด lag ตอนมอนเยอะ
+
+### Fixed
+- `js/game.js` fxFlash render: `shadowBlur=Math.min(f.r*.9,40)` — cap ป้องกัน GPU หนักจาก wave flash r=480px
+- `js/game.js` particle render: skip `shadowBlur` เมื่อ `perfMode` (enemies>12) — ลด GPU load ต่อ particle
+- `js/game.js` ambient emission: gate `G.enemies.length<=12` — ไม่ปล่อย ambient particle ตอนมอนเยอะ (story+endgame)
+- `js/game.js` endgame particle cap: เพิ่ม `splice(0,length-30)` เหมือน story mode
+- `js/game.js` endgame particle remove: เปลี่ยนจาก `splice(i,1)` O(n) → swap-and-pop O(1)
+
+---
+
 ## v3.14.2 — Wave Cinematic + Ambient Particles
 
 ### Added

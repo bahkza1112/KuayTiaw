@@ -1010,7 +1010,7 @@ function update(dt){
     if(tw._drainT>0) tw._drainT-=dt;
     if(tw._shootT>0) tw._shootT=Math.max(0,tw._shootT-dt*7);
     if(tw._stunT>0){tw._stunT-=dt;return;} // 🐉 ถูกวิเวิร์นโฉบหยุดทำงาน
-    if(_TAMB[tw.type]){
+    if(_TAMB[tw.type]&&G.enemies.length<=12){
       if(tw._ambT===undefined) tw._ambT=Math.random()*_TAMB[tw.type];
       if((tw._ambT-=dt)<=0){
         tw._ambT=_TAMB[tw.type];
@@ -1565,7 +1565,7 @@ function render(){
     const fa=Math.max(0,f.life/(f.maxLife||.18));
     ctx.save();
     ctx.globalAlpha=fa*.7;
-    ctx.shadowColor=f.col;ctx.shadowBlur=f.r*.9;
+    ctx.shadowColor=f.col;ctx.shadowBlur=Math.min(f.r*.9,40);
     const fg=ctx.createRadialGradient(f.x,f.y,0,f.x,f.y,f.r);
     fg.addColorStop(0,'rgba(255,255,255,.95)');fg.addColorStop(.4,f.col);fg.addColorStop(1,'rgba(0,0,0,0)');
     ctx.fillStyle=fg; ctx.beginPath(); ctx.arc(f.x,f.y,f.r,0,Math.PI*2); ctx.fill();
@@ -2026,10 +2026,9 @@ function render(){
     const fs=p.scale?Math.round(12*p.scale):12;
     ctx.font='bold '+fs+'px Arial';
     ctx.fillStyle=p.col;
-    // shadow for readability
-    ctx.shadowColor='rgba(0,0,0,.8)';ctx.shadowBlur=3;
+    if(!perfMode){ctx.shadowColor='rgba(0,0,0,.8)';ctx.shadowBlur=3;}
     ctx.fillText(p.txt,p.x,p.y);
-    ctx.shadowBlur=0;
+    if(!perfMode) ctx.shadowBlur=0;
   });
   ctx.globalAlpha=1;
   // floating damage numbers
@@ -2924,7 +2923,7 @@ function updateEg(dt){
   G.towers.forEach(tw=>{
     if(tw._shootT>0) tw._shootT=Math.max(0,tw._shootT-dt*7);
     if(tw._stunT>0){tw._stunT-=dt;return;} // 🐉 ถูกวิเวิร์นโฉบหยุดทำงาน
-    if(_TAMB[tw.type]){
+    if(_TAMB[tw.type]&&G.enemies.length<=12){
       if(tw._ambT===undefined) tw._ambT=Math.random()*_TAMB[tw.type];
       if((tw._ambT-=dt)<=0){
         tw._ambT=_TAMB[tw.type];
@@ -3114,11 +3113,12 @@ function updateEg(dt){
     const t=G.fxTrails[i]; t.life-=dt*6;
     if(t.life<=0) G.fxTrails.splice(i,1);
   }
+  if(G.enemies.length>12&&G.particles.length>30) G.particles.splice(0,G.particles.length-30);
   for(let i=G.particles.length-1;i>=0;i--){
     const p=G.particles[i];
     p.x+=p.vx||0; p.y+=p.vy; p.life-=dt*(p.decay||1.4);
     if(p.scale) p.scale=Math.max(.4,p.scale-dt*1.5);
-    if(p.life<=0) G.particles.splice(i,1);
+    if(p.life<=0){G.particles[i]=G.particles[G.particles.length-1];G.particles.pop();}
   }
   // wave clear → next wave (no limit)
   if(G.waveActive&&G.queue.length===0&&G.enemies.length===0){
