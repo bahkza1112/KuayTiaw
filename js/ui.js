@@ -1,6 +1,12 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.15.2';
+const GAME_VERSION='3.15.3';
 const PATCH_NOTES=[
+  {ver:'3.15.3',date:'2026-06-25',title:'🟢 Tower hover แสดงสีเขียว/แดงว่าวางได้ไหม',notes:[
+    'ช่องที่วางป้อมได้ → highlight สีเขียว พร้อม border ชัดเจน',
+    'ช่องที่วางไม่ได้ (เส้นทาง/ป้อมซ้อน/มีฉากกีดขวาง) → highlight สีแดง',
+    'เหมืองทอง 💰 hover บนฉากยังแสดงสีเขียวเพราะวางทับได้อัตโนมัติ',
+    'range circle แสดงเฉพาะตอน hover ช่องที่วางได้เท่านั้น',
+  ]},
   {ver:'3.15.2',date:'2026-06-25',title:'✨ Wave Clear Banner + Tower Placement FX',notes:[
     'เคลียร์คลื่นแล้วขึ้น banner สีเขียว "✅ WAVE X CLEAR!" พร้อม screen flash',
     'ดอกไม้ไฟกระจายกว้างกว่าเดิม (10 rings ทั่วจอแทน 5 rings ตรงกลาง)',

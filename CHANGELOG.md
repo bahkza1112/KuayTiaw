@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.15.3 — Tower Placement Hover: Green/Red Indicator
+
+### Changed
+- Tower ghost hover: `ok` check ครอบคลุม `getDecoType` แล้ว — ช่องมีฉากกีดขวางแสดงแดง (ยกเว้นเหมืองทอง type 6)
+- Tower ghost hover: เพิ่ม border stroke สีเขียว/แดง 2.5px รอบ cell ให้เห็นชัดขึ้น
+- Tower ghost hover: range circle แสดงเฉพาะ ok===true (ไม่แสดงตอน hover ช่องที่วางไม่ได้)
+
+---
+
 ## v3.15.2 — Wave Clear Banner + Tower Placement FX
 
 ### Added

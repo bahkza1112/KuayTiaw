@@ -1642,16 +1642,25 @@ function render(){
   // tower ghost
   if(G.selTwr>=0&&G.mx>=0&&G.my>=0&&G.mx<COLS&&G.my<ROWS){
     const mc=G.mx,mr=G.my;
-    const ok=!currentPset.has(mc+','+mr)&&!G.towers.find(t=>t.col===mc&&t.row===mr);
-    ctx.globalAlpha=.35;ctx.fillStyle=ok?TCOLORS[G.selTwr]:'#f44336';
+    const _hasDeco=getDecoType(mc,mr)!==null;
+    const ok=!currentPset.has(mc+','+mr)&&!G.towers.find(t=>t.col===mc&&t.row===mr)
+              &&(!_hasDeco||G.selTwr===6);
+    const _hCol=ok?'#69f0ae':'#f44336';
+    ctx.globalAlpha=.28;ctx.fillStyle=ok?TCOLORS[G.selTwr]:'#f44336';
     ctx.fillRect(mc*CS,mr*CS,CS,CS);
-    const gx=mc*CS+CS/2, gy=mr*CS+CS/2, grang=getTowerRange(G.selTwr,1)*CS;
-    ctx.globalAlpha=.12;ctx.fillStyle=TACCENT[G.selTwr];
-    ctx.beginPath();ctx.arc(gx,gy,grang,0,Math.PI*2);ctx.fill();
-    ctx.globalAlpha=.6;ctx.strokeStyle=TACCENT[G.selTwr];ctx.lineWidth=1.5;
-    ctx.setLineDash([4,3]);
-    ctx.beginPath();ctx.arc(gx,gy,grang,0,Math.PI*2);ctx.stroke();
-    ctx.setLineDash([]);ctx.globalAlpha=1;
+    ctx.globalAlpha=.9;ctx.strokeStyle=_hCol;ctx.lineWidth=2.5;
+    ctx.strokeRect(mc*CS+1,mr*CS+1,CS-2,CS-2);
+    ctx.globalAlpha=1;
+    if(ok){
+      const gx=mc*CS+CS/2, gy=mr*CS+CS/2, grang=getTowerRange(G.selTwr,1)*CS;
+      ctx.globalAlpha=.12;ctx.fillStyle=TACCENT[G.selTwr];
+      ctx.beginPath();ctx.arc(gx,gy,grang,0,Math.PI*2);ctx.fill();
+      ctx.globalAlpha=.6;ctx.strokeStyle=TACCENT[G.selTwr];ctx.lineWidth=1.5;
+      ctx.setLineDash([4,3]);
+      ctx.beginPath();ctx.arc(gx,gy,grang,0,Math.PI*2);ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    ctx.globalAlpha=1;
   }
   // muzzle flashes — skip expensive radial gradient + shadowBlur in perfMode
   if(!perfMode) G.fxFlash.forEach(f=>{
