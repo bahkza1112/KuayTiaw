@@ -2,6 +2,22 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.15.0 — Obstacle System
+
+### Added
+- `js/game.js` STAGES: `obstacles:[{c,r,t}]` per stage (t: 0=🌿25g, 1=🪨50g, 2=🌳90g)
+- `mkState()`: `obstacles{}`, `obstaclesCleared` counter
+- `getObstacleCost(type)`: `base*(1+cleared*0.3)` scaling เหมือน tower cost
+- `OBS_BASE/OBS_ICONS/OBS_NAMES`: obstacle type constants
+- `digObstacle(col,row)`: หักทอง, ลบออก, FX ring+particles
+- `render()`: วาด obstacle พร้อม tinted bg, emoji, cost label on hover
+- `onCanvasClick()`: คลิก obstacle โดยไม่ถือป้อม → `digObstacle()`
+- `onCanvasMove()`: hover แสดงราคาขุด; ถือป้อมอยู่แสดงว่าขุดได้ฟรีถ้าเป็นเหมืองทอง
+- `tryPlaceTower()`: เหมืองทอง (type 6) วางทับ obstacle ได้ฟรี, ป้อมอื่นบล็อก
+- Layout: ด่าน 0-2 มี 3, ด่าน 3-5 มี 4, ด่าน 6-8 มี 5, ด่าน 9-10 มี 6 obstacles
+
+---
+
 ## v3.14.4 — Performance: ลด FX death เมื่อมอนเยอะ
 
 ### Fixed

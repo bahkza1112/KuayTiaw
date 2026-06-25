@@ -7,6 +7,7 @@ const STAGES=[
    path:[[0,2],[1,2],[2,2],[3,2],[4,2],[5,2],[6,2],[7,2],[8,2],[9,2],[10,2],[11,2],
          [11,3],[11,4],[11,5],[10,5],[9,5],[8,5],[7,5],[6,5],[5,5],[4,5],[3,5],[2,5],
          [2,6],[2,7],[2,8],[3,8],[4,8],[5,8],[6,8],[7,8],[8,8],[9,8],[10,8],[11,8],[11,9]],
+   obstacles:[{c:6,r:3,t:0},{c:9,r:4,t:0},{c:4,r:6,t:0}],
    bgColor:'#1a3a1a',pathColor:'#9e7446',
    grassColors:['#2e7d32','#388e3c','#43a047','#33691e','#1b5e20']},
   {id:1,name:'Dark Forest',icon:'🌲',
@@ -18,6 +19,7 @@ const STAGES=[
          [11,3],[11,4],[10,4],[9,4],[8,4],[8,5],[8,6],[8,7],
          [9,7],[10,7],[11,7],[11,8],[10,8],[9,8],[8,8],[7,8],
          [6,8],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8]],
+   obstacles:[{c:5,r:3,t:0},{c:6,r:6,t:1},{c:10,r:5,t:0}],
    bgColor:'#0d1f0d',pathColor:'#7a5c38',
    grassColors:['#1b5e20','#2e7d32','#1a3a1a','#0d2b0d','#2a5a2a']},
   {id:2,name:'Volcanic Pass',icon:'🌋',
@@ -28,6 +30,7 @@ const STAGES=[
          [7,5],[8,5],[9,5],[9,4],[9,3],[9,2],[10,2],[11,2],
          [11,3],[11,4],[11,5],[11,6],[11,7],[10,7],[9,7],[8,7],
          [8,8],[8,9],[7,9],[6,9],[5,9],[4,9],[3,9],[2,9],[1,9],[0,9]],
+   obstacles:[{c:4,r:4,t:0},{c:7,r:3,t:1},{c:5,r:7,t:0}],
    bgColor:'#1f0d00',pathColor:'#8b4513',
    grassColors:['#3e1a00','#4a2000','#5c2a00','#3a1800','#461e00']},
   {id:3,name:'Desert Crossing',icon:'🏜️',
@@ -38,6 +41,7 @@ const STAGES=[
          [11,1],[11,2],[11,3],[10,3],[9,3],[8,3],[7,3],[6,3],[5,3],[4,3],[3,3],
          [3,4],[3,5],[3,6],[4,6],[5,6],[6,6],[7,6],[8,6],[9,6],
          [9,7],[9,8],[9,9],[8,9],[7,9],[6,9],[5,9],[4,9],[3,9],[2,9],[1,9],[0,9]],
+   obstacles:[{c:6,r:1,t:1},{c:5,r:4,t:0},{c:6,r:7,t:1},{c:7,r:5,t:2}],
    bgColor:'#1a1400',pathColor:'#c49a3c',
    grassColors:['#3d2b00','#4a3500','#5c4200','#3a2900','#463200']},
   {id:4,name:'Treasure Valley',icon:'💰',
@@ -48,6 +52,7 @@ const STAGES=[
          [7,1],[8,1],[9,1],[10,1],[11,1],[11,2],[11,3],[11,4],[11,5],
          [10,5],[9,5],[8,5],[7,5],[6,5],[5,5],[4,5],[3,5],
          [3,6],[3,7],[3,8],[4,8],[5,8],[6,8],[7,8],[8,8],[9,8],[10,8],[11,8],[11,9]],
+   obstacles:[{c:5,r:2,t:0},{c:8,r:3,t:2},{c:8,r:6,t:1},{c:5,r:6,t:0}],
    bgColor:'#1a1200',pathColor:'#b8860b',
    grassColors:['#2d2000','#3a2800','#4a3300','#261c00','#332400']},
   /* ด่าน 5-9 (id 5-9) */
@@ -59,6 +64,7 @@ const STAGES=[
          [8,2],[8,3],[8,4],[7,4],[6,4],[5,4],[4,4],[4,5],[4,6],[4,7],
          [5,7],[6,7],[7,7],[8,7],[9,7],[10,7],[11,7],[11,8],[11,9],
          [10,9],[9,9],[8,9],[7,9],[6,9],[5,9],[4,9],[3,9],[2,9],[1,9],[0,9]],
+   obstacles:[{c:6,r:2,t:1},{c:7,r:3,t:2},{c:9,r:5,t:0},{c:6,r:5,t:0}],
    bgColor:'#0a0a1f',pathColor:'#52568f',
    grassColors:['#0d0d2a','#111133','#0a0a22','#131340','#0c0c28']},
   {id:6,name:'Cursed Swamp',icon:'🌿',
@@ -69,6 +75,7 @@ const STAGES=[
          [7,0],[8,0],[9,0],[10,0],[11,0],[11,1],[11,2],[11,3],[11,4],
          [10,4],[9,4],[8,4],[7,4],[6,4],[5,4],[4,4],[3,4],[2,4],
          [2,5],[2,6],[2,7],[2,8],[3,8],[4,8],[5,8],[6,8],[7,8],[8,8],[9,8],[10,8],[11,8],[11,9]],
+   obstacles:[{c:5,r:1,t:0},{c:8,r:2,t:1},{c:7,r:5,t:2},{c:5,r:6,t:1},{c:9,r:6,t:0}],
    bgColor:'#0a1a0a',pathColor:'#7a8f3a',
    grassColors:['#0d1f0d','#112211','#0a180a','#132513','#0c1c0c']},
   {id:7,name:'Dark Fortress',icon:'🏰',
@@ -79,6 +86,7 @@ const STAGES=[
          [5,4],[5,5],[6,5],[7,5],[7,4],[7,3],[7,2],[7,1],[8,1],[9,1],[10,1],[11,1],
          [11,2],[11,3],[11,4],[11,5],[11,6],[10,6],[9,6],[8,6],[7,6],[6,6],
          [6,7],[6,8],[6,9],[7,9],[8,9],[9,9],[10,9],[11,9]],
+   obstacles:[{c:3,r:3,t:1},{c:9,r:3,t:2},{c:8,r:4,t:0},{c:10,r:3,t:0},{c:8,r:7,t:1}],
    bgColor:'#0f0f0f',pathColor:'#5a4258',
    grassColors:['#1a0a1a','#1e0e1e','#150815','#1c0c1c','#170a17']},
   {id:8,name:'Dark Throne',icon:'👿',
@@ -89,12 +97,14 @@ const STAGES=[
          [4,7],[4,6],[4,5],[4,4],[4,3],[4,2],[4,1],[5,1],[6,1],[7,1],[8,1],[9,1],[10,1],[11,1],
          [11,2],[11,3],[11,4],[10,4],[9,4],[8,4],[7,4],[6,4],[5,4],[5,5],
          [5,6],[5,7],[5,8],[6,8],[7,8],[8,8],[9,8],[10,8],[11,8],[11,9]],
+   obstacles:[{c:2,r:2,t:0},{c:8,r:2,t:1},{c:7,r:5,t:2},{c:2,r:6,t:0},{c:9,r:6,t:1}],
    bgColor:'#1a0020',pathColor:'#7a1aa0',
    grassColors:['#1a0020','#200028','#150018','#1e0024','#17001e']},
   {id:9,name:'Dark Tower Summit',icon:'💀',
    desc:'ยอดหอคอยมืด — จอมมารผู้ยิ่งใหญ่รอคอยอยู่ ใช้ทุกพลังที่มีเพื่อยุติความมืด',
    waves:12,enemyTypes:[6,8,7,5,4,9],bossChance:.12,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
    maxTowers:6,story:'ยอดหอคอยมืดที่สูงที่สุด จอมมารผู้ยิ่งใหญ่สถิตอยู่ที่นี่มาหลายยุคหลายสมัย กองทัพทั้งหมดรวมพลครั้งสุดท้าย — ผู้พิทักษ์ต้องใช้ทุกสิ่งที่มีเพื่อยุติความมืดตลอดกาล...',
+   obstacles:[{c:5,r:1,t:2},{c:8,r:1,t:1},{c:4,r:3,t:0},{c:9,r:4,t:2},{c:6,r:6,t:1},{c:3,r:8,t:0}],
    path:[[0,0],[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0],[10,0],[11,0],
          [11,1],[11,2],[10,2],[9,2],[8,2],[7,2],[6,2],[5,2],[4,2],[3,2],[2,2],[1,2],
          [1,3],[1,4],[1,5],[2,5],[3,5],[4,5],[5,5],[6,5],[7,5],[8,5],[9,5],[10,5],[11,5],
@@ -106,6 +116,7 @@ const STAGES=[
    desc:'เศษเสี้ยวสุดท้ายของจอมมารลุกขึ้นอีกครั้ง ศัตรูทุกชนิดรวมพลในศึกครั้งสุดท้ายที่แท้จริง',
    waves:13,enemyTypes:[0,2,1,5,8,10,6,7,3,4,9],bossChance:.13,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
    isFinalStage:true,
+   obstacles:[{c:3,r:6,t:2},{c:5,r:5,t:1},{c:8,r:2,t:0},{c:10,r:3,t:1},{c:2,r:6,t:0},{c:8,r:5,t:2}],
    maxTowers:6,story:'จอมมารพ่ายแพ้ไปแล้ว... แต่เงาของมันไม่ยอมสลายไปง่ายๆ เศษพลังมืดที่หลงเหลือรวมตัวกันเป็นกองทัพผีร้ายชุดสุดท้าย ทุกชนิดสัตว์ร้ายที่เคยพ่ายแพ้กลับมารวมพลังกันอีกครั้ง — นี่คือศึกแท้จริงที่จะยุติความมืดตลอดกาล!',
    path:[[0,5],[1,5],[1,6],[1,7],[1,8],[2,8],[3,8],[4,8],[4,7],[4,6],[4,5],[4,4],
          [5,4],[6,4],[6,3],[6,2],[6,1],[6,0],[7,0],[8,0],[9,0],[9,1],[9,2],[9,3],[9,4],
@@ -198,7 +209,16 @@ function mkState(){
     dmgByType:{},battleT:0,egMilestones:{}, /* สถิติจบเกม + หมุดหมาย Endgame */
     skillId:null,skillCd:0,skillCdMax:0,skillAiming:false, /* ⭐ การ์ดสกิลกดเอง */
     skillDmgMult:1,skillRateMult:1,skillDmgT:0,skillGoldMult:0,skillGoldT:0,skillBlockT:0,
-    weather:mkWeatherState()};
+    weather:mkWeatherState(),
+    obstacles:{},obstaclesCleared:0}; /* 🪨 ระบบ obstacle */
+}
+// ราคาขุด obstacle — เพิ่มขึ้นทุกครั้งที่ขุด เหมือน tower cost scaling
+const OBS_BASE=[25,50,90]; // t0=พุ่มไม้, t1=หิน, t2=ต้นไม้
+const OBS_ICONS=['🌿','🪨','🌳'];
+const OBS_NAMES=['พุ่มไม้','หิน','ต้นไม้'];
+function getObstacleCost(type){
+  if(!G) return OBS_BASE[type];
+  return Math.round(OBS_BASE[type]*(1+G.obstaclesCleared*.3));
 }
 /* ══ WEATHER SYSTEM ══ */
 function mkWeatherState(){
@@ -392,6 +412,9 @@ function initGame(){
   document.getElementById('pauseBtn').textContent='⏸';
   document.getElementById('settingsScreen').style.display='none';
   const ab=document.getElementById('autoBtn');if(ab){ab.classList.remove('on');ab.textContent='🔁 อัตโนมัติ';}
+  // โหลด obstacles จาก stage definition
+  G.obstacles={};G.obstaclesCleared=0;
+  (currentStage.obstacles||[]).forEach(o=>{ G.obstacles[o.c+','+o.r]=o.t; });
   updateTowerPanel();
   updateHUD();
   updateMenuStats();
@@ -1487,6 +1510,33 @@ function render(){
     ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillText('▶',0,0);ctx.restore();
   }
+  // ── OBSTACLES ──
+  if(G.obstacles){
+    const _hk=G.mx>=0?G.mx+','+G.my:null;
+    for(const key in G.obstacles){
+      const [oc,or]=key.split(',').map(Number);
+      const tx=oc*CS,ty=or*CS;
+      const ot=G.obstacles[key];
+      const _hov=key===_hk;
+      // tinted background
+      const _cols=[['#2e7d32','#1b5e20'],['#616161','#424242'],['#4e342e','#3e2723']];
+      ctx.fillStyle=_cols[ot][0]+((_hov)?'dd':'99');
+      ctx.fillRect(tx+2,ty+2,CS-4,CS-4);
+      if(_hov){ctx.strokeStyle='#ffe082';ctx.lineWidth=2;ctx.strokeRect(tx+2,ty+2,CS-4,CS-4);}
+      // obstacle emoji
+      ctx.font=Math.round(CS*.52)+'px Arial';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.globalAlpha=_hov?.95:.75;
+      ctx.fillText(OBS_ICONS[ot],tx+CS*.5,ty+CS*.52);
+      ctx.globalAlpha=1;
+      // cost label on hover
+      if(_hov){
+        const cost=getObstacleCost(ot);
+        ctx.font='bold 9px Arial';ctx.fillStyle='#ffe082';ctx.textAlign='center';ctx.textBaseline='top';
+        ctx.fillText('⛏️'+cost+'g',tx+CS*.5,ty+2);
+      }
+    }
+    ctx.textAlign='left';ctx.textBaseline='alphabetic';
+  }
   // base castle — glowing platform
   const L=currentPath[currentPath.length-1];
   const lx=L[0]*CS+CS/2,ly=L[1]*CS+CS/2;
@@ -2203,11 +2253,32 @@ function _onCvTouchStart(e){
   if(e.cancelable) e.preventDefault();
 }
 /* shared placement logic — used by click-to-place and drag-to-place */
+function digObstacle(col,row){
+  if(!G||G.over||G.win||paused) return false;
+  const key=col+','+row;
+  const ot=G.obstacles[key];
+  if(ot===undefined) return false;
+  const cost=getObstacleCost(ot);
+  if(G.gold<cost){showToast('💰 ต้องการ '+cost+' ทองขุด'+OBS_NAMES[ot]+'!');return false;}
+  G.gold-=cost; G.obstaclesCleared++; delete G.obstacles[key];
+  const bx=col*CS+CS/2,by=row*CS+CS/2;
+  G.fxRings.push({x:bx,y:by,r:0,maxR:CS*1.4,life:.5,lw:2,col:'#a5d6a7',delay:0});
+  for(let k=0;k<8;k++){const a=k/8*Math.PI*2,sp=1.2+Math.random()*1.5;
+    G.particles.push({x:bx,y:by,txt:'▪',col:['#8d6e63','#a5d6a7','#bcaaa4'][ot],life:.7,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:2});}
+  addParticle(bx,by-10,'⛏️ ขุดแล้ว!','#ffe082');
+  updateHUD(); return true;
+}
 function tryPlaceTower(type,col,row){
   if(!G||G.over||G.win||paused) return false;
   if(col<0||col>=COLS||row<0||row>=ROWS) return false;
   if(currentPset.has(col+','+row)){showToast('❌ สร้างบนเส้นทางไม่ได้!');return false;}
   if(G.towers.find(t=>t.col===col&&t.row===row)){showToast('❌ ช่องนี้มีป้อมอยู่แล้ว!');return false;}
+  // obstacle check — เหมืองทองขุดฟรี, อื่นๆ บล็อก
+  const _obsKey=col+','+row;
+  if(G.obstacles[_obsKey]!==undefined){
+    if(type===6){G.obstaclesCleared++;delete G.obstacles[_obsKey];}
+    else{const ot=G.obstacles[_obsKey];showToast('⛏️ ขุด'+OBS_NAMES[ot]+'ก่อน: '+getObstacleCost(ot)+' ทอง');return false;}
+  }
   const cost=getTowerCost(type);
   if(G.gold<cost){showToast('💰 ต้องการ '+cost+' ทอง!');return false;}
   G.gold-=cost;
@@ -2250,6 +2321,8 @@ function onCanvasClick(e){
   if(G.selTwr>=0){
     tryPlaceTower(G.selTwr,col,row);
   } else {
+    // คลิก obstacle โดยไม่ถือป้อม → ขุดออก
+    if(G.obstacles&&G.obstacles[col+','+row]!==undefined){digObstacle(col,row);return;}
     const tw=G.towers.find(t=>t.col===col&&t.row===row);
     if(tw){
       // G1: show tower popup instead of immediate upgrade
@@ -2268,12 +2341,25 @@ function onCanvasMove(e){
   G.my=Math.floor((e.clientY-rect.top)*cv.height/rect.height/CS);
   const info=document.getElementById('rangeInfo');
   if(info){
+    const _hc=Math.floor((e.clientX-cv.getBoundingClientRect().left)*cv.width/cv.getBoundingClientRect().width/CS);
+    const _hr=Math.floor((e.clientY-cv.getBoundingClientRect().top)*cv.height/cv.getBoundingClientRect().height/CS);
+    const _obsT=G.obstacles&&G.obstacles[_hc+','+_hr];
+    const gpRect=document.getElementById('gp').getBoundingClientRect();
     if(G.selTwr>=0&&!G.over&&!G.win&&!paused){
       const t=G.selTwr;
       const placedN=G.towers.filter(tw=>tw.type===t).length;
       const costStr='💰 '+getTowerCost(t)+(placedN>0?` <span style="opacity:.6;">(+15×${placedN})</span>`:'');
-      info.innerHTML=TICONS[t]+' '+TNAMES[t]+'<br>🎯 ระยะ '+getTowerRange(t,1).toFixed(1)+' | ⚔️ '+Math.round(getTowerDmg(t,1))+' | '+costStr;
-      const gpRect=document.getElementById('gp').getBoundingClientRect();
+      let extra='';
+      if(_obsT!==undefined){
+        extra= t===6?` <span style="color:#a5d6a7">(เหมืองขุดได้ฟรี!)</span>`
+          :`<br><span style="color:#ff8a65">⛏️ ขุด${OBS_NAMES[_obsT]}ก่อน: ${getObstacleCost(_obsT)} ทอง</span>`;
+      }
+      info.innerHTML=TICONS[t]+' '+TNAMES[t]+'<br>🎯 ระยะ '+getTowerRange(t,1).toFixed(1)+' | ⚔️ '+Math.round(getTowerDmg(t,1))+' | '+costStr+extra;
+      info.style.left=(e.clientX-gpRect.left+14)+'px';
+      info.style.top=(e.clientY-gpRect.top-10)+'px';
+      info.style.display='block';
+    } else if(_obsT!==undefined&&!G.over&&!G.win&&!paused){
+      info.innerHTML=OBS_ICONS[_obsT]+' '+OBS_NAMES[_obsT]+'<br>⛏️ คลิกขุดออก: <b>'+getObstacleCost(_obsT)+'</b> ทอง';
       info.style.left=(e.clientX-gpRect.left+14)+'px';
       info.style.top=(e.clientY-gpRect.top-10)+'px';
       info.style.display='block';

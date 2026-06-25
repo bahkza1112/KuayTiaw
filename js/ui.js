@@ -1,6 +1,13 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.14.4';
+const GAME_VERSION='3.15.0';
 const PATCH_NOTES=[
+  {ver:'3.15.0',date:'2026-06-25',title:'🪨 ระบบ Obstacle — ขุดพื้นที่สร้างป้อม',notes:[
+    'ทุกด่านมีพุ่มไม้ 🌿 / หิน 🪨 / ต้นไม้ 🌳 บล็อกพื้นที่บางช่อง',
+    'hover ชี้ไปที่ obstacle เพื่อดูราคาขุด — คลิกขุดออกทันที',
+    'ราคาขุดเพิ่มขึ้นทุกครั้งที่ขุด: พุ่มไม้ 25g / หิน 50g / ต้นไม้ 90g (base)',
+    'เหมืองทอง 💰 วางทับ obstacle ได้ทันทีโดยไม่เสียค่าขุดเพิ่ม',
+    'ด่านต้น 3 obstacle, ด่านกลาง 4-5, ด่านท้าย 6 obstacle',
+  ]},
   {ver:'3.14.4',date:'2026-06-25',title:'⚡ Performance: ลด FX death เมื่อมอนเยอะ',notes:[
     'death FX ลด particle ลง 40-65% อัตโนมัติเมื่อมีมอนสเตอร์ >12 ตัว',
     'death FX หยุดปล่อย fxFlash (gradient+shadow) เมื่อมอนเยอะ — ลด GPU load',
