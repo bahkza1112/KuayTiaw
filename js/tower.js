@@ -126,7 +126,7 @@ function _bldSC(){
     _SC[t]={c:oc,tx,ty};
   }
 }
-function drawTowerIcon(ctx,type,sz,angle,lv){
+function drawTowerIcon(ctx,type,sz,angle,lv,shootT){
   if(!_SC)_bldSC();
   const r=sz/2,s=_SC[type];
   ctx.save();
@@ -135,7 +135,7 @@ function drawTowerIcon(ctx,type,sz,angle,lv){
   _twLevelRing(ctx,type,r,lv);
   ctx.save();ctx.rotate((angle||0)+Math.PI/2);
   ctx.shadowColor='rgba(0,0,0,.5)';ctx.shadowBlur=r*.12;ctx.shadowOffsetY=r*.05;
-  _twWeapon(ctx,type,r);
+  _twWeapon(ctx,type,r,shootT||0);
   ctx.restore();
   ctx.restore();
 }
@@ -257,8 +257,9 @@ function _twDecal(ctx,type,r){
     ctx.fillStyle='#7e57c2';ctx.beginPath();ctx.arc(0,-r*.03,r*.05,0,Math.PI*2);ctx.fill();
   }
 }
-function _twWeapon(ctx,type,r){
+function _twWeapon(ctx,type,r,shootT){
   // barrel points in -y (toward target) — context already rotated
+  if(shootT>0) ctx.translate(0, shootT*r*.28); // recoil: kick back along barrel axis
   if(type===0){// Cannon
     ctx.fillStyle='#252525';ctx.beginPath();ctx.arc(0,0,r*.32,0,Math.PI*2);ctx.fill();
     ctx.fillStyle='#383838';ctx.beginPath();ctx.arc(-r*.07,-r*.07,r*.25,0,Math.PI*2);ctx.fill();

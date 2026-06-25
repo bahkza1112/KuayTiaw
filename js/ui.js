@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.14.0';
+const GAME_VERSION='3.14.1';
 const PATCH_NOTES=[
+  {ver:'3.14.1',date:'2026-06-25',title:'✨ Tower Attack Recoil Animation',notes:[
+    'ป้อมทุกชนิดดีดอาวุธถอยหลังเล็กน้อยเมื่อยิง — recoil animation หายในประมาณ 0.14 วินาที',
+    'แก้ recoil ค้างตอน tower ถูก stun (wyvern) — ตอนนี้ decay ต่อเนื่องแม้ถูก stun',
+  ]},
   {ver:'3.14.0',date:'2026-06-25',title:'💥 Death Animation ศัตรูแต่ละชนิด + Hit Knockback',notes:[
     'ศัตรูแต่ละชนิดตายด้วย animation เฉพาะตัว: โกบลินชิ้นส่วนกระจาย, กระดูกแตก, เงามืดสลายเป็นควัน, วิญญาณไฟระเบิด ฯลฯ',
     'จอมมารตาย cinematic: flash + 3 rings + hit-stop + หน้าจอสั่น',

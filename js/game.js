@@ -1000,6 +1000,7 @@ function update(dt){
   // towers shoot
   G.towers.forEach(tw=>{
     if(tw._drainT>0) tw._drainT-=dt;
+    if(tw._shootT>0) tw._shootT=Math.max(0,tw._shootT-dt*7);
     if(tw._stunT>0){tw._stunT-=dt;return;} // 🐉 ถูกวิเวิร์นโฉบหยุดทำงาน
     if(CFG.t_dmg[tw.type]===0) return;
     if(G.weather&&G.weather.struckTowers&&G.weather.struckTowers.length&&G.weather.struckTowers.includes(tw)) return; // ⚡ struck by lightning
@@ -1095,6 +1096,7 @@ function update(dt){
       const _mfa=tw.angle||0;
       const _mfx=fx+Math.cos(_mfa)*CS*.32, _mfy=fy+Math.sin(_mfa)*CS*.32;
       G.fxFlash.push({x:_mfx,y:_mfy,r:tw.type===3?14:tw.type===0?16:10,life:.18,col:TPROJ[tw.type]||'#fff'});
+      tw._shootT=1;
       // shoot sound
       const _snd=_TSND[tw.type]; if(_snd) _playSound(_snd);
     }
@@ -1693,8 +1695,8 @@ function render(){
     ctx.translate(cx2, cy2-CS*.18);
     ctx.scale(_tws,_tws);
     if(!perfMode){ctx.shadowColor='rgba(0,0,0,.95)';ctx.shadowBlur=7;ctx.shadowOffsetX=0;ctx.shadowOffsetY=3;}
-    drawTowerIcon(ctx,tw.type,CS-2,tw.angle,tw.lv);
-    if(!perfMode){ctx.shadowBlur=0;ctx.shadowOffsetY=0;drawTowerIcon(ctx,tw.type,CS-2,tw.angle,tw.lv);}
+    drawTowerIcon(ctx,tw.type,CS-2,tw.angle,tw.lv,tw._shootT||0);
+    if(!perfMode){ctx.shadowBlur=0;ctx.shadowOffsetY=0;drawTowerIcon(ctx,tw.type,CS-2,tw.angle,tw.lv,tw._shootT||0);}
     ctx.restore();
     // level badge
     if(tw.lv>1){
@@ -2896,6 +2898,7 @@ function updateEg(dt){
     }
   });
   G.towers.forEach(tw=>{
+    if(tw._shootT>0) tw._shootT=Math.max(0,tw._shootT-dt*7);
     if(tw._stunT>0){tw._stunT-=dt;return;} // 🐉 ถูกวิเวิร์นโฉบหยุดทำงาน
     if(CFG.t_dmg[tw.type]===0) return;
     if(G.weather&&G.weather.struckTowers&&G.weather.struckTowers.length&&G.weather.struckTowers.includes(tw)) return;
@@ -2961,6 +2964,7 @@ function updateEg(dt){
       // muzzle flash + sound
       const _mfa=tw.angle||0;
       G.fxFlash.push({x:fx+Math.cos(_mfa)*CS*.32,y:fy+Math.sin(_mfa)*CS*.32,r:tw.type===3?14:tw.type===0?16:10,life:.18,col:TPROJ[tw.type]||'#fff'});
+      tw._shootT=1;
       const _snd=_TSND[tw.type]; if(_snd) _playSound(_snd);
     }
   });

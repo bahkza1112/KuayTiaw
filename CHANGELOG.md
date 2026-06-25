@@ -2,6 +2,18 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.14.1 — Tower Attack Recoil Animation
+
+### Added
+- `js/tower.js` `_twWeapon`: รับ `shootT` param → `ctx.translate(0, shootT*r*.28)` ดีดอาวุธถอยหลังตอนยิง
+- `js/tower.js` `drawTowerIcon`: รับ `shootT` เป็น param ที่ 6 ส่งต่อให้ `_twWeapon`
+
+### Changed
+- `js/game.js`: `tw._shootT=1` เมื่อ tower ยิง (story mode + endgame), decay `dt*7` (~0.14 วิ)
+- `js/game.js`: ย้าย `_shootT` decay ขึ้นก่อน stun check เพื่อให้ animation ไม่ค้างตอน tower ถูก stun
+
+---
+
 ## v3.14.0 — Death Animation per enemy type + Hit Knockback visual
 
 ### Added
