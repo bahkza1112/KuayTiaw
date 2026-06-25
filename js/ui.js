@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.15.7';
+const GAME_VERSION='3.15.8';
 const PATCH_NOTES=[
+  {ver:'3.15.8',date:'2026-06-26',title:'⛏️ ปุ่มขุด — เอาราคาออก แสดงเมื่อ hover แทน',notes:[
+    'ปุ่ม ⛏️ ขุด ไม่แสดงราคาบนปุ่มอีกต่อไป',
+    'hover ชี้ไปที่ช่องที่มีฉากแล้วราคาจะขึ้นใน tooltip แทน',
+  ]},
   {ver:'3.15.7',date:'2026-06-25',title:'🔧 ซ่อน scrollbar ขวาจอ',notes:[
     'ซ่อน scrollbar ที่ขอบขวาจอ — เลื่อนได้อยู่แต่ไม่แสดงแถบ ไม่กระตุกเวลาสลับหน้า',
   ]},

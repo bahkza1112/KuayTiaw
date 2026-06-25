@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.15.8 — UX: ปุ่มขุดไม่แสดงราคา — ดู tooltip แทน
+
+### Changed
+- `Tower Quest 🏰.html`: ลบ `#digCost` div ออกจากปุ่ม ⛏️
+- `js/game.js`: ลบ `_updateDigCost()` function และทุก call site ออก — ราคาแสดงใน hover tooltip (rangeInfo) แทน
+
+---
+
 ## v3.15.7 — Fix: ซ่อน scrollbar ขวาจอ
 
 ### Fixed

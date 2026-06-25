@@ -245,7 +245,7 @@ function digCell(c,r){
   for(let k=0;k<8;k++){const a=k/8*Math.PI*2,sp=1.2+Math.random()*1.5;
     G.particles.push({x:bx,y:by,txt:'▪',col:['#8d6e63','#9e9e9e','#558b2f'][ot],life:.7,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:2});}
   addParticle(bx,by-14,'⛏️','#ffe082');
-  _updateDigCost(); updateHUD(); return true;
+  updateHUD(); return true;
 }
 function toggleDigTool(){
   if(!G||G.over||G.win||paused) return;
@@ -258,12 +258,6 @@ function toggleDigTool(){
   } else {
     if(db) db.classList.remove('sel');
   }
-  _updateDigCost();
-}
-function _updateDigCost(){
-  const el=document.getElementById('digCost');if(!el) return;
-  const base=G?getDigCost(0):25; // แสดงราคาต่ำสุด (พุ่มไม้)
-  el.textContent='💰'+base+'~';
 }
 /* ══ WEATHER SYSTEM ══ */
 function mkWeatherState(){
@@ -461,7 +455,6 @@ function initGame(){
   G.obstacles={};G.dugCells=new Set();G.obstaclesCleared=0;G.selDig=false;
   (currentStage.obstacles||[]).forEach(o=>{ G.obstacles[o.c+','+o.r]=o.t; });
   const _db=document.getElementById('digBtn');if(_db)_db.classList.remove('sel');
-  _updateDigCost();
   if(currentStage.id===0&&!localStorage.getItem('tq_hint_dig')){
     localStorage.setItem('tq_hint_dig','1');
     setTimeout(()=>showToast('💡 กด ⛏️ เครื่องมือขุด เพื่อขุดฉากออกและสร้างป้อมในช่องนั้น'),2500);
@@ -2314,7 +2307,7 @@ function tryPlaceTower(type,col,row){
   // decoration check — เหมืองทองขุดฟรี, อื่นๆ บล็อก
   const _dt=getDecoType(col,row);
   if(_dt!==null){
-    if(type===6){G.dugCells.add(col+','+row);delete G.obstacles[col+','+row];G.obstaclesCleared++;_updateDigCost();}
+    if(type===6){G.dugCells.add(col+','+row);delete G.obstacles[col+','+row];G.obstaclesCleared++;}
     else{showToast('⛏️ เลือกเครื่องมือขุดก่อน ('+getDigCost(_dt)+' ทอง)');return false;}
   }
   const cost=getTowerCost(type);
