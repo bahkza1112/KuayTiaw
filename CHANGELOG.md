@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.15.7 — Fix: ซ่อน scrollbar ขวาจอ
+
+### Fixed
+- `css/main.css` #gr: เพิ่ม `scrollbar-width:none` + `#gr::-webkit-scrollbar{display:none}` — ซ่อน scrollbar ทุก browser
+
+---
+
 ## v3.15.6 — UI Smooth: ป้องกัน screen กระตุกตอนสลับหน้า
 
 ### Fixed
