@@ -616,6 +616,8 @@ function _playSound(type){
 }
 /* tower type → sound name */
 const _TSND=['cannon','ice','magic','sniper',null,'archer',null,'thunder','void'];
+// ambient particle cooldown per tower type (seconds, 0 = no ambient)
+const _TAMB=[1.4,1.1,.75,0,0,0,0,.55,0,0,0];
 let _sfxLastDie=0; /* throttle death sounds */
 function toggleSfx(){
   _sfxOn=!_sfxOn;
@@ -687,8 +689,14 @@ function startWave(){
     if(avail.includes(9)&&G.wave>=9&&Math.random()<bChance*.8) ei=9;
     G.queue.push(ei);
   }
-  // V5: wave incoming banner
-  G.waveBanner={text:'⚔️  WAVE  '+G.wave,t:1.5};
+  // wave cinematic: banner + screen flash + particle burst
+  const _wqHasBoss=G.queue.includes(4)||G.queue.includes(9);
+  G.waveBanner={text:_wqHasBoss?'💀  BOSS WAVE  '+G.wave:'⚔️  WAVE  '+G.wave,t:_wqHasBoss?2.0:1.5};
+  const _wfc=_wqHasBoss?'rgba(255,80,30,.22)':'rgba(255,220,100,.15)';
+  G.fxFlash.push({x:COLS*CS/2,y:ROWS*CS/2,r:Math.max(COLS,ROWS)*CS*.75,life:.35,maxLife:.35,col:_wfc});
+  const _wpc=_wqHasBoss?'#ff6d00':'#ffe082';
+  for(let k=0;k<10;k++){const wa=k/10*Math.PI*2;G.particles.push({x:COLS*CS/2+Math.cos(wa)*COLS*CS*.5,y:ROWS*CS/2+Math.sin(wa)*ROWS*CS*.45,txt:'·',col:_wpc,life:.45+Math.random()*.25,vx:Math.cos(wa+Math.PI)*(2+Math.random()*2.5),vy:Math.sin(wa+Math.PI)*(2+Math.random()*2.5),decay:3,scale:.55+Math.random()*.35});}
+  if(_wqHasBoss) G.shakeT=Math.max(G.shakeT||0,.18);
 }
 
 /* 📊 สร้างบล็อกสถิติจบเกม: ฆ่า/คอมโบ/ดาเมจรวม + DPS แต่ละชนิดป้อม */
@@ -1002,6 +1010,17 @@ function update(dt){
     if(tw._drainT>0) tw._drainT-=dt;
     if(tw._shootT>0) tw._shootT=Math.max(0,tw._shootT-dt*7);
     if(tw._stunT>0){tw._stunT-=dt;return;} // 🐉 ถูกวิเวิร์นโฉบหยุดทำงาน
+    if(_TAMB[tw.type]){
+      if(tw._ambT===undefined) tw._ambT=Math.random()*_TAMB[tw.type];
+      if((tw._ambT-=dt)<=0){
+        tw._ambT=_TAMB[tw.type];
+        const ax=(tw.col+.5)*CS,ay=(tw.row+.5)*CS;
+        if(tw.type===0) G.particles.push({x:ax+(Math.random()-.5)*CS*.25,y:ay-CS*.28,txt:'·',col:'#9e9e9e',life:.75,vx:(Math.random()-.5)*.4,vy:-1.1-Math.random()*.7,decay:1.4,scale:.7+Math.random()*.4});
+        else if(tw.type===1) G.particles.push({x:ax+(Math.random()-.5)*CS*.35,y:ay-CS*.2,txt:'*',col:'#b3e5fc',life:.5,vx:(Math.random()-.5)*.6,vy:-.9-Math.random()*.5,decay:2,scale:.35+Math.random()*.3});
+        else if(tw.type===2) G.particles.push({x:ax+(Math.random()-.5)*CS*.3,y:ay-CS*.1,txt:'✦',col:'#ce93d8',life:.65,vx:(Math.random()-.5)*.5,vy:-1.2-Math.random()*.5,decay:2,scale:.38+Math.random()*.3});
+        else if(tw.type===7){const sa=Math.random()*Math.PI*2;G.particles.push({x:ax+(Math.random()-.5)*CS*.3,y:ay+(Math.random()-.5)*CS*.3,txt:'·',col:'#80d8ff',life:.22,vx:Math.cos(sa)*2.5,vy:Math.sin(sa)*2.5,decay:6,scale:.45});}
+      }
+    }
     if(CFG.t_dmg[tw.type]===0) return;
     if(G.weather&&G.weather.struckTowers&&G.weather.struckTowers.length&&G.weather.struckTowers.includes(tw)) return; // ⚡ struck by lightning
     if(G.waveActive) tw.cd=Math.max(0,tw.cd-dt);
@@ -2780,6 +2799,11 @@ function startEgWave(){
   }
   const _banner=special==='boss'?'👹  บอสรัช!':special==='gold'?'💰  เวฟทอง ×2!':special==='swarm'?'🐝  เวฟฝูง!':'🔥  WAVE  '+G.wave;
   G.waveBanner={text:_banner,t:special?2.2:1.5};
+  const _egfc=special==='boss'?'rgba(255,80,30,.22)':special?'rgba(255,180,30,.18)':'rgba(255,120,50,.14)';
+  const _egpc=special==='boss'?'#ff6d00':special?'#ffe082':'#ff8a65';
+  G.fxFlash.push({x:COLS*CS/2,y:ROWS*CS/2,r:Math.max(COLS,ROWS)*CS*.75,life:.35,maxLife:.35,col:_egfc});
+  for(let k=0;k<10;k++){const wa=k/10*Math.PI*2;G.particles.push({x:COLS*CS/2+Math.cos(wa)*COLS*CS*.5,y:ROWS*CS/2+Math.sin(wa)*ROWS*CS*.45,txt:'·',col:_egpc,life:.45+Math.random()*.25,vx:Math.cos(wa+Math.PI)*(2+Math.random()*2.5),vy:Math.sin(wa+Math.PI)*(2+Math.random()*2.5),decay:3,scale:.55+Math.random()*.35});}
+  if(special==='boss') G.shakeT=Math.max(G.shakeT||0,.18);
 }
 
 function updateEg(dt){
@@ -2900,6 +2924,17 @@ function updateEg(dt){
   G.towers.forEach(tw=>{
     if(tw._shootT>0) tw._shootT=Math.max(0,tw._shootT-dt*7);
     if(tw._stunT>0){tw._stunT-=dt;return;} // 🐉 ถูกวิเวิร์นโฉบหยุดทำงาน
+    if(_TAMB[tw.type]){
+      if(tw._ambT===undefined) tw._ambT=Math.random()*_TAMB[tw.type];
+      if((tw._ambT-=dt)<=0){
+        tw._ambT=_TAMB[tw.type];
+        const ax=(tw.col+.5)*CS,ay=(tw.row+.5)*CS;
+        if(tw.type===0) G.particles.push({x:ax+(Math.random()-.5)*CS*.25,y:ay-CS*.28,txt:'·',col:'#9e9e9e',life:.75,vx:(Math.random()-.5)*.4,vy:-1.1-Math.random()*.7,decay:1.4,scale:.7+Math.random()*.4});
+        else if(tw.type===1) G.particles.push({x:ax+(Math.random()-.5)*CS*.35,y:ay-CS*.2,txt:'*',col:'#b3e5fc',life:.5,vx:(Math.random()-.5)*.6,vy:-.9-Math.random()*.5,decay:2,scale:.35+Math.random()*.3});
+        else if(tw.type===2) G.particles.push({x:ax+(Math.random()-.5)*CS*.3,y:ay-CS*.1,txt:'✦',col:'#ce93d8',life:.65,vx:(Math.random()-.5)*.5,vy:-1.2-Math.random()*.5,decay:2,scale:.38+Math.random()*.3});
+        else if(tw.type===7){const sa=Math.random()*Math.PI*2;G.particles.push({x:ax+(Math.random()-.5)*CS*.3,y:ay+(Math.random()-.5)*CS*.3,txt:'·',col:'#80d8ff',life:.22,vx:Math.cos(sa)*2.5,vy:Math.sin(sa)*2.5,decay:6,scale:.45});}
+      }
+    }
     if(CFG.t_dmg[tw.type]===0) return;
     if(G.weather&&G.weather.struckTowers&&G.weather.struckTowers.length&&G.weather.struckTowers.includes(tw)) return;
     if(G.waveActive) tw.cd=Math.max(0,tw.cd-dt);

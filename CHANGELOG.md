@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.14.2 — Wave Cinematic + Ambient Particles
+
+### Added
+- `js/game.js` `startWave()`: screen flash + 10-particle burst เมื่อ wave เริ่ม; boss wave → แบนเนอร์ "💀 BOSS WAVE" + flash สีแดง + shake
+- `js/game.js` `startEgWave()`: เดียวกันสำหรับ endgame, แยก special wave colors (boss/gold/swarm/normal)
+- `js/game.js` `_TAMB[]`: ambient particle cooldown ต่อ tower type (Cannon 1.4s, Ice 1.1s, Magic 0.75s, Thunder 0.55s)
+- Tower update loop (story + endgame): `tw._ambT` timer — ปล่อย 1 particle ต่อ tick: ควันเทา (Cannon), ผลึก * (Ice), orb ✦ (Magic), iskra (Thunder)
+
+---
+
 ## v3.14.1 — Tower Attack Recoil Animation
 
 ### Added

@@ -1,6 +1,11 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.14.1';
+const GAME_VERSION='3.14.2';
 const PATCH_NOTES=[
+  {ver:'3.14.2',date:'2026-06-25',title:'✨ Wave Cinematic + Ambient Particles',notes:[
+    'เริ่มคลื่นใหม่: flash สว่าง + particle พุ่งจากขอบจอเข้าหากลาง',
+    'คลื่น Boss: แบนเนอร์ "💀 BOSS WAVE" + flash สีแดง + หน้าจอสั่นเล็กน้อย',
+    'ป้อม Cannon ปล่อยควันเทา, Magic ปล่อย orb สีม่วง, Ice ปล่อยผลึกน้ำแข็ง, Thunder ปล่อย iskra สีฟ้า',
+  ]},
   {ver:'3.14.1',date:'2026-06-25',title:'✨ Tower Attack Recoil Animation',notes:[
     'ป้อมทุกชนิดดีดอาวุธถอยหลังเล็กน้อยเมื่อยิง — recoil animation หายในประมาณ 0.14 วินาที',
     'แก้ recoil ค้างตอน tower ถูก stun (wyvern) — ตอนนี้ decay ต่อเนื่องแม้ถูก stun',
