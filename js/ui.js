@@ -1,6 +1,11 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.15.5';
+const GAME_VERSION='3.15.6';
 const PATCH_NOTES=[
+  {ver:'3.15.6',date:'2026-06-25',title:'✨ UI Smooth — หน้าสลับไม่กระตุกอีกแล้ว',notes:[
+    'body และ container ตรึงขนาด 100vh ตลอด — หน้าไม่หดยืดตอนสลับ screen',
+    'สลับหน้าแล้ว scroll กลับขึ้นบนอัตโนมัติทุกครั้ง',
+    '#skillgacha ตอนนี้มีพื้นหลังและ min-height ครบเหมือน screen อื่น',
+  ]},
   {ver:'3.15.5',date:'2026-06-25',title:'✨ UI Polish — Codex ใหญ่ขึ้น + Skill Cards รายละเอียดดีขึ้น',notes:[
     'การ์ด Codex ใหญ่ขึ้น: icon 26→34px, card กว้าง 88→100px',
     'สกิลที่ปลดล็อกแล้วใน กระเป๋า แสดงสีพื้นหลังตาม rarity (LEGENDARY/EPIC/RARE/UNCOMMON)',
@@ -1148,6 +1153,7 @@ function hideAll(){['mm','stagesel','gp','codex','devpanel','egmenu','leaderboar
 function showScreen(id,flex){
   if(id!=='leaderboard'&&_lbCountdownTimer){clearInterval(_lbCountdownTimer);_lbCountdownTimer=0;}
   hideAll();
+  const _grEl=document.getElementById('gr');if(_grEl)_grEl.scrollTop=0;
   const el=document.getElementById(id);
   el.style.display=flex?'flex':'block';
   if(flex)el.style.flexDirection='column';

@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.15.6 — UI Smooth: ป้องกัน screen กระตุกตอนสลับหน้า
+
+### Fixed
+- `css/main.css` body: `min-height:100vh` → `height:100vh; overflow:hidden` — ป้องกัน body หดยืด
+- `css/main.css` #gr: `min-height:100vh` → `height:100vh; overflow-y:auto` — container ตรึงขนาดตลอด
+- `js/ui.js` `showScreen()`: เพิ่ม `#gr.scrollTop=0` ทุกครั้งที่สลับ screen — ป้องกัน scroll ค้าง
+- `Tower Quest 🏰.html` #skillgacha: เพิ่ม `min-height:100vh` + background ให้ครบเหมือน screen อื่น
+
+---
+
 ## v3.15.5 — UI Polish: Codex + Bag Skill Cards
 
 ### Changed
