@@ -1,6 +1,12 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.14.3';
+const GAME_VERSION='3.14.4';
 const PATCH_NOTES=[
+  {ver:'3.14.4',date:'2026-06-25',title:'⚡ Performance: ลด FX death เมื่อมอนเยอะ',notes:[
+    'death FX ลด particle ลง 40-65% อัตโนมัติเมื่อมีมอนสเตอร์ >12 ตัว',
+    'death FX หยุดปล่อย fxFlash (gradient+shadow) เมื่อมอนเยอะ — ลด GPU load',
+    'fxFlash ถูกข้ามในโหมด perf ทั้งหมด — ไม่วาด radial gradient เมื่อมอน >12',
+    'บอส (ti4/ti9) ยังคง FX สวยงามในระดับ 50% ขึ้นไปเพื่อไม่ให้ดู flat',
+  ]},
   {ver:'3.14.3',date:'2026-06-25',title:'⚡ Performance: ลด lag ตอนมอนเยอะ',notes:[
     'ตัดการปล่อย ambient particle (ควัน/iskra/orb) เมื่อมีมอนสเตอร์บนจอ >12 ตัว',
     'จำกัด particle สูงสุด 30 ตัวใน Endless Mode เหมือน Story Mode',

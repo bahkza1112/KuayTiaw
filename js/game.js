@@ -1560,8 +1560,8 @@ function render(){
     ctx.beginPath();ctx.arc(gx,gy,grang,0,Math.PI*2);ctx.stroke();
     ctx.setLineDash([]);ctx.globalAlpha=1;
   }
-  // muzzle flashes
-  G.fxFlash.forEach(f=>{
+  // muzzle flashes — skip expensive radial gradient + shadowBlur in perfMode
+  if(!perfMode) G.fxFlash.forEach(f=>{
     const fa=Math.max(0,f.life/(f.maxLife||.18));
     ctx.save();
     ctx.globalAlpha=fa*.7;

@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.14.4 — Performance: ลด FX death เมื่อมอนเยอะ
+
+### Fixed
+- `js/enemy.js` `_deathFx`: ลด particle count 40% (enemies>12) / 65% (enemies>20) ทุก enemy type
+- `js/enemy.js` `_deathFx`: guard `fxRings.push` ด้วย `length<40` cap — ป้องกัน fxRings spike ตอน swarm
+- `js/enemy.js` `_deathFx`: skip `fxFlash` push เมื่อ `_busy` (enemies>12) — ลด radial gradient calls
+- `js/game.js` fxFlash render: wrap ด้วย `if(!perfMode)` — ไม่วาด radial gradient+shadowBlur เมื่อ perf mode
+- Boss (ti4/ti9) และ จอมมาร ยังคง FX อย่างน้อย 50% ของ particle ปกติ เพื่อให้ death impact ยังรู้สึกได้
+
+---
+
 ## v3.14.3 — Performance: ลด lag ตอนมอนเยอะ
 
 ### Fixed
