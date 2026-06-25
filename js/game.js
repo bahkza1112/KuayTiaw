@@ -3055,6 +3055,7 @@ function updateEg(dt){
   }
   G.enemies.forEach(e=>{
     if(e.hitFlash>0) e.hitFlash=Math.max(0,e.hitFlash-dt*4);
+    if(e._knockT>0) e._knockT=Math.max(0,e._knockT-dt*8);
     if(e._voidMarkT>0){ e._voidMarkT-=dt; if(e._voidMarkT<=0){ e._voidMarkT=0; e._voidMarkBonus=0; } }
   });
   G.towers.forEach(tw=>{if(tw.spawnAnim>0) tw.spawnAnim=Math.max(0,tw.spawnAnim-dt*3);});
