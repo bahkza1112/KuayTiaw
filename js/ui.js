@@ -1,6 +1,11 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.15.1';
+const GAME_VERSION='3.15.2';
 const PATCH_NOTES=[
+  {ver:'3.15.2',date:'2026-06-25',title:'✨ Wave Clear Banner + Tower Placement FX',notes:[
+    'เคลียร์คลื่นแล้วขึ้น banner สีเขียว "✅ WAVE X CLEAR!" พร้อม screen flash',
+    'ดอกไม้ไฟกระจายกว้างกว่าเดิม (10 rings ทั่วจอแทน 5 rings ตรงกลาง)',
+    'วางป้อมแล้วมี flash สีขาว + ไอคอนป้อมกระเด็นออก + elastic bounce แน่นขึ้น',
+  ]},
   {ver:'3.15.1',date:'2026-06-25',title:'🐛 แก้บั๊ก Dig Tool',notes:[
     'แก้ toast ซ้อน 2 ชั้นตอนขุดล้มเหลว (ตอนนี้ขึ้นแค่ข้อความเดียว)',
     'แก้ราคาปุ่ม ⛏️ ค้างหลังเหมืองทองวางทับฉากอัตโนมัติ',

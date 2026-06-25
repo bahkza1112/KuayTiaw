@@ -1359,7 +1359,7 @@ function update(dt){
   // hitFlash + knockback + voidMark decay (story)
   G.enemies.forEach(e=>{ if(e.hitFlash>0) e.hitFlash=Math.max(0,e.hitFlash-dt*4); if(e._knockT>0){e._knockT=Math.max(0,e._knockT-dt*8);} if(e._voidMarkT>0){e._voidMarkT-=dt;if(e._voidMarkT<=0){e._voidMarkT=0;e._voidMarkBonus=0;}} });
   // tower spawn bounce anim
-  G.towers.forEach(tw=>{ if(tw.spawnAnim>0) tw.spawnAnim=Math.max(0,tw.spawnAnim-dt*3); });
+  G.towers.forEach(tw=>{ if(tw.spawnAnim>0) tw.spawnAnim=Math.max(0,tw.spawnAnim-dt*2.2); });
   // FX rings
   for(let i=G.fxRings.length-1;i>=0;i--){
     const r=G.fxRings[i];
@@ -1409,17 +1409,23 @@ function update(dt){
     clearWeather(); // 🌦 clear weather when wave ends
     _playSound('wave_clear');
     const bonus=25+G.wave*6; G.gold+=bonus; updateHUD();
-    // firework rings
+    // wave clear banner (green theme)
+    const _isLastWave=G.wave>=currentStage.waves;
+    G.waveBanner={text:_isLastWave?'🏆  ชนะแล้ว!':'✅  WAVE  '+G.wave+'  CLEAR!',t:2.0,dur:2.0,col:'#69f0ae'};
+    // screen flash green
+    G.fxFlash.push({x:COLS*CS/2,y:ROWS*CS/2,r:Math.max(COLS,ROWS)*CS*.8,life:.4,maxLife:.4,col:'rgba(105,240,174,.18)'});
+    // firework rings — more spread
     const fwx=COLS*CS/2, fwy=ROWS*CS/2;
     const fwCols=['#ffe234','#ff5252','#40c4ff','#ea80fc','#69f0ae'];
-    for(let k=0;k<5;k++){
-      G.fxRings.push({x:fwx+(Math.random()-.5)*CS*3,y:fwy+(Math.random()-.5)*CS*2,
-        r:4,maxR:CS*(1.5+Math.random()),life:.8,lw:2.5,col:fwCols[k],delay:k*.1});
+    for(let k=0;k<10;k++){
+      G.fxRings.push({x:fwx+(Math.random()-.5)*CS*8,y:fwy+(Math.random()-.5)*CS*5,
+        r:4,maxR:CS*(1.2+Math.random()*1.4),life:.9,lw:2.5,col:fwCols[k%5],delay:k*.08});
     }
-    for(let k=0;k<12;k++){
-      const ang=k/12*Math.PI*2, spd=1.8+Math.random()*1.2;
-      G.particles.push({x:fwx,y:fwy,txt:['★','✦','●'][k%3],col:fwCols[k%5],
-        life:1.2,vy:Math.sin(ang)*spd,vx:Math.cos(ang)*spd,decay:1.2,scale:1.2});
+    for(let k=0;k<16;k++){
+      const ang=k/16*Math.PI*2, spd=1.8+Math.random()*1.5;
+      G.particles.push({x:fwx+(Math.random()-.5)*CS*4,y:fwy+(Math.random()-.5)*CS*3,
+        txt:['★','✦','●','✿'][k%4],col:fwCols[k%5],
+        life:1.4,vy:Math.sin(ang)*spd,vx:Math.cos(ang)*spd,decay:1.0,scale:1.2});
     }
     addParticle(fwx,fwy-20,'🎉 +'+bonus+' ทอง','#ffe234');
     showToast('🎉 คลื่นที่ '+G.wave+' ผ่านแล้ว! +'+bonus+' ทอง');
@@ -1717,7 +1723,7 @@ function render(){
 
   // towers — sprite style (stone base + body)
   G.towers.forEach(tw=>{
-    const bounce=tw.spawnAnim>0?1+Math.sin(tw.spawnAnim*Math.PI)*.25:1;
+    const bounce=tw.spawnAnim>0?1+Math.sin(tw.spawnAnim*Math.PI*1.5)*.32*tw.spawnAnim:1;
     const x=tw.col*CS,y=tw.row*CS,cx2=x+CS/2,cy2=y+CS/2;
     if(bounce!==1){ctx.save();ctx.translate(cx2,cy2);ctx.scale(bounce,bounce);ctx.translate(-cx2,-cy2);}
     // ⚡ Awaken glow — radiant pulsing rings + rising sparkles (more dramatic than non-awakened)
@@ -2201,18 +2207,19 @@ function render(){
   ctx.fillStyle=vg;ctx.fillRect(0,0,cv.width,cv.height);
   // V5: wave incoming banner
   if(G.waveBanner&&G.waveBanner.t>0){
-    const bmax=1.5,bt=G.waveBanner.t,prog=1-bt/bmax;
+    const bmax=G.waveBanner.dur||1.5,bt=G.waveBanner.t,prog=1-bt/bmax;
     const alpha=prog<.1?prog/.1:prog>.8?(1-prog)/.2:1;
     const slideX=prog<.1?(prog/.1-1)*cv.width*.28:prog>.8?((prog-.8)/.2)*cv.width*.22:0;
+    const bCol=G.waveBanner.col||'#ffe082';
     ctx.save();ctx.globalAlpha=Math.max(0,Math.min(.94,alpha));
     const bw2=Math.min(310,cv.width*.75),bh2=50,bx2=cv.width/2-bw2/2+slideX,by2=cv.height*.34;
     ctx.fillStyle='rgba(0,0,0,.8)';
     ctx.beginPath();if(ctx.roundRect)ctx.roundRect(bx2,by2,bw2,bh2,13);else ctx.rect(bx2,by2,bw2,bh2);ctx.fill();
-    ctx.strokeStyle='#ffe082';ctx.lineWidth=2;
+    ctx.strokeStyle=bCol;ctx.lineWidth=2;
     ctx.beginPath();if(ctx.roundRect)ctx.roundRect(bx2,by2,bw2,bh2,13);else ctx.rect(bx2,by2,bw2,bh2);ctx.stroke();
     ctx.fillStyle='#fff';ctx.font='bold 21px Arial';
     ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.shadowColor='rgba(255,224,130,.85)';ctx.shadowBlur=10;
+    ctx.shadowColor=bCol;ctx.shadowBlur=12;
     ctx.fillText(G.waveBanner.text,cv.width/2+slideX,by2+bh2/2);
     ctx.shadowBlur=0;ctx.restore();
   }
@@ -2305,14 +2312,15 @@ function tryPlaceTower(type,col,row){
   if(G.gold<cost){showToast('💰 ต้องการ '+cost+' ทอง!');return false;}
   G.gold-=cost;
   G.towers.push({col,row,type,lv:1,dmgLv:1,rngLv:1,rateLv:1,star:1,cd:0,angle:0,spawnAnim:1.0,awakened:false});
-  // FX: ring pulse + burst particles
+  // FX: ring pulse + burst particles + flash stamp
   const bx=col*CS+CS/2, by=row*CS+CS/2;
-  G.fxRings.push({x:bx,y:by,r:0,maxR:CS*1.6,life:1,col:TACCENT[type],lw:3});
-  G.fxRings.push({x:bx,y:by,r:0,maxR:CS*1.1,life:1,col:'#fff',lw:1.5,delay:.08});
-  for(let k=0;k<10;k++){
-    const ang=k/10*Math.PI*2, spd=1.5+Math.random()*1.5;
-    G.particles.push({x:bx,y:by,txt:'●',col:TACCENT[type],
-      life:.8,vy:Math.sin(ang)*spd,vx:Math.cos(ang)*spd,decay:2.2});
+  G.fxFlash.push({x:bx,y:by,r:CS*.6,life:.22,maxLife:.22,col:'rgba(255,255,255,.55)'});
+  G.fxRings.push({x:bx,y:by,r:0,maxR:CS*1.8,life:1,col:TACCENT[type],lw:3});
+  G.fxRings.push({x:bx,y:by,r:0,maxR:CS*1.1,life:.7,col:'#fff',lw:1.5,delay:.07});
+  for(let k=0;k<12;k++){
+    const ang=k/12*Math.PI*2, spd=1.5+Math.random()*1.8;
+    G.particles.push({x:bx,y:by,txt:k%3===0?TICONS[type]:'●',col:k%3===0?'#ffe234':TACCENT[type],
+      life:.9,vy:Math.sin(ang)*spd,vx:Math.cos(ang)*spd,decay:2.0,scale:k%3===0?1.3:1});
   }
   addParticle(col*CS+CS/2,row*CS+CS/2,'✅ สร้างแล้ว!','#ffe234');
   if(typeof questProgress==='function') questProgress('build',1); // 📅 daily quest
@@ -3205,7 +3213,7 @@ function updateEg(dt){
     if(e._knockT>0) e._knockT=Math.max(0,e._knockT-dt*8);
     if(e._voidMarkT>0){ e._voidMarkT-=dt; if(e._voidMarkT<=0){ e._voidMarkT=0; e._voidMarkBonus=0; } }
   });
-  G.towers.forEach(tw=>{if(tw.spawnAnim>0) tw.spawnAnim=Math.max(0,tw.spawnAnim-dt*3);});
+  G.towers.forEach(tw=>{if(tw.spawnAnim>0) tw.spawnAnim=Math.max(0,tw.spawnAnim-dt*2.2);});
   if(G.shakeT>0) G.shakeT=Math.max(0,G.shakeT-dt*3.8);
   if(G.waveBanner&&G.waveBanner.t>0) G.waveBanner.t-=dt;
   if(G.bossWarning&&G.bossWarning.t>0) G.bossWarning.t-=dt;

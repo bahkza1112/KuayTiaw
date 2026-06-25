@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.15.2 — Wave Clear Banner + Tower Placement FX
+
+### Added
+- Wave clear: `G.waveBanner` สีเขียว (`col:'#69f0ae'`) "✅ WAVE X CLEAR!" + `dur` property ให้ waveBanner render รองรับ duration ที่กำหนดเอง
+- Wave clear: `fxFlash` pulse สีเขียว + 10 fxRings กระจายทั่วจอ + 16 particles ปะปนด้วย ✿
+- Tower placement: `fxFlash` จุดสีขาวช่วงสั้น + ไอคอนป้อม (`TICONS[type]`) กระเด็นออกพร้อม particles
+- Tower placement: elastic bounce formula `sin(t*π*1.5)*0.32*t` (damped) + decay ช้าลง (dt*2.2 จาก dt*3)
+- waveBanner render: รองรับ `col` property สำหรับ strokeStyle + shadowColor
+
+---
+
 ## v3.15.1 — Bug fixes: Dig Tool
 
 ### Fixed
