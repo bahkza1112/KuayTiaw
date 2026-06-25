@@ -2,6 +2,24 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.14.0 — Death Animation per enemy type + Hit Knockback visual
+
+### Added
+- `js/enemy.js` `_deathFx(e)`: death animation แยกต่างหากสำหรับศัตรูทั้ง 11 ชนิด
+  - โกบลิน: ชิ้นส่วนสีเขียวกระจาย
+  - โครงกระดูก: กระดูกแตก + หมอกขาว
+  - เงามืด: สลายเป็นควันม่วง + ring ขยาย
+  - วิญญาณไฟ: ระเบิดเปลวไฟ + flash สีส้ม
+  - บอส: ระเบิดใหญ่ + 3 rings + hit-stop + shake
+  - โกเลม: หินแตกร่วงลง + เขย่าจอ
+  - ค้างคาว: ร่วงหล่น + กระจาย
+  - วิเวิร์น: ระเบิดมังกร + flash สีม่วง + shake
+  - ชิลด์ไนท์: เกราะแตกกระจาย
+  - จอมมาร: cinematic — flash ใหญ่ + 3 rings + hit-stop นาน + shake แรง
+  - หมอผี: คาถาสลาย + ring เขียว
+- `js/enemy.js` `applyDmg()`: เพิ่ม `_knockT=1` เมื่อ HP โดนตี
+- `js/game.js` render: knockback visual — sprite ดีด 3px ทวนทิศทางเดิน ช่วง `_knockT>0`
+
 ## v3.13.11 — Achievement Reward Display
 
 ### Added

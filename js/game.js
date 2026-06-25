@@ -1261,8 +1261,8 @@ function update(dt){
       const s2=p.spd*dt/d; p.x+=dx*s2; p.y+=dy*s2;
     }
   }
-  // hitFlash + voidMark decay (story)
-  G.enemies.forEach(e=>{ if(e.hitFlash>0) e.hitFlash=Math.max(0,e.hitFlash-dt*4); if(e._voidMarkT>0){e._voidMarkT-=dt;if(e._voidMarkT<=0){e._voidMarkT=0;e._voidMarkBonus=0;}} });
+  // hitFlash + knockback + voidMark decay (story)
+  G.enemies.forEach(e=>{ if(e.hitFlash>0) e.hitFlash=Math.max(0,e.hitFlash-dt*4); if(e._knockT>0){e._knockT=Math.max(0,e._knockT-dt*8);} if(e._voidMarkT>0){e._voidMarkT-=dt;if(e._voidMarkT<=0){e._voidMarkT=0;e._voidMarkBonus=0;}} });
   // tower spawn bounce anim
   G.towers.forEach(tw=>{ if(tw.spawnAnim>0) tw.spawnAnim=Math.max(0,tw.spawnAnim-dt*3); });
   // FX rings
@@ -1853,9 +1853,13 @@ function render(){
       const _dir=Math.atan2(_p1[1]-_p0[1],_p1[0]-_p0[0]);
       const _moveSpd=e.spd*e.slow*((e._enrageT>0)?(e._enrageMult||1):1)*((e._diveT>0)?1.5:1);
       const _mv={dir:_dir,spd:_moveSpd};
+      // knockback visual — ดีดกลับ 3px ทวนทิศทางเดิน ช่วงแรกโดนตี
+      const _kn=e._knockT||0;
+      const _kx=_kn>0?Math.cos(_dir+Math.PI)*_kn*3:0;
+      const _ky=_kn>0?Math.sin(_dir+Math.PI)*_kn*3:0;
       if(!perfMode){ctx.shadowColor='rgba(0,0,0,.55)';ctx.shadowBlur=sz*.18;ctx.shadowOffsetY=sz*.1;}
-      drawEnemySprite(ctx,e.ti,e.x,e.y,sz,_mv);
-      if(!perfMode){ctx.shadowBlur=0;ctx.shadowOffsetY=0;drawEnemySprite(ctx,e.ti,e.x,e.y,sz,_mv);}
+      drawEnemySprite(ctx,e.ti,e.x+_kx,e.y+_ky,sz,_mv);
+      if(!perfMode){ctx.shadowBlur=0;ctx.shadowOffsetY=0;drawEnemySprite(ctx,e.ti,e.x+_kx,e.y+_ky,sz,_mv);}
     }
     // HP bar (taller, more visible)
     const bw=sz*2+4, bh=6, bx=e.x-sz-2, by=e.y-sz-13;

@@ -121,6 +121,7 @@ function applyDmg(e,dmg,towerType,forcePierce){
     // damage hits HP (pierce or no shield)
     e.hp-=dmg;
     e.hitFlash=1;
+    e._knockT=1; // knockback visual — ดีดกลับเล็กน้อยเมื่อโดนตี
     e._noDmgT=0; // 🛡️ ชิลด์ไนท์: โดนตี รีเซ็ตตัวจับเวลาฟื้นโล่ (Shield Regen)
     _pushDmgNum(e,dmg,false);
     // 🪨 โกเลม: ตรวจรอยร้าวเกราะตาม % HP ที่เหลือ — ร้าวขึ้นเรื่อยๆ ลดเกราะ 24%→16%→8%→0%
@@ -183,6 +184,93 @@ function _spawnSkeletonSplit(e){
     });
   }
 }
+function _deathFx(e){
+  const x=e.x,y=e.y,sz=ESIZES[e.ti];
+  switch(e.ti){
+    case 0:{ // โกบลิน — ชิ้นส่วนสีเขียวกระจาย
+      G.fxRings.push({x,y,r:sz*.3,maxR:sz*3,life:.45,lw:2,col:'#4caf50',delay:0});
+      for(let k=0;k<10;k++){const a=Math.random()*Math.PI*2,sp=1.8+Math.random()*2.2;
+        G.particles.push({x,y,txt:k%2?'▪':'▴',col:k%3?'#388e3c':'#66bb6a',life:.65+Math.random()*.4,vy:Math.sin(a)*sp+.5,vx:Math.cos(a)*sp,decay:2,scale:.5+Math.random()*.5});}
+      break;}
+    case 1:{ // โครงกระดูก — กระดูกกระจาย + หมอกขาว
+      G.fxRings.push({x,y,r:sz*.3,maxR:sz*3.5,life:.5,lw:2,col:'#eceff1',delay:0});
+      G.fxFlash.push({x,y,r:sz*2,life:.2,maxLife:.2,col:'rgba(236,239,241,.35)'});
+      for(let k=0;k<10;k++){const a=k/10*Math.PI*2,sp=1.5+Math.random()*2.2;
+        G.particles.push({x,y,txt:k%3?'─':'│',col:'#eceff1',life:.6+Math.random()*.5,vy:Math.sin(a)*sp+.8,vx:Math.cos(a)*sp,decay:1.8,scale:.6+Math.random()*.4});}
+      break;}
+    case 2:{ // เงามืด — สลายเป็นควันม่วง
+      G.fxRings.push({x,y,r:0,maxR:sz*5,life:.7,lw:1.5,col:'rgba(124,77,255,.5)',delay:.05});
+      G.fxRings.push({x,y,r:sz*.3,maxR:sz*3,life:.5,lw:2,col:'#7c4dff',delay:0});
+      for(let k=0;k<14;k++){const a=Math.random()*Math.PI*2,sp=.8+Math.random()*1.6;
+        G.particles.push({x:x+(Math.random()-.5)*sz,y:y+(Math.random()-.5)*sz,txt:'●',col:k%2?'#4a148c':'#7c4dff',life:.9+Math.random()*.5,vy:Math.sin(a)*sp-.6,vx:Math.cos(a)*sp,decay:1.1,scale:.4+Math.random()*.7});}
+      break;}
+    case 3:{ // วิญญาณไฟ — ระเบิดเปลวไฟ
+      G.fxFlash.push({x,y,r:sz*3.5,life:.3,maxLife:.3,col:'rgba(255,150,0,.5)'});
+      G.fxRings.push({x,y,r:0,maxR:sz*4.5,life:.5,lw:3,col:'#ff9800',delay:0});
+      G.fxRings.push({x,y,r:sz*.3,maxR:sz*2.5,life:.4,lw:2,col:'#ffeb3b',delay:.06});
+      for(let k=0;k<16;k++){const a=k/16*Math.PI*2,sp=2.2+Math.random()*2.8;
+        const fc=k%3===0?'#ffeb3b':k%3===1?'#ff9800':'#ff5722';
+        G.particles.push({x,y,txt:'●',col:fc,life:.5+Math.random()*.4,vy:Math.sin(a)*sp-1,vx:Math.cos(a)*sp,decay:2.5,scale:.5+Math.random()*.6});}
+      break;}
+    case 4:{ // บอส — ระเบิดใหญ่ + หน้าจอสั่น
+      G.fxFlash.push({x,y,r:sz*6,life:.4,maxLife:.4,col:'rgba(183,28,28,.55)'});
+      G.fxRings.push({x,y,r:0,maxR:sz*7,life:.65,lw:5,col:'#ef5350',delay:0});
+      G.fxRings.push({x,y,r:0,maxR:sz*5,life:.55,lw:3,col:'#ffcdd2',delay:.08});
+      G.fxRings.push({x,y,r:0,maxR:sz*8.5,life:.5,lw:1.5,col:'rgba(239,83,80,.35)',delay:.18});
+      G.hitStopT=Math.max(G.hitStopT||0,.1);
+      G.shakeT=Math.min(.75,G.shakeT+.35);
+      for(let k=0;k<22;k++){const a=k/22*Math.PI*2,sp=2.8+Math.random()*3;
+        G.particles.push({x,y,txt:k%4===0?'★':'●',col:k%2?'#ef5350':'#ff8a80',life:.8+Math.random()*.5,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:1.9,scale:.6+Math.random()*.8});}
+      break;}
+    case 5:{ // โกเลม — หินแตก ร่วงลง
+      G.fxRings.push({x,y,r:sz*.3,maxR:sz*4,life:.55,lw:3,col:'#9e9e9e',delay:0});
+      G.shakeT=Math.min(.5,G.shakeT+.2);
+      for(let k=0;k<14;k++){const a=Math.random()*Math.PI*2,sp=2+Math.random()*2.5;
+        G.particles.push({x,y,txt:k%2?'▪':'◆',col:k%3?'#9e9e9e':'#bdbdbd',life:.9+Math.random()*.5,vy:Math.sin(a)*sp+1.2,vx:Math.cos(a)*sp,decay:1.4,scale:.7+Math.random()*.7});}
+      break;}
+    case 6:{ // ค้างคาว — ร่วงหล่น + กระจาย
+      G.fxRings.push({x,y,r:sz*.3,maxR:sz*2.8,life:.4,lw:1.5,col:'#37474f',delay:0});
+      for(let k=0;k<8;k++){const a=Math.random()*Math.PI*2,sp=1.2+Math.random()*2;
+        G.particles.push({x,y,txt:k%2?'✦':'▪',col:'#37474f',life:.6+Math.random()*.4,vy:Math.sin(a)*sp+1.8,vx:Math.cos(a)*sp,decay:1.8,scale:.4+Math.random()*.5});}
+      break;}
+    case 7:{ // วิเวิร์น — ระเบิดมังกร + สั่น
+      G.fxFlash.push({x,y,r:sz*4.5,life:.38,maxLife:.38,col:'rgba(156,39,176,.45)'});
+      G.fxRings.push({x,y,r:0,maxR:sz*6,life:.65,lw:4,col:'#ce93d8',delay:0});
+      G.fxRings.push({x,y,r:0,maxR:sz*4,life:.5,lw:6,col:'#9c27b0',delay:.07});
+      G.fxRings.push({x,y,r:0,maxR:sz*7.5,life:.5,lw:1.5,col:'rgba(206,147,216,.3)',delay:.16});
+      G.shakeT=Math.min(.55,G.shakeT+.18);
+      for(let k=0;k<20;k++){const a=k/20*Math.PI*2,sp=2.5+Math.random()*3.2;
+        G.particles.push({x,y,txt:'●',col:k%3===0?'#ce93d8':k%3===1?'#9c27b0':'#e1bee7',life:.75+Math.random()*.5,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:2.1,scale:.5+Math.random()*.8});}
+      break;}
+    case 8:{ // ชิลด์ไนท์ — เกราะแตกกระจาย
+      G.fxRings.push({x,y,r:0,maxR:sz*4.5,life:.52,lw:3,col:'#90caf9',delay:0});
+      G.fxRings.push({x,y,r:sz*.3,maxR:sz*2.5,life:.4,lw:2,col:'#cfd8dc',delay:.07});
+      for(let k=0;k<14;k++){const a=k/14*Math.PI*2,sp=2+Math.random()*2.2;
+        G.particles.push({x,y,txt:k%3?'▪':'▸',col:k%2?'#90a4ae':'#cfd8dc',life:.8+Math.random()*.4,vy:Math.sin(a)*sp+.6,vx:Math.cos(a)*sp,decay:1.7,scale:.6+Math.random()*.6});}
+      break;}
+    case 9:{ // จอมมาร — cinematic สั่นสะเทือน
+      G.fxFlash.push({x,y,r:sz*9,life:.55,maxLife:.55,col:'rgba(100,0,150,.65)'});
+      G.fxRings.push({x,y,r:0,maxR:sz*8,life:.75,lw:6,col:'#9c27b0',delay:0});
+      G.fxRings.push({x,y,r:0,maxR:sz*5.5,life:.65,lw:4,col:'#e1bee7',delay:.1});
+      G.fxRings.push({x,y,r:0,maxR:sz*10,life:.6,lw:2,col:'rgba(156,39,176,.4)',delay:.22});
+      G.hitStopT=Math.max(G.hitStopT||0,.22);
+      G.shakeT=Math.min(.8,G.shakeT+.55);
+      for(let k=0;k<34;k++){const a=k/34*Math.PI*2,sp=3+Math.random()*4;
+        G.particles.push({x,y,txt:k%4===0?'✦':k%4===1?'★':'●',col:k%3===0?'#9c27b0':k%3===1?'#ce93d8':'#fff',life:1.0+Math.random()*.7,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:1.5,scale:.6+Math.random()*.9});}
+      break;}
+    case 10:{ // หมอผี — คาถาสลาย สีเขียว
+      G.fxRings.push({x,y,r:0,maxR:sz*4.5,life:.55,lw:2.5,col:'#69f0ae',delay:0});
+      G.fxRings.push({x,y,r:0,maxR:sz*3,life:.45,lw:1.5,col:'rgba(105,240,174,.4)',delay:.1});
+      for(let k=0;k<14;k++){const a=k/14*Math.PI*2,sp=1.6+Math.random()*2.2;
+        G.particles.push({x,y,txt:k%3?'●':'✦',col:k%2?'#69f0ae':'#b2ff59',life:.7+Math.random()*.45,vy:Math.sin(a)*sp-.4,vx:Math.cos(a)*sp,decay:1.9,scale:.4+Math.random()*.6});}
+      break;}
+    default:{ // fallback
+      G.fxRings.push({x,y,r:sz*.4,maxR:sz*3.8,life:.55,lw:2.5,col:'#fff',delay:0});
+      for(let k=0;k<8;k++){const a=k/8*Math.PI*2,sp=1.6+Math.random()*2.4;
+        G.particles.push({x,y,txt:'●',col:'#fff',life:.65+Math.random()*.45,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:2.3,scale:.5+Math.random()*.6});}
+    }
+  }
+}
 function killEnemy(e){
   if(!e.alive) return;
   e.alive=false;
@@ -212,20 +300,7 @@ function killEnemy(e){
   // 📅 daily quest tracking
   if(typeof questProgress==='function'){questProgress('kill',1);questProgress('gold',e.reward);questProgress('combo',G.comboN);}
   updateHUD();
-  // V2: death burst — color-coded by enemy type
-  const _dc=['#4caf50','#eceff1','#7c4dff','#ff5722','#b71c1c','#9e9e9e','#37474f','#ce93d8','#90a4ae','#9c27b0','#69f0ae'];
-  const nc=e.ti===9?30:e.ti===4?18:e.ti===5?12:e.ti===7||e.ti===8?10:e.ti===10?12:8;
-  for(let k=0;k<nc;k++){
-    const a=k/nc*Math.PI*2,sp=1.6+Math.random()*2.4;
-    G.particles.push({x:e.x,y:e.y,txt:'●',col:_dc[e.ti]||'#fff',
-      life:.65+Math.random()*.45,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:2.3,scale:.5+Math.random()*.6});
-  }
-  G.fxRings.push({x:e.x,y:e.y,r:ESIZES[e.ti]*.4,maxR:ESIZES[e.ti]*3.8,life:.55,lw:2.5,col:_dc[e.ti]||'#fff',delay:0});
-  // 💥 boss death impact — hit-stop freeze + extra shake (ti 9=จอมมาร, 4=บอส)
-  if(e.ti===9||e.ti===4){
-    G.hitStopT=Math.max(G.hitStopT||0,e.ti===9?.13:.07);
-    G.shakeT=Math.min(.75,G.shakeT+(e.ti===9?.5:.3));
-  }
+  _deathFx(e);
   // death sound (throttled — max once per 80ms)
   const _now=performance.now();
   if(_now-_sfxLastDie>80){_sfxLastDie=_now;_playSound('die');}

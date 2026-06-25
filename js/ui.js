@@ -1,6 +1,11 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.13.11';
+const GAME_VERSION='3.14.0';
 const PATCH_NOTES=[
+  {ver:'3.14.0',date:'2026-06-25',title:'💥 Death Animation ศัตรูแต่ละชนิด + Hit Knockback',notes:[
+    'ศัตรูแต่ละชนิดตายด้วย animation เฉพาะตัว: โกบลินชิ้นส่วนกระจาย, กระดูกแตก, เงามืดสลายเป็นควัน, วิญญาณไฟระเบิด ฯลฯ',
+    'จอมมารตาย cinematic: flash + 3 rings + hit-stop + หน้าจอสั่น',
+    'ศัตรูดีดกลับเล็กน้อยเมื่อโดนกระสุน (knockback visual)',
+  ]},
   {ver:'3.13.11',date:'2026-06-24',title:'✨ การ์ดรางวัลแสดงจำนวน Soul Gems ที่ได้รับ',notes:[
     'ทุก achievement card แสดง 💎 +X ด้านล่าง — เห็นทันทีว่าปลดล็อกได้อะไร',
   ]},
