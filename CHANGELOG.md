@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.16.1 — แก้บั๊กป้อมทอง พื้นที่ไม่หายถ้าทองไม่พอ
+
+### Fixed
+- `js/game.js` `tryPlaceTower`: เมื่อวาง type 6 (เหมืองทอง) บน obstacle ระบบลบ obstacle ก่อนตรวจ gold ทำให้พื้นที่หายแม้ไม่มีทอง แก้โดยย้ายการลบ obstacle มาหลัง gold deduct
+
 ## v3.16.0 — Act 2: 10 ด่านใหม่ + ศัตรูใหม่ 3 ชนิด + Permanent Weather
 
 ### Added

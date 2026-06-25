@@ -2461,12 +2461,12 @@ function tryPlaceTower(type,col,row){
   // decoration check — เหมืองทองขุดฟรี, อื่นๆ บล็อก
   const _dt=getDecoType(col,row);
   if(_dt!==null){
-    if(type===6){G.dugCells.add(col+','+row);delete G.obstacles[col+','+row];G.obstaclesCleared++;}
-    else{showToast('⛏️ เลือกเครื่องมือขุดก่อน ('+getDigCost(_dt)+' ทอง)');return false;}
+    if(type!==6){showToast('⛏️ เลือกเครื่องมือขุดก่อน ('+getDigCost(_dt)+' ทอง)');return false;}
   }
   const cost=getTowerCost(type);
   if(G.gold<cost){showToast('💰 ต้องการ '+cost+' ทอง!');return false;}
   G.gold-=cost;
+  if(_dt!==null&&type===6){G.dugCells.add(col+','+row);delete G.obstacles[col+','+row];G.obstaclesCleared++;}
   G.towers.push({col,row,type,lv:1,dmgLv:1,rngLv:1,rateLv:1,star:1,cd:0,angle:0,spawnAnim:1.0,awakened:false});
   // FX: ring pulse + burst particles + flash stamp
   const bx=col*CS+CS/2, by=row*CS+CS/2;
