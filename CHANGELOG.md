@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.15.4 — Bug fix: BGM ยังเล่นอยู่หลังกลับเมนู
+
+### Fixed
+- `Tower Quest 🏰.html`: ปุ่ม "🏠 เมนูหลัก" ใน End overlay (line 348) และ Pause screen (line 357) เปลี่ยนจาก `showScreen('mm',true)` → `goMenu()` เพื่อให้เรียก `stopBgm()` ด้วย
+
+---
+
 ## v3.15.3 — Tower Placement Hover: Green/Red Indicator
 
 ### Changed

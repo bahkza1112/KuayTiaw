@@ -1,6 +1,9 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.15.3';
+const GAME_VERSION='3.15.4';
 const PATCH_NOTES=[
+  {ver:'3.15.4',date:'2026-06-25',title:'🐛 แก้บั๊ก BGM ยังเล่นอยู่หลังกลับเมนู',notes:[
+    'ปุ่มเมนูหลักใน Pause screen และ End screen เรียก goMenu() แทน showScreen() — หยุดเพลงถูกต้อง',
+  ]},
   {ver:'3.15.3',date:'2026-06-25',title:'🟢 Tower hover แสดงสีเขียว/แดงว่าวางได้ไหม',notes:[
     'ช่องที่วางป้อมได้ → highlight สีเขียว พร้อม border ชัดเจน',
     'ช่องที่วางไม่ได้ (เส้นทาง/ป้อมซ้อน/มีฉากกีดขวาง) → highlight สีแดง',
