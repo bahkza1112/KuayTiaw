@@ -1278,7 +1278,7 @@ function update(dt){
     if(t.life<=0){G.fxTrails[i]=G.fxTrails[G.fxTrails.length-1];G.fxTrails.pop();}
   }
   // particles — trim hard when many enemies on screen
-  if(G.enemies.length>12&&G.particles.length>30) G.particles.length=30;
+  if(G.enemies.length>12&&G.particles.length>30) G.particles.splice(0,G.particles.length-30);
   for(let i=G.particles.length-1;i>=0;i--){
     const p=G.particles[i];
     p.x+=p.vx||0; p.y+=p.vy; p.life-=dt*(p.decay||1.4);
