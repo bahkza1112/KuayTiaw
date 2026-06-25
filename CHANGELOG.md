@@ -2,19 +2,25 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
-## v3.15.0 — Obstacle System
+## v3.15.0 — Dig Tool: ขุดฉากออกสร้างป้อม
 
 ### Added
-- `js/game.js` STAGES: `obstacles:[{c,r,t}]` per stage (t: 0=🌿25g, 1=🪨50g, 2=🌳90g)
-- `mkState()`: `obstacles{}`, `obstaclesCleared` counter
-- `getObstacleCost(type)`: `base*(1+cleared*0.3)` scaling เหมือน tower cost
-- `OBS_BASE/OBS_ICONS/OBS_NAMES`: obstacle type constants
-- `digObstacle(col,row)`: หักทอง, ลบออก, FX ring+particles
-- `render()`: วาด obstacle พร้อม tinted bg, emoji, cost label on hover
-- `onCanvasClick()`: คลิก obstacle โดยไม่ถือป้อม → `digObstacle()`
-- `onCanvasMove()`: hover แสดงราคาขุด; ถือป้อมอยู่แสดงว่าขุดได้ฟรีถ้าเป็นเหมืองทอง
-- `tryPlaceTower()`: เหมืองทอง (type 6) วางทับ obstacle ได้ฟรี, ป้อมอื่นบล็อก
-- Layout: ด่าน 0-2 มี 3, ด่าน 3-5 มี 4, ด่าน 6-8 มี 5, ด่าน 9-10 มี 6 obstacles
+- `js/game.js` STAGES: `obstacles:[{c,r,t}]` predefined terrain per stage (t: 0=🌿, 1=🪨, 2=🌳)
+- `G.obstacles{}`, `G.dugCells` (Set), `G.obstaclesCleared`, `G.selDig` in game state
+- `OBS_BASE=[25,50,90]`, `OBS_NAMES` constants for dig cost by terrain type
+- `getDecoType(c,r)`: returns terrain type checking dugCells → obstacles → hash → null
+- `getDigCost(type)`: `base*(1+obstaclesCleared*0.3)` cost scaling
+- `digCell(c,r)`: unified dig — deducts gold, adds to dugCells, triggers FX + updateHUD
+- `toggleDigTool()`: toggles `G.selDig`, mutually exclusive with tower selection
+- `_updateDigCost()`: updates `#digCost` display in dig button
+- `onCanvasClick()`: selDig mode → calls `digCell()`
+- `onCanvasMove()`: hover shows cost when selDig active; shows decoration info otherwise
+- Terrain render: `dugCells` skips drawing; predefined obstacles force hash override
+- Hover highlight: yellow glow on diggable cells in selDig mode
+- `tryPlaceTower()`: เหมืองทอง (type 6) auto-clears decoration for free; อื่น ๆ show prompt
+- Tutorial hint `tq_hint_dig` shown at stage 0 first load
+- `Tower Quest 🏰.html`: ⛏️ dig button in tower panel, visually separated by divider
+- `js/ui.js` `selTower()`: deselects dig tool when tower is selected
 
 ---
 

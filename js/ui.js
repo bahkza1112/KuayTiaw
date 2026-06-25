@@ -1,12 +1,12 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
 const GAME_VERSION='3.15.0';
 const PATCH_NOTES=[
-  {ver:'3.15.0',date:'2026-06-25',title:'🪨 ระบบ Obstacle — ขุดพื้นที่สร้างป้อม',notes:[
-    'ทุกด่านมีพุ่มไม้ 🌿 / หิน 🪨 / ต้นไม้ 🌳 บล็อกพื้นที่บางช่อง',
-    'hover ชี้ไปที่ obstacle เพื่อดูราคาขุด — คลิกขุดออกทันที',
-    'ราคาขุดเพิ่มขึ้นทุกครั้งที่ขุด: พุ่มไม้ 25g / หิน 50g / ต้นไม้ 90g (base)',
-    'เหมืองทอง 💰 วางทับ obstacle ได้ทันทีโดยไม่เสียค่าขุดเพิ่ม',
-    'ด่านต้น 3 obstacle, ด่านกลาง 4-5, ด่านท้าย 6 obstacle',
+  {ver:'3.15.0',date:'2026-06-25',title:'⛏️ ระบบขุดฉาก — ขุดต้นไม้/หิน/พุ่มไม้ออกสร้างป้อม',notes:[
+    'ฉากทุกชิ้น (ต้นไม้ 🌳 / หิน 🪨 / พุ่มไม้ 🌿) ขุดออกได้ด้วยปุ่ม ⛏️ ขุด',
+    'กด ⛏️ ขุด แล้วคลิกช่องที่มีฉาก — hover เพื่อดูราคาก่อนขุด',
+    'ราคาขุดเพิ่มทุกครั้ง: พุ่มไม้ 25g / หิน 50g / ต้นไม้ 90g (base +30% ต่อครั้ง)',
+    'เหมืองทอง 💰 วางทับฉากได้ทันทีโดยอัตโนมัติ ไม่ต้องกดขุดก่อน',
+    'ด่าน 0 มีคำแนะนำสอนการใช้เครื่องมือขุดครั้งแรก',
   ]},
   {ver:'3.14.4',date:'2026-06-25',title:'⚡ Performance: ลด FX death เมื่อมอนเยอะ',notes:[
     'death FX ลด particle ลง 40-65% อัตโนมัติเมื่อมีมอนสเตอร์ >12 ตัว',
@@ -2888,6 +2888,8 @@ function confirmTowerSelection(){
 function selTower(i){
   if(!G||G.over||G.win||paused) return;
   if(!currentStage.unlockedTowers.includes(i)){showToast('🔒 ยังไม่ได้ปลดล็อค!');return;}
+  // deselect dig tool เมื่อเลือกป้อม
+  if(G.selDig){G.selDig=false;const db=document.getElementById('digBtn');if(db)db.classList.remove('sel');}
   G.selTwr=(G.selTwr===i)?-1:i;
   for(let j=0;j<9;j++){const b=document.getElementById('tb'+j);if(b)b.classList.toggle('sel',j===G.selTwr);}
   if(G.selTwr<0){const info=document.getElementById('rangeInfo');if(info)info.style.display='none';}

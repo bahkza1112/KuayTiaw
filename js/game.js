@@ -210,15 +210,60 @@ function mkState(){
     skillId:null,skillCd:0,skillCdMax:0,skillAiming:false, /* ⭐ การ์ดสกิลกดเอง */
     skillDmgMult:1,skillRateMult:1,skillDmgT:0,skillGoldMult:0,skillGoldT:0,skillBlockT:0,
     weather:mkWeatherState(),
-    obstacles:{},obstaclesCleared:0}; /* 🪨 ระบบ obstacle */
+    obstacles:{},dugCells:new Set(),obstaclesCleared:0,selDig:false}; /* 🪨 ระบบ obstacle */
 }
-// ราคาขุด obstacle — เพิ่มขึ้นทุกครั้งที่ขุด เหมือน tower cost scaling
+// ราคาขุด — เพิ่มขึ้นทุกครั้งที่ขุด เหมือน tower cost scaling
 const OBS_BASE=[25,50,90]; // t0=พุ่มไม้, t1=หิน, t2=ต้นไม้
-const OBS_ICONS=['🌿','🪨','🌳'];
 const OBS_NAMES=['พุ่มไม้','หิน','ต้นไม้'];
-function getObstacleCost(type){
+function getDigCost(type){
   if(!G) return OBS_BASE[type];
   return Math.round(OBS_BASE[type]*(1+G.obstaclesCleared*.3));
+}
+// คืนชนิดฉาก (0=พุ่มไม้,1=หิน,2=ต้นไม้) หรือ null ถ้าไม่มี/ขุดแล้ว
+function getDecoType(c,r){
+  if(!G||!currentStage) return null;
+  if(G.dugCells.has(c+','+r)) return null;
+  if(G.obstacles[c+','+r]!==undefined) return G.obstacles[c+','+r];
+  const h=(c*17+r*13+currentStage.id*31)%100;
+  if(h<22) return 2;
+  if(h<38) return 1;
+  if(h<48) return 0;
+  return null;
+}
+function digCell(c,r){
+  if(!G||G.over||G.win||paused) return false;
+  if(currentPset.has(c+','+r)) return false;
+  if(G.towers.find(t=>t.col===c&&t.row===r)) return false;
+  const ot=getDecoType(c,r);
+  if(ot===null){showToast('❌ ไม่มีฉากให้ขุดที่นี่');return false;}
+  const cost=getDigCost(ot);
+  if(G.gold<cost){showToast('💰 ต้องการ '+cost+' ทองขุด'+OBS_NAMES[ot]+'!');return false;}
+  G.gold-=cost; G.obstaclesCleared++; G.dugCells.add(c+','+r);
+  delete G.obstacles[c+','+r];
+  const bx=c*CS+CS/2,by=r*CS+CS/2;
+  if(G.fxRings.length<40) G.fxRings.push({x:bx,y:by,r:0,maxR:CS*1.5,life:.5,lw:2,col:'#a5d6a7'});
+  for(let k=0;k<8;k++){const a=k/8*Math.PI*2,sp=1.2+Math.random()*1.5;
+    G.particles.push({x:bx,y:by,txt:'▪',col:['#8d6e63','#9e9e9e','#558b2f'][ot],life:.7,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:2});}
+  addParticle(bx,by-14,'⛏️','#ffe082');
+  _updateDigCost(); updateHUD(); return true;
+}
+function toggleDigTool(){
+  if(!G||G.over||G.win||paused) return;
+  G.selDig=!G.selDig;
+  const db=document.getElementById('digBtn');
+  if(G.selDig){
+    G.selTwr=-1;
+    for(let i=0;i<9;i++){const b=document.getElementById('tb'+i);if(b)b.classList.remove('sel');}
+    if(db) db.classList.add('sel');
+  } else {
+    if(db) db.classList.remove('sel');
+  }
+  _updateDigCost();
+}
+function _updateDigCost(){
+  const el=document.getElementById('digCost');if(!el) return;
+  const base=G?getDigCost(0):25; // แสดงราคาต่ำสุด (พุ่มไม้)
+  el.textContent='💰'+base+'~';
 }
 /* ══ WEATHER SYSTEM ══ */
 function mkWeatherState(){
@@ -412,9 +457,15 @@ function initGame(){
   document.getElementById('pauseBtn').textContent='⏸';
   document.getElementById('settingsScreen').style.display='none';
   const ab=document.getElementById('autoBtn');if(ab){ab.classList.remove('on');ab.textContent='🔁 อัตโนมัติ';}
-  // โหลด obstacles จาก stage definition
-  G.obstacles={};G.obstaclesCleared=0;
+  // โหลด predefined obstacles + reset dig state
+  G.obstacles={};G.dugCells=new Set();G.obstaclesCleared=0;G.selDig=false;
   (currentStage.obstacles||[]).forEach(o=>{ G.obstacles[o.c+','+o.r]=o.t; });
+  const _db=document.getElementById('digBtn');if(_db)_db.classList.remove('sel');
+  _updateDigCost();
+  if(currentStage.id===0&&!localStorage.getItem('tq_hint_dig')){
+    localStorage.setItem('tq_hint_dig','1');
+    setTimeout(()=>showToast('💡 กด ⛏️ เครื่องมือขุด เพื่อขุดฉากออกและสร้างป้อมในช่องนั้น'),2500);
+  }
   updateTowerPanel();
   updateHUD();
   updateMenuStats();
@@ -1416,6 +1467,8 @@ function render(){
   for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
     if(currentPset.has(c+','+r)) continue;
     if(G.towers.find(t=>t.col===c&&t.row===r)) continue;
+    // ขุดแล้ว → ข้ามการวาด decoration
+    if(G.dugCells&&G.dugCells.has(c+','+r)) continue;
     // obstacle cells: บังคับ h ให้ตรง type (t:2=ต้นไม้ h<22, t:1=หิน h22-38, t:0=พุ่มไม้ h38-48)
     const _obsT=G.obstacles&&G.obstacles[c+','+r];
     const h=_obsT!==undefined?[40,25,10][_obsT]:(c*17+r*13+_sid*31)%100;
@@ -1512,13 +1565,12 @@ function render(){
     ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillText('▶',0,0);ctx.restore();
   }
-  // ── OBSTACLE HOVER HIGHLIGHT ──
-  if(G.obstacles&&G.mx>=0){
-    const _hk=G.mx+','+G.my;
-    const _ot=G.obstacles[_hk];
-    if(_ot!==undefined){
+  // ── DIG TOOL HOVER HIGHLIGHT ──
+  if(G.selDig&&G.mx>=0&&G.my>=0){
+    const _dt=getDecoType(G.mx,G.my);
+    if(_dt!==null){
       const tx=G.mx*CS,ty=G.my*CS;
-      ctx.globalAlpha=.32;ctx.fillStyle='#ffe082';ctx.fillRect(tx,ty,CS,CS);ctx.globalAlpha=1;
+      ctx.globalAlpha=.28;ctx.fillStyle='#ffe082';ctx.fillRect(tx,ty,CS,CS);ctx.globalAlpha=1;
       ctx.strokeStyle='#ffe082';ctx.lineWidth=2;ctx.strokeRect(tx+1,ty+1,CS-2,CS-2);
     }
   }
@@ -2238,31 +2290,16 @@ function _onCvTouchStart(e){
   if(e.cancelable) e.preventDefault();
 }
 /* shared placement logic — used by click-to-place and drag-to-place */
-function digObstacle(col,row){
-  if(!G||G.over||G.win||paused) return false;
-  const key=col+','+row;
-  const ot=G.obstacles[key];
-  if(ot===undefined) return false;
-  const cost=getObstacleCost(ot);
-  if(G.gold<cost){showToast('💰 ต้องการ '+cost+' ทองขุด'+OBS_NAMES[ot]+'!');return false;}
-  G.gold-=cost; G.obstaclesCleared++; delete G.obstacles[key];
-  const bx=col*CS+CS/2,by=row*CS+CS/2;
-  G.fxRings.push({x:bx,y:by,r:0,maxR:CS*1.4,life:.5,lw:2,col:'#a5d6a7',delay:0});
-  for(let k=0;k<8;k++){const a=k/8*Math.PI*2,sp=1.2+Math.random()*1.5;
-    G.particles.push({x:bx,y:by,txt:'▪',col:['#8d6e63','#a5d6a7','#bcaaa4'][ot],life:.7,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:2});}
-  addParticle(bx,by-10,'⛏️ ขุดแล้ว!','#ffe082');
-  updateHUD(); return true;
-}
 function tryPlaceTower(type,col,row){
   if(!G||G.over||G.win||paused) return false;
   if(col<0||col>=COLS||row<0||row>=ROWS) return false;
   if(currentPset.has(col+','+row)){showToast('❌ สร้างบนเส้นทางไม่ได้!');return false;}
   if(G.towers.find(t=>t.col===col&&t.row===row)){showToast('❌ ช่องนี้มีป้อมอยู่แล้ว!');return false;}
-  // obstacle check — เหมืองทองขุดฟรี, อื่นๆ บล็อก
-  const _obsKey=col+','+row;
-  if(G.obstacles[_obsKey]!==undefined){
-    if(type===6){G.obstaclesCleared++;delete G.obstacles[_obsKey];}
-    else{const ot=G.obstacles[_obsKey];showToast('⛏️ ขุด'+OBS_NAMES[ot]+'ก่อน: '+getObstacleCost(ot)+' ทอง');return false;}
+  // decoration check — เหมืองทองขุดฟรี, อื่นๆ บล็อก
+  const _dt=getDecoType(col,row);
+  if(_dt!==null){
+    if(type===6){G.dugCells.add(col+','+row);delete G.obstacles[col+','+row];G.obstaclesCleared++;}
+    else{showToast('⛏️ เลือกเครื่องมือขุดก่อน ('+getDigCost(_dt)+' ทอง)');return false;}
   }
   const cost=getTowerCost(type);
   if(G.gold<cost){showToast('💰 ต้องการ '+cost+' ทอง!');return false;}
@@ -2303,11 +2340,13 @@ function onCanvasClick(e){
   if(col<0||col>=COLS||row<0||row>=ROWS) return;
   if(G.skillAiming){_castMeteorAt(col,row);return;} // ☄️ เล็งอุกกาบาต → ทิ้งตรงจุด
   G.selTowerInfo=null; hideTowerPopup(); // deselect range on any click
+  if(G.selDig){
+    if(!digCell(col,row)) showToast('⛏️ เลือกช่องที่มีฉากเพื่อขุด');
+    return;
+  }
   if(G.selTwr>=0){
     tryPlaceTower(G.selTwr,col,row);
   } else {
-    // คลิก obstacle โดยไม่ถือป้อม → ขุดออก
-    if(G.obstacles&&G.obstacles[col+','+row]!==undefined){digObstacle(col,row);return;}
     const tw=G.towers.find(t=>t.col===col&&t.row===row);
     if(tw){
       // G1: show tower popup instead of immediate upgrade
@@ -2326,25 +2365,27 @@ function onCanvasMove(e){
   G.my=Math.floor((e.clientY-rect.top)*cv.height/rect.height/CS);
   const info=document.getElementById('rangeInfo');
   if(info){
-    const _hc=Math.floor((e.clientX-cv.getBoundingClientRect().left)*cv.width/cv.getBoundingClientRect().width/CS);
-    const _hr=Math.floor((e.clientY-cv.getBoundingClientRect().top)*cv.height/cv.getBoundingClientRect().height/CS);
-    const _obsT=G.obstacles&&G.obstacles[_hc+','+_hr];
+    const _rect=cv.getBoundingClientRect();
+    const _hc=Math.floor((e.clientX-_rect.left)*cv.width/_rect.width/CS);
+    const _hr=Math.floor((e.clientY-_rect.top)*cv.height/_rect.height/CS);
+    const _dt=(_hc>=0&&_hc<COLS&&_hr>=0&&_hr<ROWS)?getDecoType(_hc,_hr):null;
     const gpRect=document.getElementById('gp').getBoundingClientRect();
-    if(G.selTwr>=0&&!G.over&&!G.win&&!paused){
+    if(G.selDig&&!G.over&&!G.win&&!paused){
+      if(_dt!==null){
+        const _dnames=['🌿 พุ่มไม้','🪨 หิน','🌳 ต้นไม้'];
+        info.innerHTML=_dnames[_dt]+'<br>⛏️ คลิกขุดออก: <b>'+getDigCost(_dt)+'</b> ทอง';
+        info.style.left=(e.clientX-gpRect.left+14)+'px';
+        info.style.top=(e.clientY-gpRect.top-10)+'px';
+        info.style.display='block';
+      } else { info.style.display='none'; }
+    } else if(G.selTwr>=0&&!G.over&&!G.win&&!paused){
       const t=G.selTwr;
       const placedN=G.towers.filter(tw=>tw.type===t).length;
       const costStr='💰 '+getTowerCost(t)+(placedN>0?` <span style="opacity:.6;">(+15×${placedN})</span>`:'');
       let extra='';
-      if(_obsT!==undefined){
-        extra= t===6?` <span style="color:#a5d6a7">(เหมืองขุดได้ฟรี!)</span>`
-          :`<br><span style="color:#ff8a65">⛏️ ขุด${OBS_NAMES[_obsT]}ก่อน: ${getObstacleCost(_obsT)} ทอง</span>`;
-      }
+      if(_dt!==null) extra=t===6?` <span style="color:#a5d6a7">(เหมืองขุดได้ฟรี!)</span>`
+        :`<br><span style="color:#ff8a65">⛏️ มีฉากกีดขวาง ${getDigCost(_dt)} ทอง</span>`;
       info.innerHTML=TICONS[t]+' '+TNAMES[t]+'<br>🎯 ระยะ '+getTowerRange(t,1).toFixed(1)+' | ⚔️ '+Math.round(getTowerDmg(t,1))+' | '+costStr+extra;
-      info.style.left=(e.clientX-gpRect.left+14)+'px';
-      info.style.top=(e.clientY-gpRect.top-10)+'px';
-      info.style.display='block';
-    } else if(_obsT!==undefined&&!G.over&&!G.win&&!paused){
-      info.innerHTML=OBS_ICONS[_obsT]+' '+OBS_NAMES[_obsT]+'<br>⛏️ คลิกขุดออก: <b>'+getObstacleCost(_obsT)+'</b> ทอง';
       info.style.left=(e.clientX-gpRect.left+14)+'px';
       info.style.top=(e.clientY-gpRect.top-10)+'px';
       info.style.display='block';
