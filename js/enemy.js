@@ -1,8 +1,8 @@
 
 /* ══ STATIC DATA ══ */
-const ENAMES=['โกบลิน','โครงกระดูก','เงามืด','วิญญาณไฟ','บอส','โกเลม','ค้างคาว','วิเวิร์น','ชิลด์ไนท์','จอมมาร','หมอผี'];
-const EICONS=['👺','💀','👻','🔥','👹','🪨','🦇','🐉','🛡️','👁️','🧙'];
-const ESIZES=[46,52,52,56,88,62,38,54,56,96,50];
+const ENAMES=['โกบลิน','โครงกระดูก','เงามืด','วิญญาณไฟ','บอส','โกเลม','ค้างคาว','วิเวิร์น','ชิลด์ไนท์','จอมมาร','หมอผี','นักรบเดือด','ผีดิบ','แม่ฝูง'];
+const EICONS=['👺','💀','👻','🔥','👹','🪨','🦇','🐉','🛡️','👁️','🧙','🧱','💨','🕷️'];
+const ESIZES=[46,52,52,56,88,62,38,54,56,96,50,54,48,60];
 const MFLAVOR=['สิ่งมีชีวิตแสนเจ้าเล่ห์ที่พึ่งพาความเร็ว เดินทางเป็นฝูงและท่วมท้นด้วยจำนวน',
   'ฟื้นคืนชีพจากสนามรบโบราณ แข็งแกร่งแต่ช้า — กระดูกของมันยากจะทำลาย',
   'สิ่งมีชีวิตแห่งความมืด มีความต้านทานบางส่วนต่อการชะลอของน้ำแข็ง',
@@ -13,8 +13,11 @@ const MFLAVOR=['สิ่งมีชีวิตแสนเจ้าเล่�
   'มังกรน้อยพันธุ์วิเวิร์นที่บินร่อนอยู่บนฟ้า HP สูงกว่าค้างคาวมาก ป้อมสายฟ้าจัดการได้ดีที่สุด',
   'นักรบหุ้มเกราะถือโล่เหล็กหนา โล่ดูดซับความเสียหายก่อนถึง HP จริง — Sniper และ Thunder เท่านั้นที่ทะลุโล่ได้',
   'จอมมารผู้ยิ่งใหญ่ที่สถิตอยู่ ณ ยอดหอคอยมืด โล่พลังงานมืดปกป้องร่างกาย HP มหาศาลและเคลื่อนที่ช้า — ต้องใช้พลังรวมกันทั้งหมดจึงจะเอาชนะได้',
-  'หมอผีแห่งความมืดผู้ปลุกเสกพลังชีวิตให้พวกพ้อง คอย Heal ศัตรูรอบข้างทุก 2 วินาที — กำจัดมันก่อนเป็นอันดับแรก!'];
-const MTAGS=[[],[],[],[],[],[],[],[],[],[],[]]; /* ไม่ใช้แล้ว — แทนที่ด้วยระบบจุดแข็งและจุดอ่อน */
+  'หมอผีแห่งความมืดผู้ปลุกเสกพลังชีวิตให้พวกพ้อง คอย Heal ศัตรูรอบข้างทุก 2 วินาที — กำจัดมันก่อนเป็นอันดับแรก!',
+  'นักรบแห่งเถ้าถ่านผู้สาปแช่ง — ยิ่งบาดเจ็บยิ่งดุดัน เมื่อ HP ต่ำจะวิ่งพุ่งถล่มอย่างบ้าคลั่ง',
+  'ผีดิบที่ล่องลอยข้ามมิติ — บางครั้งร่างจะเป็นหมอกอ่อนหายตัวชั่วคราว กระสุนทุกนัดทะลุผ่าน',
+  'แม่มารแห่งฝูง HP สูงและเคลื่อนที่ช้า — เมื่อตายจะปล่อยลูกน้อยออกมา 2 ตัว'];
+const MTAGS=[[],[],[],[],[],[],[],[],[],[],[],[],[],[]]; /* ไม่ใช้แล้ว — แทนที่ด้วยระบบจุดแข็งและจุดอ่อน */
 const MSPECIAL=[
   '👺 Pack Rush — เร็วขึ้น 20% เมื่อมีโกบลินตัวอื่นอยู่ใกล้ (<1.2 ช่อง)',
   '💀 ตอนตาย แตกเป็นโครงกระดูกเล็ก 2 ตัว (HP/รางวัล 40% ต่อตัว)',
@@ -26,10 +29,13 @@ const MSPECIAL=[
   '✈️ บินได้ — Thunder, Sniper, Archer ยิงโดน — HP สูง | 🐉 โฉบเร่งความเร็วเป็นช่วงๆ พร้อมหยุดป้อมสุ่ม 1 ป้อม 3 วิ',
   '🛡️ โล่ HP 86 — ต้องทำลายก่อน — Sniper/Thunder ทะลุโล่ได้ | ฟื้นโล่เอง 15%/วิ ถ้าไม่โดนตี 4 วิ',
   '🌑 Final Boss — โล่พลังงานมืด 250 HP + HP มหาศาล ต้องใช้พลังทุกป้อมเอาชนะ',
-  '💚 Heal ศัตรูใกล้เคียงทุก 2 วิ — ฆ่าก่อนไม่งั้น Heal ไม่หยุด'
+  '💚 Heal ศัตรูใกล้เคียงทุก 2 วิ — ฆ่าก่อนไม่งั้น Heal ไม่หยุด',
+  '🔴 Berserk — HP < 35% เร็วขึ้น ×1.8 ทันที ป้อมน้ำแข็ง slow ลดความได้เปรียบ',
+  '👻 Phantom Phase — ทุก 8 วิ จะหายตัว 1.5 วิ (ไม่รับดาเมจทั้งหมด) — รอให้ phase หมดก่อนยิง',
+  '🕷️ Brood Burst — เมื่อตาย ปล่อยโกบลินลูก 2 ตัว (HP 30%) — ใช้ป้อม Splash จัดการฝูง'
 ];
 /* เผ่า, จุดแข็ง, จุดอ่อน */
-const MTRIBE=['อสูร','ปีศาจ','วิญญาณ','วิญญาณ','ปีศาจ','หิน','ปีศาจ','มังกร','มนุษย์','ปีศาจ','วิญญาณ'];
+const MTRIBE=['อสูร','ปีศาจ','วิญญาณ','วิญญาณ','ปีศาจ','หิน','ปีศาจ','มังกร','มนุษย์','ปีศาจ','วิญญาณ','มนุษย์','วิญญาณ','ปีศาจ'];
 const MSTRENGTH=[
   ['จำนวนมาก','เคลื่อนที่เร็ว'],
   ['HP สูง','ทนทานมาก'],
@@ -42,6 +48,9 @@ const MSTRENGTH=[
   ['โล่ดูดซับความเสียหาย','ป้อมส่วนใหญ่โดนแค่โล่'],
   ['HP มหาศาล','โล่พลังงานมืดหนามาก','เคลื่อนที่ช้าแต่ไม่หยุด'],
   ['Heal พวกพ้อง','ทำให้ศัตรูข้างๆ ฆ่าไม่ตาย'],
+  ['เร็วมากตอน HP ต่ำ','ยากจะหยุดได้ทัน'],
+  ['ภูมิคุ้มกันชั่วคราว','ดาเมจระเบิดไม่มีประโยชน์ตอน phase'],
+  ['HP สูง','สร้างภาระต่อเนื่องหลังตาย'],
 ];
 const MWEAKNESS=[
   ['ป้อมกระจาย','ป้อมน้ำแข็ง'],
@@ -55,11 +64,14 @@ const MWEAKNESS=[
   ['ป้อมสไนเปอร์','ป้อมสายฟ้า'],
   ['ป้อมสไนเปอร์','ป้อมสายฟ้า','Sniper/Thunder ทะลุโล่ได้'],
   ['เวทมนตร์+สไนเปอร์ล็อกเป้าก่อนเสมอ','ป้อมเวทมนตร์ Splash โดนพวกรอบข้างด้วย'],
+  ['ป้อมน้ำแข็ง slow ก่อน Berserk','ยิงให้ตายก่อน HP ถึง 35%'],
+  ['รอช่วงไม่ Phase','ป้อมเวทมนตร์ Splash ยิงรัวตาม phase'],
+  ['ป้อมปืนใหญ่ Splash จัดการฝูง','ป้อมน้ำแข็งหน่วงลูกน้อย'],
 ];
 /* 0=มอนธรรมดา 1=บอส */
-const MTYPE=[0,0,0,0,1,0,0,0,0,1,0];
-const MISAIR=[false,false,false,false,false,false,true,true,false,false,false]; /* บินได้ */
-const MSHIELD=[0,0,0,0,0,0,0,0,86,250,0]; /* shield HP เริ่มต้น (0=ไม่มีโล่); v1.7.2: Shield Knight 80→86 ตาม HP ใหม่ */
+const MTYPE=[0,0,0,0,1,0,0,0,0,1,0,0,0,0];
+const MISAIR=[false,false,false,false,false,false,true,true,false,false,false,false,false,false]; /* บินได้ */
+const MSHIELD=[0,0,0,0,0,0,0,0,86,250,0,0,0,0]; /* shield HP เริ่มต้น (0=ไม่มีโล่) */
 // ด่าน 8-11 (si>=7) มี stage-mult สูง (×2.5–3.2) อัดเต็มตั้งแต่เวฟ 1 ทำให้เปิดมาโหดไม่มีจังหวะฟาร์ม
 // _earlyEase ลด HP เวฟ 1-6 ลงแล้วไต่ขึ้นเต็มที่เวฟ 7 (เวฟ1 ×0.45 → เวฟ7 ×1.0) ให้ผู้เล่นสร้างป้อม/เก็บทองก่อนเจอของหนัก
 function _earlyEase(si,wave){return (si>=7&&wave<7)?(0.45+0.55*((wave-1)/6)):1;}
@@ -83,6 +95,11 @@ function _pushDmgNum(e,dmg,shield){
 }
 function applyDmg(e,dmg,towerType,forcePierce){
   if(!e.alive) return;
+  // 💨 ผีดิบ: Phantom Phase — หายตัวชั่วคราว ไม่รับดาเมจ
+  if(e.ti===12&&e._phaseT>0){
+    G.particles.push({x:e.x+(Math.random()*10-5),y:e.y-ESIZES[e.ti]-6,txt:'PHASE!',col:'#80deea',life:.55,vy:-1.2,vx:(Math.random()-.5)*.6,decay:2.2,scale:.8});
+    return;
+  }
   // 🦇 ค้างคาว: หลบเลี่ยงความเสียหายแบบสุ่ม 25% (Erratic Dodge)
   if(e.ti===6&&Math.random()<.25){
     e._dodgeFlash=.3;
@@ -170,6 +187,15 @@ function spawnEnemy(ti){
   }
 }
 
+// 🕷️ Brood Queen: ตายแล้ว spawn โกบลิน 2 ตัว HP 30%
+function _spawnBroodMinions(e){
+  const childHp=Math.max(1,Math.round(CFG.m_hp[0]*(1+(currentStage?currentStage.id:0)*CFG.stageMult)*(1+(G.wave||1)*CFG.waveMult)*.3));
+  for(let k=0;k<2;k++){
+    G.enemies.push({ti:0,pi:e.pi,prog:e.prog,x:e.x+(k?12:-12),y:e.y+(k?10:-10),
+      hp:childHp,mhp:childHp,spd:getEnemySpd(0,currentStage?currentStage.id:0)*1.1,reward:Math.round(CFG.m_rew[0]*.5),
+      slow:1,slowT:0,alive:true,hitFlash:0,isAir:false,shieldHp:0,maxShieldHp:0,_isSplit:true,_sizeMult:.6});
+  }
+}
 // 💀 Skeleton Splitter: ตายแล้วแตกเป็นลูก 2 ตัว HP/reward 40% ของตัวแม่ (รวม 80%, reward/HP เท่าเดิม)
 function _spawnSkeletonSplit(e){
   const childHp=Math.max(1,Math.round(e.mhp*.4));
@@ -276,11 +302,15 @@ function _deathFx(e){
     }
   }
 }
+// ──────────────────────────────────────────────────────────
+// Act 2 enemy sprites (cases 11-13) added after main switch
+// ──────────────────────────────────────────────────────────
 function killEnemy(e){
   if(!e.alive) return;
   e.alive=false;
   unlockMonster(e.ti);
   if(e.ti===1&&!e._isSplit) _spawnSkeletonSplit(e); // 💀 Skeleton split
+  if(e.ti===13&&!e._isSplit) _spawnBroodMinions(e); // 🕷️ Brood Queen spawn
   _onKillForAch(e); // achievement tracking
   // combo system
   G.kills=(G.kills||0)+1;
@@ -694,6 +724,83 @@ function drawEnemySprite(ctx,ti,x,y,sz,mv){
       ctx.beginPath();ctx.arc(r*.26,-r*.82,r*.09,0,Math.PI*2);ctx.fill();
       ctx.beginPath();ctx.arc(r*.05,-r*1.02,r*.08,0,Math.PI*2);ctx.fill();
       ctx.beginPath();ctx.arc(-r*.55,-r*.78,r*.08,0,Math.PI*2);ctx.fill();
+      ctx.restore();
+      break;}
+    case 11:{// นักรบเดือด — stocky ash soldier, glows red when berserk
+      const _bk=Math.sin(Date.now()*.005*_sm+x*.05)*r*.04;
+      ctx.save();ctx.translate(0,_bk);
+      _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.1,r*.72,0,Math.PI*2);});
+      _ol(()=>{ctx.beginPath();ctx.ellipse(0,r*.52,r*.4,r*.32,0,0,Math.PI*2);});
+      // body
+      ctx.fillStyle='#4e342e';ctx.beginPath();ctx.ellipse(0,r*.52,r*.4,r*.32,0,0,Math.PI*2);ctx.fill();
+      // shoulder pads
+      ctx.fillStyle='#6d4c41';ctx.beginPath();ctx.ellipse(-r*.5,r*.28,r*.24,r*.18,-.3,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.ellipse(r*.5,r*.28,r*.24,r*.18,.3,0,Math.PI*2);ctx.fill();
+      // head
+      ctx.fillStyle='#bcaaa4';ctx.beginPath();ctx.arc(0,-r*.1,r*.72,0,Math.PI*2);ctx.fill();
+      // helmet visor
+      ctx.fillStyle='#3e2723';ctx.beginPath();ctx.ellipse(0,-r*.08,r*.6,r*.32,0,0,Math.PI);ctx.fill();
+      // eyes glow
+      const _bgl=Math.sin(Date.now()*.015+x*.05);
+      ctx.fillStyle=`rgba(255,${mv._berserk?30:140},0,${.8+.2*_bgl})`;
+      ctx.beginPath();ctx.arc(-r*.22,-r*.14,r*.14,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(r*.22,-r*.14,r*.14,0,Math.PI*2);ctx.fill();
+      // axe
+      ctx.strokeStyle='#8d6e63';ctx.lineWidth=r*.1;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(r*.65,r*.68);ctx.lineTo(r*.82,-r*.4);ctx.stroke();
+      ctx.fillStyle='#b0bec5';ctx.beginPath();ctx.ellipse(r*.88,-r*.48,r*.22,r*.38,.6,0,Math.PI*2);ctx.fill();
+      ctx.restore();
+      break;}
+    case 12:{// ผีดิบ — wispy pale spirit, fades during phase
+      const _gt=Date.now()*.005*_sm+x*.05;
+      ctx.save();ctx.translate(0,Math.sin(_gt)*r*.07);ctx.scale(1,1-Math.sin(_gt)*.04);
+      _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.06,r*.72,0,Math.PI*2);});
+      // ghostly tail
+      ctx.globalAlpha=.4;ctx.fillStyle='#e0f7fa';
+      ctx.beginPath();ctx.moveTo(-r*.5,r*.22);ctx.bezierCurveTo(-r*.6,r*.68,-r*.22,r*.84,0,r*.64);ctx.bezierCurveTo(r*.22,r*.84,r*.6,r*.68,r*.5,r*.22);ctx.closePath();ctx.fill();
+      for(let k=0;k<3;k++){ctx.globalAlpha=.3;ctx.fillStyle='#b2ebf2';ctx.beginPath();ctx.arc(-r*.36+k*r*.36,r*.54,r*.16,0,Math.PI*2);ctx.fill();}
+      ctx.globalAlpha=1;
+      // ectoplasm glow
+      const _wg=ctx.createRadialGradient(-r*.18,-r*.28,0,0,-r*.06,r*.72);
+      _wg.addColorStop(0,'rgba(224,247,250,.6)');_wg.addColorStop(1,'transparent');
+      ctx.fillStyle='#b2ebf2';ctx.beginPath();ctx.arc(0,-r*.06,r*.72,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle=_wg;ctx.beginPath();ctx.arc(0,-r*.06,r*.72,0,Math.PI*2);ctx.fill();
+      // cracks on body
+      ctx.strokeStyle='rgba(100,200,210,.6)';ctx.lineWidth=r*.04;
+      ctx.beginPath();ctx.moveTo(-r*.24,-r*.3);ctx.lineTo(-r*.04,r*.1);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(r*.18,-r*.22);ctx.lineTo(r*.3,r*.2);ctx.stroke();
+      // hollow eyes
+      ctx.fillStyle='#006064';ctx.beginPath();ctx.arc(-r*.26,-r*.1,r*.22,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#006064';ctx.beginPath();ctx.arc(r*.26,-r*.1,r*.22,0,Math.PI*2);ctx.fill();
+      const _wgl=.6+.4*Math.sin(Date.now()*.01+x);
+      ctx.fillStyle=`rgba(0,229,255,${_wgl})`;ctx.beginPath();ctx.arc(-r*.26,-r*.1,r*.1,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(r*.26,-r*.1,r*.1,0,Math.PI*2);ctx.fill();
+      ctx.restore();
+      break;}
+    case 13:{// แม่ฝูง — fat spider queen, 8 mini legs
+      const _sq=Math.sin(Date.now()*.003*_sm+x*.05)*r*.03;
+      ctx.save();ctx.translate(0,_sq);
+      // legs (8 stick legs)
+      ctx.strokeStyle='#4a148c';ctx.lineWidth=r*.07;ctx.lineCap='round';
+      const _lp=[[-r*.72,r*.0,-r*1.1,-r*.35],[- r*.8,r*.22,-r*1.18,r*.0],[-r*.68,r*.48,-r*1.1,r*.58],[-r*.52,r*.6,-r*.78,r*.82],
+                 [r*.72,r*.0,r*1.1,-r*.35],[r*.8,r*.22,r*1.18,r*.0],[r*.68,r*.48,r*1.1,r*.58],[r*.52,r*.6,r*.78,r*.82]];
+      _lp.forEach(l=>{ctx.beginPath();ctx.moveTo(l[0],l[1]);ctx.lineTo(l[2],l[3]);ctx.stroke();});
+      // abdomen (rear big blob)
+      _ol(()=>{ctx.beginPath();ctx.ellipse(0,r*.62,r*.52,r*.44,0,0,Math.PI*2);});
+      ctx.fillStyle='#6a1b9a';ctx.beginPath();ctx.ellipse(0,r*.62,r*.52,r*.44,0,0,Math.PI*2);ctx.fill();
+      // abdomen pattern
+      ctx.fillStyle='rgba(255,255,255,.14)';
+      for(let k=0;k<3;k++){ctx.beginPath();ctx.ellipse(0,r*(.36+k*.22),r*(.3-k*.06),r*.08,0,0,Math.PI*2);ctx.fill();}
+      // cephalothorax (head)
+      _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.06,r*.68,0,Math.PI*2);});
+      ctx.fillStyle='#7b1fa2';ctx.beginPath();ctx.arc(0,-r*.06,r*.68,0,Math.PI*2);ctx.fill();
+      // 4 eyes
+      const _ep=[[-r*.28,-r*.22],[r*.28,-r*.22],[-r*.42,-r*.0],[r*.42,-r*.0]];
+      _ep.forEach(p=>{ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(p[0],p[1],r*.12,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle='#1a237e';ctx.beginPath();ctx.arc(p[0]+r*.02,p[1],r*.07,0,Math.PI*2);ctx.fill();});
+      // fangs
+      ctx.fillStyle='#fffde7';ctx.beginPath();ctx.moveTo(-r*.16,r*.22);ctx.lineTo(-r*.08,r*.42);ctx.lineTo(r*.0,r*.22);ctx.closePath();ctx.fill();
+      ctx.beginPath();ctx.moveTo(r*.0,r*.22);ctx.lineTo(r*.08,r*.42);ctx.lineTo(r*.16,r*.22);ctx.closePath();ctx.fill();
       ctx.restore();
       break;}
   }

@@ -124,6 +124,119 @@ const STAGES=[
          [7,8],[7,9],[8,9],[9,9],[10,9],[11,9]],
    bgColor:'#03000a',pathColor:'#4a1a5e',
    grassColors:['#0a0014','#120020','#08000f','#150026','#0c0018']},
+  /* ══ ACT 2 ═══════════════════════════════════════════════════════════════════════════ */
+  {id:11,act:2,name:'ทะเลทรายเถ้าถ่าน',icon:'🔥',
+   desc:'ร้อนระอุตลอดกาล ป้อมน้ำแข็งไร้ประโยชน์ที่นี่ นักรบเดือดยิ่งใกล้ตายยิ่งเร็ว',
+   waves:9,enemyTypes:[0,11,3,1],bossChance:.06,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
+   maxTowers:6,weatherMode:'fixed',weatherFixed:'heatwave',
+   story:'ดินแดนแห่งเถ้าถ่านที่ไม่เคยมีฝนตกมานานนับร้อยปี ความร้อนเผาไหม้จิตใจนักรบจนกลายเป็นผู้บ้าคลั่ง ป้อมน้ำแข็งไม่อาจทำงานได้ในที่นี้',
+   path:[[0,1],[1,1],[2,1],[3,1],[4,1],[5,1],[6,1],[7,1],[8,1],[9,1],[10,1],[11,1],
+         [11,2],[11,3],[10,3],[9,3],[8,3],[7,3],[6,3],[5,3],[4,3],[3,3],[2,3],[1,3],[0,3],
+         [0,4],[0,5],[1,5],[2,5],[3,5],[4,5],[5,5],[6,5],[7,5],[8,5],[9,5],[10,5],[11,5],
+         [11,6],[11,7],[11,8],[11,9]],
+   obstacles:[{c:5,r:2,t:1},{c:8,r:4,t:0},{c:3,r:6,t:2},{c:7,r:6,t:0}],
+   bgColor:'#2a0d00',pathColor:'#c47a2a',
+   grassColors:['#4a1c00','#5c2400','#3a1400','#521e00','#421600']},
+  {id:12,act:2,name:'ป่าแข็งนิรันดร์',icon:'❄️',
+   desc:'หิมะปกคลุมตลอดกาล ศัตรูทุกตัวเร็วขึ้นและไม่โดนแช่แข็ง ระวังโกเลมที่แทบหยุดไม่ได้',
+   waves:9,enemyTypes:[0,2,5,1,11],bossChance:.06,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
+   maxTowers:6,weatherMode:'fixed',weatherFixed:'blizzard',
+   story:'ป่าเก่าแก่ที่ถูกคำสาปให้เยือกแข็งชั่วนิรันดร์ พายุหิมะโหมกระหน่ำไม่หยุด ศัตรูทุกตัวปรับตัวกับความหนาวได้ — ไม่อาจชะลอได้อีกต่อไป',
+   path:[[0,0],[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0],[10,0],[11,0],
+         [11,1],[11,2],[11,3],[11,4],[10,4],[9,4],[8,4],[7,4],[6,4],[5,4],[4,4],[3,4],[2,4],[1,4],
+         [1,5],[1,6],[2,6],[3,6],[4,6],[5,6],[6,6],[7,6],[8,6],[9,6],[10,6],[11,6],
+         [11,7],[11,8],[11,9]],
+   obstacles:[{c:6,r:1,t:2},{c:3,r:2,t:0},{c:9,r:5,t:1},{c:5,r:7,t:0}],
+   bgColor:'#010d1a',pathColor:'#5a8898',
+   grassColors:['#051428','#081c35','#040e20','#09203d','#061830']},
+  {id:13,act:2,name:'ทะเลสาบพิษ',icon:'🫧',
+   desc:'หมอกพิษปกคลุม สลับกับฝนกรด และราตรีมืดมิด ผีดิบล่องลอยหายตัวเป็นระยะ',
+   waves:10,enemyTypes:[0,12,2,3,4],bossChance:.07,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
+   maxTowers:6,weatherChance:.8,
+   story:'ทะเลสาบที่เต็มไปด้วยสารพิษจากดินแดนนรก ผีดิบเกิดขึ้นจากพลังงานมืดในน้ำ บางครั้งหายตัวไปในหมอกก่อนจะปรากฏตัวที่ประตูปราสาท',
+   path:[[0,4],[1,4],[2,4],[2,3],[2,2],[2,1],[3,1],[4,1],[5,1],[6,1],[7,1],[8,1],[9,1],[10,1],[11,1],
+         [11,2],[11,3],[11,4],[11,5],[11,6],[10,6],[9,6],[8,6],[7,6],[6,6],[5,6],[4,6],[3,6],
+         [3,7],[3,8],[4,8],[5,8],[6,8],[7,8],[8,8],[9,8],[10,8],[11,8],[11,9]],
+   obstacles:[{c:5,r:3,t:0},{c:7,r:2,t:1},{c:9,r:4,t:2},{c:6,r:7,t:0}],
+   bgColor:'#06100a',pathColor:'#3a6e4a',
+   grassColors:['#061410','#0a1c16','#050e0b','#0b2018','#07160d']},
+  {id:14,act:2,name:'หุบเขาสายฟ้า',icon:'⚡',
+   desc:'ฟ้าผ่าตลอดเวลา ป้อม 50% สุ่มใช้งานไม่ได้ วิเวิร์นบินนำหน้า — ต้องการป้อมสายฟ้า',
+   waves:10,enemyTypes:[6,7,11,5,1],bossChance:.07,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
+   maxTowers:6,weatherMode:'fixed',weatherFixed:'lightning',
+   story:'หุบเขาแห่งนี้เป็นสนามรบของเทพสายฟ้า — ฟ้าผ่าลงมาตลอดเวลาโดยไม่แบ่งแยก ป้อมต่างๆ ถูกทำลายสลับกัน ต้องสร้างป้อมสำรองไว้เสมอ',
+   path:[[0,2],[1,2],[2,2],[2,1],[3,1],[4,1],[5,1],[6,1],[6,2],[6,3],[6,4],[7,4],[8,4],[9,4],[10,4],[11,4],
+         [11,5],[11,6],[10,6],[9,6],[8,6],[7,6],[6,6],[5,6],[4,6],[4,7],[4,8],[5,8],[6,8],[7,8],[8,8],[9,8],[10,8],[11,8],[11,9]],
+   obstacles:[{c:4,r:3,t:2},{c:8,r:3,t:0},{c:3,r:5,t:1},{c:9,r:7,t:0}],
+   bgColor:'#060818',pathColor:'#4a5090',
+   grassColors:['#080c22','#0c1030','#06091a','#0e1435','#090b1e']},
+  {id:15,act:2,name:'ทุ่งพายุทราย',icon:'🌪️',
+   desc:'พายุทอร์นาโดหมุนไม่หยุด สลับกับความร้อน ฝนกรด และหมอก ศัตรูหลากหลายชนิดรวมพล',
+   waves:11,enemyTypes:[0,1,3,11,12,13],bossChance:.08,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
+   maxTowers:6,weatherChance:.85,
+   story:'ทุ่งโล่งกลางทะเลทรายที่พายุหมุนเกิดขึ้นไม่หยุด มอนสเตอร์จากทุกดินแดนรวมตัวกันที่นี่เพื่อเปิดประตูมิติ',
+   path:[[0,0],[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0],[10,0],[11,0],
+         [11,1],[11,2],[10,2],[9,2],[8,2],[7,2],[6,2],[5,2],[4,2],[3,2],[2,2],[1,2],[0,2],
+         [0,3],[0,4],[0,5],[1,5],[2,5],[3,5],[4,5],[5,5],[6,5],[7,5],[8,5],[9,5],[10,5],[11,5],
+         [11,6],[11,7],[10,7],[9,7],[8,7],[7,7],[6,7],[5,7],[4,7],[3,7],[2,7],[1,7],[0,7],
+         [0,8],[0,9],[1,9],[2,9],[3,9],[4,9],[5,9],[6,9],[7,9],[8,9],[9,9],[10,9],[11,9]],
+   obstacles:[{c:5,r:1,t:0},{c:9,r:3,t:1},{c:3,r:6,t:2},{c:7,r:8,t:0}],
+   bgColor:'#1a1000',pathColor:'#aa7020',
+   grassColors:['#2e1c00','#3c2400','#241400','#342000','#281800']},
+  {id:16,act:2,name:'หนองน้ำมืด',icon:'🌑',
+   desc:'ราตรีมืดมิดถาวร ศัตรู HP +50% เร็วขึ้น +40% ผีดิบและแม่ฝูงชุกชุม',
+   waves:11,enemyTypes:[2,12,13,8,6],bossChance:.08,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
+   maxTowers:6,weatherMode:'fixed',weatherFixed:'darknight',
+   story:'หนองน้ำโบราณที่ไม่เคยมีแสงสว่างตั้งแต่ยุคสร้างโลก ความมืดทำให้ศัตรูเข้มแข็งกว่าปกติมาก — ต้องใช้ทุกพลังเพื่อรอดชีวิต',
+   path:[[0,0],[0,1],[0,2],[1,2],[2,2],[3,2],[3,3],[3,4],[3,5],[4,5],[5,5],[6,5],[7,5],[7,4],[7,3],[7,2],[8,2],[9,2],[10,2],[11,2],
+         [11,3],[11,4],[11,5],[11,6],[10,6],[9,6],[8,6],[7,6],[6,6],[5,6],[5,7],[5,8],[6,8],[7,8],[8,8],[9,8],[10,8],[11,8],[11,9]],
+   obstacles:[{c:2,r:1,t:0},{c:6,r:3,t:2},{c:9,r:3,t:1},{c:4,r:7,t:0}],
+   bgColor:'#040408',pathColor:'#2a2850',
+   grassColors:['#070710','#0a0a18','#050510','#0d0d20','#080812']},
+  {id:17,act:2,name:'ยอดเขาน้ำแข็ง',icon:'🗻',
+   desc:'หิมะถล่ม ฟ้าผ่า หมอกหนา — สภาพอากาศวิปริตสุดขีด โกเลมและนักรบเดือดยิ่งอันตราย',
+   waves:12,enemyTypes:[5,1,11,13,3],bossChance:.09,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
+   maxTowers:6,weatherChance:.85,
+   story:'ยอดเขาสูงสุดของโลกที่สภาพอากาศผลัดเปลี่ยนอย่างไร้ความปรานี มอนสเตอร์ที่ปีนขึ้นมาถึงที่นี่ได้ล้วนแข็งแกร่งเกินธรรมดา',
+   path:[[0,4],[1,4],[2,4],[2,3],[2,2],[2,1],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0],[10,0],[11,0],
+         [11,1],[11,2],[11,3],[11,4],[11,5],[10,5],[9,5],[8,5],[7,5],[6,5],[5,5],[4,5],[3,5],[2,5],
+         [2,6],[2,7],[2,8],[3,8],[4,8],[5,8],[6,8],[7,8],[8,8],[9,8],[10,8],[11,8],[11,9]],
+   obstacles:[{c:5,r:1,t:2},{c:8,r:1,t:0},{c:4,r:6,t:1},{c:9,r:6,t:2}],
+   bgColor:'#03060e',pathColor:'#4a6280',
+   grassColors:['#04081a','#060c24','#03050e','#080e28','#050a1c']},
+  {id:18,act:2,name:'วิหารกาลเวลา',icon:'⏳',
+   desc:'สภาพอากาศสุดโกลาหล 2 ชั้นพร้อมกัน ทุกศัตรูรวมพล ผีดิบและแม่ฝูงปะปนกัน',
+   waves:12,enemyTypes:[12,13,8,9,11,2],bossChance:.10,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
+   maxTowers:6,weatherChance:.90,
+   story:'วิหารโบราณที่กาลเวลาบิดเบือน สภาพอากาศจากหลายมิติโถมใส่พร้อมกัน ศัตรูจากทุกยุคสมัยมาชุมนุมที่นี่',
+   path:[[0,5],[1,5],[1,4],[1,3],[1,2],[1,1],[2,1],[3,1],[4,1],[5,1],[6,1],[7,1],[8,1],[9,1],[10,1],[11,1],
+         [11,2],[11,3],[11,4],[11,5],[11,6],[11,7],[10,7],[9,7],[8,7],[7,7],[6,7],[5,7],[4,7],[3,7],[2,7],[1,7],
+         [1,8],[2,8],[3,8],[4,8],[5,8],[6,8],[7,8],[8,8],[9,8],[10,8],[11,8],[11,9]],
+   obstacles:[{c:3,r:2,t:2},{c:8,r:2,t:1},{c:5,r:6,t:0},{c:9,r:6,t:2}],
+   bgColor:'#0a0515',pathColor:'#5e3880',
+   grassColors:['#0e0820','#150c2e','#0a0618','#180e36','#0c0a1e']},
+  {id:19,act:2,name:'ปราการโบราณ',icon:'🏛️',
+   desc:'ศัตรูทุกชนิดในบทที่ 2 รวมพล สภาพอากาศสุ่มจาก pool ทั้ง 8 ทุกคลื่น',
+   waves:13,enemyTypes:[0,2,3,5,8,11,12,13,6],bossChance:.10,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
+   maxTowers:6,weatherChance:.90,
+   story:'ป้อมปราการโบราณที่เป็นจุดรวมพลสุดท้ายของกองทัพมืดบทที่ 2 ทุกอย่างที่ผ่านมาเป็นแค่การเตรียมตัวสำหรับที่นี่',
+   path:[[0,5],[1,5],[2,5],[2,4],[2,3],[2,2],[2,1],[3,1],[4,1],[5,1],[6,1],[7,1],[8,1],[9,1],[10,1],[11,1],
+         [11,2],[11,3],[11,4],[11,5],[11,6],[10,6],[9,6],[8,6],[7,6],[6,6],[5,6],[4,6],[3,6],[3,7],[3,8],
+         [4,8],[5,8],[6,8],[7,8],[8,8],[9,8],[10,8],[11,8],[11,9]],
+   obstacles:[{c:4,r:3,t:1},{c:8,r:3,t:2},{c:6,r:5,t:0},{c:5,r:7,t:1}],
+   bgColor:'#0d0a18',pathColor:'#6050a0',
+   grassColors:['#100c22','#160e2e','#0c0a1c','#1a1035','#100c24']},
+  {id:20,act:2,name:'แกนโลก',icon:'🌍',
+   desc:'ศึกสุดท้ายของบทที่ 2 — สภาพอากาศถาวรและเปลี่ยนทุกคลื่น ศัตรูทุกชนิดรวมพลครั้งใหญ่',
+   waves:15,enemyTypes:[0,1,2,3,5,8,9,11,12,13,6,7,10],bossChance:.12,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
+   isFinalStage2:true,maxTowers:6,weatherMode:'permanent',weatherChance:.95,
+   story:'แกนกลางของโลกกำลังแตกร้าว กองทัพมืดทุกชนิดหลั่งไหลออกมาจากรอยแยก สภาพอากาศบิดเบือนจนจำแนกไม่ได้ — นี่คือศึกสุดท้ายที่แท้จริงของบทที่ 2!',
+   path:[[0,0],[1,0],[2,0],[3,0],[3,1],[3,2],[3,3],[4,3],[5,3],[5,2],[5,1],[6,1],[7,1],[8,1],[9,1],[10,1],[11,1],
+         [11,2],[11,3],[11,4],[11,5],[10,5],[9,5],[8,5],[7,5],[6,5],[5,5],[4,5],[3,5],[2,5],[1,5],[0,5],
+         [0,6],[0,7],[1,7],[2,7],[3,7],[4,7],[4,8],[4,9],[5,9],[6,9],[7,9],[8,9],[9,9],[10,9],[11,9]],
+   obstacles:[{c:6,r:2,t:2},{c:9,r:3,t:1},{c:2,r:6,t:0},{c:7,r:6,t:2},{c:9,r:8,t:0}],
+   bgColor:'#030008',pathColor:'#3c2a7a',
+   grassColors:['#060010','#0a0018','#050008','#0c001e','#080012']},
 ];
 
 /* ══ BALANCE CONFIG ══ */
@@ -137,9 +250,9 @@ const DEFAULT_CFG={
   enemyPerWaveInc:2,   // เดิม 3 — ด่าน 9 wave 13 จะได้ 4+13×2=30 แทน 44
   bossChance:.08,   // เดิม .12 — boss ออกน้อยลงหน่อย
   // Monster base HP — ปรับ Golem และ Boss ให้สมดุล
-  m_hp:[55,75,105,144,380,236,35,160,129,900,58],  // v1.7.2: รีดีไรฟ์ HP ให้สอดคล้องกับ m_rew ที่ปัดเศษ
-  m_spd:[1.4,1.0,1.15,.85,.5,.55,1.8,1.55,.65,.42,.72],
-  m_rew:[10,10,15,20,60,30,5,20,30,100,10], // v1.7.2: ปัดเศษ reward เป็นเลขลงท้าย 0/5 เพื่อความชัดเจนในเกม
+  m_hp:[55,75,105,144,380,236,35,160,129,900,58,185,145,330],  // +3 Act2: Berserker,Wraith,BroodQueen
+  m_spd:[1.4,1.0,1.15,.85,.5,.55,1.8,1.55,.65,.42,.72,1.15,1.3,0.65],
+  m_rew:[10,10,15,20,60,30,5,20,30,100,10,18,22,45],
   // Tower — เพิ่ม DPS นิดหน่อยให้ผู้เล่นรู้สึกว่าป้อมมีพลัง
   t_dmg:[24,12,44,65,0,20,0,20,42],   // [cannon,ice,magic,sniper,support,archer,goldmine,thunder,void] — cannon 28→24, magic 38→44, void 38→42 (v3.0.1)
   t_rng:[2.2,2.0,2.5,4.5,1.5,2.8,0,2.4,3.0], // support: 2.8→1.5 (v3.0.0 ลดระยะเยอะ)
@@ -307,11 +420,25 @@ const STAGE_WEATHER=[
   ['darknight','blizzard','lightning','tornado','heatwave'],    // Stage 9
   ['darknight','lightning','blizzard','tornado','fog','rain'],  // Stage 10: full chaos
   ['darknight','lightning','blizzard','tornado','fog','rain','heatwave','sun'], // Stage 11: all 8
+  // Act 2 pools (ids 11-20)
+  ['heatwave','sun','tornado'],         // Stage 12 (id 11) — fixed heatwave, but pool for popup
+  ['blizzard','fog','rain'],            // Stage 13 (id 12) — fixed blizzard
+  ['fog','rain','darknight'],           // Stage 14 (id 13) — poison lake
+  ['lightning','tornado'],              // Stage 15 (id 14) — fixed lightning
+  ['tornado','heatwave','rain','fog','sun'], // Stage 16 (id 15) — sandstorm chaos
+  ['darknight','rain','fog'],           // Stage 17 (id 16) — fixed darknight
+  ['blizzard','lightning','fog','darknight'], // Stage 18 (id 17) — ice peak
+  ['darknight','lightning','blizzard','tornado'], // Stage 19 (id 18) — time temple
+  ['fog','blizzard','lightning','darknight','heatwave','rain','tornado','sun'], // Stage 20 (id 19) — all 8
+  ['fog','blizzard','lightning','darknight','heatwave','rain','tornado','sun'], // Stage 21 (id 20) — all 8 permanent
 ];
 function rollWeather(stageId){
   if(!G) return;
+  // permanent-fixed weather: set once in initGame, never re-roll
+  if(currentStage&&currentStage.weatherMode==='fixed') return;
   if(!G.weather) G.weather=mkWeatherState();
-  if(Math.random()>0.35){clearWeather();return;}
+  const chance=(currentStage&&currentStage.weatherChance)||0.65;
+  if(Math.random()>chance){clearWeather();return;}
   const pool=STAGE_WEATHER[Math.min(stageId,STAGE_WEATHER.length-1)]||[];
   if(!pool.length){clearWeather();return;}
   const wid=pool[Math.floor(Math.random()*pool.length)];
@@ -455,6 +582,11 @@ function initGame(){
   G.obstacles={};G.dugCells=new Set();G.obstaclesCleared=0;G.selDig=false;
   (currentStage.obstacles||[]).forEach(o=>{ G.obstacles[o.c+','+o.r]=o.t; });
   const _db=document.getElementById('digBtn');if(_db)_db.classList.remove('sel');
+  // 🌦 apply fixed/permanent weather at game start
+  if(currentStage.weatherMode==='fixed'&&currentStage.weatherFixed){
+    const _fw=WEATHERS.find(x=>x.id===currentStage.weatherFixed);
+    if(_fw) applyWeather(_fw);
+  }
   if(currentStage.id===0&&!localStorage.getItem('tq_hint_dig')){
     localStorage.setItem('tq_hint_dig','1');
     setTimeout(()=>showToast('💡 กด ⛏️ เครื่องมือขุด เพื่อขุดฉากออกและสร้างป้อมในช่องนั้น'),2500);
@@ -908,6 +1040,15 @@ function update(dt){
     if(e.slowT>0){e.slowT-=dt;if(e.slowT<=0)e.slow=1;}
     if(e._enrageT>0) e._enrageT-=dt;
     if(e._dodgeFlash>0) e._dodgeFlash-=dt;
+    // 🧱 Berserk Sprint
+    if(e.ti===11&&!e._berserk&&e.hp<e.mhp*.35){e._berserk=true;e._bspdMult=1.8;
+      G.particles.push({x:e.x,y:e.y-ESIZES[11]-8,txt:'💢 BERSERK!',col:'#ff1744',life:1.2,vy:-1.4,vx:0,decay:.9,scale:1.1});
+      G.fxRings.push({x:e.x,y:e.y,r:2,maxR:ESIZES[11]*2,life:.4,lw:3,col:'#ff1744',delay:0});}
+    // 💨 Phantom Phase
+    if(e.ti===12){e._phaseTimer=(e._phaseTimer===undefined?8:e._phaseTimer)-dt;
+      if(e._phaseTimer<=0){e._phaseT=1.5;e._phaseTimer=8;
+        G.fxRings.push({x:e.x,y:e.y,r:2,maxR:ESIZES[12]*2,life:.5,lw:2,col:'#80deea',delay:0});}
+      if(e._phaseT>0) e._phaseT-=dt;}
     // 👺 โกบลิน: Pack Rush — throttle O(n²) เป็นทุก 0.25s
     if(e.ti===0){
       e._packT=(e._packT||0)-dt;
@@ -918,7 +1059,7 @@ function update(dt){
         }
       }
     }
-    e.prog+=e.spd*e.slow*((e._enrageT>0)?(e._enrageMult||1):1)*((e._diveT>0)?1.5:1)*(e._packBoost?1.2:1)*((G&&G.weather&&G.weather.spdMult)?G.weather.spdMult:1)*CS*dt;
+    e.prog+=e.spd*e.slow*((e._enrageT>0)?(e._enrageMult||1):1)*((e._diveT>0)?1.5:1)*(e._packBoost?1.2:1)*(e._bspdMult||1)*((G&&G.weather&&G.weather.spdMult)?G.weather.spdMult:1)*CS*dt;
     while(e.prog>=CS){
       e.prog-=CS; e.pi++;
       if(e.pi>=plen-1){
@@ -1399,7 +1540,7 @@ function update(dt){
     // achievement: no-damage wave
     _onWaveEndForAch(G._waveHpAtStart||G.hp, G.hp);
     G.waveActive=false;
-    clearWeather(); // 🌦 clear weather when wave ends
+    if(!currentStage||!currentStage.weatherMode||currentStage.weatherMode==='random') clearWeather(); // 🌦 skip clear for fixed/permanent stages
     _playSound('wave_clear');
     const bonus=25+G.wave*6; G.gold+=bonus; updateHUD();
     // wave clear banner (green theme)
@@ -1905,6 +2046,13 @@ function render(){
       ctx.beginPath();ctx.moveTo(e.x-sz*1.0,e.y+sz*.55);ctx.lineTo(e.x-sz*.5,e.y+sz*.55);ctx.stroke();
       ctx.globalAlpha=1;
     }
+    // 🧱 Berserk aura — pulsing red ring
+    if(e._berserk){
+      ctx.globalAlpha=.2+.15*Math.abs(Math.sin(Date.now()*.018));
+      ctx.strokeStyle='#ff1744';ctx.lineWidth=3;
+      ctx.beginPath();ctx.arc(e.x,e.y,sz+5,0,Math.PI*2);ctx.stroke();
+      ctx.globalAlpha=1;
+    }
     // 🔥 วิญญาณไฟ Scorch Flare — วงแหวนป้องกันลุกโชนเมื่อกำลังลดดาเมจ
     if(e._flareT>0){
       ctx.globalAlpha=.4+.3*Math.sin(Date.now()*.02);
@@ -1973,9 +2121,15 @@ function render(){
       const _kn=e._knockT||0;
       const _kx=_kn>0?Math.cos(_dir+Math.PI)*_kn*3:0;
       const _ky=_kn>0?Math.sin(_dir+Math.PI)*_kn*3:0;
+      // 💨 ผีดิบ Phantom Phase — fade out + cyan glow
+      const _phAlpha=e.ti===12&&e._phaseT>0?(.2+.15*Math.sin(Date.now()*.02)):1;
+      if(_phAlpha<1) ctx.globalAlpha=_phAlpha;
       if(!perfMode){ctx.shadowColor='rgba(0,0,0,.55)';ctx.shadowBlur=sz*.18;ctx.shadowOffsetY=sz*.1;}
-      drawEnemySprite(ctx,e.ti,e.x+_kx,e.y+_ky,sz,_mv);
-      if(!perfMode){ctx.shadowBlur=0;ctx.shadowOffsetY=0;drawEnemySprite(ctx,e.ti,e.x+_kx,e.y+_ky,sz,_mv);}
+      drawEnemySprite(ctx,e.ti,e.x+_kx,e.y+_ky,sz,Object.assign({},_mv,{_berserk:e._berserk}));
+      if(!perfMode){ctx.shadowBlur=0;ctx.shadowOffsetY=0;drawEnemySprite(ctx,e.ti,e.x+_kx,e.y+_ky,sz,Object.assign({},_mv,{_berserk:e._berserk}));}
+      ctx.globalAlpha=1;
+      // 💨 phase shimmer ring
+      if(e.ti===12&&e._phaseT>0){ctx.globalAlpha=.35*Math.abs(Math.sin(Date.now()*.015));ctx.strokeStyle='#80deea';ctx.lineWidth=2;ctx.beginPath();ctx.arc(e.x,e.y,sz+5,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;}
     }
     // HP bar (taller, more visible)
     const bw=sz*2+4, bh=6, bx=e.x-sz-2, by=e.y-sz-13;
@@ -2940,6 +3094,13 @@ function updateEg(dt){
     if(e.slowT>0){e.slowT-=dt;if(e.slowT<=0)e.slow=1;}
     if(e._enrageT>0) e._enrageT-=dt;
     if(e._dodgeFlash>0) e._dodgeFlash-=dt;
+    // 🧱 Berserk Sprint (EG)
+    if(e.ti===11&&!e._berserk&&e.hp<e.mhp*.35){e._berserk=true;e._bspdMult=1.8;
+      G.particles.push({x:e.x,y:e.y-ESIZES[11]-8,txt:'💢 BERSERK!',col:'#ff1744',life:1.2,vy:-1.4,vx:0,decay:.9,scale:1.1});}
+    // 💨 Phantom Phase (EG)
+    if(e.ti===12){e._phaseTimer=(e._phaseTimer===undefined?8:e._phaseTimer)-dt;
+      if(e._phaseTimer<=0){e._phaseT=1.5;e._phaseTimer=8;}
+      if(e._phaseT>0) e._phaseT-=dt;}
     // 👺 โกบลิน: Pack Rush — throttle O(n²) เป็นทุก 0.25s
     if(e.ti===0){
       e._packT=(e._packT||0)-dt;
@@ -2950,7 +3111,7 @@ function updateEg(dt){
         }
       }
     }
-    e.prog+=e.spd*e.slow*((e._enrageT>0)?(e._enrageMult||1):1)*((e._diveT>0)?1.5:1)*(e._packBoost?1.2:1)*((G&&G.weather&&G.weather.spdMult)?G.weather.spdMult:1)*CS*dt;
+    e.prog+=e.spd*e.slow*((e._enrageT>0)?(e._enrageMult||1):1)*((e._diveT>0)?1.5:1)*(e._packBoost?1.2:1)*(e._bspdMult||1)*((G&&G.weather&&G.weather.spdMult)?G.weather.spdMult:1)*CS*dt;
     while(e.prog>=CS){
       e.prog-=CS; e.pi++;
       if(e.pi>=plen-1){

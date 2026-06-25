@@ -1,6 +1,15 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.15.8';
+const GAME_VERSION='3.16.0';
 const PATCH_NOTES=[
+  {ver:'3.16.0',date:'2026-06-26',title:'🌍 บทที่ 2 — 10 ด่านใหม่ + ศัตรูใหม่ 3 ชนิด',notes:[
+    'เพิ่มบทที่ 2: ด่าน 12-21 (ทะเลทรายเถ้าถ่าน → แกนโลก)',
+    'ปลดล็อกบทที่ 2 หลังผ่านด่าน 11 (Shadow Remnant)',
+    'สภาพอากาศถาวร — บางด่านมี weather ตลอดทั้งด่าน ไม่ clear ทุก wave',
+    'ศัตรูใหม่: 🧱 นักรบเดือด (Berserk เมื่อ HP < 35%)',
+    'ศัตรูใหม่: 💨 ผีดิบ (หายตัว Phase ทุก 8 วิ นาน 1.5 วิ ไม่รับดาเมจ)',
+    'ศัตรูใหม่: 🕷️ แม่ฝูง (เมื่อตาย spawn โกบลิน 2 ตัว)',
+    'toggle สลับบทที่ 1/2 บนหน้าเลือกด่าน',
+  ]},
   {ver:'3.15.8',date:'2026-06-26',title:'⛏️ ปุ่มขุด — เอาราคาออก แสดงเมื่อ hover แทน',notes:[
     'ปุ่ม ⛏️ ขุด ไม่แสดงราคาบนปุ่มอีกต่อไป',
     'hover ชี้ไปที่ช่องที่มีฉากแล้วราคาจะขึ้นใน tooltip แทน',
@@ -1972,16 +1981,36 @@ function _updateDailyBadge(){
 }
 
 /* ══ STAGE SELECT ══ */
-function openStageSelect(){
+let currentAct=1; // 1 or 2
+function openStageSelect(act){
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
   G=null;paused=false;
+  if(act) currentAct=act;
   showScreen('stagesel',true);
   renderStageSelect();
 }
+function _act2Unlocked(){
+  return (loadProgress()[10]||0)>=1;
+}
 function renderStageSelect(){
   const p=loadProgress();
+  const act2ok=_act2Unlocked();
+  // act toggle header — build with string concat to avoid deep nesting in template literal
+  const _a1sel=currentAct===1;const _a2sel=currentAct===2;
+  const _a1bc=_a1sel?'#69f0ae':'#333';const _a1bg=_a1sel?'rgba(105,240,174,.15)':'rgba(255,255,255,.04)';const _a1col=_a1sel?'#69f0ae':'#666';
+  const _a2bc=_a2sel?'#ff6e40':'#333';const _a2bg=_a2sel?'rgba(255,110,64,.15)':'rgba(255,255,255,.04)';const _a2col=act2ok?(_a2sel?'#ff6e40':'#777'):'#444';
+  const _a2click=act2ok?'openStageSelect(2)':'void(0)';const _a2cursor=act2ok?'pointer':'not-allowed';
+  const _a2label=act2ok?'ด่าน 12-21':'ล็อก: ผ่านด่าน 11 ก่อน';
+  const toggleHtml='<div style="display:flex;gap:8px;padding:12px 16px 4px;align-items:center;">'
+    +'<button onclick="openStageSelect(1)" style="flex:1;padding:10px 0;border-radius:10px;border:2px solid '+_a1bc+';background:'+_a1bg+';color:'+_a1col+';font-weight:900;font-size:13px;cursor:pointer;">'
+    +'⚔️ บทที่ 1<br><span style="font-size:10px;font-weight:400">ด่าน 1-11</span></button>'
+    +'<button onclick="'+_a2click+'" style="flex:1;padding:10px 0;border-radius:10px;border:2px solid '+_a2bc+';background:'+_a2bg+';color:'+_a2col+';font-weight:900;font-size:13px;cursor:'+_a2cursor+';">'
+    +'🌍 บทที่ 2<br><span style="font-size:10px;font-weight:400">'+_a2label+'</span></button>'
+    +'</div>';
   let html='';
-  STAGES.forEach((s,si)=>{
+  const actStages=STAGES.filter(s=>(currentAct===1?(s.act||1)===1:(s.act||1)===2));
+  actStages.forEach((s,_idx)=>{
+    const si=STAGES.indexOf(s);
     if(s.comingSoon){
       html+=`<div style="background:rgba(255,255,255,.03);border:2px dashed #2a3a2a;border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;opacity:.4;">
         <div style="font-size:36px;">${s.icon}</div>
@@ -2011,7 +2040,7 @@ function renderStageSelect(){
     html+=`<div class="stage-card${unlocked?'':' locked'}${tierClass}" onclick="${unlocked?'startStage('+si+')':'void(0)'}">
       <div class="stage-icon">${s.icon}</div>
       <div class="stage-info">
-        <div class="stage-name">ด่าน ${si+1}: ${s.name}</div>
+        <div class="stage-name">ด่าน ${s.id+1}: ${s.name}</div>
         <div class="stage-star-bar">
           ${starPips}
           <div class="stage-star-bar-track"><div class="stage-star-bar-fill${stars>=3?' full':''}" style="width:${starPct}%"></div></div>
@@ -2028,7 +2057,7 @@ function renderStageSelect(){
       </div>
     </div>`;
   });
-  document.getElementById('ssBody').innerHTML=html;
+  document.getElementById('ssBody').innerHTML=toggleHtml+html;
 }
 
 function startStage(si){
@@ -4282,7 +4311,7 @@ window.goMenu=function(){
 };
 
 /* ══ BUTTON WIRING ══ */
-document.getElementById('startBtn').addEventListener('click',openStageSelect);
+document.getElementById('startBtn').addEventListener('click',()=>openStageSelect());
 document.getElementById('backBtn').addEventListener('click',goStageSelect);
 document.getElementById('pauseBtn').addEventListener('click',()=>{if(!G||G.over||G.win)return;togglePause();});
 document.getElementById('speedBtn').addEventListener('click',function(){

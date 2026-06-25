@@ -2,6 +2,26 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.16.0 — Act 2: 10 ด่านใหม่ + ศัตรูใหม่ 3 ชนิด + Permanent Weather
+
+### Added
+- Act 2: ด่าน 12-21 (STAGES id 11-20) ปลดล็อกหลังผ่าน Shadow Remnant (id 10)
+- ศัตรูใหม่ type 11 🧱 นักรบเดือด: Berserk Sprint (HP < 35% → เร็ว ×1.8)
+- ศัตรูใหม่ type 12 💨 ผีดิบ: Phantom Phase (ทุก 8 วิ หายตัว 1.5 วิ ไม่รับดาเมจ)
+- ศัตรูใหม่ type 13 🕷️ แม่ฝูง: Brood Burst (ตายแล้ว spawn โกบลิน 2 ตัว HP 30%)
+- Permanent Weather system: `weatherMode:'fixed'` (ตั้งแต่เริ่มด่าน ไม่ clear ทุก wave)
+- `weatherMode:'permanent'` (re-roll ทุก wave แต่ไม่ clear ระหว่าง wave)
+- `weatherChance` property ต่อ stage (0.0-1.0 แทน default 0.65)
+- Act toggle UI บนหน้าเลือกด่าน (บทที่ 1 / บทที่ 2)
+- Act 2 weather pools ใน STAGE_WEATHER[11-21]
+
+### Changed
+- `js/enemy.js`: extend ENAMES/EICONS/ESIZES/MFLAVOR/MSPECIAL/MTRIBE/MSTRENGTH/MWEAKNESS/MTYPE/MISAIR/MSHIELD (+3 entries)
+- `js/game.js`: CFG m_hp/m_spd/m_rew extended to 14 elements; rollWeather respects weatherMode/weatherChance
+- `js/ui.js`: GAME_VERSION=3.16.0; renderStageSelect เพิ่ม act filter + toggle header
+
+---
+
 ## v3.15.8 — UX: ปุ่มขุดไม่แสดงราคา — ดู tooltip แทน
 
 ### Changed
