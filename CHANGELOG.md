@@ -2,6 +2,19 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.15.5 — UI Polish: Codex + Bag Skill Cards
+
+### Changed
+- `css/main.css` `.cdx-grid`: minmax 88px → 100px, gap 8px → 10px
+- `css/main.css` `.cdx-card`: padding เพิ่ม, border-radius 12→14px, hover translateY(-3px)
+- `css/main.css` `.cdx-card .ico`: font-size 26px → 34px
+- `css/main.css` `.cdx-card .cname`: font-size 10px → 11px, margin-top 4→5px
+- `css/main.css` `.bag-ico`: font-size 28→32px, width 38→44px, height 44px, flex centering, border-radius
+- `css/main.css` `.bag-item .gacha-rarity-tag`: font-size 9px (ใหญ่ขึ้นจาก 7px inline)
+- `js/ui.js` skill card render: apply `rarity-back-${d.rarity}` class เมื่อ owned, ลบ inline border-color override, icon img 36×36px
+
+---
+
 ## v3.15.4 — Bug fix: BGM ยังเล่นอยู่หลังกลับเมนู
 
 ### Fixed

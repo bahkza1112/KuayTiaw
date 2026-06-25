@@ -1,6 +1,11 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.15.4';
+const GAME_VERSION='3.15.5';
 const PATCH_NOTES=[
+  {ver:'3.15.5',date:'2026-06-25',title:'✨ UI Polish — Codex ใหญ่ขึ้น + Skill Cards รายละเอียดดีขึ้น',notes:[
+    'การ์ด Codex ใหญ่ขึ้น: icon 26→34px, card กว้าง 88→100px',
+    'สกิลที่ปลดล็อกแล้วใน กระเป๋า แสดงสีพื้นหลังตาม rarity (LEGENDARY/EPIC/RARE/UNCOMMON)',
+    'icon ใน กระเป๋า ใหญ่ขึ้น 38→44px, rarity badge โตขึ้นอ่านออกชัดขึ้น',
+  ]},
   {ver:'3.15.4',date:'2026-06-25',title:'🐛 แก้บั๊ก BGM ยังเล่นอยู่หลังกลับเมนู',notes:[
     'ปุ่มเมนูหลักใน Pause screen และ End screen เรียก goMenu() แทน showScreen() — หยุดเพลงถูกต้อง',
   ]},
@@ -1530,10 +1535,10 @@ function renderBag(){
         const cdLine=owned?`Cooldown ${cur.cd}s`+(nextS?` <span style="opacity:.6;">→ ★${star+1}: ${nextS.cd}s</span>`:' (★MAX)'):'';
         const shardLine=owned&&star<SKILL_MAX_STAR?`<span style="color:#90caf9;font-size:9px;">ซ้ำ ${shards}/${needed} → ★${star+1}</span>`:
           owned?'<span style="color:#ffd54f;font-size:9px;">★ MAX</span>':'';
-        return `<div class="bag-item${owned?'':' sk-locked'}" style="border-color:rgba(255,255,255,.1);">
-          <div class="bag-ico" style="background:${owned?d.color+'22':'rgba(255,255,255,.04)'};cursor:pointer;" onclick="_showSkillInfo('${d.id}')"><img src="${_skillIconURL(d.id)}" style="width:100%;height:100%;object-fit:contain;${owned?'filter:brightness(1.25);':'filter:grayscale(1) brightness(.4);'}"></div>
+        return `<div class="bag-item${owned?' rarity-back-'+d.rarity:' sk-locked'}">
+          <div class="bag-ico" style="background:${owned?d.color+'33':'rgba(255,255,255,.04)'};cursor:pointer;" onclick="_showSkillInfo('${d.id}')"><img src="${_skillIconURL(d.id)}" style="width:36px;height:36px;object-fit:contain;${owned?'filter:brightness(1.3);':'filter:grayscale(1) brightness(.4);'}"></div>
           <div class="bag-info" style="cursor:pointer;" onclick="_showSkillInfo('${d.id}')">
-            <div class="bag-name" style="color:${owned?d.color:'#777'};">${d.name} <span class="gacha-rarity-tag rarity-${d.rarity}" style="font-size:7px;">${d.rarity}</span> <span style="font-size:9px;color:#9fa8da;">ℹ️ ข้อมูล</span></div>
+            <div class="bag-name" style="color:${owned?d.color:'#777'};">${d.name} <span class="gacha-rarity-tag rarity-${d.rarity}">${d.rarity}</span> <span style="font-size:9px;color:#9fa8da;">ℹ️ ข้อมูล</span></div>
             <div class="bag-desc">${d.desc}</div>
             <div class="sk-stars" style="color:${owned?'#ffd54f':'#666'};">${starStr} ${shardLine}</div>
             ${cdLine?`<div class="bag-qty">${cdLine}</div>`:''}
