@@ -1,6 +1,11 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.17.9';
+const GAME_VERSION='3.18.0';
 const PATCH_NOTES=[
+  {ver:'3.18.0',date:'2026-06-27',title:'🐍🌍 บอส Act 2 — นาคาราช & เทพทำลาย',notes:[
+    'นาคาราช 🐍 (ti=14): บอสกลาง Act 2 — Regen 1.5%/วิ + Venom Pulse ทำป้อมช้า 35% + เรียกงูลูกที่ HP<40%',
+    'เทพทำลาย 🌍 (ti=15): Final Boss Act 2 — 3 Phase (60%/30% HP) + Phase 3 Shockwave หยุดป้อมทั้งแผนที่ 1.5 วิ',
+    'ด่าน 13 ใช้นาคาราชแทนบอสเก่า, ด่าน 15/16/18 มีนาคาราชร่วม, ด่าน 19/20 มีทั้งสองบอส',
+  ]},
   {ver:'3.17.9',date:'2026-06-26',title:'⚡ Endgame ปรับสมดุล — รางวัลทอง + Elite Wave',notes:[
     'Endgame: รางวัลทองเพิ่มเร็วขึ้น ×2 ต่อ round — ตาม HP ที่สเกลสูง',
     'Endgame: Round milestone: ทองโบนัส 60+round×25 เมื่อขึ้น round ใหม่',

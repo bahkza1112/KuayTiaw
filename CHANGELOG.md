@@ -2,6 +2,22 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.18.0 — Act 2 Bosses: นาคาราช & เทพทำลาย
+
+### Added
+- `js/enemy.js`: ti=14 นาคาราช 🐍 — บอสกลาง Act 2 (HP 650, spd 0.44, reward 85)
+  - Regen: ฟื้น 1.5% max HP/วิ ตลอดเวลา
+  - Venom Pulse: ทุก 8 วิ ป้อมในรัศมี 2.5 ช่องช้าลง 35% นาน 5 วิ
+  - Serpent Spawn: HP < 40% เรียกแม่ฝูงลูก 2 ตัว (HP 50%, ×1.2 spd)
+- `js/enemy.js`: ti=15 เทพทำลาย 🌍 — Final Boss Act 2 (HP 1500, spd 0.36, reward 170, shield 180)
+  - Phase 2 (HP 60%): spd ×1.45, stone armor หลุด, spawn 3 ศัตรูสุ่ม
+  - Phase 3 (HP 30%): spd ×1.80, Regen 1%/วิ, Shockwave ทุก 6 วิ (หยุดป้อมทั้งหมด 1.5 วิ)
+- `js/game.js`: `G.towerStunT` — global timer หยุดป้อมทุกตัว (ใช้กับ Shockwave)
+- `js/game.js`: `tw._venomSlowT` — per-tower slow debuff ลด cd drain 35%
+- STAGES: d13 `ti=4→14`, d15/d16/d18 เพิ่ม ti=14, d19/d20 เพิ่ม ti=14+15
+
+---
+
 ## v3.17.9 — Endgame Scaling Improvements
 
 ### Changed

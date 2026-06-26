@@ -151,7 +151,7 @@ const STAGES=[
    grassColors:['#051428','#081c35','#040e20','#09203d','#061830']},
   {id:13,act:2,name:'ทะเลสาบพิษ',icon:'🫧',
    desc:'หมอกพิษปกคลุม สลับกับฝนกรด และราตรีมืดมิด ผีดิบล่องลอยหายตัวเป็นระยะ',
-   waves:10,enemyTypes:[0,12,2,3,4],bossChance:.07,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
+   waves:10,enemyTypes:[0,12,2,3,14],bossChance:.07,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
    maxTowers:6,weatherChance:.8,
    story:'ทะเลสาบที่เต็มไปด้วยสารพิษจากดินแดนนรก ผีดิบเกิดขึ้นจากพลังงานมืดในน้ำ บางครั้งหายตัวไปในหมอกก่อนจะปรากฏตัวที่ประตูปราสาท',
    path:[[0,4],[1,4],[2,4],[2,3],[2,2],[2,1],[3,1],[4,1],[5,1],[6,1],[7,1],[8,1],[9,1],[10,1],[11,1],
@@ -172,7 +172,7 @@ const STAGES=[
    grassColors:['#080c22','#0c1030','#06091a','#0e1435','#090b1e']},
   {id:15,act:2,name:'ทุ่งพายุทราย',icon:'🌪️',
    desc:'พายุทอร์นาโดหมุนไม่หยุด สลับกับความร้อน ฝนกรด และหมอก ศัตรูหลากหลายชนิดรวมพล',
-   waves:11,enemyTypes:[0,1,3,11,12,13],bossChance:.08,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
+   waves:11,enemyTypes:[0,1,3,11,12,13,14],bossChance:.08,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
    maxTowers:6,weatherChance:.85,
    story:'ทุ่งโล่งกลางทะเลทรายที่พายุหมุนเกิดขึ้นไม่หยุด มอนสเตอร์จากทุกดินแดนรวมตัวกันที่นี่เพื่อเปิดประตูมิติ',
    path:[[0,0],[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0],[10,0],[11,0],
@@ -185,7 +185,7 @@ const STAGES=[
    grassColors:['#2e1c00','#3c2400','#241400','#342000','#281800']},
   {id:16,act:2,name:'หนองน้ำมืด',icon:'🌑',
    desc:'ราตรีมืดมิดถาวร ศัตรู HP +50% เร็วขึ้น +40% ผีดิบและแม่ฝูงชุกชุม',
-   waves:11,enemyTypes:[2,12,13,8,6],bossChance:.08,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
+   waves:11,enemyTypes:[2,12,13,8,6,14],bossChance:.08,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
    maxTowers:6,weatherMode:'fixed',weatherFixed:'darknight',
    story:'หนองน้ำโบราณที่ไม่เคยมีแสงสว่างตั้งแต่ยุคสร้างโลก ความมืดทำให้ศัตรูเข้มแข็งกว่าปกติมาก — ต้องใช้ทุกพลังเพื่อรอดชีวิต',
    path:[[0,0],[0,1],[0,2],[1,2],[2,2],[3,2],[3,3],[3,4],[3,5],[4,5],[5,5],[6,5],[7,5],[7,4],[7,3],[7,2],[8,2],[9,2],[10,2],[11,2],
@@ -206,7 +206,7 @@ const STAGES=[
    grassColors:['#04081a','#060c24','#03050e','#080e28','#050a1c']},
   {id:18,act:2,name:'วิหารกาลเวลา',icon:'⏳',
    desc:'สภาพอากาศสุดโกลาหล 2 ชั้นพร้อมกัน ทุกศัตรูรวมพล ผีดิบและแม่ฝูงปะปนกัน',
-   waves:12,enemyTypes:[12,13,8,9,11,2],bossChance:.10,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
+   waves:12,enemyTypes:[12,13,8,9,11,2,14],bossChance:.10,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
    maxTowers:6,weatherChance:.90,
    story:'วิหารโบราณที่กาลเวลาบิดเบือน สภาพอากาศจากหลายมิติโถมใส่พร้อมกัน ศัตรูจากทุกยุคสมัยมาชุมนุมที่นี่',
    path:[[0,5],[1,5],[1,4],[1,3],[1,2],[1,1],[2,1],[3,1],[4,1],[5,1],[6,1],[7,1],[8,1],[9,1],[10,1],[11,1],
@@ -217,7 +217,7 @@ const STAGES=[
    grassColors:['#0e0820','#150c2e','#0a0618','#180e36','#0c0a1e']},
   {id:19,act:2,name:'ปราการโบราณ',icon:'🏛️',
    desc:'ศัตรูทุกชนิดในบทที่ 2 รวมพล สภาพอากาศสุ่มจาก pool ทั้ง 8 ทุกคลื่น',
-   waves:13,enemyTypes:[0,2,3,5,8,11,12,13,6],bossChance:.10,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
+   waves:13,enemyTypes:[0,2,3,5,8,11,12,13,6,14,15],bossChance:.10,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
    maxTowers:6,weatherChance:.90,
    story:'ป้อมปราการโบราณที่เป็นจุดรวมพลสุดท้ายของกองทัพมืดบทที่ 2 ทุกอย่างที่ผ่านมาเป็นแค่การเตรียมตัวสำหรับที่นี่',
    path:[[0,5],[1,5],[2,5],[2,4],[2,3],[2,2],[2,1],[3,1],[4,1],[5,1],[6,1],[7,1],[8,1],[9,1],[10,1],[11,1],
@@ -228,7 +228,7 @@ const STAGES=[
    grassColors:['#100c22','#160e2e','#0c0a1c','#1a1035','#100c24']},
   {id:20,act:2,name:'แกนโลก',icon:'🌍',
    desc:'ศึกสุดท้ายของบทที่ 2 — สภาพอากาศถาวรและเปลี่ยนทุกคลื่น ศัตรูทุกชนิดรวมพลครั้งใหญ่',
-   waves:15,enemyTypes:[0,1,2,3,5,8,9,11,12,13,6,7,10],bossChance:.12,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
+   waves:15,enemyTypes:[0,1,2,3,5,8,9,11,12,13,6,7,10,14,15],bossChance:.12,unlockedTowers:[0,1,2,3,4,5,6,7],unlocks:null,
    isFinalStage2:true,maxTowers:6,weatherMode:'permanent',weatherChance:.95,
    story:'แกนกลางของโลกกำลังแตกร้าว กองทัพมืดทุกชนิดหลั่งไหลออกมาจากรอยแยก สภาพอากาศบิดเบือนจนจำแนกไม่ได้ — นี่คือศึกสุดท้ายที่แท้จริงของบทที่ 2!',
    path:[[0,0],[1,0],[2,0],[3,0],[3,1],[3,2],[3,3],[4,3],[5,3],[5,2],[5,1],[6,1],[7,1],[8,1],[9,1],[10,1],[11,1],
@@ -250,9 +250,9 @@ const DEFAULT_CFG={
   enemyPerWaveInc:2,   // เดิม 3 — ด่าน 9 wave 13 จะได้ 4+13×2=30 แทน 44
   bossChance:.08,   // เดิม .12 — boss ออกน้อยลงหน่อย
   // Monster base HP — ปรับ Golem และ Boss ให้สมดุล
-  m_hp:[55,75,105,144,380,236,35,160,129,900,58,185,145,330],  // +3 Act2: Berserker,Wraith,BroodQueen
-  m_spd:[1.4,1.0,1.15,.85,.5,.55,1.8,1.55,.65,.42,.72,1.15,1.3,0.65],
-  m_rew:[10,10,15,20,60,30,5,20,30,100,10,18,22,45],
+  m_hp:[55,75,105,144,380,236,35,160,129,900,58,185,145,330,650,1500],  // +2 Act2 bosses: Naga,WorldBreaker
+  m_spd:[1.4,1.0,1.15,.85,.5,.55,1.8,1.55,.65,.42,.72,1.15,1.3,0.65,0.44,0.36],
+  m_rew:[10,10,15,20,60,30,5,20,30,100,10,18,22,45,85,170],
   // Tower — เพิ่ม DPS นิดหน่อยให้ผู้เล่นรู้สึกว่าป้อมมีพลัง
   t_dmg:[24,12,44,65,0,20,0,20,42],   // [cannon,ice,magic,sniper,support,archer,goldmine,thunder,void] — cannon 28→24, magic 38→44, void 38→42 (v3.0.1)
   t_rng:[2.2,2.0,2.5,4.5,1.5,2.8,0,2.4,3.0], // support: 2.8→1.5 (v3.0.0 ลดระยะเยอะ)
@@ -319,7 +319,7 @@ function mkState(){
     wave:0,score:0,selTwr:-1,waveActive:false,
     over:false,win:false,queue:[],spawnT:0,mx:-1,my:-1,
     selTowerInfo:null,gmTimers:{},shakeT:0,hitStopT:0,waveBanner:null,bossWarning:null,mergeHintPulseT:0,
-    kills:0,comboN:0,comboT:0,maxCombo:0,dmgBuff:1,goldWaveMult:1,eliteWave:false,
+    kills:0,comboN:0,comboT:0,maxCombo:0,dmgBuff:1,goldWaveMult:1,eliteWave:false,towerStunT:0,
     dmgByType:{},battleT:0,egMilestones:{}, /* สถิติจบเกม + หมุดหมาย Endgame */
     skillId:null,skillCd:0,skillCdMax:0,skillAiming:false, /* ⭐ การ์ดสกิลกดเอง */
     skillDmgMult:1,skillRateMult:1,skillDmgT:0,skillGoldMult:0,skillGoldT:0,skillBlockT:0,
@@ -1027,6 +1027,7 @@ function _launchFinalVictoryFX(){
 function update(dt){
   if(!G||G.over||G.win) return;
   if(G.waveActive) G.battleT=(G.battleT||0)+dt; // เวลาสู้จริง (สำหรับ DPS จบเกม)
+  if(G.towerStunT>0) G.towerStunT=Math.max(0,G.towerStunT-dt);
   _tickSkill(dt); // ⭐ cooldown + บัฟสกิล
   // weather: lightning re-shuffle timer
   if(G.weather&&G.weather.active==='lightning'){
@@ -1062,6 +1063,68 @@ function update(dt){
         e._packT=0.25; e._packBoost=false;
         for(const o of G.enemies){
           if(o!==e&&o.alive&&o.ti===0&&Math.hypot(o.x-e.x,o.y-e.y)<CS*1.2){e._packBoost=true;break;}
+        }
+      }
+    }
+    // 🐍 นาคาราช: Regen + Venom Pulse + Serpent Spawn
+    if(e.ti===14){
+      if(e.hp<e.mhp) e.hp=Math.min(e.mhp,e.hp+e.mhp*.015*dt);
+      e._venomPulseT=(e._venomPulseT===undefined?8:e._venomPulseT)-dt;
+      if(e._venomPulseT<=0){
+        e._venomPulseT=8;
+        G.fxRings.push({x:e.x,y:e.y,r:4,maxR:2.5*CS,life:.65,lw:3,col:'#76ff03',delay:0});
+        G.towers.forEach(tw=>{if(Math.hypot((tw.col+.5)*CS-e.x,(tw.row+.5)*CS-e.y)<=2.5*CS) tw._venomSlowT=5;});
+        G.particles.push({x:e.x,y:e.y-ESIZES[14]-10,txt:'☠️ Venom!',col:'#76ff03',life:1.2,vy:-1.3,vx:0,decay:1.2,scale:.95});
+      }
+      if(!e._serpentSpawned&&e.hp<e.mhp*.4){
+        e._serpentSpawned=true;
+        G.shakeT=Math.min(.4,G.shakeT+.15);
+        G.bossWarning={text:'🐍 เรียกงูลูก!',t:2.0,col:'#76ff03'};
+        const _si=currentStage.id,_wv=G.wave;
+        for(let k=0;k<2;k++){
+          const chp=Math.round(CFG.m_hp[13]*(1+_si*CFG.stageMult)*(1+_wv*CFG.waveMult)*.5);
+          G.enemies.push({ti:13,pi:e.pi,prog:e.prog+(k?18:-18),x:e.x+(k?22:-22),y:e.y,
+            hp:chp,mhp:chp,spd:getEnemySpd(13,_si)*1.2,reward:Math.round(CFG.m_rew[13]*.5),
+            slow:1,slowT:0,alive:true,hitFlash:0,isAir:false,shieldHp:0,maxShieldHp:0,_bspdMult:1,_sizeMult:.75});
+        }
+        for(let k=0;k<10;k++){const a=k/10*Math.PI*2,sp=2+Math.random()*2;
+          G.particles.push({x:e.x,y:e.y,txt:'●',col:'#76ff03',life:.65,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:2,scale:.5+Math.random()*.5});}
+      }
+    }
+    // 🌍 เทพทำลาย: Phase transitions + Shockwave + Regen
+    if(e.ti===15){
+      if(!e._phase) e._phase=1;
+      if(e._phase===1&&e.hp<=e.mhp*.6){
+        e._phase=2; e.spd*=1.45;
+        e.shieldHp=0; e.maxShieldHp=0;
+        G.shakeT=Math.min(.65,G.shakeT+.35);
+        G.bossWarning={text:'🌋 เทพทำลายตื่นขึ้น!',t:2.5,col:'#ff6d00'};
+        G.fxFlash.push({x:e.x,y:e.y,r:320,life:.45,maxLife:.45,col:'rgba(255,100,0,.42)'});
+        const _pool=currentStage.enemyTypes.filter(t=>MTYPE[t]!==1);
+        for(let k=0;k<3;k++){const _t=_pool[Math.floor(Math.random()*_pool.length)];if(_t!==undefined)spawnEnemy(_t);}
+        for(let k=0;k<18;k++){const a=k/18*Math.PI*2,sp=3+Math.random()*3;
+          G.particles.push({x:e.x,y:e.y,txt:k%2?'●':'✦',col:k%2?'#ff6d00':'#ff8a65',life:.85,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:1.9,scale:.7+Math.random()*.8});}
+      }
+      if(e._phase===2&&e.hp<=e.mhp*.3){
+        e._phase=3; e.spd*=(1.80/1.45);
+        e._shockwaveT=6;
+        G.shakeT=Math.min(.8,G.shakeT+.55);
+        G.bossWarning={text:'💀 พลังทำลายล้างสูงสุด!',t:2.5,col:'#fff9c4'};
+        G.fxFlash.push({x:e.x,y:e.y,r:400,life:.55,maxLife:.55,col:'rgba(255,255,180,.5)'});
+        for(let k=0;k<26;k++){const a=k/26*Math.PI*2,sp=3.5+Math.random()*4;
+          G.particles.push({x:e.x,y:e.y,txt:k%3===0?'★':k%3===1?'🌍':'●',col:k%2?'#64dd17':'#fff9c4',life:1.1,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:1.5,scale:.7+Math.random()*.9});}
+      }
+      if(e._phase===3){
+        if(e.hp<e.mhp) e.hp=Math.min(e.mhp,e.hp+e.mhp*.01*dt);
+        e._shockwaveT=(e._shockwaveT||6)-dt;
+        if(e._shockwaveT<=0){
+          e._shockwaveT=6;
+          G.towerStunT=1.5;
+          G.shakeT=Math.min(.55,G.shakeT+.28);
+          G.fxRings.push({x:e.x,y:e.y,r:4,maxR:COLS*CS*1.5,life:.85,lw:6,col:'#ffffff',delay:0});
+          G.fxRings.push({x:e.x,y:e.y,r:4,maxR:COLS*CS*1.5,life:.7,lw:4,col:'#64dd17',delay:.12});
+          G.particles.push({x:e.x,y:e.y-ESIZES[15]-14,txt:'⚡ SHOCKWAVE!',col:'#fff9c4',life:1.6,vy:-1.4,vx:0,decay:1.0,scale:1.15});
+          showToast('⚡ Shockwave! ป้อมทั้งหมดหยุดทำงาน 1.5 วิ');
         }
       }
     }
@@ -1237,9 +1300,11 @@ function update(dt){
         else if(tw.type===7){const sa=Math.random()*Math.PI*2;G.particles.push({x:ax+(Math.random()-.5)*CS*.3,y:ay+(Math.random()-.5)*CS*.3,txt:'·',col:'#80d8ff',life:.22,vx:Math.cos(sa)*2.5,vy:Math.sin(sa)*2.5,decay:6,scale:.45});}
       }
     }
+    if(tw._venomSlowT>0) tw._venomSlowT=Math.max(0,tw._venomSlowT-dt);
     if(CFG.t_dmg[tw.type]===0) return;
     if(G.weather&&G.weather.struckTowers&&G.weather.struckTowers.size&&G.weather.struckTowers.has(tw)) return; // ⚡ struck by lightning
-    if(G.waveActive) tw.cd=Math.max(0,tw.cd-dt);
+    if(G.towerStunT>0) return; // 🌍 Shockwave stun
+    if(G.waveActive) tw.cd=Math.max(0,tw.cd-dt*(tw._venomSlowT>0?.65:1));
     const range=getTowerRange(tw.type,tw.rngLv||tw.lv)*((G&&G.weather&&G.weather.rangeMult)?G.weather.rangeMult:1);
     const cx=tw.col+.5,cy=tw.row+.5;
     let best=null,bestP=-1,shamanInRange=null;
@@ -2097,6 +2162,33 @@ function render(){
       ctx.strokeStyle='#64b5f6';ctx.lineWidth=2;
       ctx.beginPath();ctx.arc(e.x,e.y,sz+6,0,Math.PI*2);ctx.stroke();
       ctx.globalAlpha=1;
+    }
+    // 🐍 นาคาราช — aura พิษเขียวสั่นพร้อม regen glow
+    if(e.ti===14){
+      ctx.globalAlpha=.18+.13*Math.abs(Math.sin(Date.now()*.014));
+      ctx.strokeStyle='#76ff03';ctx.lineWidth=4;
+      ctx.beginPath();ctx.arc(e.x,e.y,sz+6,0,Math.PI*2);ctx.stroke();
+      ctx.globalAlpha=1;
+      if(e.hp<e.mhp){
+        ctx.globalAlpha=.28+.18*Math.abs(Math.sin(Date.now()*.022));
+        ctx.strokeStyle='#ccff90';ctx.lineWidth=2;
+        ctx.beginPath();ctx.arc(e.x,e.y,sz+11,0,Math.PI*2);ctx.stroke();
+        ctx.globalAlpha=1;
+      }
+    }
+    // 🌍 เทพทำลาย — phase aura เปลี่ยนสีตาม phase
+    if(e.ti===15&&e._phase){
+      const _pc=e._phase===3?'#fff9c4':e._phase===2?'#ff6d00':'#9e9e9e';
+      ctx.globalAlpha=.22+.15*Math.abs(Math.sin(Date.now()*.016));
+      ctx.strokeStyle=_pc;ctx.lineWidth=5;
+      ctx.beginPath();ctx.arc(e.x,e.y,sz+8,0,Math.PI*2);ctx.stroke();
+      ctx.globalAlpha=1;
+      if(e._phase===3){
+        ctx.globalAlpha=.12+.10*Math.abs(Math.sin(Date.now()*.025));
+        ctx.strokeStyle='#64dd17';ctx.lineWidth=2;
+        ctx.beginPath();ctx.arc(e.x,e.y,sz+15,0,Math.PI*2);ctx.stroke();
+        ctx.globalAlpha=1;
+      }
     }
     // emoji
     // heal glow indicator
@@ -3164,6 +3256,7 @@ function startEgWave(){
 function updateEg(dt){
   if(!G||G.over) return;
   if(G.waveActive) G.battleT=(G.battleT||0)+dt; // เวลาสู้จริง (สำหรับ DPS จบเกม)
+  if(G.towerStunT>0) G.towerStunT=Math.max(0,G.towerStunT-dt);
   _tickSkill(dt); // ⭐ cooldown + บัฟสกิล
   if(G.waveActive&&G.queue.length>0){
     G.spawnT-=dt;
@@ -3193,6 +3286,67 @@ function updateEg(dt){
         e._packT=0.25; e._packBoost=false;
         for(const o of G.enemies){
           if(o!==e&&o.alive&&o.ti===0&&Math.hypot(o.x-e.x,o.y-e.y)<CS*1.2){e._packBoost=true;break;}
+        }
+      }
+    }
+    // 🐍 นาคาราช (EG)
+    if(e.ti===14){
+      if(e.hp<e.mhp) e.hp=Math.min(e.mhp,e.hp+e.mhp*.015*dt);
+      e._venomPulseT=(e._venomPulseT===undefined?8:e._venomPulseT)-dt;
+      if(e._venomPulseT<=0){
+        e._venomPulseT=8;
+        G.fxRings.push({x:e.x,y:e.y,r:4,maxR:2.5*CS,life:.65,lw:3,col:'#76ff03',delay:0});
+        G.towers.forEach(tw=>{if(Math.hypot((tw.col+.5)*CS-e.x,(tw.row+.5)*CS-e.y)<=2.5*CS) tw._venomSlowT=5;});
+        G.particles.push({x:e.x,y:e.y-ESIZES[14]-10,txt:'☠️ Venom!',col:'#76ff03',life:1.2,vy:-1.3,vx:0,decay:1.2,scale:.95});
+      }
+      if(!e._serpentSpawned&&e.hp<e.mhp*.4){
+        e._serpentSpawned=true;
+        G.shakeT=Math.min(.4,G.shakeT+.15);
+        G.bossWarning={text:'🐍 เรียกงูลูก!',t:2.0,col:'#76ff03'};
+        for(let k=0;k<2;k++){
+          const chp=Math.round(CFG.m_hp[13]*getEgRewardBonus()*.5);
+          G.enemies.push({ti:13,pi:e.pi,prog:e.prog+(k?18:-18),x:e.x+(k?22:-22),y:e.y,
+            hp:chp,mhp:chp,spd:Math.min(CFG.m_spd[13]*1.2,CFG.spdCap),reward:Math.round(CFG.m_rew[13]*.5),
+            slow:1,slowT:0,alive:true,hitFlash:0,isAir:false,shieldHp:0,maxShieldHp:0,_bspdMult:1,_sizeMult:.75});
+        }
+        for(let k=0;k<10;k++){const a=k/10*Math.PI*2,sp=2+Math.random()*2;
+          G.particles.push({x:e.x,y:e.y,txt:'●',col:'#76ff03',life:.65,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:2,scale:.5+Math.random()*.5});}
+      }
+    }
+    // 🌍 เทพทำลาย (EG)
+    if(e.ti===15){
+      if(!e._phase) e._phase=1;
+      if(e._phase===1&&e.hp<=e.mhp*.6){
+        e._phase=2; e.spd*=1.45;
+        e.shieldHp=0; e.maxShieldHp=0;
+        G.shakeT=Math.min(.65,G.shakeT+.35);
+        G.bossWarning={text:'🌋 เทพทำลายตื่นขึ้น!',t:2.5,col:'#ff6d00'};
+        G.fxFlash.push({x:e.x,y:e.y,r:320,life:.45,maxLife:.45,col:'rgba(255,100,0,.42)'});
+        const _egpool=currentStage.enemyTypes.filter(t=>MTYPE[t]!==1);
+        for(let k=0;k<3;k++){const _t=_egpool[Math.floor(Math.random()*_egpool.length)];if(_t!==undefined)spawnEgEnemy(_t);}
+        for(let k=0;k<18;k++){const a=k/18*Math.PI*2,sp=3+Math.random()*3;
+          G.particles.push({x:e.x,y:e.y,txt:k%2?'●':'✦',col:k%2?'#ff6d00':'#ff8a65',life:.85,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:1.9,scale:.7+Math.random()*.8});}
+      }
+      if(e._phase===2&&e.hp<=e.mhp*.3){
+        e._phase=3; e.spd*=(1.80/1.45);
+        e._shockwaveT=6;
+        G.shakeT=Math.min(.8,G.shakeT+.55);
+        G.bossWarning={text:'💀 พลังทำลายล้างสูงสุด!',t:2.5,col:'#fff9c4'};
+        G.fxFlash.push({x:e.x,y:e.y,r:400,life:.55,maxLife:.55,col:'rgba(255,255,180,.5)'});
+        for(let k=0;k<26;k++){const a=k/26*Math.PI*2,sp=3.5+Math.random()*4;
+          G.particles.push({x:e.x,y:e.y,txt:k%3===0?'★':k%3===1?'🌍':'●',col:k%2?'#64dd17':'#fff9c4',life:1.1,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:1.5,scale:.7+Math.random()*.9});}
+      }
+      if(e._phase===3){
+        if(e.hp<e.mhp) e.hp=Math.min(e.mhp,e.hp+e.mhp*.01*dt);
+        e._shockwaveT=(e._shockwaveT||6)-dt;
+        if(e._shockwaveT<=0){
+          e._shockwaveT=6;
+          G.towerStunT=1.5;
+          G.shakeT=Math.min(.55,G.shakeT+.28);
+          G.fxRings.push({x:e.x,y:e.y,r:4,maxR:COLS*CS*1.5,life:.85,lw:6,col:'#ffffff',delay:0});
+          G.fxRings.push({x:e.x,y:e.y,r:4,maxR:COLS*CS*1.5,life:.7,lw:4,col:'#64dd17',delay:.12});
+          G.particles.push({x:e.x,y:e.y-ESIZES[15]-14,txt:'⚡ SHOCKWAVE!',col:'#fff9c4',life:1.6,vy:-1.4,vx:0,decay:1.0,scale:1.15});
+          showToast('⚡ Shockwave! ป้อมทั้งหมดหยุดทำงาน 1.5 วิ');
         }
       }
     }
@@ -3300,9 +3454,11 @@ function updateEg(dt){
         else if(tw.type===7){const sa=Math.random()*Math.PI*2;G.particles.push({x:ax+(Math.random()-.5)*CS*.3,y:ay+(Math.random()-.5)*CS*.3,txt:'·',col:'#80d8ff',life:.22,vx:Math.cos(sa)*2.5,vy:Math.sin(sa)*2.5,decay:6,scale:.45});}
       }
     }
+    if(tw._venomSlowT>0) tw._venomSlowT=Math.max(0,tw._venomSlowT-dt);
     if(CFG.t_dmg[tw.type]===0) return;
     if(G.weather&&G.weather.struckTowers&&G.weather.struckTowers.size&&G.weather.struckTowers.has(tw)) return;
-    if(G.waveActive) tw.cd=Math.max(0,tw.cd-dt);
+    if(G.towerStunT>0) return; // 🌍 Shockwave stun
+    if(G.waveActive) tw.cd=Math.max(0,tw.cd-dt*(tw._venomSlowT>0?.65:1));
     const range=getTowerRange(tw.type,tw.rngLv||tw.lv)*((G&&G.weather&&G.weather.rangeMult)?G.weather.rangeMult:1);
     const cx=tw.col+.5,cy=tw.row+.5;
     let best=null,bestP=-1,shamanInRange=null;
