@@ -1382,13 +1382,13 @@ function update(dt){
         G.enemies.forEach(e=>{
           if(!e.alive||Math.hypot(e.x-tx,e.y-ty)>p.splash*CS) return;
           if(e.isAir&&!TCANAIR[p.type]) return; // splash ไม่โดน air ถ้าป้อมยิง air ไม่ได้
-          // ⛈️ storm: ค้างคาว(ti=6) handle dodge ใน applyDmg เองด้วย 50% — ข้าม weather dodge ตรงนี้
-          if(_wDodge>0&&!(G.weather&&G.weather.stormDodge&&e.ti===6)&&Math.random()<_wDodge) return; // 🌪️ tornado/storm dodge
+          // 🦇 ค้างคาว handle dodge ใน applyDmg เอง (cap 50%) — ข้าม weather dodge ซ้ำเพื่อป้องกัน stack
+          if(_wDodge>0&&!(e.ti===6)&&Math.random()<_wDodge) return; // 🌪️ tornado/storm dodge
           applyDmg(e,p.dmg,p.type,p._rngPierce);
         });
       } else {
         if(p.target&&p.target.alive){
-          const _skipWDodge=(G.weather&&G.weather.stormDodge&&p.target.ti===6); // ⛈️ storm: bat handles own dodge
+          const _skipWDodge=(_wDodge>0&&p.target.ti===6); // 🦇 bat handles own dodge (cap 50%) — ป้องกัน stack
           if(_wDodge>0&&!_skipWDodge&&Math.random()<_wDodge){
             G.particles.push({x:p.target.x,y:p.target.y-ESIZES[p.target.ti]-6,txt:'MISS',col:'#e0e0e0',life:.6,vy:-1,vx:0,decay:1.5,scale:.7});
           } else {

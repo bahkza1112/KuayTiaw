@@ -100,9 +100,10 @@ function applyDmg(e,dmg,towerType,forcePierce){
     G.particles.push({x:e.x+(Math.random()*10-5),y:e.y-ESIZES[e.ti]-6,txt:'PHASE!',col:'#80deea',life:.55,vy:-1.2,vx:(Math.random()-.5)*.6,decay:2.2,scale:.8});
     return;
   }
-  // 🦇 ค้างคาว: หลบเลี่ยงความเสียหายแบบสุ่ม 25% (50% ตอน ⛈️ storm)
+  // 🦇 ค้างคาว: 25% ปกติ, storm→50%, tornado→50% (cap ไม่ให้ stack เกิน 50%)
   if(e.ti===6){
-    const _batDodge=(G&&G.weather&&G.weather.stormDodge)?0.50:0.25;
+    const _gw=G&&G.weather;
+    const _batDodge=(_gw&&_gw.stormDodge)?0.50:(_gw&&_gw.dodgeChance>0)?Math.min(_gw.dodgeChance,0.50):0.25;
     if(Math.random()<_batDodge){
       e._dodgeFlash=.3;
       G.particles.push({x:e.x+(Math.random()*10-5),y:e.y-ESIZES[e.ti]-6,txt:'MISS!',col:'#fff',life:.6,vy:-1.4,vx:(Math.random()-.5)*.6,decay:2.2,scale:.8});
