@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.17.6 — Storm Visual + Stage Select Weather Pill
+
+### Added
+- `js/game.js` storm canvas overlay: ฝนหนัก 65 drops + purple-dark overlay + lightning bolt zigzag สุ่ม
+- `js/ui.js` + `css/main.css` stage select: weather pill แสดง fixed weather หรือ icon pool ที่อาจเกิด
+
+---
+
 ## v3.17.5 — Wave Preview ปรับปรุง
 
 ### Changed
