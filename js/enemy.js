@@ -354,7 +354,7 @@ function killEnemy(e){
   G.gold+=_gr;
   addParticle(e.x,e.y,'+'+_gr+'💰','#ffe082');
   // 📅 daily quest tracking
-  if(typeof questProgress==='function'){questProgress('kill',1);questProgress('gold',e.reward);questProgress('combo',G.comboN);}
+  if(typeof questProgress==='function'){questProgress('kill',1);questProgress('gold',_gr);questProgress('combo',G.comboN);}
   updateHUD();
   _deathFx(e);
   // death sound (throttled — max once per 80ms)

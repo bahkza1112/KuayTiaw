@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.16.6 — แก้บั๊ก 5 จุด (ฟ้าผ่า/Quest/ขาย/Void Sprite/Merge Timer)
+
+### Fixed
+- `js/game.js` render: `G.weather.struckTowers.length` → `.size` — ไอคอน ⚡ บนป้อมที่โดนฟ้าผ่าไม่เคยแสดงเพราะ `Set.length` เป็น `undefined` เสมอ
+- `js/enemy.js` `killEnemy()`: `questProgress('gold',e.reward)` → `questProgress('gold',_gr)` — นับทองที่ได้จริง (รวม combo bonus) แทน base reward
+- `js/tower.js` `showTowerPopup()`: refund ใน popup รวมค่า Awaken คืน 60% ด้วย เมื่อป้อม awakened
+- `js/tower.js` `_bldSC()`: `t<8` → `t<9` — สร้าง sprite cache สำหรับ Void Tower (type 8)
+- `js/game.js` `_showMerge4Confirm()` confirm handler: ลบ `gmTimer` ของป้อมเป้าหมาย (target) ด้วย ไม่ใช่แค่ src
+
 ## v3.16.5 — แก้บั๊กเล็กน้อย + Perf
 
 ### Fixed

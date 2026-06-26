@@ -117,7 +117,7 @@ function _bldSC(){
   _SC={};
   const sz=CS-2,r=sz/2;
   const cw=Math.ceil(r*2.2),ch=Math.ceil(r*1.55),tx=cw/2,ty=Math.ceil(ch*.38);
-  for(let t=0;t<8;t++){
+  for(let t=0;t<9;t++){
     const oc=document.createElement('canvas');
     oc.width=cw;oc.height=ch;
     const ox=oc.getContext('2d');
@@ -386,8 +386,8 @@ function showTowerPopup(tw,px,py){
   // ⬆ แต้มสกิล 2 สาย — สาย "ดาเมจ" เดิมถูกตัดออก ค่า dmgLv ที่ลงไปแล้วแช่แข็งไว้เป็นโบนัส
   const used=(tw.rngLv-1)+(tw.rateLv-1);
   const remain=tw.star-used;
-  const refund=Math.floor(CFG.t_cost[tw.type]*tw.lv*.6);
   const _awCost=awakenCost();
+  const refund=Math.floor(CFG.t_cost[tw.type]*tw.lv*.6)+(tw.awakened?Math.floor(_awCost*.6):0);
   const canAwaken=tw.star>=3&&!tw.awakened&&G.gold>=_awCost;
   const showAwakenBtn=tw.star>=3&&!tw.awakened;
   if(showAwakenBtn&&!localStorage.getItem('tq_hint_awaken')){

@@ -2340,7 +2340,7 @@ function render(){
       ctx.save();ctx.fillStyle='rgba(10,0,32,.45)';ctx.fillRect(0,0,W,H);ctx.restore();
     } else if(wid==='lightning'){
       if(Math.random()<0.025){ctx.save();ctx.fillStyle='rgba(255,255,255,.35)';ctx.fillRect(0,0,W,H);ctx.restore();}
-      if(G.weather.struckTowers&&G.weather.struckTowers.length){
+      if(G.weather.struckTowers&&G.weather.struckTowers.size){
         ctx.save();ctx.font='18px Arial';ctx.textAlign='center';ctx.textBaseline='middle';
         G.weather.struckTowers.forEach(tw=>{
           if(!tw||!G.towers.includes(tw)) return; // tower may have been sold mid-storm
@@ -2760,7 +2760,7 @@ function _showMerge4Confirm(src,target){
     if(!G) return;
     G.towers=G.towers.filter(t=>t!==src&&t!==target);
     const merged={col:target.col,row:target.row,type:target.type,star:4,lv:1,dmgLv:1,rngLv:1,rateLv:1,cd:0,angle:0,spawnAnim:1.0,awakened:false};
-    if(G.gmTimers) delete G.gmTimers[src.col+'_'+src.row];
+    if(G.gmTimers){delete G.gmTimers[src.col+'_'+src.row];delete G.gmTimers[target.col+'_'+target.row];}
     G.towers.push(merged);
     const mx=target.col*CS+CS/2,my=target.row*CS+CS/2;
     G.hitStopT=0.22;G.shakeT=Math.min(G.shakeT+0.2,0.5);

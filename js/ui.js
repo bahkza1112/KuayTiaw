@@ -1,6 +1,13 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.16.5';
+const GAME_VERSION='3.16.6';
 const PATCH_NOTES=[
+  {ver:'3.16.6',date:'2026-06-26',title:'🔧 แก้บั๊ก 5 จุด — ฟ้าผ่า/Quest/ขาย/Void/Merge',notes:[
+    'แก้: ไอคอน ⚡ บนป้อมที่โดนฟ้าผ่าไม่แสดง (struckTowers.size แทน .length)',
+    'แก้: Quest ทองนับจากทองที่ได้จริง (รวม combo bonus) ไม่ใช่ base reward',
+    'แก้: หน้าต่างขายป้อม — แสดงราคาคืนรวมค่า Awaken อย่างถูกต้อง',
+    'แก้: Void Tower (ป้อมที่ 9) ไม่สร้าง sprite cache — แก้ loop <9',
+    'แก้: Merge 4★ ไม่ลบ gmTimer ของป้อมเป้าหมาย — ป้องกัน timer ghost',
+  ]},
   {ver:'3.16.5',date:'2026-06-26',title:'🔧 แก้บั๊กเล็กน้อย + Perf',notes:[
     'แก้: Endgame wave preview แสดง enemy pool ของ round ถัดไปอย่างถูกต้อง',
     'ประสิทธิภาพ: tooltip rangeInfo ไม่ query DOM ทุก mousemove — cache getBoundingClientRect',
