@@ -1,10 +1,9 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.17.3';
+const GAME_VERSION='3.17.4';
 const PATCH_NOTES=[
-  {ver:'3.17.3',date:'2026-06-26',title:'⛈️ Storm เปลี่ยน mechanic — เฉพาะ air unit',notes:[
-    'Storm เปลี่ยนจาก "ทุกตัวหลบ 25%" เป็น "เฉพาะ air unit"',
-    'ค้างคาวหลบ 50%, วิเวิร์นหลบ 30% — มอนพื้นดินไม่ได้รับผลใดๆ',
-    'ทำให้ Storm ต่างจาก Tornado (ทุกตัว 50%) อย่างชัดเจน',
+  {ver:'3.17.4',date:'2026-06-26',title:'⛈️ Storm เปลี่ยน mechanic — ศัตรูเร็วขึ้น 30%',notes:[
+    'Storm เปลี่ยนเป็น "ศัตรูทุกตัวเร็วขึ้น 30%" — บทลงโทษล้วน ไม่มีรางวัลชดเชย',
+    'ต่างจาก Darknight (HP+speed) และ Blizzard (speed+ice immune) อย่างชัดเจน',
   ]},
   {ver:'3.17.2',date:'2026-06-26',title:'🌦️ สารานุกรม — แท็บสภาพอากาศใหม่',notes:[
     'เพิ่มแท็บ "🌦️ อากาศ" ในสารานุกรม — แสดงสภาพอากาศทั้ง 9 ชนิด',
@@ -3125,7 +3124,7 @@ function renderWeatherTab(){
       heatwave:'Ice Tower ไม่ทำงาน — ใช้ Magic หรือ Cannon Splash แทน',
       rain:'Cannon และ Magic Splash ลดลง 70% — ใช้ Sniper/Archer/Thunder แทน',
       tornado:'กระสุนทุกนัดพลาดได้ 50% ไม่ว่าจะยิงมอนอะไร — เน้นป้อมหลายตัว rate สูง อย่าพึ่งป้อมเดียว',
-      storm:'มอนพื้นดินไม่ได้รับผล แต่ค้างคาวหลบ 50% และวิเวิร์นหลบ 30% — Thunder/Archer จำเป็นมากในด่านนี้',
+      storm:'ศัตรูทุกตัวเร็วขึ้น 30% — ไม่มี immunity ชดเชย ต้องเพิ่ม DPS หรืออัพ rate ป้อมก่อนคลื่นหนัก',
       sun:'เหมืองทองหยุดทำงาน — อย่าพึ่งรายได้จาก Gold Mine',
     };
     const tip=tipsMap[w.id]||'';

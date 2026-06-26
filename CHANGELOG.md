@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.17.4 — Storm เปลี่ยน mechanic ศัตรูเร็วขึ้น 30%
+
+### Changed
+- `js/game.js` WEATHERS storm: เปลี่ยนจาก dodge air unit → `spdMult:1.3` (ศัตรูทุกตัวเร็วขึ้น 30%)
+- `js/enemy.js` applyDmg: ลบ stormDodge logic ของ bat และ wyvern ออก
+- `js/ui.js` Codex tip storm: อัพเดทให้ตรง mechanic ใหม่
+
+---
+
 ## v3.17.3 — Storm เปลี่ยน mechanic เฉพาะ air unit
 
 ### Changed
