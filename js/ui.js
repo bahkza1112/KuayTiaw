@@ -3088,18 +3088,50 @@ function getTowerIconURL(type,sz){
 let cdxTab='monster',cdxSel=-1;
 function switchCdxTab(tab){
   cdxTab=tab; cdxSel=-1;
-  ['monster','boss','tower','achiev'].forEach(t=>{
+  ['monster','boss','tower','achiev','weather'].forEach(t=>{
     const key=t==='achiev'?'Achiev':t.charAt(0).toUpperCase()+t.slice(1);
     const el=document.getElementById('tab'+key);
     if(el) el.classList.toggle('active',t===tab);
   });
   if(tab==='achiev'){
-    // mark all current achievements as seen
     const unlocked=loadAchievements();
     localStorage.setItem('tq_ach_seen',JSON.stringify([...unlocked]));
     _updateAchBadge();
     renderAchievTab();
+  } else if(tab==='weather'){
+    renderWeatherTab();
   } else renderCodex();
+}
+
+function renderWeatherTab(){
+  const body=document.getElementById('cdxBody');
+  if(!body) return;
+  document.getElementById('cdxProg').textContent='สภาพอากาศ '+WEATHERS.length+' ชนิด';
+  const rows=WEATHERS.map(w=>{
+    const tipsMap={
+      fog:'วางป้อม Sniper ใกล้ทางมากขึ้น หรือใช้ Thunder ระยะกลาง',
+      blizzard:'ลืม Ice Tower ไปก่อน — ใช้ Cannon/Magic/Sniper/Thunder แทน',
+      lightning:'สร้างป้อมสำรองไว้เสมอ อย่าพึ่งพาป้อมเดียว',
+      darknight:'เน้น DPS สูงๆ จัดการก่อนมอนถึงปราสาท',
+      heatwave:'Ice Tower ไม่ทำงาน — ใช้ Magic หรือ Cannon Splash แทน',
+      rain:'Cannon และ Magic Splash ลดลง 70% — ใช้ Sniper/Archer/Thunder แทน',
+      tornado:'ยิงพลาด 50% — เน้นป้อมเยอะและ rate สูงชดเชย',
+      storm:'ค้างคาวหลบ 50% — ใช้ Thunder หรือ Archer rate สูงจัดการ',
+      sun:'เหมืองทองหยุดทำงาน — อย่าพึ่งรายได้จาก Gold Mine',
+    };
+    const tip=tipsMap[w.id]||'';
+    return `<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 14px;margin-bottom:10px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+        <span style="font-size:22px;">${w.icon}</span>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#fff;">${w.name}</div>
+          <div style="font-size:11px;color:#ef9a9a;margin-top:2px;">⚠️ ${w.desc}</div>
+        </div>
+      </div>
+      ${tip?`<div style="font-size:11px;color:#a5d6a7;background:rgba(76,175,80,.08);border-left:3px solid #4caf50;padding:5px 9px;border-radius:0 6px 6px 0;">💡 ${tip}</div>`:''}
+    </div>`;
+  }).join('');
+  body.innerHTML=`<div style="padding:4px 2px;">${rows}</div>`;
 }
 function selectCodex(i){cdxSel=(cdxSel===i)?-1:i;renderCodex();}
 
