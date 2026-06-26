@@ -3124,7 +3124,7 @@ function renderWeatherTab(){
       heatwave:'Ice Tower ไม่ทำงาน — ใช้ Magic หรือ Cannon Splash แทน',
       rain:'Cannon และ Magic Splash ลดลง 70% — ใช้ Sniper/Archer/Thunder แทน',
       tornado:'กระสุนทุกนัดพลาดได้ 50% ไม่ว่าจะยิงมอนอะไร — เน้นป้อมหลายตัว rate สูง อย่าพึ่งป้อมเดียว',
-      storm:'ศัตรูทุกตัวเร็วขึ้น 30% — ไม่มี immunity ชดเชย ต้องเพิ่ม DPS หรืออัพ rate ป้อมก่อนคลื่นหนัก',
+      storm:'ศัตรูเร็วขึ้น 30% + ค้างคาว/วิเวิร์นหลบ 25% — Thunder/Archer จัดการ air unit, เน้น DPS รับมือความเร็ว',
       sun:'เหมืองทองหยุดทำงาน — อย่าพึ่งรายได้จาก Gold Mine',
     };
     const tip=tipsMap[w.id]||'';
