@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.17.8 — Stage Select + Codex UI improvements
+
+### Changed
+- `js/ui.js` `renderStageSelect()`: fixed weather pill (`weatherMode:'fixed'`) เปลี่ยนเป็นสีส้ม + suffix 🔒 บอกผู้เล่นว่าสภาพอากาศถาวร
+- `js/ui.js` `renderStageSelect()`: permanent weather pill (`weatherMode:'permanent'` ไม่มี `weatherFixed`) — เดิมไม่แสดง pill เลย ตอนนี้แสดง icons pool + 🔄
+- `js/ui.js` `renderStageSelect()`: random weather pill แสดง % chance (เช่น 80%, 85%)
+- `css/main.css`: เพิ่ม `.pill-weather-fixed` สีส้มแยกจาก random weather
+- `js/ui.js` `renderMonsterDetail()`: เพิ่ม Act badge — บทที่ 1 / บทที่ 2 (ใหม่) / ทั้งสองบท
+- `js/ui.js` Tower Codex detail: แสดง `TAWAKEN_DESC[i]` ใต้ TSPECIAL เสมอ
+- `js/ui.js` Tower Codex detail: Void Tower (index 8) มี badge "🛠️ ปลดล็อกจาก Workshop"
+
 ## v3.17.7 — Weather Pill Tooltip
 
 ### Added

@@ -1,6 +1,14 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.17.7';
+const GAME_VERSION='3.17.8';
 const PATCH_NOTES=[
+  {ver:'3.17.8',date:'2026-06-26',title:'🗺️ Stage Select + Codex ปรับปรุง UI',notes:[
+    'Stage Select: weather pill ถาวร (fixed/permanent) เปลี่ยนสีส้ม + ไอคอน 🔒/🔄 — บอกผู้เล่นชัดว่าสภาพอากาศไม่เปลี่ยน',
+    'Stage Select: ด่านสภาพอากาศสุ่มแสดง % โอกาส (เช่น 80%, 85%)',
+    'Stage Select: ด่าน 21 (แกนโลก) ที่ไม่เคยมี weather pill — ตอนนี้แสดงแล้ว',
+    'Codex มอนสเตอร์: เพิ่ม badge "บทที่ 1 / บทที่ 2 (ใหม่)" บอกที่มาของศัตรูแต่ละชนิด',
+    'Codex ป้อม: แสดง Awaken effect (✨) ชัดเจนในทุกป้อม — ไม่ต้องลอง Awaken เองถึงจะรู้',
+    'Codex ป้อม: ป้อมมนตราโมฆะมี badge "🛠️ ปลดล็อกจาก Workshop" แจ้งเตือนผู้เล่น',
+  ]},
   {ver:'3.17.7',date:'2026-06-26',title:'💡 Tooltip สภาพอากาศ — hover ดู desc ได้เลย',notes:[
     'Weather pill หน้าเลือกด่าน — hover แสดง tooltip บอก desc แต่ละสภาพอากาศ',
   ]},
@@ -2122,16 +2130,28 @@ function renderStageSelect(){
     // 🌦️ weather pill
     let _wPill='';
     if(unlocked){
-      if(s.weatherMode==='fixed'||s.weatherMode==='permanent'){
+      if(s.weatherMode==='fixed'){
         const _fw=WEATHERS.find(w=>w.id===s.weatherFixed);
-        if(_fw) _wPill=`<span class="stage-pill pill-weather" data-tip="${_fw.icon} ${_fw.name}\n${_fw.desc}">${_fw.icon} ${_fw.name}</span>`;
+        if(_fw) _wPill=`<span class="stage-pill pill-weather pill-weather-fixed" data-tip="${_fw.icon} ${_fw.name} (ถาวรตลอด stage)\n${_fw.desc}">${_fw.icon} ${_fw.name} 🔒</span>`;
+      } else if(s.weatherMode==='permanent'){
+        const _fw=WEATHERS.find(w=>w.id===s.weatherFixed);
+        if(_fw){
+          _wPill=`<span class="stage-pill pill-weather pill-weather-fixed" data-tip="${_fw.icon} ${_fw.name} (ถาวร เปลี่ยนทุกคลื่น)\n${_fw.desc}">${_fw.icon} ${_fw.name} 🔄</span>`;
+        } else {
+          const _pool=(STAGE_WEATHER[Math.min(s.id,STAGE_WEATHER.length-1)]||[]);
+          const _wObjs=_pool.map(id=>WEATHERS.find(x=>x.id===id)).filter(Boolean);
+          const _icons=_wObjs.slice(0,5).map(w=>w.icon).join('');
+          const _tip='สภาพอากาศถาวร เปลี่ยนสุ่มทุกคลื่น\n'+_wObjs.map(w=>`${w.icon} ${w.name}: ${w.desc}`).join('\n');
+          _wPill=`<span class="stage-pill pill-weather pill-weather-fixed" data-tip="${_tip}">🌪️ ${_icons} 🔄</span>`;
+        }
       } else if(s.weatherChance>0||s.weatherChance===undefined){
         const _pool=(STAGE_WEATHER[Math.min(s.id,STAGE_WEATHER.length-1)]||[]);
         if(_pool.length>0){
           const _wObjs=_pool.map(id=>WEATHERS.find(x=>x.id===id)).filter(Boolean);
           const _icons=_wObjs.map(w=>w.icon).join('');
-          const _tip=_wObjs.map(w=>`${w.icon} ${w.name}: ${w.desc}`).join('\n');
-          _wPill=`<span class="stage-pill pill-weather" data-tip="${_tip}">🌦️ ${_icons}</span>`;
+          const _chance=s.weatherChance!=null?Math.round(s.weatherChance*100):65;
+          const _tip=`โอกาสอากาศแปรปรวน ${_chance}%\n`+_wObjs.map(w=>`${w.icon} ${w.name}: ${w.desc}`).join('\n');
+          _wPill=`<span class="stage-pill pill-weather" data-tip="${_tip}">🌦️ ${_icons} <span style="opacity:.7;font-size:9px;">${_chance}%</span></span>`;
         }
       }
     }
@@ -3176,15 +3196,20 @@ function renderMonsterDetail(i){
   const bHP=CFG.m_hp[i],spd=CFG.m_spd[i],rew=CFG.m_rew[i];
   const isBoss=MTYPE[i]===1;
   const subLabel=isBoss?'⚠️ Boss — Special Unit':'Common Enemy';
-  const strengthHtml=MSTRENGTH[i].map(s=>`<span class="cdx-tag tag-red">💪 ${s}</span>`).join('');
-  const weakHtml=MWEAKNESS[i].map(w=>`<span class="cdx-tag tag-green">🎯 ${w}</span>`).join('');
+  const _actStages=typeof STAGES!=='undefined'?STAGES.filter(s=>s.enemyTypes&&s.enemyTypes.includes(i)):[];
+  const _inAct1=_actStages.some(s=>(s.act||1)===1);
+  const _inAct2=_actStages.some(s=>s.act===2);
+  const _actBadge=(_inAct1&&_inAct2)?'<span style="font-size:10px;background:rgba(105,240,174,.15);border:1px solid rgba(105,240,174,.3);border-radius:5px;padding:2px 7px;color:#69f0ae;margin-right:4px;">⚔️ บทที่ 1</span><span style="font-size:10px;background:rgba(255,110,64,.15);border:1px solid rgba(255,110,64,.3);border-radius:5px;padding:2px 7px;color:#ff6e40;">🌍 บทที่ 2</span>':_inAct2?'<span style="font-size:10px;background:rgba(255,110,64,.15);border:1px solid rgba(255,110,64,.3);border-radius:5px;padding:2px 7px;color:#ff6e40;">🌍 บทที่ 2 (ใหม่)</span>':'<span style="font-size:10px;background:rgba(105,240,174,.15);border:1px solid rgba(105,240,174,.3);border-radius:5px;padding:2px 7px;color:#69f0ae;">⚔️ บทที่ 1</span>';
   return `<div class="cdx-detail">
     <div class="cdx-detail-head">
       <div class="cdx-detail-ico"><img src="${getEnemyIconURL(i,56)}" width="56" height="56" style="image-rendering:pixelated;"></div>
       <div>
         <div class="cdx-detail-name">${ENAMES[i]}</div>
         <div class="cdx-detail-sub">${subLabel}</div>
-        <div style="margin-top:3px;font-size:10px;background:rgba(255,255,255,.08);border-radius:6px;padding:2px 8px;display:inline-block;color:#ce93d8;">⚔️ เผ่า: ${MTRIBE[i]}</div>
+        <div style="margin-top:4px;display:flex;flex-wrap:wrap;gap:4px;align-items:center;">
+          ${_actBadge}
+          <span style="font-size:10px;background:rgba(255,255,255,.08);border-radius:5px;padding:2px 7px;color:#ce93d8;">⚔️ เผ่า: ${MTRIBE[i]}</span>
+        </div>
       </div>
     </div>
     <div class="cdx-flavor">${MFLAVOR[i]}</div>
@@ -3306,7 +3331,10 @@ function renderCodex(){
           <div>
             <div class="cdx-detail-name">${TNAMES[cdxSel]}</div>
             <div class="cdx-detail-sub">ป้อมปราการ</div>
-            <div style="margin-top:3px;font-size:10px;background:rgba(255,255,255,.08);border-radius:6px;padding:2px 8px;display:inline-block;color:#80cbc4;">💰 ราคาเริ่มต้น: ${CFG.t_cost[cdxSel]} ทอง <span style="opacity:.7;">(+15 ทองต่อป้อมชนิดนี้ที่วางแล้ว)</span></div>
+            <div style="margin-top:4px;display:flex;flex-wrap:wrap;gap:4px;align-items:center;">
+              <span style="font-size:10px;background:rgba(255,255,255,.08);border-radius:5px;padding:2px 7px;color:#80cbc4;">💰 ราคา: ${CFG.t_cost[cdxSel]} ทอง</span>
+              ${cdxSel===8?'<span style="font-size:10px;background:rgba(179,136,255,.15);border:1px solid rgba(179,136,255,.35);border-radius:5px;padding:2px 7px;color:#b388ff;">🛠️ ปลดล็อกจาก Workshop</span>':''}
+            </div>
           </div>
         </div>
         <div class="cdx-flavor">${TFLAVOR[cdxSel]}</div>
@@ -3324,6 +3352,7 @@ function renderCodex(){
           </div>
         </div>
         <div style="margin-top:8px;font-size:11px;color:#80cbc4;background:rgba(0,150,136,.1);border-left:3px solid #26a69a;padding:7px 10px;border-radius:0 8px 8px 0;">${TSPECIAL[cdxSel]}</div>
+        ${typeof TAWAKEN_DESC!=='undefined'&&TAWAKEN_DESC[cdxSel]?`<div style="margin-top:6px;font-size:11px;color:#ffe082;background:rgba(255,193,7,.08);border-left:3px solid #ffc107;padding:7px 10px;border-radius:0 8px 8px 0;">✨ <b>Awaken:</b> ${TAWAKEN_DESC[cdxSel]}</div>`:''}
         <table class="lv-table"><tr>${lvHead}</tr>${rows}</table>
         <div style="margin-top:6px;font-size:10px;color:#90caf9;background:rgba(144,202,249,.08);border-left:3px solid #42a5f5;padding:6px 10px;border-radius:0 8px 8px 0;">
           ✨ <b>ระบบรวมป้อม (Star Merge):</b> ลากป้อมชนิด/★เดียวกันทับกันเพื่อรวมเป็นป้อมเดียว ★สูงขึ้น (สูงสุด ★4) แต้มสกิลที่ได้ฟรีจะรีเซ็ตและจัดสรรใหม่ตามดาว — ★3 ขึ้นไปจะ Awaken ได้ (💰350) แต่ป้อมจะ "ล็อกดาว" รวมต่อไม่ได้อีก
