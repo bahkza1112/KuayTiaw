@@ -379,7 +379,7 @@ function mkWeatherState(){
     active:null,
     rangeMult:1, spdMult:1, hpMult:1,
     slowImmune:false, iceDisabled:false, iceRateMult:1,
-    splashMult:1, dodgeChance:0, goldMineMult:1,
+    splashMult:1, dodgeChance:0, goldMineMult:1, stormDodge:false,
     struckTowers:new Set(), lightningTimer:0,
   };
 }
@@ -405,6 +405,9 @@ const WEATHERS=[
   {id:'tornado',icon:'🌪️',name:'พายุทอร์นาโด',desc:'ศัตรูหลบกระสุนได้ 50%',color:'rgba(150,150,150,.2)',
    apply:(G)=>{if(G.weather)G.weather.dodgeChance=0.5;},
    unapply:(G)=>{if(G.weather)G.weather.dodgeChance=0;}},
+  {id:'storm',icon:'⛈️',name:'พายุฝนฟ้าคะนอง',desc:'ศัตรูหลบกระสุน 25%, ค้างคาวหลบเพิ่มเป็น 50%',color:'rgba(80,80,180,.22)',
+   apply:(G)=>{if(G.weather){G.weather.dodgeChance=0.25;G.weather.stormDodge=true;}},
+   unapply:(G)=>{if(G.weather){G.weather.dodgeChance=0;G.weather.stormDodge=false;}}},
   {id:'sun',icon:'☀️',name:'แดดแผดเผา',desc:'เหมืองทองหยุดทำงาน',color:'rgba(255,220,0,.1)',
    apply:(G)=>{if(G.weather)G.weather.goldMineMult=0;},
    unapply:(G)=>{if(G.weather)G.weather.goldMineMult=1;}},
@@ -412,26 +415,26 @@ const WEATHERS=[
 const STAGE_WEATHER=[
   ['fog','rain','sun'],                                          // Stage 1
   ['fog','darknight','rain'],                                    // Stage 2
-  ['heatwave','tornado','fog'],                                  // Stage 3
-  ['heatwave','sun','tornado','rain'],                          // Stage 4
+  ['heatwave','tornado','storm','fog'],                         // Stage 3
+  ['heatwave','sun','tornado','storm','rain'],                  // Stage 4
   ['sun','rain','blizzard'],                                    // Stage 5
-  ['lightning','blizzard','tornado'],                           // Stage 6
-  ['fog','rain','tornado','heatwave'],                          // Stage 7
-  ['darknight','lightning','blizzard','tornado'],               // Stage 8
-  ['darknight','blizzard','lightning','tornado','heatwave'],    // Stage 9
-  ['darknight','lightning','blizzard','tornado','fog','rain'],  // Stage 10: full chaos
-  ['darknight','lightning','blizzard','tornado','fog','rain','heatwave','sun'], // Stage 11: all 8
+  ['lightning','blizzard','tornado','storm'],                   // Stage 6
+  ['fog','rain','tornado','storm','heatwave'],                  // Stage 7
+  ['darknight','lightning','blizzard','tornado','storm'],       // Stage 8
+  ['darknight','blizzard','lightning','tornado','storm','heatwave'], // Stage 9
+  ['darknight','lightning','blizzard','tornado','storm','fog','rain'], // Stage 10: full chaos
+  ['darknight','lightning','blizzard','tornado','storm','fog','rain','heatwave','sun'], // Stage 11: all 9
   // Act 2 pools (ids 11-20)
-  ['heatwave','sun','tornado'],         // Stage 12 (id 11) — fixed heatwave, but pool for popup
-  ['blizzard','fog','rain'],            // Stage 13 (id 12) — fixed blizzard
-  ['fog','rain','darknight'],           // Stage 14 (id 13) — poison lake
-  ['lightning','tornado'],              // Stage 15 (id 14) — fixed lightning
-  ['tornado','heatwave','rain','fog','sun'], // Stage 16 (id 15) — sandstorm chaos
-  ['darknight','rain','fog'],           // Stage 17 (id 16) — fixed darknight
+  ['heatwave','sun','tornado'],              // Stage 12 (id 11) — fixed heatwave, but pool for popup
+  ['blizzard','fog','rain'],                 // Stage 13 (id 12) — fixed blizzard
+  ['fog','rain','darknight','storm'],        // Stage 14 (id 13) — poison lake
+  ['lightning','tornado','storm'],           // Stage 15 (id 14) — fixed lightning, bat stage
+  ['tornado','storm','heatwave','rain','fog','sun'], // Stage 16 (id 15) — sandstorm chaos
+  ['darknight','rain','fog'],                // Stage 17 (id 16) — fixed darknight
   ['blizzard','lightning','fog','darknight'], // Stage 18 (id 17) — ice peak
-  ['darknight','lightning','blizzard','tornado'], // Stage 19 (id 18) — time temple
-  ['fog','blizzard','lightning','darknight','heatwave','rain','tornado','sun'], // Stage 20 (id 19) — all 8
-  ['fog','blizzard','lightning','darknight','heatwave','rain','tornado','sun'], // Stage 21 (id 20) — all 8 permanent
+  ['darknight','lightning','blizzard','tornado','storm'], // Stage 19 (id 18) — time temple
+  ['fog','blizzard','lightning','darknight','heatwave','rain','tornado','storm','sun'], // Stage 20 (id 19) — all 9
+  ['fog','blizzard','lightning','darknight','heatwave','rain','tornado','storm','sun'], // Stage 21 (id 20) — all 9 permanent
 ];
 function rollWeather(stageId){
   if(!G) return;
@@ -478,7 +481,7 @@ function toggleWeatherPopup(){
   // build pool for current stage/endgame
   let pool=[];
   if(typeof isEndgame!=='undefined'&&isEndgame){
-    pool=['fog','blizzard','lightning','darknight','heatwave','rain','tornado','sun'];
+    pool=['fog','blizzard','lightning','darknight','heatwave','rain','tornado','storm','sun'];
   } else if(currentStage){
     const ids=STAGE_WEATHER[Math.min(currentStage.id,STAGE_WEATHER.length-1)]||[];
     pool=ids;
@@ -525,7 +528,7 @@ function _wpOutsideClick(e){
 }
 function getWeatherColor(id){
   const c={fog:'#b0bec5',blizzard:'#80d8ff',lightning:'#ffe082',
-    darknight:'#ce93d8',heatwave:'#ff8a65',rain:'#64b5f6',tornado:'#e0e0e0',sun:'#ffcc02'};
+    darknight:'#ce93d8',heatwave:'#ff8a65',rain:'#64b5f6',tornado:'#e0e0e0',storm:'#9fa8da',sun:'#ffcc02'};
   return c[id]||'#fff';
 }
 function showWeatherWarning(w){
@@ -1379,12 +1382,14 @@ function update(dt){
         G.enemies.forEach(e=>{
           if(!e.alive||Math.hypot(e.x-tx,e.y-ty)>p.splash*CS) return;
           if(e.isAir&&!TCANAIR[p.type]) return; // splash ไม่โดน air ถ้าป้อมยิง air ไม่ได้
-          if(_wDodge>0&&Math.random()<_wDodge) return; // 🌪️ tornado dodge
+          // ⛈️ storm: ค้างคาว(ti=6) handle dodge ใน applyDmg เองด้วย 50% — ข้าม weather dodge ตรงนี้
+          if(_wDodge>0&&!(G.weather&&G.weather.stormDodge&&e.ti===6)&&Math.random()<_wDodge) return; // 🌪️ tornado/storm dodge
           applyDmg(e,p.dmg,p.type,p._rngPierce);
         });
       } else {
         if(p.target&&p.target.alive){
-          if(_wDodge>0&&Math.random()<_wDodge){
+          const _skipWDodge=(G.weather&&G.weather.stormDodge&&p.target.ti===6); // ⛈️ storm: bat handles own dodge
+          if(_wDodge>0&&!_skipWDodge&&Math.random()<_wDodge){
             G.particles.push({x:p.target.x,y:p.target.y-ESIZES[p.target.ti]-6,txt:'MISS',col:'#e0e0e0',life:.6,vy:-1,vx:0,decay:1.5,scale:.7});
           } else {
             applyDmg(p.target,p.dmg,p.type,p._rngPierce);

@@ -2,6 +2,21 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.17.0 — สภาพอากาศใหม่: พายุฝนฟ้าคะนอง ⛈️
+
+### Added
+- `js/game.js` WEATHERS: เพิ่ม `{id:'storm'}` — ศัตรูทั้งหมดหลบกระสุน 25%, ค้างคาวหลบ 50%
+- `js/game.js` mkWeatherState: เพิ่ม field `stormDodge:false`
+- `js/game.js` STAGE_WEATHER: เพิ่ม 'storm' ใน pool ของด่าน 3,6,7,8,9,10,11 + Act 2 id=13,14,15,18,19,20
+- `js/game.js` endgame pool: เพิ่ม 'storm'
+- `js/game.js` getWeatherColor: เพิ่ม `storm:'#9fa8da'`
+
+### Changed
+- `js/game.js` projectile hit (single + splash): ข้าม weather dodge สำหรับค้างคาว (ti=6) ตอน stormDodge เพื่อป้องกัน dodge stack
+- `js/enemy.js` applyDmg: ค้างคาว Erratic Dodge ใช้ 50% แทน 25% เมื่อ `G.weather.stormDodge` active
+
+---
+
 ## v3.16.9 — Codex มอนสเตอร์ใช้ sprite จริงแทน emoji
 
 ### Changed
