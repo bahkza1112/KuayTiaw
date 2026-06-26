@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.17.3 — Storm เปลี่ยน mechanic เฉพาะ air unit
+
+### Changed
+- `js/game.js` WEATHERS storm: ลบ `dodgeChance:0.25` — storm ไม่กระทบมอนพื้นดินอีกต่อไป
+- `js/enemy.js` applyDmg: ค้างคาว 50% + วิเวิร์น 30% ขณะ `stormDodge` active
+- `js/ui.js` Codex tip storm: อัพเดทคำอธิบายให้ตรงกับ mechanic ใหม่
+
+---
+
 ## v3.17.2 — สารานุกรม แท็บสภาพอากาศ
 
 ### Added
