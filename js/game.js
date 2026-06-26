@@ -2364,6 +2364,37 @@ function render(){
         ctx.beginPath();ctx.arc(sx,sy,2+((i*7)%3),0,Math.PI*2);ctx.fill();
       }
       ctx.restore();
+    } else if(wid==='storm'){
+      // ⛈️ storm: ฝนหนัก + overlay + สุ่ม lightning bolt
+      ctx.save();ctx.fillStyle='rgba(40,30,80,.13)';ctx.fillRect(0,0,W,H);ctx.restore();
+      // rain drops — หนักกว่า rain ปกติ, เอียงมากขึ้น
+      ctx.save();ctx.strokeStyle='rgba(120,160,255,.35)';ctx.lineWidth=1.2;
+      for(let i=0;i<65;i++){
+        const rx=(i*47+_wNow*680)%(W+80)-40, ry=(i*89+_wNow*900)%(H+80)-40;
+        ctx.beginPath();ctx.moveTo(rx,ry);ctx.lineTo(rx-14,ry+28);ctx.stroke();
+      }
+      ctx.restore();
+      // lightning bolt แฟลช + zigzag
+      if(Math.random()<0.012){
+        ctx.save();ctx.fillStyle='rgba(180,160,255,.2)';ctx.fillRect(0,0,W,H);ctx.restore();
+      }
+      if(!G.weather._boltT) G.weather._boltT=0;
+      G.weather._boltT-=(1/60);
+      if(G.weather._boltT<=0){
+        G.weather._boltT=2.5+Math.random()*4;
+        // เก็บตำแหน่ง bolt ใหม่
+        G.weather._bolt={x:Math.random()*W,dur:.18,t:.18};
+      }
+      if(G.weather._bolt&&G.weather._bolt.t>0){
+        const b=G.weather._bolt; b.t-=(1/60);
+        const alpha=Math.max(0,b.t/b.dur);
+        ctx.save();ctx.globalAlpha=alpha*.85;ctx.strokeStyle='#e8eaff';ctx.lineWidth=2;ctx.shadowColor='#c5cae9';ctx.shadowBlur=8;
+        ctx.beginPath();
+        let bx=b.x,by=0,seg=7,segH=H/seg;
+        ctx.moveTo(bx,by);
+        for(let s=0;s<seg;s++){by+=segH;bx+=(Math.random()-.5)*30;ctx.lineTo(bx,by);}
+        ctx.stroke();ctx.restore();
+      }
     } else if(wid==='tornado'){
       ctx.save();ctx.fillStyle='rgba(136,136,136,.08)';ctx.fillRect(0,0,W,H);ctx.restore();
     } else if(wid==='sun'){
