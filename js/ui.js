@@ -1,6 +1,12 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.17.8';
+const GAME_VERSION='3.17.9';
 const PATCH_NOTES=[
+  {ver:'3.17.9',date:'2026-06-26',title:'⚡ Endgame ปรับสมดุล — รางวัลทอง + Elite Wave',notes:[
+    'Endgame: รางวัลทองเพิ่มเร็วขึ้น ×2 ต่อ round — ตาม HP ที่สเกลสูง',
+    'Endgame: Round milestone: ทองโบนัส 60+round×25 เมื่อขึ้น round ใหม่',
+    'Endgame: Elite Wave ⚡ เพิ่มใหม่ — wave 8 ของทุก 10 wave (round ≥6) ศัตรู HP×1.8 รางวัล×2.5',
+    'Endgame: HUD milestone แสดง ⚡-N บอก wave ถัดไปที่จะเป็น Elite',
+  ]},
   {ver:'3.17.8',date:'2026-06-26',title:'🗺️ Stage Select + Codex ปรับปรุง UI',notes:[
     'Stage Select: weather pill ถาวร (fixed/permanent) เปลี่ยนสีส้ม + ไอคอน 🔒/🔄 — บอกผู้เล่นชัดว่าสภาพอากาศไม่เปลี่ยน',
     'Stage Select: ด่านสภาพอากาศสุ่มแสดง % โอกาส (เช่น 80%, 85%)',

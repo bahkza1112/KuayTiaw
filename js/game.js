@@ -319,7 +319,7 @@ function mkState(){
     wave:0,score:0,selTwr:-1,waveActive:false,
     over:false,win:false,queue:[],spawnT:0,mx:-1,my:-1,
     selTowerInfo:null,gmTimers:{},shakeT:0,hitStopT:0,waveBanner:null,bossWarning:null,mergeHintPulseT:0,
-    kills:0,comboN:0,comboT:0,maxCombo:0,dmgBuff:1,goldWaveMult:1,
+    kills:0,comboN:0,comboT:0,maxCombo:0,dmgBuff:1,goldWaveMult:1,eliteWave:false,
     dmgByType:{},battleT:0,egMilestones:{}, /* สถิติจบเกม + หมุดหมาย Endgame */
     skillId:null,skillCd:0,skillCdMax:0,skillAiming:false, /* ⭐ การ์ดสกิลกดเอง */
     skillDmgMult:1,skillRateMult:1,skillDmgT:0,skillGoldMult:0,skillGoldT:0,skillBlockT:0,
@@ -3067,21 +3067,24 @@ function getEgEnemySpd(ti){
   return Math.min(CFG.m_spd[ti]*roundBonus*EG_DIFF_MULT[egDiff],CFG.spdCap);
 }
 function getEgRewardBonus(){
-  // reward สเกลตาม HP — ไม่มี cap เพื่อให้คุ้มกว่าเดิมในรอบหลังๆ
-  return 1+egRound*0.10;
+  // reward สเกลตาม HP — 0.20/round (เดิม 0.10 ทำให้ gold lag หลัง round 5)
+  return 1+egRound*0.20;
 }
 
 function spawnEgEnemy(ti){
-  const hp=getEgEnemyHP(ti,G.wave);
+  const _elite=G.eliteWave||false;
+  const hp=getEgEnemyHP(ti,G.wave)*(_elite?1.8:1);
   const shBase=MSHIELD[ti]||0;
   const sh=shBase>0?Math.round(shBase*(1+egRound*.25)):0;
+  const reward=Math.round(CFG.m_rew[ti]*getEgRewardBonus()*(_elite?2.5:1));
   G.enemies.push({
     ti,pi:0,prog:0,
     x:EG_PATH[0][0]*CS+CS/2,y:EG_PATH[0][1]*CS+CS/2,
-    hp,mhp:hp,spd:getEgEnemySpd(ti),reward:Math.round(CFG.m_rew[ti]*getEgRewardBonus()),
+    hp,mhp:hp,spd:getEgEnemySpd(ti),reward,
     slow:1,slowT:0,alive:true,hitFlash:0,
     isAir:MISAIR[ti]||false,
     shieldHp:sh,maxShieldHp:sh,
+    _elite,
   });
 }
 
@@ -3090,8 +3093,16 @@ function startEgWave(){
   hideWavePreview();
   G.wave++;
   document.getElementById('waveTxt').textContent=G.wave;
-  // 🔥 เลื่อน Endgame round ตามเวฟ — ปลดล็อกศัตรู + เปิดสเกล HP/reward/ทอง (เดิม egRound ค้างที่ 0 ระบบ round ตายสนิท)
+  // 🔥 เลื่อน Endgame round ตามเวฟ — ปลดล็อกศัตรู + เปิดสเกล HP/reward/ทอง
+  const _prevEgRound=egRound;
   egRound=Math.floor((G.wave-1)/EG_WAVES_PER_ROUND);
+  // 🏆 round milestone: ทอง bonus + banner ทุกรอบใหม่
+  if(egRound>_prevEgRound&&egRound>0){
+    const _mBonus=60+egRound*25;
+    G.gold+=_mBonus; updateHUD();
+    G.particles.push({x:COLS*CS/2,y:ROWS*CS/2-60,txt:'🏆 Round '+(egRound+1)+'! +'+_mBonus+'💰',col:'#ffe234',life:2.2,vy:-0.6,vx:0,decay:0.8,scale:1.3});
+    showToast('🏆 Round '+(egRound+1)+' เริ่มแล้ว! +'+_mBonus+' ทองโบนัส');
+  }
   currentStage.enemyTypes=_getEgEnemyPool();
   document.getElementById('stageBadge').textContent='🔥 Round '+(egRound+1);
   // milestone HUD — บอกเวฟพิเศษถัดไป
@@ -3103,11 +3114,13 @@ function startEgWave(){
     const nextBoss=_mod===0?10:10-_mod;
     const nextGold=_mod>=7?10-_mod+7:7-_mod;
     const nextSwarm=_mod<4?4-_mod:_mod===4?10:14-_mod;
+    const nextElite=egRound>=6?(_mod<8?8-_mod:_mod===8?10:18-_mod):99;
     // หา milestone ที่ใกล้ที่สุด
     const cands=[];
     if(nextBoss<=10) cands.push({n:nextBoss,label:'👹-'+nextBoss});
     if(nextGold>0&&nextGold<=10) cands.push({n:nextGold,label:'💰-'+nextGold});
     if(nextSwarm>0&&nextSwarm<=10) cands.push({n:nextSwarm,label:'🐝-'+nextSwarm});
+    if(nextElite>0&&nextElite<=10) cands.push({n:nextElite,label:'⚡-'+nextElite});
     cands.sort((a,b)=>a.n-b.n);
     el.textContent=cands.length?cands[0].label:'';
     el.style.display=cands.length?'':'none';
@@ -3118,11 +3131,13 @@ function startEgWave(){
   // 🌟 เวฟพิเศษ (Endgame) — หมุนเวียนทุก 10 เวฟ ให้จังหวะเกมไม่จำเจ
   let special=null;
   if(G.wave>=6){
-    if(G.wave%10===0) special='boss';      // 👹 บอสรัช
-    else if(G.wave%10===7) special='gold'; // 💰 เวฟทอง ×2
-    else if(G.wave%10===4) special='swarm';// 🐝 เวฟฝูง (ศัตรูเยอะ)
+    if(G.wave%10===0) special='boss';        // 👹 บอสรัช
+    else if(G.wave%10===7) special='gold';   // 💰 เวฟทอง ×2
+    else if(G.wave%10===4) special='swarm';  // 🐝 เวฟฝูง (ศัตรูเยอะ)
+    else if(G.wave%10===8&&egRound>=6) special='elite'; // ⚡ เวฟ Elite: HP×1.8, Gold×2.5
   }
   G.goldWaveMult=special==='gold'?2:1;
+  G.eliteWave=special==='elite';
   // count สเกลเชิงเส้นตามเวฟเท่านั้น — เดิมคูณ (1+egRound*.2) ด้วย แต่ egRound ค้าง 0 เลยไม่เคยมีผล; พอ egRound โตจริงจะระเบิดเป็น quadratic (เวฟ100 = ~960 ตัว) จึงตัด term นี้ออก
   let n=Math.floor(CFG.enemyPerWaveBase+G.wave*CFG.enemyPerWaveInc);
   if(special==='swarm') n=Math.round(n*1.6);
@@ -3137,10 +3152,10 @@ function startEgWave(){
     if(avail.includes(10)&&G.wave>=2&&Math.random()<.15) ei=10;
     G.queue.push(ei);
   }
-  const _banner=special==='boss'?'👹  บอสรัช!':special==='gold'?'💰  เวฟทอง ×2!':special==='swarm'?'🐝  เวฟฝูง!':'🔥  WAVE  '+G.wave;
+  const _banner=special==='boss'?'👹  บอสรัช!':special==='gold'?'💰  เวฟทอง ×2!':special==='swarm'?'🐝  เวฟฝูง!':special==='elite'?'⚡  เวฟ Elite!  HP↑ Gold↑':'🔥  WAVE  '+G.wave;
   G.waveBanner={text:_banner,t:special?2.2:1.5};
-  const _egfc=special==='boss'?'rgba(255,80,30,.22)':special?'rgba(255,180,30,.18)':'rgba(255,120,50,.14)';
-  const _egpc=special==='boss'?'#ff6d00':special?'#ffe082':'#ff8a65';
+  const _egfc=special==='boss'?'rgba(255,80,30,.22)':special==='elite'?'rgba(180,80,255,.22)':special?'rgba(255,180,30,.18)':'rgba(255,120,50,.14)';
+  const _egpc=special==='boss'?'#ff6d00':special==='elite'?'#ce93d8':special?'#ffe082':'#ff8a65';
   G.fxFlash.push({x:COLS*CS/2,y:ROWS*CS/2,r:Math.max(COLS,ROWS)*CS*.75,life:.35,maxLife:.35,col:_egfc});
   for(let k=0;k<10;k++){const wa=k/10*Math.PI*2;G.particles.push({x:COLS*CS/2+Math.cos(wa)*COLS*CS*.5,y:ROWS*CS/2+Math.sin(wa)*ROWS*CS*.45,txt:'·',col:_egpc,life:.45+Math.random()*.25,vx:Math.cos(wa+Math.PI)*(2+Math.random()*2.5),vy:Math.sin(wa+Math.PI)*(2+Math.random()*2.5),decay:3,scale:.55+Math.random()*.35});}
   if(special==='boss') G.shakeT=Math.max(G.shakeT||0,.18);

@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.17.9 — Endgame Scaling Improvements
+
+### Changed
+- `js/game.js` `getEgRewardBonus()`: reward growth 0.10 → 0.20 per round (ตาม HP ที่สเกลสูงขึ้น)
+- `js/game.js` `spawnEgEnemy()`: Elite Wave support — `_elite` flag, HP×1.8, reward×2.5
+- `js/game.js` `startEgWave()`: Round milestone gold bonus — 60+round×25 gold + particle + toast
+- `js/game.js` `startEgWave()`: Elite Wave type (`wave%10===8 && egRound>=6`) — สีม่วง ⚡
+- `js/game.js` `mkState()`: เพิ่ม `eliteWave:false` ใน initial state
+
+---
+
 ## v3.17.8 — Stage Select + Codex UI improvements
 
 ### Changed
