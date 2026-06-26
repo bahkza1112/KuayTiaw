@@ -2121,12 +2121,14 @@ function renderStageSelect(){
     if(unlocked){
       if(s.weatherMode==='fixed'||s.weatherMode==='permanent'){
         const _fw=WEATHERS.find(w=>w.id===s.weatherFixed);
-        if(_fw) _wPill=`<span class="stage-pill pill-weather">${_fw.icon} ${_fw.name}</span>`;
+        if(_fw) _wPill=`<span class="stage-pill pill-weather" data-tip="${_fw.icon} ${_fw.name}\n${_fw.desc}">${_fw.icon} ${_fw.name}</span>`;
       } else if(s.weatherChance>0||s.weatherChance===undefined){
         const _pool=(STAGE_WEATHER[Math.min(s.id,STAGE_WEATHER.length-1)]||[]);
         if(_pool.length>0){
-          const _icons=_pool.map(id=>{const w=WEATHERS.find(x=>x.id===id);return w?w.icon:'';}).filter(Boolean).join('');
-          _wPill=`<span class="stage-pill pill-weather">🌦️ ${_icons}</span>`;
+          const _wObjs=_pool.map(id=>WEATHERS.find(x=>x.id===id)).filter(Boolean);
+          const _icons=_wObjs.map(w=>w.icon).join('');
+          const _tip=_wObjs.map(w=>`${w.icon} ${w.name}: ${w.desc}`).join('\n');
+          _wPill=`<span class="stage-pill pill-weather" data-tip="${_tip}">🌦️ ${_icons}</span>`;
         }
       }
     }

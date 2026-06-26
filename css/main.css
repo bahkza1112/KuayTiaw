@@ -153,7 +153,8 @@ body{background:#0d1117;display:flex;align-items:flex-start;justify-content:cent
 .pill-wave{background:rgba(33,150,243,.15);color:#90caf9;border:1px solid rgba(33,150,243,.2);}
 .pill-enemy{background:rgba(244,67,54,.15);color:#ef9a9a;border:1px solid rgba(244,67,54,.2);}
 .pill-unlock{background:rgba(255,224,130,.1);color:#ffe082;border:1px solid rgba(255,224,130,.2);}
-.pill-weather{background:rgba(100,180,255,.1);color:#b3e5fc;border:1px solid rgba(100,180,255,.2);}
+.pill-weather{background:rgba(100,180,255,.1);color:#b3e5fc;border:1px solid rgba(100,180,255,.2);position:relative;cursor:default;}
+.pill-weather[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:rgba(20,20,40,.97);color:#e8eaf6;font-size:10px;font-weight:500;padding:6px 9px;border-radius:8px;border:1px solid rgba(130,160,255,.3);white-space:pre-line;min-width:160px;max-width:220px;z-index:999;pointer-events:none;line-height:1.5;}
 /* right section */
 .stage-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;}
 .stage-rewards{display:flex;gap:4px;flex-direction:column;align-items:flex-end;}
