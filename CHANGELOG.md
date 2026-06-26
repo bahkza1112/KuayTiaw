@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.17.2 — สารานุกรม แท็บสภาพอากาศ
+
+### Added
+- `Tower Quest 🏰.html`: เพิ่ม tab `🌦️ อากาศ` ใน `.cdx-tabs`
+- `js/ui.js` `switchCdxTab`: รองรับ `'weather'` → `renderWeatherTab()`
+- `js/ui.js` `renderWeatherTab()`: แสดงสภาพอากาศ 9 ชนิด พร้อม effect และ tip รับมือ
+
+---
+
 ## v3.17.1 — Sniper เจาะโล่ต้องอัพ Range ≥3
 
 ### Changed
