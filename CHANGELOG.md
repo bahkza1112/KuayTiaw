@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.16.2 — แก้บั๊ก Act 2: Weather/Death FX/EG/Brood HP
+
+### Fixed
+- `js/game.js` `rollWeather`: เพิ่ม `permanent` ใน early-return — Stage 21 (แกนโลก) จะไม่ re-roll weather ทุก wave อีกต่อไป
+- `js/game.js` `initGame`: `permanent` mode ตอนนี้ roll weather ทันทีตอนเริ่มด่าน (เหมือน fixed แต่จาก pool)
+- `js/game.js` EG loop: Berserk (ti=11) ตอนนี้มี fxRings push เหมือน story loop
+- `js/game.js` EG loop: Phantom Phase (ti=12) ตอนนี้มี fxRings push เหมือน story loop
+- `js/enemy.js` `_spawnBroodMinions`: ใช้ `_earlyEase` ในสูตร HP ลูก — HP ลูกโกบลินสูงเกินไปใน si>=7 early waves
+- `js/enemy.js` `_deathFx`: เพิ่ม case 11/12/13 สำหรับ death FX เฉพาะตัว (แดง/ฟ้าจาง/ม่วง)
+- `js/ui.js` `renderStageSelect`: comingSoon branch ใช้ `s.id+1` แทน `si+1` สำหรับหมายเลขด่าน
+
 ## v3.16.1 — แก้บั๊กป้อมทอง พื้นที่ไม่หายถ้าทองไม่พอ
 
 ### Fixed

@@ -435,7 +435,7 @@ const STAGE_WEATHER=[
 function rollWeather(stageId){
   if(!G) return;
   // permanent-fixed weather: set once in initGame, never re-roll
-  if(currentStage&&currentStage.weatherMode==='fixed') return;
+  if(currentStage&&(currentStage.weatherMode==='fixed'||currentStage.weatherMode==='permanent')) return;
   if(!G.weather) G.weather=mkWeatherState();
   const chance=(currentStage&&currentStage.weatherChance)||0.65;
   if(Math.random()>chance){clearWeather();return;}
@@ -586,6 +586,8 @@ function initGame(){
   if(currentStage.weatherMode==='fixed'&&currentStage.weatherFixed){
     const _fw=WEATHERS.find(x=>x.id===currentStage.weatherFixed);
     if(_fw) applyWeather(_fw);
+  } else if(currentStage.weatherMode==='permanent'){
+    rollWeather(currentStage.id);
   }
   if(currentStage.id===0&&!localStorage.getItem('tq_hint_dig')){
     localStorage.setItem('tq_hint_dig','1');
@@ -3096,10 +3098,12 @@ function updateEg(dt){
     if(e._dodgeFlash>0) e._dodgeFlash-=dt;
     // 🧱 Berserk Sprint (EG)
     if(e.ti===11&&!e._berserk&&e.hp<e.mhp*.35){e._berserk=true;e._bspdMult=1.8;
-      G.particles.push({x:e.x,y:e.y-ESIZES[11]-8,txt:'💢 BERSERK!',col:'#ff1744',life:1.2,vy:-1.4,vx:0,decay:.9,scale:1.1});}
+      G.particles.push({x:e.x,y:e.y-ESIZES[11]-8,txt:'💢 BERSERK!',col:'#ff1744',life:1.2,vy:-1.4,vx:0,decay:.9,scale:1.1});
+      G.fxRings.push({x:e.x,y:e.y,r:2,maxR:ESIZES[11]*2,life:.4,lw:3,col:'#ff1744',delay:0});}
     // 💨 Phantom Phase (EG)
     if(e.ti===12){e._phaseTimer=(e._phaseTimer===undefined?8:e._phaseTimer)-dt;
-      if(e._phaseTimer<=0){e._phaseT=1.5;e._phaseTimer=8;}
+      if(e._phaseTimer<=0){e._phaseT=1.5;e._phaseTimer=8;
+        G.fxRings.push({x:e.x,y:e.y,r:2,maxR:ESIZES[12]*2,life:.5,lw:2,col:'#80deea',delay:0});}
       if(e._phaseT>0) e._phaseT-=dt;}
     // 👺 โกบลิน: Pack Rush — throttle O(n²) เป็นทุก 0.25s
     if(e.ti===0){

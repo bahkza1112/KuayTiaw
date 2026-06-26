@@ -1,6 +1,13 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.16.1';
+const GAME_VERSION='3.16.2';
 const PATCH_NOTES=[
+  {ver:'3.16.2',date:'2026-06-26',title:'🔧 แก้บั๊ก Act 2 — Weather + ศัตรูใหม่ + Death FX',notes:[
+    'แก้: ด่าน 21 (แกนโลก) permanent weather ไม่ถูกเซ็ตตอนเริ่มด่าน + ถูก re-roll ทุก wave',
+    'แก้: EG mode — Phantom Phase และ Berserk ไม่มีวงแหวน FX ตอนเปิดใช้งาน',
+    'แก้: ลูกโกบลินที่ spawn จากแม่ฝูง HP พองเกินไปในด่านที่ si >= 7',
+    'แก้: death FX ของนักรบเดือด/ผีดิบ/แม่ฝูง ใช้ default effect ไม่มี effect เฉพาะตัว',
+    'แก้: comingSoon stage แสดงหมายเลข stage ผิดในโหมด Act 2',
+  ]},
   {ver:'3.16.1',date:'2026-06-26',title:'🔧 แก้บั๊กป้อมทอง — พื้นที่ไม่หายถ้าทองไม่พอ',notes:[
     'แก้บั๊ก: วางป้อมเหมืองทองบนฉากขณะทองไม่พอ พื้นที่ยังถูกลบทิ้งแม้ป้อมไม่ถูกสร้าง',
     'ตอนนี้ระบบตรวจสอบทองก่อนเสมอ — ฉากจะถูกลบเฉพาะเมื่อวางป้อมสำเร็จแล้วเท่านั้น',
@@ -2018,7 +2025,7 @@ function renderStageSelect(){
     if(s.comingSoon){
       html+=`<div style="background:rgba(255,255,255,.03);border:2px dashed #2a3a2a;border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;opacity:.4;">
         <div style="font-size:36px;">${s.icon}</div>
-        <div><div style="font-size:15px;font-weight:900;color:#555;">Stage ${si+1}: ${s.name}</div>
+        <div><div style="font-size:15px;font-weight:900;color:#555;">Stage ${s.id+1}: ${s.name}</div>
         <div style="font-size:11px;color:#444;margin-top:4px;">🔒 Coming Soon...</div></div>
       </div>`;
       return;

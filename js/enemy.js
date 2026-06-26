@@ -189,7 +189,8 @@ function spawnEnemy(ti){
 
 // 🕷️ Brood Queen: ตายแล้ว spawn โกบลิน 2 ตัว HP 30%
 function _spawnBroodMinions(e){
-  const childHp=Math.max(1,Math.round(CFG.m_hp[0]*(1+(currentStage?currentStage.id:0)*CFG.stageMult)*(1+(G.wave||1)*CFG.waveMult)*.3));
+  const _si=currentStage?currentStage.id:0,_wv=G.wave||1;
+  const childHp=Math.max(1,Math.round(CFG.m_hp[0]*(1+_si*CFG.stageMult)*(1+_wv*CFG.waveMult)*_earlyEase(_si,_wv)*.3));
   for(let k=0;k<2;k++){
     G.enemies.push({ti:0,pi:e.pi,prog:e.prog,x:e.x+(k?12:-12),y:e.y+(k?10:-10),
       hp:childHp,mhp:childHp,spd:getEnemySpd(0,currentStage?currentStage.id:0)*1.1,reward:Math.round(CFG.m_rew[0]*.5),
@@ -294,6 +295,24 @@ function _deathFx(e){
       if(!_busy) _ring({x,y,r:0,maxR:sz*3,life:.45,lw:1.5,col:'rgba(105,240,174,.4)',delay:.1});
       for(let k=0,_n=Math.ceil(14*_sc);k<_n;k++){const a=k/_n*Math.PI*2,sp=1.6+Math.random()*2.2;
         G.particles.push({x,y,txt:k%3?'●':'✦',col:k%2?'#69f0ae':'#b2ff59',life:.7+Math.random()*.45,vy:Math.sin(a)*sp-.4,vx:Math.cos(a)*sp,decay:1.9,scale:.4+Math.random()*.6});}
+      break;}
+    case 11:{ // นักรบเดือด — ระเบิดแดง บลีดอาเซอร์
+      _ring({x,y,r:0,maxR:sz*4,life:.5,lw:3,col:'#ff1744',delay:0});
+      if(!_busy) _ring({x,y,r:0,maxR:sz*2.5,life:.4,lw:2,col:'#ff8a80',delay:.08});
+      for(let k=0,_n=Math.ceil(16*_sc);k<_n;k++){const a=k/_n*Math.PI*2,sp=2+Math.random()*2.8;
+        G.particles.push({x,y,txt:k%3?'●':'💢',col:k%2?'#ff1744':'#ff8a80',life:.75+Math.random()*.4,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:1.9,scale:.5+Math.random()*.7});}
+      break;}
+    case 12:{ // ผีดิบ — ละลายฟ้าจางหาย
+      _ring({x,y,r:0,maxR:sz*4,life:.6,lw:2,col:'#80deea',delay:0});
+      if(!_busy) _ring({x,y,r:sz*.5,maxR:sz*2.8,life:.45,lw:1.5,col:'rgba(128,222,234,.3)',delay:.1});
+      for(let k=0,_n=Math.ceil(12*_sc);k<_n;k++){const a=k/_n*Math.PI*2,sp=1.2+Math.random()*1.8;
+        G.particles.push({x,y,txt:k%2?'·':'○',col:k%2?'#80deea':'#b2ebf2',life:.9+Math.random()*.5,vy:Math.sin(a)*sp-.6,vx:Math.cos(a)*sp,decay:1.5,scale:.4+Math.random()*.5});}
+      break;}
+    case 13:{ // แม่ฝูง — ระเบิดสีม่วง+แมงมุมน้อย
+      _ring({x,y,r:0,maxR:sz*4.5,life:.55,lw:3,col:'#ce93d8',delay:0});
+      if(!_busy) _ring({x,y,r:0,maxR:sz*3,life:.4,lw:2,col:'#9c27b0',delay:.08});
+      for(let k=0,_n=Math.ceil(18*_sc);k<_n;k++){const a=k/_n*Math.PI*2,sp=2+Math.random()*3;
+        G.particles.push({x,y,txt:k%4===0?'🕷️':'●',col:k%3===0?'#ce93d8':k%3===1?'#9c27b0':'#e1bee7',life:.7+Math.random()*.5,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:1.8,scale:.5+Math.random()*.7});}
       break;}
     default:{ // fallback
       _ring({x,y,r:sz*.4,maxR:sz*3.8,life:.55,lw:2.5,col:'#fff',delay:0});
