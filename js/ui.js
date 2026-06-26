@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.16.6';
+const GAME_VERSION='3.16.7';
 const PATCH_NOTES=[
+  {ver:'3.16.7',date:'2026-06-26',title:'✏️ เปลี่ยนชื่อ/เผ่า ผีดิบ → RB 001',notes:[
+    'ผีดิบ (ti=12) เปลี่ยนชื่อเป็น "RB 001" เผ่า "จักรกล"',
+    'ความสามารถ Phantom Phase ยังคงเดิมทุกอย่าง',
+  ]},
   {ver:'3.16.6',date:'2026-06-26',title:'🔧 แก้บั๊ก 5 จุด — ฟ้าผ่า/Quest/ขาย/Void/Merge',notes:[
     'แก้: ไอคอน ⚡ บนป้อมที่โดนฟ้าผ่าไม่แสดง (struckTowers.size แทน .length)',
     'แก้: Quest ทองนับจากทองที่ได้จริง (รวม combo bonus) ไม่ใช่ base reward',

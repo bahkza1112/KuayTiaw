@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.16.7 — เปลี่ยนชื่อ/เผ่า ผีดิบ → RB 001
+
+### Changed
+- `js/enemy.js` `ENAMES[12]`: 'ผีดิบ' → 'RB 001'
+- `js/enemy.js` `MTRIBE[12]`: 'วิญญาณ' → 'จักรกล'
+
+---
+
 ## v3.16.6 — แก้บั๊ก 5 จุด (ฟ้าผ่า/Quest/ขาย/Void Sprite/Merge Timer)
 
 ### Fixed
