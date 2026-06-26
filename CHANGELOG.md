@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.16.8 — RB 001 Codex ธีมจักรกล
+
+### Changed
+- `js/enemy.js` `EICONS[12]`: 💨 → 🤖
+- `js/enemy.js` `MFLAVOR[12]`: ปรับเป็นธีมหน่วยกลไกลาดตระเวน
+- `js/enemy.js` `MSPECIAL[12]`: ⚙️ Phase Shift (ข้อความ — mechanic ไม่เปลี่ยน)
+- `js/enemy.js` `MSTRENGTH[12]`: ปรับเป็นธีมจักรกล
+- `js/enemy.js` `MWEAKNESS[12]`: ปรับเป็นธีมจักรกล
+
+---
+
 ## v3.16.7 — เปลี่ยนชื่อ/เผ่า ผีดิบ → RB 001
 
 ### Changed

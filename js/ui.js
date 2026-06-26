@@ -1,9 +1,9 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.16.7';
+const GAME_VERSION='3.16.8';
 const PATCH_NOTES=[
-  {ver:'3.16.7',date:'2026-06-26',title:'✏️ เปลี่ยนชื่อ/เผ่า ผีดิบ → RB 001',notes:[
-    'ผีดิบ (ti=12) เปลี่ยนชื่อเป็น "RB 001" เผ่า "จักรกล"',
-    'ความสามารถ Phantom Phase ยังคงเดิมทุกอย่าง',
+  {ver:'3.16.8',date:'2026-06-26',title:'✏️ RB 001 — ปรับ Codex ให้ตรงธีมจักรกล',notes:[
+    'ไอคอน 💨 → 🤖, flavor text, MSPECIAL, MSTRENGTH, MWEAKNESS เปลี่ยนเป็นธีมกลไก',
+    'Phase Shift แทน Phantom Phase ในข้อความ — mechanic ไม่เปลี่ยน',
   ]},
   {ver:'3.16.6',date:'2026-06-26',title:'🔧 แก้บั๊ก 5 จุด — ฟ้าผ่า/Quest/ขาย/Void/Merge',notes:[
     'แก้: ไอคอน ⚡ บนป้อมที่โดนฟ้าผ่าไม่แสดง (struckTowers.size แทน .length)',
