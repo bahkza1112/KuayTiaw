@@ -1283,7 +1283,7 @@ function update(dt){
         dmg:_rdmg,
         splash:TSPLASH[tw.type]*_wSplashMult*_awSplashMult,slow:_rSlow,alive:true,
         chain:(TCHAIN[tw.type]||0)+_awChainBonus,
-        _rngPierce:(tw.rngLv||tw.lv)>=4,
+        _rngPierce:tw.type===3?(tw.rngLv||tw.lv)>=3:(tw.rngLv||tw.lv)>=4,
         _maxR:range*CS,
         _supBoost:_aw?getSupportAwakenBoost(tw.col,tw.row):1
       })-1];
@@ -1418,7 +1418,7 @@ function update(dt){
         G.enemies.forEach(e=>{
           if(!e.alive||e===p.target) return;
           if(e.isAir&&!TCANAIR[3]) return;
-          if(e.shieldHp>0&&!TPIERCE[3]) return;
+          if(e.shieldHp>0&&!p._rngPierce) return; // เจาะโล่เมื่อ Range≥3
           const _ex=e.x-p.ox,_ey=e.y-p.oy;
           const _proj=_ex*_ux+_ey*_uy;
           if(_proj<=_dlen+1||_proj>(p._maxR||_dlen)) return;
@@ -3283,7 +3283,7 @@ function updateEg(dt){
         dmg:_rdmg2,
         splash:TSPLASH[tw.type]*_wSplashMult2*_awSplashMult2,slow:_rSlow2,alive:true,
         chain:(TCHAIN[tw.type]||0)+_awChainBonus2,
-        _rngPierce:(tw.rngLv||tw.lv)>=4,
+        _rngPierce:tw.type===3?(tw.rngLv||tw.lv)>=3:(tw.rngLv||tw.lv)>=4,
         _maxR:range*CS,
         _supBoost:_aw2?getSupportAwakenBoost(tw.col,tw.row):1
       })-1];
@@ -3349,7 +3349,7 @@ function updateEg(dt){
         G.enemies.forEach(e=>{
           if(!e.alive||e===p.target) return;
           if(e.isAir&&!TCANAIR[3]) return;
-          if(e.shieldHp>0&&!TPIERCE[3]) return;
+          if(e.shieldHp>0&&!p._rngPierce) return; // เจาะโล่เมื่อ Range≥3
           const _ex2=e.x-p.ox,_ey2=e.y-p.oy;
           const _proj2=_ex2*_ux2+_ey2*_uy2;
           if(_proj2<=_dlen2+1||_proj2>(p._maxR||_dlen2)) return;

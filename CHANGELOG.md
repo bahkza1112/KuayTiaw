@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.17.1 — Sniper เจาะโล่ต้องอัพ Range ≥3
+
+### Changed
+- `js/tower.js` TPIERCE[3]: `true` → `false` — Sniper ไม่เจาะโล่อัตโนมัติ
+- `js/game.js` projectile spawn (story + endgame): `_rngPierce` ของ Sniper เปลี่ยนเป็น `rngLv>=3` (แทน `>=4`)
+- `js/game.js` awakened path-pierce (story + endgame): ใช้ `p._rngPierce` แทน `TPIERCE[3]`
+- `js/enemy.js` MSPECIAL[8,9], MWEAKNESS[8,9]: อัพเดท Codex ให้ระบุว่า Sniper เจาะโล่เมื่อ Range≥3
+
+---
+
 ## v3.17.0 — สภาพอากาศใหม่: พายุฝนฟ้าคะนอง ⛈️
 
 ### Added

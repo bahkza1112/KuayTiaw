@@ -9,7 +9,7 @@ const TBUFF=[false,false,false,false,true,false,false,false,false];
 const TCANAIR=[false,false,false,true,false,true,false,true,false]; /* ยิง air ได้ */
 const TGOLDMINE=[false,false,false,false,false,false,true,false,false]; /* สร้างทอง */
 const TCHAIN=[0,0,0,0,0,0,0,2,0]; /* chain lightning targets (Thunder=2) */
-const TPIERCE=[false,false,false,true,false,false,false,true,false]; /* ทะลุโล่ได้ (Sniper, Thunder) */
+const TPIERCE=[false,false,false,false,false,false,false,true,false]; /* ทะลุโล่: Thunder เท่านั้น — Sniper ต้องอัพ Range ≥3 ก่อน */
 const RARITY_COLORS={2:'#42a5f5',3:'#ab47bc',4:'#ff8f00'}; /* กรอบสีตาม★ — 2=น้ำเงิน(Rare) 3=ม่วง(Epic) 4=ส้มทอง(Legendary), Awaken มีออร่าทองของตัวเอง */
 const TFLAVOR=['ปืนใหญ่หนักที่ยิงกระสุนระเบิด ความเสียหายแบบกระจายทำลายล้างศัตรูที่อยู่รวมกัน',
   'ยิงน้ำแข็งที่ทำให้ศัตรูเยือกแข็ง วางไว้ก่อนทางยาวจะได้ผลดีที่สุด',
