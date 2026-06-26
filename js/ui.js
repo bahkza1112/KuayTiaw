@@ -3119,8 +3119,8 @@ function renderWeatherTab(){
       darknight:'เน้น DPS สูงๆ จัดการก่อนมอนถึงปราสาท',
       heatwave:'Ice Tower ไม่ทำงาน — ใช้ Magic หรือ Cannon Splash แทน',
       rain:'Cannon และ Magic Splash ลดลง 70% — ใช้ Sniper/Archer/Thunder แทน',
-      tornado:'ยิงพลาด 50% — เน้นป้อมเยอะและ rate สูงชดเชย',
-      storm:'ค้างคาวหลบ 50% — ใช้ Thunder หรือ Archer rate สูงจัดการ',
+      tornado:'กระสุนทุกนัดพลาดได้ 50% ไม่ว่าจะยิงมอนอะไร — เน้นป้อมหลายตัว rate สูง อย่าพึ่งป้อมเดียว',
+      storm:'มอนทั่วไปพลาดแค่ 25% พอรับได้ แต่ค้างคาวพลาด 50% — ให้ Thunder/Archer จัดการค้างคาวก่อน',
       sun:'เหมืองทองหยุดทำงาน — อย่าพึ่งรายได้จาก Gold Mine',
     };
     const tip=tipsMap[w.id]||'';
