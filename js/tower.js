@@ -574,7 +574,7 @@ function upgradeTowerFromPopup(stat){
 function sellTowerFromPopup(){
   if(!_popupTw||!G||G.over||G.win) return;
   const tw=_popupTw;
-  const refund=Math.floor(CFG.t_cost[tw.type]*tw.lv*.6);
+  const refund=Math.floor(CFG.t_cost[tw.type]*tw.lv*.6)+(tw.awakened?Math.floor(awakenCost(tw.type)*.6):0);
   const key=tw.col+'_'+tw.row;
   if(G.gmTimers) delete G.gmTimers[key];
   G.towers=G.towers.filter(t=>t!==tw);

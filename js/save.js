@@ -638,7 +638,7 @@ function checkAchievements(){
   if(cleared.includes(7)) unlockAchievement('s7');
   if(cleared.includes(9)) unlockAchievement('s9');
   if(cleared.includes(10)) unlockAchievement('s10');
-  if(cleared.length>=11)  unlockAchievement('sall');
+  if(cleared.filter(id=>id<=10).length>=11)  unlockAchievement('sall'); // Act 1 only (id 0-10)
   // Combat (cumulative stats)
   if(stats.totalKills>=100)  unlockAchievement('k100');
   if(stats.totalKills>=1000) unlockAchievement('k1000');

@@ -2,6 +2,27 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.16.3 — แก้บั๊ก 11 จุด: Critical/High/Perf/Medium
+
+### Fixed (Critical/High)
+- `js/game.js` story loop: Phantom Phase (ti=12) ขณะ `_phaseT>0` ที่ปลายทาง ผ่านโดยไม่ดาเมจปราสาท
+- `js/game.js` `restartGame()`: เพิ่ม `applyTalents()` — talents (gold/HP bonus) ไม่ถูก apply ตอน restart ด่าน
+- `js/game.js` autoWave setTimeout: เพิ่มเงื่อนไข `&&autoWave` กันเวฟที่ถูกปิดยิงเพิ่มภายใน 1.2s
+
+### Fixed (Medium)
+- `js/save.js` sall achievement: กรอง `id<=10` — ป้องกันการ unlock จากด่านบทที่ 2
+- `js/game.js` `tryMergeTowers`: reset `gmTimers` ของทั้ง src และ target เมื่อ merge
+- `js/game.js` `tryMergeTowers`: clear `G.selTowerInfo=null` ป้องกัน stale reference
+- `js/enemy.js` `_spawnBroodMinions`: cap `pi` ที่ `length-3` ป้องกันลูก spawn ใกล้ปลายทางเกิน
+- `js/tower.js` `sellTowerFromPopup`: refund รวม Awaken cost ×60%
+
+### Performance
+- `js/game.js` render terrain: สร้าง `_towerCellSet` (Set) ก่อนลูป ลด O(120×n) → O(n+120)
+- `js/game.js` merge hint: pre-compute `_mergeableTowers` Set ก่อน tower loop แทน O(n²) ต่อ tower
+
+### Infrastructure
+- `Tower Quest 🏰.html`: อัพ cache-buster `?v=3.16.0→3.16.3`
+
 ## v3.16.2 — แก้บั๊ก Act 2: Weather/Death FX/EG/Brood HP
 
 ### Fixed

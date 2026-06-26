@@ -191,8 +191,9 @@ function spawnEnemy(ti){
 function _spawnBroodMinions(e){
   const _si=currentStage?currentStage.id:0,_wv=G.wave||1;
   const childHp=Math.max(1,Math.round(CFG.m_hp[0]*(1+_si*CFG.stageMult)*(1+_wv*CFG.waveMult)*_earlyEase(_si,_wv)*.3));
+  const _safepi=Math.min(e.pi,Math.max(0,currentPath.length-3));
   for(let k=0;k<2;k++){
-    G.enemies.push({ti:0,pi:e.pi,prog:e.prog,x:e.x+(k?12:-12),y:e.y+(k?10:-10),
+    G.enemies.push({ti:0,pi:_safepi,prog:Math.min(e.prog,CS*.5),x:e.x+(k?12:-12),y:e.y+(k?10:-10),
       hp:childHp,mhp:childHp,spd:getEnemySpd(0,currentStage?currentStage.id:0)*1.1,reward:Math.round(CFG.m_rew[0]*.5),
       slow:1,slowT:0,alive:true,hitFlash:0,isAir:false,shieldHp:0,maxShieldHp:0,_isSplit:true,_sizeMult:.6});
   }

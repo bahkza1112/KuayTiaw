@@ -318,7 +318,7 @@ function mkState(){
     wave:0,score:0,selTwr:-1,waveActive:false,
     over:false,win:false,queue:[],spawnT:0,mx:-1,my:-1,
     selTowerInfo:null,gmTimers:{},shakeT:0,hitStopT:0,waveBanner:null,bossWarning:null,mergeHintPulseT:0,
-    kills:0,comboN:0,comboT:0,maxCombo:0,dmgBuff:1,
+    kills:0,comboN:0,comboT:0,maxCombo:0,dmgBuff:1,goldWaveMult:1,
     dmgByType:{},battleT:0,egMilestones:{}, /* สถิติจบเกม + หมุดหมาย Endgame */
     skillId:null,skillCd:0,skillCdMax:0,skillAiming:false, /* ⭐ การ์ดสกิลกดเอง */
     skillDmgMult:1,skillRateMult:1,skillDmgT:0,skillGoldMult:0,skillGoldT:0,skillBlockT:0,
@@ -617,7 +617,7 @@ function initGame(){
 function restartGame(){
   document.getElementById('endOverlay').style.display='none';
   if(isEndgame) _doStartEndgame();
-  else initGame();
+  else{ initGame(); if(typeof applyTalents==='function') applyTalents(); }
 }
 function goStageSelect(){
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
@@ -1065,6 +1065,8 @@ function update(dt){
     while(e.prog>=CS){
       e.prog-=CS; e.pi++;
       if(e.pi>=plen-1){
+        // 💨 Phantom Phase: ผีดิบในสถานะ phase ไม่ดาเมจปราสาท — ผ่านเข้าไปแบบ harmless
+        if(e._phaseT>0){e.alive=false;G.enemies.splice(i,1);break;}
         unlockMonster(e.ti);
         e.alive=false; G.enemies.splice(i,1);
         if(G.skillBlockT>0){ // 🛡️ กำแพงวิญญาณ: กันดาเมจเข้าปราสาท
@@ -1568,7 +1570,7 @@ function update(dt){
     if(G.wave>=currentStage.waves){endGame(true);return;}
     document.getElementById('waveBtn').disabled=false;
     showWavePreview();
-    if(autoWave) setTimeout(()=>{ if(G&&!G.over&&!G.win&&!G.waveActive) startWave(); },1200);
+    if(autoWave) setTimeout(()=>{ if(autoWave&&G&&!G.over&&!G.win&&!G.waveActive) startWave(); },1200);
   }
 }
 
@@ -1606,9 +1608,10 @@ function render(){
   }
   // ── TERRAIN DECORATIONS (Kingdom Rush style) ──
   const _sid=currentStage.id;
+  const _towerCellSet=new Set(G.towers.map(t=>t.col+','+t.row));
   for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
     if(currentPset.has(c+','+r)) continue;
-    if(G.towers.find(t=>t.col===c&&t.row===r)) continue;
+    if(_towerCellSet.has(c+','+r)) continue;
     // ขุดแล้ว → ข้ามการวาด decoration
     if(G.dugCells&&G.dugCells.has(c+','+r)) continue;
     // obstacle cells: บังคับ h ให้ตรง type (t:2=ต้นไม้ h<22, t:1=หิน h22-38, t:0=พุ่มไม้ h38-48)
@@ -1867,6 +1870,8 @@ function render(){
   });
 
   // towers — sprite style (stone base + body)
+  // pre-compute mergeable set once (O(n²) → O(n) per tower during merge hint)
+  const _mergeableTowers=G.mergeHintPulseT>0?new Set(G.towers.filter(a=>G.towers.some(b=>b!==a&&b.type===a.type&&b.star===a.star))):null;
   G.towers.forEach(tw=>{
     const bounce=tw.spawnAnim>0?1+Math.sin(tw.spawnAnim*Math.PI*1.5)*.32*tw.spawnAnim:1;
     const x=tw.col*CS,y=tw.row*CS,cx2=x+CS/2,cy2=y+CS/2;
@@ -1977,7 +1982,7 @@ function render(){
     }
     // merge hint pulse — กะพริบบนป้อมที่ merge ได้ตอนแสดง hint ครั้งแรก
     if(G.mergeHintPulseT>0){
-      const _pair=G.towers.find(t=>t!==tw&&t.type===tw.type&&t.star===tw.star);
+      const _pair=_mergeableTowers&&_mergeableTowers.has(tw);
       if(_pair){
         const _pa=Math.abs(Math.sin(G.mergeHintPulseT*6))*.9;
         ctx.save();
@@ -2689,8 +2694,9 @@ function tryMergeTowers(src,target){
   const newStar=curStar+1;
   if(newStar===4){_showMerge4Confirm(src,target);return false;}
   G.towers=G.towers.filter(t=>t!==src&&t!==target);
+  G.selTowerInfo=null;
   const merged={col:target.col,row:target.row,type:target.type,star:newStar,lv:1,dmgLv:1,rngLv:1,rateLv:1,cd:0,angle:0,spawnAnim:1.0,awakened:false};
-  if(G.gmTimers) delete G.gmTimers[src.col+'_'+src.row];
+  if(G.gmTimers){delete G.gmTimers[src.col+'_'+src.row];delete G.gmTimers[target.col+'_'+target.row];}
   G.towers.push(merged);
   const mx=target.col*CS+CS/2,my=target.row*CS+CS/2;
   // ── Merge VFX (1-3★ only; 4★ is handled by _showMerge4Confirm) ──

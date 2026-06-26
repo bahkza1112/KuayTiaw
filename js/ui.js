@@ -1,6 +1,19 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.16.2';
+const GAME_VERSION='3.16.3';
 const PATCH_NOTES=[
+  {ver:'3.16.3',date:'2026-06-26',title:'🔧 แก้บั๊กรวม 11 จุด — Critical/High/Perf/Medium',notes:[
+    '🔴 แก้: ผีดิบ (phase) ยังดาเมจปราสาทได้ขณะหายตัว — ตอนนี้ผ่านโดยไม่โดน HP',
+    '🔴 แก้: restart ด่านทำให้ talent (Gold/HP bonus) หายไปทั้งหมด',
+    '🔴 แก้: autoWave เปิดแล้วปิดแต่ยังดันเวฟต่อได้ใน 1.2 วิ',
+    '🟡 แก้: achievement ผ่านครบ 11 ด่าน ไม่ควรนับด่านบทที่ 2',
+    '🟡 แก้: รวมป้อมเหมืองทอง — timer ไม่ reset ทำให้ผลผลิตสูงผิดปกติ',
+    '🟡 แก้: popup ป้อมค้างอยู่หลังรวม (selTowerInfo stale)',
+    '🟡 แก้: แม่ฝูง spawn ลูกปลายเส้นทาง — ลูกดาเมจปราสาทได้ทันที',
+    '🟡 แก้: ขายป้อม Awaken คืนเงินไม่รวมค่า Awaken (ตอนนี้คืน 60% รวมทุกอย่าง)',
+    '⚡ เพิ่มประสิทธิภาพ: render ป้อมบนพื้น O(120×n) → O(1) ลด lag ด้วย Set lookup',
+    '⚡ เพิ่มประสิทธิภาพ: merge hint O(n²) → คำนวณล่วงหน้า 1 ครั้ง/frame',
+    '🟢 แก้: cache-buster v=3.16.0 ทำให้บราวเซอร์ใช้ JS/CSS เก่า',
+  ]},
   {ver:'3.16.2',date:'2026-06-26',title:'🔧 แก้บั๊ก Act 2 — Weather + ศัตรูใหม่ + Death FX',notes:[
     'แก้: ด่าน 21 (แกนโลก) permanent weather ไม่ถูกเซ็ตตอนเริ่มด่าน + ถูก re-roll ทุก wave',
     'แก้: EG mode — Phantom Phase และ Berserk ไม่มีวงแหวน FX ตอนเปิดใช้งาน',
