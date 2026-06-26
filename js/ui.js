@@ -1,6 +1,11 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.18.0';
+const GAME_VERSION='3.18.1';
 const PATCH_NOTES=[
+  {ver:'3.18.1',date:'2026-06-27',title:'❄️ บอส Act 2 ครบ 3 ตัว — ราชาน้ำแข็ง',notes:[
+    'ราชาน้ำแข็ง ❄️ (ti=16): บอส Act 2 สาย Ice — Ice Shield 120 HP + Immune Ice Slow จากป้อมน้ำแข็ง',
+    'Frost Pulse ทุก 10 วิ: ป้อมในรัศมี 2.5 ช่องถูกแช่แข็ง 2.5 วิ (ไอคอน❄️บนป้อม)',
+    'ปรากฏใน d12 (ป่าแข็งนิรันดร์), d17 (ยอดเขาน้ำแข็ง), d19, d20',
+  ]},
   {ver:'3.18.0',date:'2026-06-27',title:'🐍🌍 บอส Act 2 — นาคาราช & เทพทำลาย',notes:[
     'นาคาราช 🐍 (ti=14): บอสกลาง Act 2 — Regen 1.5%/วิ + Venom Pulse ทำป้อมช้า 35% + เรียกงูลูกที่ HP<40%',
     'เทพทำลาย 🌍 (ti=15): Final Boss Act 2 — 3 Phase (60%/30% HP) + Phase 3 Shockwave หยุดป้อมทั้งแผนที่ 1.5 วิ',

@@ -2,6 +2,19 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.18.1 — Act 2 Boss ที่ 3: ราชาน้ำแข็ง
+
+### Added
+- `js/enemy.js`: ti=16 ราชาน้ำแข็ง ❄️ (HP 700, spd 0.42, reward 90, shield 120)
+  - Frost Pulse: ทุก 10 วิ ป้อมในรัศมี 2.5 ช่องถูกแช่แข็ง 2.5 วิ (`tw._frostStunT`)
+  - Ice Shield 120 HP: ดูดซับดาเมจก่อนถึง HP
+  - Ice Immune: ป้อมน้ำแข็ง (type=1) ไม่สามารถ slow ได้เลย
+- `js/game.js`: `tw._frostStunT` — per-tower freeze debuff (block attack + visual ❄️ overlay)
+- `js/game.js`: ice immune check ในโค้ด projectile slow (ทั้ง story และ endgame)
+- STAGES: d12 เพิ่ม ti=16, d17 เพิ่ม ti=16, d19/d20 เพิ่ม ti=16
+
+---
+
 ## v3.18.0 — Act 2 Bosses: นาคาราช & เทพทำลาย
 
 ### Added
