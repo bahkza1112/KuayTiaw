@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.17.7 — Weather Pill Tooltip
+
+### Added
+- `js/ui.js` + `css/main.css`: hover บน weather pill แสดง tooltip desc (CSS `::after` + `data-tip`)
+
+---
+
 ## v3.17.6 — Storm Visual + Stage Select Weather Pill
 
 ### Added

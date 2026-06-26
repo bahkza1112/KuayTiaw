@@ -1,6 +1,9 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.17.6';
+const GAME_VERSION='3.17.7';
 const PATCH_NOTES=[
+  {ver:'3.17.7',date:'2026-06-26',title:'💡 Tooltip สภาพอากาศ — hover ดู desc ได้เลย',notes:[
+    'Weather pill หน้าเลือกด่าน — hover แสดง tooltip บอก desc แต่ละสภาพอากาศ',
+  ]},
   {ver:'3.17.6',date:'2026-06-26',title:'🎨 Storm Visual + เลือกด่านแสดงสภาพอากาศ',notes:[
     'Storm ⛈️ มี visual — ฝนหนัก 65 drops + overlay ม่วงมืด + lightning bolt zigzag สุ่ม',
     'หน้าเลือกด่าน แสดง weather pill บอกว่าด่านนั้นมีสภาพอากาศอะไรได้บ้าง',
