@@ -2112,6 +2112,20 @@ function renderStageSelect(){
     const starPct=Math.round(stars/3*100);
     const starPips=[1,2,3].map(n=>`<span class="stage-star-pip${stars>=n?'':' empty'}">⭐</span>`).join('');
     const rewardRows=unlocked?[10,20,30].map((g,i)=>{const got=stars>i;return`<span class="srw${got?' srw-got':''}">${'★'.repeat(i+1)} <span class="srw-gem"><span class="gico"></span>${g}</span>${got?' ✓':''}</span>`;}).join(''):'';
+    // 🌦️ weather pill
+    let _wPill='';
+    if(unlocked){
+      if(s.weatherMode==='fixed'||s.weatherMode==='permanent'){
+        const _fw=WEATHERS.find(w=>w.id===s.weatherFixed);
+        if(_fw) _wPill=`<span class="stage-pill pill-weather">${_fw.icon} ${_fw.name}</span>`;
+      } else if(s.weatherChance>0||s.weatherChance===undefined){
+        const _pool=(STAGE_WEATHER[Math.min(s.id,STAGE_WEATHER.length-1)]||[]);
+        if(_pool.length>0){
+          const _icons=_pool.map(id=>{const w=WEATHERS.find(x=>x.id===id);return w?w.icon:'';}).filter(Boolean).join('');
+          _wPill=`<span class="stage-pill pill-weather">🌦️ ${_icons}</span>`;
+        }
+      }
+    }
     html+=`<div class="stage-card${unlocked?'':' locked'}${tierClass}" onclick="${unlocked?'startStage('+si+')':'void(0)'}">
       <div class="stage-icon">${s.icon}</div>
       <div class="stage-info">
@@ -2124,6 +2138,7 @@ function renderStageSelect(){
           <span class="stage-pill pill-wave">🌊 ${s.waves} คลื่น</span>
           <span class="stage-pill pill-enemy">${enemyIcons} ${cleared?'ศัตรู':'???'}</span>
           <span class="stage-pill pill-unlock">🏰 ${s.unlockedTowers.length} ป้อม</span>
+          ${_wPill}
         </div>
       </div>
       <div class="stage-right">
