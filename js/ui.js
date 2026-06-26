@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.16.8';
+const GAME_VERSION='3.16.9';
 const PATCH_NOTES=[
+  {ver:'3.16.9',date:'2026-06-26',title:'✨ Codex มอนสเตอร์ใช้ sprite จริงแทน emoji',notes:[
+    'การ์ดมอนสเตอร์และบอสใน Codex แสดงรูปจากเกมจริง (canvas sprite) แทน emoji 👺💀👻',
+    'ภาพ detail (ขนาดใหญ่) ก็ใช้ sprite จริงเหมือนกัน',
+  ]},
   {ver:'3.16.8',date:'2026-06-26',title:'✏️ RB 001 — ปรับ Codex ให้ตรงธีมจักรกล',notes:[
     'ไอคอน 💨 → 🤖, flavor text, MSPECIAL, MSTRENGTH, MWEAKNESS เปลี่ยนเป็นธีมกลไก',
     'Phase Shift แทน Phantom Phase ในข้อความ — mechanic ไม่เปลี่ยน',
@@ -3096,7 +3100,7 @@ function renderMonsterDetail(i){
   const weakHtml=MWEAKNESS[i].map(w=>`<span class="cdx-tag tag-green">🎯 ${w}</span>`).join('');
   return `<div class="cdx-detail">
     <div class="cdx-detail-head">
-      <div class="cdx-detail-ico">${EICONS[i]}</div>
+      <div class="cdx-detail-ico"><img src="${getEnemyIconURL(i,56)}" width="56" height="56" style="image-rendering:pixelated;"></div>
       <div>
         <div class="cdx-detail-name">${ENAMES[i]}</div>
         <div class="cdx-detail-sub">${subLabel}</div>
@@ -3154,7 +3158,7 @@ function renderCodex(){
     indices.forEach(i=>{
       const u=seen.has(String(i));
       html+=`<div class="cdx-card${u?'':' locked'}${cdxSel===i?' active':''}" onclick="${u?'selectCodex('+i+')':''}">
-        <div class="ico">${u?EICONS[i]:'❓'}</div>
+        <div class="ico">${u?`<img src="${getEnemyIconURL(i,44)}" width="44" height="44" style="image-rendering:pixelated;">`:'❓'}</div>
         <div class="cname">${u?ENAMES[i]:'???'}</div>
       </div>`;
     });

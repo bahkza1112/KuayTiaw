@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.16.9 — Codex มอนสเตอร์ใช้ sprite จริงแทน emoji
+
+### Changed
+- `js/ui.js` `renderCodex()`: card มอนสเตอร์/บอส ใช้ `getEnemyIconURL(i,44)` แทน `EICONS[i]` emoji
+- `js/ui.js` `renderMonsterDetail()`: ไอคอนใหญ่ในหน้า detail ใช้ `getEnemyIconURL(i,56)` แทน emoji
+
+---
+
 ## v3.16.8 — RB 001 Codex ธีมจักรกล
 
 ### Changed
