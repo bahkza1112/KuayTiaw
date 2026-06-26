@@ -2453,7 +2453,23 @@ function showWavePreview(){
     if(avail.includes(9)&&nextWave>=9&&Math.random()<bChance*.8) ei=9;
     tally[ei]=(tally[ei]||0)+1;
   }
-  let html=specialLabel;
+  // title — wave number + boss flag
+  const _hasBossInPool=(avail.includes(4)||avail.includes(9))&&bChance>0;
+  const _titleEl=document.getElementById('wavePreviewTitle');
+  if(_titleEl) _titleEl.innerHTML=`⚔️ คลื่นที่ <span style="color:#ffe082;font-size:13px;">${nextWave}</span>${_hasBossInPool?'  <span style="color:#ff6b6b;">💀 อาจมีบอส</span>':''}`;
+  // weather hint
+  let weatherHtml='';
+  if(!isEndgame&&currentStage){
+    const _pool=STAGE_WEATHER[Math.min(currentStage.id,STAGE_WEATHER.length-1)]||[];
+    if(currentStage.weatherMode==='fixed'&&currentStage.weatherFixed){
+      const _fw=WEATHERS.find(w=>w.id===currentStage.weatherFixed);
+      if(_fw) weatherHtml=`<div style="font-size:10px;color:#b0bec5;margin-bottom:5px;">${_fw.icon} ${_fw.name} — ${_fw.desc}</div>`;
+    } else if(_pool.length>0&&currentStage.weatherChance>0){
+      const _wnames=_pool.map(id=>{const w=WEATHERS.find(x=>x.id===id);return w?w.icon+w.name:'';}).filter(Boolean).join(', ');
+      weatherHtml=`<div style="font-size:10px;color:#b0bec5;margin-bottom:5px;">🌦️ อาจเกิด: ${_wnames}</div>`;
+    }
+  }
+  let html=weatherHtml+specialLabel;
   Object.entries(tally).sort((a,b)=>a[0]-b[0]).forEach(([ti,cnt])=>{
     html+=`<div class="wave-preview-enemy"><img src="${getEnemyIconURL(parseInt(ti),30)}" width="30" height="30" style="display:block;margin:0 auto 2px;">${ENAMES[parseInt(ti)]}<br><span style="color:#ffe082;">×${cnt}</span></div>`;
   });

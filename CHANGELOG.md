@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.17.5 — Wave Preview ปรับปรุง
+
+### Changed
+- `js/game.js` `showWavePreview()`: title แสดงเลข wave ที่กำลังจะมา + 💀 อาจมีบอส
+- `js/game.js` `showWavePreview()`: เพิ่ม weather hint — fixed stage แสดงชื่อ/ผล, random stage แสดง pool ที่อาจเกิด
+
+---
+
 ## v3.17.4 — Storm เปลี่ยน mechanic ศัตรูเร็วขึ้น 30%
 
 ### Changed

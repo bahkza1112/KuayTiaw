@@ -1,6 +1,11 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.17.4';
+const GAME_VERSION='3.17.5';
 const PATCH_NOTES=[
+  {ver:'3.17.5',date:'2026-06-26',title:'⚔️ Wave Preview ปรับปรุง — เลข wave + สภาพอากาศ',notes:[
+    'Wave preview แสดงเลข wave ที่กำลังจะมาใน title',
+    'แสดงสภาพอากาศที่อาจเกิดใน wave นั้น (fixed หรือ pool แบบสุ่ม)',
+    'แสดง 💀 อาจมีบอส เมื่อด่านมี bossChance',
+  ]},
   {ver:'3.17.4',date:'2026-06-26',title:'⛈️ Storm เปลี่ยน mechanic — ศัตรูเร็วขึ้น 30%',notes:[
     'Storm เปลี่ยนเป็น "ศัตรูทุกตัวเร็วขึ้น 30%" — บทลงโทษล้วน ไม่มีรางวัลชดเชย',
     'ต่างจาก Darknight (HP+speed) และ Blizzard (speed+ice immune) อย่างชัดเจน',
