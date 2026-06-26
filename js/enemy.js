@@ -870,6 +870,233 @@ function drawEnemySprite(ctx,ti,x,y,sz,mv){
       ctx.beginPath();ctx.moveTo(r*.0,r*.22);ctx.lineTo(r*.08,r*.42);ctx.lineTo(r*.16,r*.22);ctx.closePath();ctx.fill();
       ctx.restore();
       break;}
+    case 14:{// นาคาราช — chibi cobra king, venom aura
+      const _nk=Math.sin(Date.now()*.004*_sm+x*.05)*r*.05;
+      ctx.save();ctx.translate(0,_nk);
+      const _nt=Date.now()*.002;
+      // serpent tail coil behind body
+      ctx.strokeStyle='#2e7d32';ctx.lineWidth=r*.52;ctx.lineCap='round';ctx.lineJoin='round';
+      ctx.beginPath();ctx.moveTo(-r*.1,r*.55);ctx.bezierCurveTo(-r*.8,r*.7,-r*1.05,r*.3,-r*.85,r*-.05);ctx.bezierCurveTo(-r*.65,-r*.35,-r*.22,-r*.2,-r*.1,r*.55);ctx.stroke();
+      ctx.strokeStyle='#388e3c';ctx.lineWidth=r*.26;
+      ctx.beginPath();ctx.moveTo(-r*.1,r*.55);ctx.bezierCurveTo(-r*.8,r*.7,-r*1.05,r*.3,-r*.85,r*-.05);ctx.bezierCurveTo(-r*.65,-r*.35,-r*.22,-r*.2,-r*.1,r*.55);ctx.stroke();
+      // scale shimmer on coil
+      ctx.globalAlpha=.22;ctx.fillStyle='#b9f6ca';
+      for(let _k=0;_k<4;_k++){const _a=_k/4*Math.PI+_nt*.4;ctx.beginPath();ctx.ellipse(Math.cos(_a-1.8)*r*.5+r*.1,Math.sin(_a-1.8)*r*.28+r*.35,r*.1,r*.06,_a,0,Math.PI*2);ctx.fill();}
+      ctx.globalAlpha=1;
+      // cobra hood (wide fan shape)
+      _ol(()=>{ctx.beginPath();ctx.ellipse(0,-r*.22,r*1.15,r*.72,0,0,Math.PI*2);});
+      ctx.fillStyle='#1b5e20';ctx.beginPath();ctx.ellipse(0,-r*.22,r*1.15,r*.72,0,0,Math.PI*2);ctx.fill();
+      // hood inner pattern (two eye-spots)
+      ctx.fillStyle='#f9a825';ctx.globalAlpha=.55;
+      ctx.beginPath();ctx.ellipse(-r*.4,-r*.28,r*.32,r*.22,-.15,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.ellipse(r*.4,-r*.28,r*.32,r*.22,.15,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#212121';ctx.globalAlpha=.6;
+      ctx.beginPath();ctx.ellipse(-r*.4,-r*.28,r*.16,r*.12,-.15,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.ellipse(r*.4,-r*.28,r*.16,r*.12,.15,0,Math.PI*2);ctx.fill();
+      ctx.globalAlpha=1;
+      // main round head
+      _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.14,r*.72,0,Math.PI*2);});
+      ctx.fillStyle='#2e7d32';ctx.beginPath();ctx.arc(0,-r*.14,r*.72,0,Math.PI*2);ctx.fill();
+      // head scale shine
+      const _nig=ctx.createRadialGradient(-r*.22,-r*.42,0,0,-r*.14,r*.72);
+      _nig.addColorStop(0,'rgba(200,255,200,.35)');_nig.addColorStop(1,'transparent');
+      ctx.fillStyle=_nig;ctx.beginPath();ctx.arc(0,-r*.14,r*.72,0,Math.PI*2);ctx.fill();
+      // scale texture lines on head
+      ctx.strokeStyle='rgba(0,80,0,.35)';ctx.lineWidth=r*.05;
+      for(let _ks=0;_ks<4;_ks++){const _ys=-r*.48+_ks*r*.18;ctx.beginPath();ctx.moveTo(-r*.5,_ys);ctx.quadraticCurveTo(0,_ys-r*.05,r*.5,_ys);ctx.stroke();}
+      // golden crown (3-spike)
+      ctx.fillStyle='#fdd835';
+      ctx.beginPath();ctx.moveTo(-r*.5,-r*.7);ctx.lineTo(-r*.5,-r*.95);ctx.lineTo(-r*.28,-r*.76);ctx.lineTo(0,-r*1.02);ctx.lineTo(r*.28,-r*.76);ctx.lineTo(r*.5,-r*.95);ctx.lineTo(r*.5,-r*.7);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#f57f17';ctx.strokeStyle='#e65100';ctx.lineWidth=r*.04;ctx.stroke();
+      // crown jewel (red ruby)
+      ctx.fillStyle='#d32f2f';ctx.beginPath();ctx.arc(0,-r*1.0,r*.1,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.7)';ctx.beginPath();ctx.arc(-r*.03,-r*1.04,r*.04,0,Math.PI*2);ctx.fill();
+      // snake eyes (vertical slit pupils)
+      ctx.fillStyle='#ffd600';ctx.beginPath();ctx.arc(-r*.26,-r*.18,r*.26,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#ffd600';ctx.beginPath();ctx.arc(r*.26,-r*.18,r*.26,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#1a1a1a';ctx.beginPath();ctx.ellipse(-r*.26,-r*.18,r*.08,r*.22,0,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.ellipse(r*.26,-r*.18,r*.08,r*.22,0,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.85)';ctx.beginPath();ctx.arc(-r*.2,-r*.26,r*.08,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.85)';ctx.beginPath();ctx.arc(r*.2,-r*.26,r*.08,0,Math.PI*2);ctx.fill();
+      // forked tongue (animated flick)
+      const _tf=Math.sin(Date.now()*.018+x)>.3;
+      ctx.strokeStyle='#d32f2f';ctx.lineWidth=r*.07;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(0,r*.26);ctx.lineTo(0,r*.48);ctx.stroke();
+      if(_tf){ctx.beginPath();ctx.moveTo(0,r*.46);ctx.lineTo(-r*.1,r*.58);ctx.stroke();
+               ctx.beginPath();ctx.moveTo(0,r*.46);ctx.lineTo(r*.1,r*.58);ctx.stroke();}
+      // venom drip effect
+      const _vg=.4+.35*Math.sin(_nt*4);
+      ctx.globalAlpha=_vg;ctx.fillStyle='#76ff03';
+      ctx.beginPath();ctx.arc(-r*.18,r*.3,r*.07,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(r*.25,r*.1,r*.05,0,Math.PI*2);ctx.fill();
+      ctx.globalAlpha=1;
+      ctx.restore();
+      break;}
+    case 16:{// ราชาน้ำแข็ง — chibi ice monarch, crystal crown
+      const _ik=Math.sin(Date.now()*.0035*_sm+x*.05)*r*.04;
+      ctx.save();ctx.translate(0,_ik);
+      const _it=Date.now()*.0015;
+      // orbiting ice shards
+      for(let _ki=0;_ki<5;_ki++){
+        const _ai=(_ki/5)*Math.PI*2+_it*1.2;
+        const _ri=r*(1.08+.12*Math.sin(_it*2+_ki));
+        const _xs=Math.cos(_ai)*_ri,_ys=Math.sin(_ai)*_ri*.6-r*.05;
+        ctx.save();ctx.translate(_xs,_ys);ctx.rotate(_ai+Math.PI*.5);
+        ctx.globalAlpha=.55+.2*Math.sin(_it*3+_ki);
+        ctx.fillStyle='#e1f5fe';
+        ctx.beginPath();ctx.moveTo(0,-r*.15);ctx.lineTo(r*.07,0);ctx.lineTo(0,r*.15);ctx.lineTo(-r*.07,0);ctx.closePath();ctx.fill();
+        ctx.strokeStyle='#81d4fa';ctx.lineWidth=r*.03;ctx.stroke();
+        ctx.globalAlpha=1;ctx.restore();
+      }
+      // body cloak (icy blue robe)
+      _ol(()=>{ctx.beginPath();ctx.moveTo(-r*.55,r*.18);ctx.lineTo(-r*.7,r*.88);ctx.lineTo(r*.7,r*.88);ctx.lineTo(r*.55,r*.18);ctx.closePath();});
+      ctx.fillStyle='#0d47a1';ctx.beginPath();ctx.moveTo(-r*.55,r*.18);ctx.lineTo(-r*.7,r*.88);ctx.lineTo(r*.7,r*.88);ctx.lineTo(r*.55,r*.18);ctx.closePath();ctx.fill();
+      // cloak frost pattern
+      const _icg=ctx.createLinearGradient(0,r*.18,0,r*.88);
+      _icg.addColorStop(0,'rgba(179,229,252,.22)');_icg.addColorStop(1,'rgba(255,255,255,.06)');
+      ctx.fillStyle=_icg;ctx.beginPath();ctx.moveTo(-r*.55,r*.18);ctx.lineTo(-r*.7,r*.88);ctx.lineTo(r*.7,r*.88);ctx.lineTo(r*.55,r*.18);ctx.closePath();ctx.fill();
+      // cloak edge ice spikes
+      ctx.fillStyle='#b3e5fc';
+      for(let _ki=0;_ki<5;_ki++){const _xi=-r*.6+_ki*r*.3,_y1=r*.88;ctx.beginPath();ctx.moveTo(_xi,_y1);ctx.lineTo(_xi+r*.06,_y1+r*.15);ctx.lineTo(_xi+r*.14,_y1);ctx.closePath();ctx.fill();}
+      // arms (ice gauntlets)
+      ctx.fillStyle='#1565c0';ctx.beginPath();ctx.ellipse(-r*.88,r*.2,r*.24,r*.18,-.3,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.ellipse(r*.88,r*.2,r*.24,r*.18,.3,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#b3e5fc';ctx.beginPath();ctx.ellipse(-r*.88,r*.2,r*.12,r*.1,-.3,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.ellipse(r*.88,r*.2,r*.12,r*.1,.3,0,Math.PI*2);ctx.fill();
+      // HUGE round head
+      _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.1,r*.86,0,Math.PI*2);});
+      ctx.fillStyle='#1a237e';ctx.beginPath();ctx.arc(0,-r*.1,r*.86,0,Math.PI*2);ctx.fill();
+      // head icy radial glow
+      const _iig=ctx.createRadialGradient(-r*.25,-r*.4,0,0,-r*.1,r*.86);
+      _iig.addColorStop(0,'rgba(227,242,253,.4)');_iig.addColorStop(.5,'rgba(100,181,246,.15)');_iig.addColorStop(1,'transparent');
+      ctx.fillStyle=_iig;ctx.beginPath();ctx.arc(0,-r*.1,r*.86,0,Math.PI*2);ctx.fill();
+      // frost crack lines on face
+      ctx.strokeStyle='rgba(179,229,252,.5)';ctx.lineWidth=r*.04;
+      ctx.beginPath();ctx.moveTo(-r*.12,-r*.72);ctx.lineTo(-r*.22,-r*.3);ctx.lineTo(-r*.08,r*.1);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(r*.3,-r*.5);ctx.lineTo(r*.18,-r*.18);ctx.stroke();
+      // crystal crown (5 jagged spikes)
+      const _ispk=[[-r*.55,-r*.7,-r*.5,-r*1.05],[-r*.28,-r*.82,-r*.22,-r*1.18],[0,-r*.88,0,-r*1.28],[r*.28,-r*.82,r*.22,-r*1.18],[r*.55,-r*.7,r*.5,-r*1.05]];
+      ctx.fillStyle='#90caf9';
+      _ispk.forEach(([x1,y1,x2,y2])=>{
+        ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo((x1+x2)*.5-r*.06,((y1+y2)*.5));ctx.lineTo(x2,y2);ctx.lineTo((x1+x2)*.5+r*.06,((y1+y2)*.5));ctx.closePath();ctx.fill();
+        ctx.strokeStyle='#e3f2fd';ctx.lineWidth=r*.03;ctx.stroke();
+      });
+      ctx.fillStyle='#bbdefb';ctx.beginPath();ctx.arc(0,-r*.68,r*.24,0,Math.PI*2);ctx.fill();
+      // crown base band
+      ctx.fillStyle='#1565c0';ctx.beginPath();if(ctx.roundRect)ctx.roundRect(-r*.6,-r*.72,r*1.2,r*.18,r*.05);else ctx.rect(-r*.6,-r*.72,r*1.2,r*.18);ctx.fill();
+      ctx.fillStyle='#bbdefb';ctx.beginPath();ctx.arc(0,-r*.63,r*.09,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#42a5f5';ctx.beginPath();ctx.arc(-r*.28,-r*.63,r*.06,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#42a5f5';ctx.beginPath();ctx.arc(r*.28,-r*.63,r*.06,0,Math.PI*2);ctx.fill();
+      // icy eyes (silver with blue slit)
+      const _igl=.75+.25*Math.sin(_it*3);
+      ctx.fillStyle=`rgba(227,242,253,${_igl})`;ctx.beginPath();ctx.arc(-r*.3,-r*.12,r*.28,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle=`rgba(227,242,253,${_igl})`;ctx.beginPath();ctx.arc(r*.3,-r*.12,r*.28,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#0277bd';ctx.beginPath();ctx.ellipse(-r*.3,-r*.12,r*.08,r*.22,0,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.ellipse(r*.3,-r*.12,r*.08,r*.22,0,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.9)';ctx.beginPath();ctx.arc(-r*.24,-r*.2,r*.07,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.9)';ctx.beginPath();ctx.arc(r*.24,-r*.2,r*.07,0,Math.PI*2);ctx.fill();
+      // cold sneer mouth
+      ctx.strokeStyle='#b3e5fc';ctx.lineWidth=r*.08;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(-r*.3,r*.22);ctx.lineTo(-r*.12,r*.3);ctx.lineTo(r*.12,r*.3);ctx.lineTo(r*.3,r*.22);ctx.stroke();
+      // frost breath particles (faint, animated)
+      ctx.globalAlpha=.18+.1*Math.sin(_it*5);ctx.fillStyle='#e3f2fd';
+      ctx.beginPath();ctx.ellipse(0,r*.42,r*.28,r*.1,0,0,Math.PI*2);ctx.fill();
+      ctx.globalAlpha=1;
+      ctx.restore();
+      break;}
+    case 15:{// เทพทำลาย — chibi earth-deity, phase-shifting rock/lava body
+      const _wbd=Math.sin(Date.now()*.0028*_sm+x*.05)*r*.04;
+      ctx.save();ctx.translate(0,_wbd);
+      const _wt=Date.now()*.0018;
+      const _wph=mv._phase||1;
+      // phase color palette
+      const _wc={body:_wph===1?'#37474f':_wph===2?'#bf360c':'#f57f17',
+                 glow:_wph===1?'#90a4ae':_wph===2?'#ff7043':'#ffe57f',
+                 crack:_wph===1?'#607d8b':_wph===2?'#ff5722':'#ffee58',
+                 eye:_wph===1?'#90a4ae':_wph===2?'#ff6e40':'#ffff00'};
+      // orbiting rock shards
+      for(let _kw=0;_kw<6;_kw++){
+        const _aw=(_kw/6)*Math.PI*2+_wt*(_wph===3?2:_wph===2?1.4:.9);
+        const _rw=r*(1.0+.1*Math.sin(_wt*3+_kw));
+        const _xw=Math.cos(_aw)*_rw,_yw=Math.sin(_aw)*_rw*.65-r*.08;
+        ctx.save();ctx.translate(_xw,_yw);ctx.rotate(_aw+_wt);
+        ctx.globalAlpha=.6+.2*Math.sin(_wt*2+_kw);
+        ctx.fillStyle=_wc.body;
+        ctx.beginPath();ctx.moveTo(0,-r*.14);ctx.lineTo(r*.1,0);ctx.lineTo(r*.05,r*.14);ctx.lineTo(-r*.08,r*.1);ctx.lineTo(-r*.12,0);ctx.closePath();ctx.fill();
+        ctx.strokeStyle=_wc.glow;ctx.lineWidth=r*.03;ctx.stroke();
+        ctx.globalAlpha=1;ctx.restore();
+      }
+      // massive chunky arms
+      _ol(()=>{ctx.beginPath();ctx.ellipse(-r*1.0,r*.18,r*.32,r*.42,.3,0,Math.PI*2);});
+      ctx.fillStyle=_wc.body;ctx.beginPath();ctx.ellipse(-r*1.0,r*.18,r*.32,r*.42,.3,0,Math.PI*2);ctx.fill();
+      _ol(()=>{ctx.beginPath();ctx.ellipse(r*1.0,r*.18,r*.32,r*.42,-.3,0,Math.PI*2);});
+      ctx.beginPath();ctx.ellipse(r*1.0,r*.18,r*.32,r*.42,-.3,0,Math.PI*2);ctx.fill();
+      // fist knuckle cracks
+      ctx.strokeStyle=_wc.crack;ctx.lineWidth=r*.05;
+      ctx.beginPath();ctx.moveTo(-r*1.2,r*.08);ctx.lineTo(-r*.92,r*.28);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(r*1.2,r*.08);ctx.lineTo(r*.92,r*.28);ctx.stroke();
+      // squat rock body
+      _ol(()=>{ctx.beginPath();if(ctx.roundRect)ctx.roundRect(-r*.6,r*.1,r*1.2,r*.68,r*.12);else ctx.rect(-r*.6,r*.1,r*1.2,r*.68);});
+      ctx.fillStyle=_wc.body;ctx.beginPath();if(ctx.roundRect)ctx.roundRect(-r*.6,r*.1,r*1.2,r*.68,r*.12);else ctx.rect(-r*.6,r*.1,r*1.2,r*.68);ctx.fill();
+      // body lava/crack lines
+      ctx.strokeStyle=_wc.crack;ctx.lineWidth=r*.07;
+      ctx.beginPath();ctx.moveTo(-r*.28,r*.14);ctx.lineTo(-r*.08,r*.5);ctx.lineTo(r*.1,r*.38);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(r*.32,r*.18);ctx.lineTo(r*.18,r*.6);ctx.stroke();
+      // lava glow inside cracks (phase 2+)
+      if(_wph>=2){
+        ctx.strokeStyle=`rgba(255,${_wph===3?230:100},0,${.55+.3*Math.sin(_wt*5)})`;ctx.lineWidth=r*.04;
+        ctx.beginPath();ctx.moveTo(-r*.28,r*.14);ctx.lineTo(-r*.08,r*.5);ctx.lineTo(r*.1,r*.38);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(r*.32,r*.18);ctx.lineTo(r*.18,r*.6);ctx.stroke();
+      }
+      // MASSIVE rocky head
+      _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.12,r*.92,0,Math.PI*2);});
+      ctx.fillStyle=_wc.body;ctx.beginPath();ctx.arc(0,-r*.12,r*.92,0,Math.PI*2);ctx.fill();
+      // rocky bumps on head
+      ctx.fillStyle=_wph===1?'#455a64':_wph===2?'#d84315':'#e65100';
+      ctx.beginPath();ctx.arc(-r*.52,-r*.38,r*.26,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(r*.42,-r*.48,r*.2,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(r*.6,-r*.1,r*.16,0,Math.PI*2);ctx.fill();
+      // head cracks
+      ctx.strokeStyle=_wc.crack;ctx.lineWidth=r*.08;
+      ctx.beginPath();ctx.moveTo(-r*.1,-r*.82);ctx.lineTo(r*.06,-r*.22);ctx.lineTo(-r*.08,r*.12);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(r*.38,-r*.62);ctx.lineTo(r*.22,-r*.28);ctx.stroke();
+      // glowing molten crack fill (phase 2+)
+      if(_wph>=2){
+        const _wcg=.55+.3*Math.sin(_wt*5);
+        ctx.strokeStyle=`rgba(255,${_wph===3?230:80},0,${_wcg})`;ctx.lineWidth=r*.05;
+        ctx.beginPath();ctx.moveTo(-r*.1,-r*.82);ctx.lineTo(r*.06,-r*.22);ctx.lineTo(-r*.08,r*.12);ctx.stroke();
+      }
+      // phase 3 molten glow aura
+      if(_wph===3){
+        const _mg=ctx.createRadialGradient(0,-r*.12,r*.3,0,-r*.12,r*.92);
+        _mg.addColorStop(0,'rgba(255,230,50,.3)');_mg.addColorStop(1,'transparent');
+        ctx.fillStyle=_mg;ctx.beginPath();ctx.arc(0,-r*.12,r*.92,0,Math.PI*2);ctx.fill();
+      }
+      // enormous rocky EYES (no pupils — pure glowing energy)
+      const _wg=.7+.3*Math.sin(_wt*3.5);
+      ctx.fillStyle=`rgba(${_wph===1?'144,164,174':_wph===2?'255,112,67':'255,255,0'},${_wg})`;
+      ctx.beginPath();ctx.arc(-r*.3,-r*.18,r*.3,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(r*.3,-r*.18,r*.3,0,Math.PI*2);ctx.fill();
+      // eye inner bright spot
+      ctx.fillStyle=`rgba(255,255,255,${_wg*.65})`;
+      ctx.beginPath();ctx.arc(-r*.3,-r*.22,r*.15,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(r*.3,-r*.22,r*.15,0,Math.PI*2);ctx.fill();
+      // giant stone crown pieces (3 flat megaliths)
+      ctx.fillStyle=_wph===1?'#546e7a':_wph===2?'#c62828':'#f9a825';
+      ctx.strokeStyle='#1a1a1a';ctx.lineWidth=r*.05;
+      [[-r*.42,-r*.88,-r*.22,-r*.88,-r*.22,-r*1.15,-r*.32,-r*1.22,-r*.42,-r*1.15],
+       [-r*.12,-r*.92,r*.12,-r*.92,r*.12,-r*1.28,0,-r*1.35,-r*.12,-r*1.28],
+       [r*.22,-r*.88,r*.42,-r*.88,r*.42,-r*1.15,r*.32,-r*1.22,r*.22,-r*1.15]].forEach(pts=>{
+        ctx.beginPath();ctx.moveTo(pts[0],pts[1]);for(let _i=2;_i<pts.length;_i+=2)ctx.lineTo(pts[_i],pts[_i+1]);ctx.closePath();ctx.fill();ctx.stroke();
+      });
+      // ground crack FX below (phase 3 only)
+      if(_wph===3){
+        ctx.globalAlpha=.38+.2*Math.sin(_wt*6);ctx.strokeStyle='#ffee58';ctx.lineWidth=r*.1;
+        ctx.beginPath();ctx.moveTo(-r*.6,r*.78);ctx.lineTo(0,r*.65);ctx.lineTo(r*.6,r*.78);ctx.stroke();
+        ctx.globalAlpha=1;
+      }
+      ctx.restore();
+      break;}
   }
   ctx.restore();
   ctx.restore();

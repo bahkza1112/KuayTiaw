@@ -2,6 +2,21 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.18.2 — Boss Chibi Models: นาคาราช, เทพทำลาย, ราชาน้ำแข็ง
+
+### Added
+- `js/enemy.js`: `drawEnemySprite` case 14 — นาคาราช 🐍 chibi cobra king
+  - Cobra hood fan shape, serpent tail coil, forked tongue (animated), venom drips
+  - Vertical-slit golden eyes, 3-spike gold crown, hood eye-spot markings
+- `js/enemy.js`: `drawEnemySprite` case 15 — เทพทำลาย 🌍 chibi earth deity
+  - Phase-dependent color palette: gray (P1) → orange/lava cracks (P2) → molten yellow glow (P3)
+  - 6 orbiting rock shards, stone megalith crown, crack-glow lines, massive glowing eyes
+- `js/enemy.js`: `drawEnemySprite` case 16 — ราชาน้ำแข็ง ❄️ chibi ice monarch
+  - 5-spike jagged ice crystal crown, frost-trimmed cloak, silver slit-pupil eyes
+  - 5 orbiting ice shards, frost crack lines on face, cold sneer mouth
+
+---
+
 ## v3.18.1 — Act 2 Boss ที่ 3: ราชาน้ำแข็ง
 
 ### Added
