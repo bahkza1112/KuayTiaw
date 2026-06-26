@@ -2,6 +2,18 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.16.4 — แก้บั๊ก EG Phantom + Perf + Act 2 EG Pool
+
+### Fixed
+- `js/game.js` EG loop: Phantom Phase (ti=12) ตอนนี้ผ่านปราสาทโดยไม่ดาเมจเหมือน story loop
+- `js/game.js` Shadow Wraith drain CD: jitter `5.5+random()` ป้องกันดาวน์ sync หลายตัว
+
+### Performance
+- `js/game.js` `struckTowers`: เปลี่ยนจาก `Array` เป็น `Set` — `.has()` O(1) แทน `.includes()` O(n)
+
+### Content
+- `js/game.js` `_getEgEnemyPool()`: เพิ่ม Act 2 enemies (11=นักรบเดือด, 12=ผีดิบ, 13=แม่ฝูง) เข้า EG round 8-10+
+
 ## v3.16.3 — แก้บั๊ก 11 จุด: Critical/High/Perf/Medium
 
 ### Fixed (Critical/High)

@@ -1,6 +1,12 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.16.3';
+const GAME_VERSION='3.16.4';
 const PATCH_NOTES=[
+  {ver:'3.16.4',date:'2026-06-26',title:'🔧 แก้บั๊ก EG + Perf + ศัตรูใหม่ใน Endgame',notes:[
+    'แก้: Endgame mode — ผีดิบ (phase) ยังดาเมจปราสาทได้ขณะหายตัว (พลาดแก้รอบก่อน)',
+    'ประสิทธิภาพ: struckTowers (ฟ้าผ่า) เปลี่ยนจาก Array เป็น Set — ลด O(n) เป็น O(1) ต่อป้อม',
+    'แก้: Shadow Wraith หลายตัว drain พร้อมกันทุก 6 วิ — ตอนนี้มี random jitter',
+    'เนื้อหา: เพิ่มศัตรู Act 2 (นักรบเดือด/ผีดิบ/แม่ฝูง) ใน Endgame รอบที่ 8-10+',
+  ]},
   {ver:'3.16.3',date:'2026-06-26',title:'🔧 แก้บั๊กรวม 11 จุด — Critical/High/Perf/Medium',notes:[
     '🔴 แก้: ผีดิบ (phase) ยังดาเมจปราสาทได้ขณะหายตัว — ตอนนี้ผ่านโดยไม่โดน HP',
     '🔴 แก้: restart ด่านทำให้ talent (Gold/HP bonus) หายไปทั้งหมด',

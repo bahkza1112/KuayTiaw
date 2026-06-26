@@ -379,7 +379,7 @@ function mkWeatherState(){
     rangeMult:1, spdMult:1, hpMult:1,
     slowImmune:false, iceDisabled:false, iceRateMult:1,
     splashMult:1, dodgeChance:0, goldMineMult:1,
-    struckTowers:[], lightningTimer:0,
+    struckTowers:new Set(), lightningTimer:0,
   };
 }
 const WEATHERS=[
@@ -391,7 +391,7 @@ const WEATHERS=[
    unapply:(G)=>{if(G.weather){G.weather.spdMult=1;G.weather.slowImmune=false;}}},
   {id:'lightning',icon:'⚡',name:'พายุฟ้าผ่า',desc:'ป้อม 50% ใช้งานไม่ได้ สุ่มใหม่ทุก 10 วินาที',color:'rgba(255,240,100,.1)',
    apply:(G)=>{if(G.weather)G.weather.lightningTimer=0;applyLightningStrike();},
-   unapply:(G)=>{if(G.weather){G.weather.struckTowers=[];G.weather.lightningTimer=0;}}},
+   unapply:(G)=>{if(G.weather){G.weather.struckTowers=new Set();G.weather.lightningTimer=0;}}},
   {id:'darknight',icon:'🌑',name:'ราตรีมืดมิด',desc:'ศัตรู HP +50%, เร็วขึ้น +40%',color:'rgba(20,0,40,.55)',
    apply:(G)=>{if(G.weather){G.weather.hpMult=1.5;G.weather.spdMult=1.4;}},
    unapply:(G)=>{if(G.weather){G.weather.hpMult=1;G.weather.spdMult=1;}}},
@@ -544,7 +544,7 @@ function applyLightningStrike(){
   // store direct tower references (not indices) so selling/placing towers mid-storm can't desync the struck set
   const pool=G.towers.slice();
   for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
-  G.weather.struckTowers=pool.slice(0,count);
+  G.weather.struckTowers=new Set(pool.slice(0,count));
   G.weather.struckTowers.forEach(tw=>{
     if(!tw) return;
     G.fxRings.push({x:tw.col*CS+CS/2,y:tw.row*CS+CS/2,r:2,maxR:CS*1.5,life:.8,lw:3,col:'#ffe082',delay:0});
@@ -1116,7 +1116,7 @@ function update(dt){
     if(!shadow.alive||shadow.ti!==2) return;
     shadow.drainCd=(shadow.drainCd||3+Math.random()*2)-dt;
     if(shadow.drainCd>0) return;
-    shadow.drainCd=6.0; // ปล่อยคลื่นดูดพลังทุก 6 วิ
+    shadow.drainCd=5.5+Math.random(); // jitter ป้องกัน Shadow หลายตัว drain พร้อมกัน
     const drainRange=2.2*CS;
     let drained=false;
     G.towers.forEach(t=>{
@@ -1234,7 +1234,7 @@ function update(dt){
       }
     }
     if(CFG.t_dmg[tw.type]===0) return;
-    if(G.weather&&G.weather.struckTowers&&G.weather.struckTowers.length&&G.weather.struckTowers.includes(tw)) return; // ⚡ struck by lightning
+    if(G.weather&&G.weather.struckTowers&&G.weather.struckTowers.size&&G.weather.struckTowers.has(tw)) return; // ⚡ struck by lightning
     if(G.waveActive) tw.cd=Math.max(0,tw.cd-dt);
     const range=getTowerRange(tw.type,tw.rngLv||tw.lv)*((G&&G.weather&&G.weather.rangeMult)?G.weather.rangeMult:1);
     const cx=tw.col+.5,cy=tw.row+.5;
@@ -2915,8 +2915,11 @@ function _getEgEnemyPool(){
   if(egRound===2) return [0,1,2,3,4,5,6];      // Round 3: +Bat
   if(egRound===3) return [0,1,2,3,4,5,6,7];    // Round 4: +Wyvern
   if(egRound===4) return [0,1,2,3,4,5,6,7,8];  // Round 5: +Shield Knight
-  if(egRound===5) return [0,1,2,3,4,5,6,7,8,10]; // Round 6: +Shaman
-  return [0,1,2,3,4,5,6,7,8,9,10];             // Round 7+: ทุกตัวรวม Final Boss
+  if(egRound===5) return [0,1,2,3,4,5,6,7,8,10];     // Round 6: +Shaman
+  if(egRound===6) return [0,1,2,3,4,5,6,7,8,9,10];  // Round 7: +Final Boss
+  if(egRound===7) return [0,1,2,3,4,5,6,7,8,9,10,11]; // Round 8: +Berserker
+  if(egRound===8) return [0,1,2,3,4,5,6,7,8,9,10,11,12]; // Round 9: +Phantom
+  return [0,1,2,3,4,5,6,7,8,9,10,11,12,13];           // Round 10+: ทุกตัวรวม Act 2
 }
 function startEndgame(){
   openEgTowerSelection();
@@ -3125,6 +3128,7 @@ function updateEg(dt){
     while(e.prog>=CS){
       e.prog-=CS; e.pi++;
       if(e.pi>=plen-1){
+        if(e._phaseT>0){e.alive=false;G.enemies.splice(i,1);break;}
         unlockMonster(e.ti); e.alive=false; G.enemies.splice(i,1);
         if(G.skillBlockT>0){ // 🛡️ กำแพงวิญญาณ: กันดาเมจเข้าปราสาท
           addParticle(e.x,e.y,'🛡️ กันไว้!','#b388ff');
@@ -3225,7 +3229,7 @@ function updateEg(dt){
       }
     }
     if(CFG.t_dmg[tw.type]===0) return;
-    if(G.weather&&G.weather.struckTowers&&G.weather.struckTowers.length&&G.weather.struckTowers.includes(tw)) return;
+    if(G.weather&&G.weather.struckTowers&&G.weather.struckTowers.size&&G.weather.struckTowers.has(tw)) return;
     if(G.waveActive) tw.cd=Math.max(0,tw.cd-dt);
     const range=getTowerRange(tw.type,tw.rngLv||tw.lv)*((G&&G.weather&&G.weather.rangeMult)?G.weather.rangeMult:1);
     const cx=tw.col+.5,cy=tw.row+.5;
