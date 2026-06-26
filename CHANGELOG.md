@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.16.5 — แก้บั๊กเล็กน้อย + Perf
+
+### Fixed
+- `js/game.js` `showWavePreview()`: EG preview คำนวณ `egRound` ของ wave ถัดไปจริงๆ (`Math.floor((nextWave-1)/EG_WAVES_PER_ROUND)`) แทนการใช้ round ปัจจุบัน
+- `js/tower.js` + Codex `TSPECIAL[6]`: แก้ข้อความ Gold Mine "−15%/lv" → "−20%/lv" ให้ตรงกับ formula จริง (เปลี่ยนตั้งแต่ v3.11.3)
+- `js/enemy.js` `spawnEnemy()`: เพิ่ม `_bspdMult:1` ใน enemy object ตั้งแต่ต้น — ไม่ต้องพึ่ง `||1` fallback
+
+### Performance
+- `js/game.js`/`js/ui.js`: `_gpRectCache` — cache `getBoundingClientRect('#gp')` แทนการ query DOM ทุก mousemove, invalidate ตอน start game ใหม่
+
 ## v3.16.4 — แก้บั๊ก EG Phantom + Perf + Act 2 EG Pool
 
 ### Fixed

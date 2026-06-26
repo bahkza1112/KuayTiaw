@@ -1,6 +1,12 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.16.4';
+const GAME_VERSION='3.16.5';
 const PATCH_NOTES=[
+  {ver:'3.16.5',date:'2026-06-26',title:'🔧 แก้บั๊กเล็กน้อย + Perf',notes:[
+    'แก้: Endgame wave preview แสดง enemy pool ของ round ถัดไปอย่างถูกต้อง',
+    'ประสิทธิภาพ: tooltip rangeInfo ไม่ query DOM ทุก mousemove — cache getBoundingClientRect',
+    'แก้ข้อความ: Gold Mine Codex บอก -15%/lv แต่จริงๆ -20%/lv (ตั้งแต่ v3.11.3)',
+    'แก้: Berserk init _bspdMult:1 ตั้งแต่ spawn — ไม่ต้องพึ่ง fallback ||1',
+  ]},
   {ver:'3.16.4',date:'2026-06-26',title:'🔧 แก้บั๊ก EG + Perf + ศัตรูใหม่ใน Endgame',notes:[
     'แก้: Endgame mode — ผีดิบ (phase) ยังดาเมจปราสาทได้ขณะหายตัว (พลาดแก้รอบก่อน)',
     'ประสิทธิภาพ: struckTowers (ฟ้าผ่า) เปลี่ยนจาก Array เป็น Set — ลด O(n) เป็น O(1) ต่อป้อม',
@@ -2104,6 +2110,7 @@ function startStage(si){
 function _doStartStage(si){
   setStage(si);
   showScreen('gp',true);
+  _gpRectCache=null; // invalidate on new game start
   // BUG FIX: get fresh canvas reference each time
   cv=document.getElementById('cv');
   ctx=cv.getContext('2d');

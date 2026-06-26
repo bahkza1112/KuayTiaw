@@ -163,6 +163,7 @@ function spawnEnemy(ti){
     slow:1,slowT:0,alive:true,hitFlash:0,
     isAir:MISAIR[ti]||false,
     shieldHp:sh,maxShieldHp:sh,
+    _bspdMult:1, // Berserk speed multiplier — pre-initialized (type 11 sets to 1.8 on trigger)
   });
   /* ══ BOSS SPAWN ENTRANCE FX ══ */
   if(MTYPE[ti]===1){

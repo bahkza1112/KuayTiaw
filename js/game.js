@@ -270,6 +270,7 @@ try{const s=localStorage.getItem('tq_cfg');if(s)CFG=Object.assign(JSON.parse(JSO
 const COLS=12,ROWS=10,CS=80;
 let currentStage=null,currentPath=null,currentPset=null;
 let G=null,cv=null,ctx=null,rafId=null,speed=1,paused=false,toastTimer=null;
+let _gpRectCache=null; // cache getBoundingClientRect('#gp') — invalidated on resize
 // BUG FIX: track devFromMenu at module scope so closeDev always knows origin
 let devFromMenu=true;
 let autoWave=false;
@@ -2421,8 +2422,12 @@ function showWavePreview(){
   const nextWave=G.wave+1;
   let avail,bChance,specialLabel='';
   if(typeof isEndgame!=='undefined'&&isEndgame){
+    // ใช้ egRound ของ wave ถัดไป ไม่ใช่ round ปัจจุบัน (round เปลี่ยนตอน startEgWave)
+    const _previewRound=Math.floor((nextWave-1)/EG_WAVES_PER_ROUND);
+    const _savedRound=egRound; egRound=_previewRound;
     avail=_getEgEnemyPool();
-    bChance=0.08+(typeof egRound!=='undefined'?egRound:.0)*.015;
+    egRound=_savedRound;
+    bChance=0.08+_previewRound*.015;
     // เวฟพิเศษ Endgame: boss=×10, gold=×7, swarm=×4 (เริ่ม wave 6+ เหมือน startEgWave)
     if(nextWave>=6){const mod=nextWave%10;
     if(mod===0) specialLabel='<div style="color:#ff6b6b;font-weight:700;font-size:11px;margin-bottom:4px;">👹 บอสรัช! ศัตรู boss ออกถี่มาก</div>';
@@ -2537,7 +2542,7 @@ function onCanvasMove(e){
     const _hc=Math.floor((e.clientX-_rect.left)*cv.width/_rect.width/CS);
     const _hr=Math.floor((e.clientY-_rect.top)*cv.height/_rect.height/CS);
     const _dt=(_hc>=0&&_hc<COLS&&_hr>=0&&_hr<ROWS)?getDecoType(_hc,_hr):null;
-    const gpRect=document.getElementById('gp').getBoundingClientRect();
+    const gpRect=_gpRectCache||(()=>{_gpRectCache=document.getElementById('gp').getBoundingClientRect();return _gpRectCache;})();
     if(G.selDig&&!G.over&&!G.win&&!paused){
       if(_dt!==null){
         const _dnames=['🌿 พุ่มไม้','🪨 หิน','🌳 ต้นไม้'];
