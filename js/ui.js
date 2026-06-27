@@ -1727,12 +1727,17 @@ function openEgTowerSelection(){
   renderTowerSelection(available);
 }
 const _skIconCache={};
+const _SKILL_IDS=new Set(['goldrush','freeze','meteor','overdrive','barrier']);
 function _skillIconURL(id){
   if(_skIconCache[id]) return _skIconCache[id];
   try{
     const sz=120,c=document.createElement('canvas');
     c.width=sz;c.height=sz;
     const ctx=c.getContext('2d');
+    if(_SKILL_IDS.has(id)){
+      _drawSkillArt(ctx,id,sz,sz);
+      return (_skIconCache[id]=c.toDataURL());
+    }
     const h=sz/2;
     ctx.translate(h,h);
     if(id==='goldrush'){
