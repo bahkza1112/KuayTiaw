@@ -422,22 +422,34 @@ function showTowerPopup(tw,px,py){
     setTimeout(()=>showToast('⚡ ป้อมถึง 3★ แล้ว! กด Awaken เพื่อปลดพลังพิเศษ'),400);
   }
   const starStr='★'.repeat(tw.star);
-  const synHtml=(tw._drainT>0)?
-    `<div class="tp-syn-row"><div class="tp-syn-label">🌑 สถานะ</div><div class="tp-syn-item" style="background:rgba(126,87,194,.15);border-color:rgba(126,87,194,.4);"><div class="tp-syn-name" style="color:#b39ddb;">🌑 ถูกดูดพลัง!</div><div class="tp-syn-desc">บัฟ/Awaken ของป้อมนี้ถูกระงับชั่วคราวโดยเงามืด</div></div></div>`
-    : '';
+  let synHtml='';
+  if(tw._drainT>0){
+    synHtml=`<div class="tp-syn-row"><div class="tp-syn-label">🌑 สถานะ</div><div class="tp-syn-item" style="background:rgba(126,87,194,.15);border-color:rgba(126,87,194,.4);"><div class="tp-syn-name" style="color:#b39ddb;">🌑 ถูกดูดพลัง!</div><div class="tp-syn-desc">บัฟ/Awaken ของป้อมนี้ถูกระงับชั่วคราวโดยเงามืด</div></div></div>`;
+  } else if(!TBUFF[tw.type]&&G){
+    // 💚 Support buff synergy display
+    const bm=getBuffMult(tw.col,tw.row);
+    const awBoost=getSupportAwakenBoost(tw.col,tw.row);
+    if(bm>1.001){
+      const pct=Math.round((bm-1)*100);
+      const awTag=awBoost>1?` <span style="color:#ffe234;font-size:9px;">⚡ Awaken ×2</span>`:'';
+      synHtml=`<div class="tp-syn-row"><div class="tp-syn-label">💚 Synergy</div><div class="tp-syn-item" style="background:rgba(105,240,174,.08);border-color:rgba(105,240,174,.35);"><div class="tp-syn-name" style="color:#69f0ae;">💚 ซัพพอร์ตบัฟ +${pct}%${awTag}</div><div class="tp-syn-desc">ดาเมจจริง = ดาเมจฐาน ×${bm.toFixed(2)} จากป้อมซัพพอร์ตในรัศมี</div></div></div>`;
+    }
+  }
   // ── สถิติ ตามชนิดป้อม ──
   const dmgVal=CFG.t_dmg[tw.type]===0?null:Math.round(getTowerDmg(tw.type,tw.dmgLv,tw.star));
+  const _bm=(!TBUFF[tw.type]&&G)?getBuffMult(tw.col,tw.row):1;
+  const _bmTag=_bm>1.001?` <span style="color:#69f0ae;font-size:9px;">(×${_bm.toFixed(2)} บัฟ)</span>`:'';
   let statsHtml='';
-  if(dmgVal!==null) statsHtml+=`<div class="tp-stat">⚔️ ดาเมจ <small style="opacity:.5">Lv.${tw.dmgLv}</small><span>${dmgVal}</span></div>`;
+  if(dmgVal!==null) statsHtml+=`<div class="tp-stat">⚔️ ดาเมจ <small style="opacity:.5">Lv.${tw.dmgLv}</small><span>${_bm>1.001?Math.round(dmgVal*_bm):dmgVal}${_bmTag}</span></div>`;
   if(tw.type===3){ // 🎯 สไนเปอร์ — ระยะคงที่, สาย 2 = คริติคอล
     const rngVal=getTowerRange(3,1).toFixed(1);
     const rateVal=getTowerRate(3,tw.rateLv).toFixed(1);
     const crit=getSniperCrit(tw.rngLv);
-    const dpsVal=(dmgVal*parseFloat(rateVal)*(1+crit.chance*(crit.mult-1))).toFixed(1);
+    const dpsVal=(dmgVal*_bm*parseFloat(rateVal)*(1+crit.chance*(crit.mult-1))).toFixed(1);
     statsHtml+=`<div class="tp-stat">📡 ระยะ <span>${rngVal} ช่อง</span></div>`;
     statsHtml+=`<div class="tp-stat">⚡ อัตรายิง <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${rateVal}${tw.rateLv>=4?' <span style="color:#ffe234;font-size:9px;" title="มีโอกาสคูลดาวน์สั้นลงทันทีหลังยิง">⚡ยิงรัว</span>':''}</span></div>`;
     statsHtml+=`<div class="tp-stat">🎯 คริติคอล <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${Math.round(crit.chance*100)}% x${crit.mult}</span></div>`;
-    statsHtml+=`<div class="tp-stat">📊 DPS<span>${dpsVal}</span></div>`;
+    statsHtml+=`<div class="tp-stat">📊 DPS<span>${dpsVal}${_bmTag}</span></div>`;
   } else if(tw.type===6){ // 💰 เหมืองทอง — คูลดาวน์/จำนวนทอง
     const interval=getGoldMineInterval(tw.rateLv).toFixed(1);
     const amt=Math.round(getGoldMineAmt(tw.rngLv)*(tw.awakened?2:1));
@@ -462,10 +474,10 @@ function showTowerPopup(tw,px,py){
   } else { // ปืนใหญ่/น้ำแข็ง/เวทมนตร์/ธนู/สายฟ้า/ป้อมมนตราโมฆะ — ระยะ/ความเร็ว
     const rngVal=getTowerRange(tw.type,tw.rngLv).toFixed(1);
     const rateVal=getTowerRate(tw.type,tw.rateLv).toFixed(1);
-    const dpsVal=(dmgVal*parseFloat(rateVal)).toFixed(1);
+    const dpsVal=(dmgVal*_bm*parseFloat(rateVal)).toFixed(1);
     statsHtml+=`<div class="tp-stat">📡 ระยะ <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${rngVal} ช่อง${tw.rngLv>=4?' <span style="color:#90caf9;font-size:9px;" title="กระสุนเจาะโล่ศัตรู ดาเมจเข้า HP ตรงๆ">🛡️✨เจาะโล่</span>':''}</span></div>`;
     statsHtml+=`<div class="tp-stat">⚡ อัตรายิง <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${rateVal}${tw.rateLv>=4?' <span style="color:#ffe234;font-size:9px;" title="มีโอกาสคูลดาวน์สั้นลงทันทีหลังยิง">⚡ยิงรัว</span>':''}</span></div>`;
-    statsHtml+=`<div class="tp-stat">📊 DPS<span>${dpsVal}</span></div>`;
+    statsHtml+=`<div class="tp-stat">📊 DPS<span>${dpsVal}${_bmTag}</span></div>`;
   }
   // ⬆ แต้มสกิลติดตัว — ได้มาฟรีตามดาว (1★=1, 2★=2, 3★=3, 4★=4) จัดสรรได้ฟรี (ถาวร)
   const pickRowHtml=remain>0?`<div class="tp-pick-row">`+tracks.map(tr=>{

@@ -1,6 +1,12 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.20.4';
+const GAME_VERSION='3.20.5';
 const PATCH_NOTES=[
+  {ver:'3.20.5',date:'2026-06-27',title:'💚 Synergy Display — แสดงบัฟซัพพอร์ตบนกระดาน',notes:[
+    'ป้อมที่ได้รับบัฟจากซัพพอร์ตจะแสดง 💚+X% เหนือตัวป้อม',
+    'กดเลือกป้อม → เห็นเส้นเชื่อมระหว่างซัพพอร์ตและป้อมที่ได้รับบัฟ',
+    'Popup ป้อม: แสดง synergy section + DPS รวม buff จริง',
+    'Awakened Support แสดงแท็ก ⚡ Awaken ×2',
+  ]},
   {ver:'3.20.4',date:'2026-06-27',title:'🔧 แยกไฟล์ ui.js ลดภาระโหลด',notes:[
     'แยก ui.js (396KB) ออกเป็น 4 ไฟล์: ui-data.js, ui-profile.js, ui-casino.js, ui.js',
     'ไม่มีการเปลี่ยนแปลง gameplay ใด ๆ',

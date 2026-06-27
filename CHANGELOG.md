@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.20.5 — Synergy Display
+
+### Added
+- `js/game.js`: badge `💚+X%` เหนือป้อมทุกตัวที่ได้รับบัฟจากซัพพอร์ต (canvas, real-time)
+- `js/game.js`: เส้นเชื่อม Support ↔ ป้อมที่บัฟ เมื่อ select ป้อมใดป้อมหนึ่ง (dashed line, pulse animation)
+- `js/tower.js`: popup synergy section แสดง `💚 ซัพพอร์ตบัฟ +X%` + `⚡ Awaken ×2` tag
+- `js/tower.js`: DPS และดาเมจใน popup คำนวณรวม buff จริง แสดง `(×N.NN บัฟ)` tag
+
+---
+
 ## v3.20.4 — แยกไฟล์ ui.js
 
 ### Changed

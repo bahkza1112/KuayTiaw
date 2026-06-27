@@ -1878,7 +1878,7 @@ function render(){
   ctx.font='20px Arial';ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.shadowColor='rgba(179,136,255,.9)';ctx.shadowBlur=10;
   ctx.fillText('🌀',fx,fy);ctx.shadowBlur=0;
-  // selected tower range ring
+  // selected tower range ring + synergy lines
   if(G.selTowerInfo){
     const st=G.selTowerInfo;
     const sx=st.col*CS+CS/2, sy=st.row*CS+CS/2;
@@ -1889,6 +1889,36 @@ function render(){
     ctx.setLineDash([4,3]);
     ctx.beginPath();ctx.arc(sx,sy,rang,0,Math.PI*2);ctx.stroke();
     ctx.setLineDash([]);ctx.globalAlpha=1;
+    // 💚 วาดเส้นเชื่อม synergy
+    if(TBUFF[st.type]){
+      // เลือก Support → แสดงเส้นไปหาป้อมทุกตัวที่ได้รับบัฟ
+      G.towers.forEach(t=>{
+        if(t===st||TBUFF[t.type]) return;
+        if(Math.hypot(t.col-st.col,t.row-st.row)>getTowerRange(st.type,st.rngLv||1)) return;
+        const tx2=t.col*CS+CS/2,ty2=t.row*CS+CS/2;
+        const pulse=.5+.3*Math.sin(Date.now()*.004);
+        ctx.save();ctx.globalAlpha=pulse;
+        ctx.strokeStyle='#69f0ae';ctx.lineWidth=1.5;ctx.setLineDash([5,4]);
+        ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(tx2,ty2);ctx.stroke();
+        ctx.setLineDash([]);ctx.restore();
+      });
+    } else {
+      // เลือกป้อมอื่น → แสดงเส้นจาก Support ที่กำลัง buff ป้อมนี้
+      G.towers.forEach(t=>{
+        if(!TBUFF[t.type]) return;
+        if(Math.hypot(t.col-st.col,t.row-st.row)>getTowerRange(t.type,t.rngLv||1)) return;
+        const tx2=t.col*CS+CS/2,ty2=t.row*CS+CS/2;
+        const pulse=.5+.3*Math.sin(Date.now()*.004);
+        ctx.save();ctx.globalAlpha=pulse;
+        ctx.strokeStyle='#69f0ae';ctx.lineWidth=1.5;ctx.setLineDash([5,4]);
+        ctx.beginPath();ctx.moveTo(tx2,ty2);ctx.lineTo(sx,sy);ctx.stroke();
+        ctx.setLineDash([]);
+        // วงกลมเล็กที่ Support
+        ctx.globalAlpha=pulse*.8;ctx.strokeStyle='#69f0ae';ctx.lineWidth=1.5;
+        ctx.beginPath();ctx.arc(tx2,ty2,CS*.38,0,Math.PI*2);ctx.stroke();
+        ctx.restore();
+      });
+    }
   }
   // ไฮไลต์ช่องที่ลากป้อมไปทับ — เขียว=รวมได้ แดง=รวมไม่ได้
   if(_twrDragging&&_twrDragHoverCol>=0&&_twrDragHoverRow>=0&&_twrDragHoverCol<COLS&&_twrDragHoverRow<ROWS){
@@ -2188,6 +2218,23 @@ function render(){
       ctx.globalAlpha=.08;ctx.strokeStyle='#64ffda';ctx.lineWidth=1;
       ctx.beginPath();ctx.arc(cx2,cy2,getTowerRange(tw.type,tw.rngLv||tw.lv)*CS,0,Math.PI*2);
       ctx.stroke();ctx.globalAlpha=1;
+    }
+    // 💚 synergy buff badge — แสดงเหนือป้อมที่ได้รับบัฟจากซัพพอร์ต
+    if(!TBUFF[tw.type]&&CFG.t_dmg[tw.type]>0){
+      const bm=getBuffMult(tw.col,tw.row);
+      if(bm>1.001){
+        const pct=Math.round((bm-1)*100);
+        const pulse=.75+.25*Math.sin(Date.now()*.004);
+        ctx.save();
+        ctx.globalAlpha=pulse;
+        ctx.font=`bold ${Math.round(CS*.22)}px Arial`;
+        ctx.textAlign='center';ctx.textBaseline='bottom';
+        ctx.fillStyle='#69f0ae';
+        ctx.shadowColor='rgba(0,0,0,.7)';ctx.shadowBlur=3;
+        ctx.fillText('💚+'+pct+'%',cx2,y+2);
+        ctx.shadowBlur=0;
+        ctx.restore();
+      }
     }
     if(bounce!==1) ctx.restore();
   });
