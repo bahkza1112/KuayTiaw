@@ -315,7 +315,7 @@ function _drawSkillArt(ctx,id,W,H){
   // rounded rect
   const _rr=(x,y,w,h,r,c)=>{ctx.beginPath();ctx.roundRect?ctx.roundRect(x,y,w,h,r):(()=>{ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();})();ctx.fillStyle=c;ctx.fill();};
   // cute eye helper
-  const _eye=(x,y,r,col='#333')=>{ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=col;ctx.fill();ctx.beginPath();ctx.arc(x-r*.3,y-r*.3,r*.3,'white');ctx.fillStyle='white';ctx.fill();};
+  const _eye=(x,y,r,col='#333')=>{ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=col;ctx.fill();ctx.beginPath();ctx.arc(x-r*.3,y-r*.3,r*.3,0,Math.PI*2);ctx.fillStyle='white';ctx.fill();};
   ctx.clearRect(0,0,W,H);
   if(id==='goldrush'){
     // === ทะเลทรายทองคำ ===
@@ -345,7 +345,6 @@ function _drawSkillArt(ctx,id,W,H){
     ctx.beginPath();ctx.ellipse(cx,H*.72,cr*.85,H*.05,0,0,Math.PI*2);ctx.fillStyle='rgba(0,0,0,.18)';ctx.fill();
     // coin body
     ctx.beginPath();ctx.arc(cx,cy,cr,0,Math.PI*2);
-    const cg=_rg(cx-cr*.3,cy-cr*.3,0,cx,cy,cr);cg.addColorStop||(0);
     ctx.fillStyle=_lg(cx-cr,cy-cr,cx+cr,cy+cr,[[0,'#fff3b0'],[.3,'#ffe040'],[.7,'#ffa000'],[1,'#e65000']]);ctx.fill();
     ctx.strokeStyle='rgba(180,100,0,.55)';ctx.lineWidth=H*.018;ctx.stroke();
     // coin rim highlight
