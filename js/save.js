@@ -110,7 +110,7 @@ const GACHA_POOL=[
 ];
 // Weighted roll /1000: 001=0.1%(1), 002=1%(10), 003=2%(20), 004=2%(20), 005=3%(30),
 //   006=3%(30), 007=3%(30), 008=3%(30), 009=3%(30), 010=5%(50), dud=74.9%(749) — total=1000
-const _GACHA_W=[1,10,20,20,30,30,30,30,30,50]; // cumulative sum stops at 251, rest=dud
+const _GACHA_W=[1,1,1,1,1,0,0,0,0,0]; // 001-005 แต่ละใบ 0.1% (w:1/1000), dud 99.5%
 function _gachaRoll(){
   const r=Math.floor(Math.random()*1000);
   let cum=0;
