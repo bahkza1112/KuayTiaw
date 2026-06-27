@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.20.2 — คืนค่า rate ตู้รางวัลเป็นแบบเดิม
+
+### Fixed
+- `js/save.js`: คืน GACHA_POOL w values และ _GACHA_W กลับ original (pool=1000, dud 74.9%)
+- `js/ui.js`: คืน display formula `p.w/10` และ dud text 74.9%
+
+---
+
 ## v3.20.1 — ปรับ Workshop & Gacha
 
 ### Fixed

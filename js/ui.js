@@ -1,6 +1,9 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.20.1';
+const GAME_VERSION='3.20.2';
 const PATCH_NOTES=[
+  {ver:'3.20.2',date:'2026-06-27',title:'🔧 คืนค่า rate ตู้รางวัลเป็นแบบเดิม',notes:[
+    'ตู้รางวัล: คืน rate กลับเป็น Legendary 0.1%, Epic 1-2%, Rare 2-3%, dud 74.9%',
+  ]},
   {ver:'3.20.1',date:'2026-06-27',title:'🔧 ปรับ Workshop & Gacha',notes:[
     'Workshop: ปลดล็อกคราฟได้หลังผ่านด่าน 1 (เดิมต้องผ่านด่านสุดท้าย)',
     'Void Tower: ข้อความเปลี่ยนเป็น "ใช้ได้ทั้งโหมดเนื้อเรื่องและ Endgame"',
@@ -1516,13 +1519,13 @@ function toggleGachaOdds(){
         <span style="font-family:monospace;color:rgba(179,136,255,.6);">${num}</span>
         <span style="color:${p.color};">${p.icon} ${p.name}</span>
         <span class="gacha-rarity-tag rarity-${p.rarity}" style="font-size:7px;">${p.rarity}</span>
-        <span style="color:#aaa;">${(p.w/100).toFixed(2)}%</span>
+        <span style="color:#aaa;">${p.w/10}%</span>
       </div>`;}).join('')+`
       <div class="gacha-odds-row">
         <span style="font-family:monospace;color:rgba(179,136,255,.6);">dud</span>
         <span style="color:#888;">เศษ ×1 (🔹70% · 💜22% · 🌟8%)</span>
         <span class="gacha-rarity-tag" style="font-size:7px;background:rgba(255,255,255,.08);color:#888;">ปลอบใจ</span>
-        <span style="color:#aaa;">99.9%</span>
+        <span style="color:#aaa;">74.9%</span>
       </div>`;
   }
 }
