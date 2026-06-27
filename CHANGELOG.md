@@ -2,6 +2,18 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.20.1 — ปรับ Workshop & Gacha
+
+### Fixed
+- `js/ui.js`: เปลี่ยนเงื่อนไขคราฟ Workshop จากผ่านด่านสุดท้าย → ผ่านด่านแรก (`isFinalStageCleared` ใช้ index 0)
+- `Tower Quest 🏰.html`: แก้ข้อความ Void Tower "ใช้ได้เฉพาะ Endgame" → "ใช้ได้ทั้งโหมดเนื้อเรื่องและ Endgame"
+- `js/ui.js`: VOID_RECIPE — หินมืด 50, แกนเวทย์ 30, ดาวตก 10, มณีวิญญาณ 800
+- `js/ui.js`: TIME_RECIPE — หินมืด 70, แกนเวทย์ 40, ดาวตก 15, มณีวิญญาณ 1500
+- `js/save.js`: Gacha pool=10000, 001-005 w:2 (0.02% ต่อใบ, รวม 0.1%), 006-010 w:0, dud 99.9%
+- `js/ui.js`: แก้สูตรแสดง % gacha จาก `p.w/10` → `(p.w/100).toFixed(2)`, dud text 99.9%
+
+---
+
 ## v3.20.0 — ป้อมกาลเวลา 🌀 (Tower Type 9)
 
 ### Added
