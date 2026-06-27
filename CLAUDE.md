@@ -5,15 +5,15 @@ Guidance for Claude Code (and other AI assistants) working in this repository.
 ## Project Summary
 
 **Tower Quest 🏰** is a browser-based tower defense game written in
-Thai, currently at **v3.20.3**. Since the v1.6.1 refactor, the game is split
+Thai, currently at **v3.20.4**. Since the v1.6.1 refactor, the game is split
 across:
 
 - [`Tower Quest 🏰.html`](Tower%20Quest%20%F0%9F%8F%B0.html) — head/body
   markup and `<link>`/`<script src>` references only
 - `css/main.css` — all game styles
-- `js/save.js`, `js/enemy.js`, `js/tower.js`, `js/game.js`, `js/ui.js` —
+- `js/save.js`, `js/enemy.js`, `js/tower.js`, `js/game.js`, `js/ui-data.js`, `js/ui-profile.js`, `js/ui-casino.js`, `js/ui.js` —
   game logic, loaded in this order (load order matters; `js/ui.js` must load
-  last)
+  last; ui-data/profile/casino are ui.js sub-modules)
 - `index.html` — a thin redirect to `Tower Quest 🏰.html` for GitHub Pages
 
 It uses vanilla JavaScript, the HTML5 Canvas 2D API for the main game
@@ -39,7 +39,7 @@ CLAUDE.md                     # This file
 PROJECT_MASTER.md             # Detailed system-by-system reference
 CHANGELOG.md                  # Version history
 css/main.css                   # All game CSS
-js/                             # save.js, enemy.js, tower.js, game.js, ui.js (load order matters)
+js/                             # save.js, enemy.js, tower.js, game.js, ui-data.js, ui-profile.js, ui-casino.js, ui.js (load order matters)
 docs/                           # Design docs: GDD, TowerDesign, EnemyDesign, BalanceSheet, Roadmap
 agents/                          # Per-role guides expanding on the AI Team section below
 assets/

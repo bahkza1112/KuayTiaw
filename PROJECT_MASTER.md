@@ -3,7 +3,7 @@
 This document is a system-by-system map of the game as implemented in
 [`Tower Quest 🏰.html`](Tower%20Quest%20%F0%9F%8F%B0.html) plus its
 `css/main.css` and `js/{save,enemy,tower,game,ui}.js` modules (current
-version **v3.20.3**). Line numbers refer to these files and
+version **v3.20.4**). Line numbers refer to these files and
 may drift as they change — use them as a starting point for searches, not as
 permanent anchors.
 
@@ -20,9 +20,10 @@ For game design rationale, see [docs/GDD.md](docs/GDD.md),
 **Tower Quest** is a Thai-language, single-player, browser-based tower
 defense (TD) game. Since the v1.6.1 refactor it is delivered as
 `Tower Quest 🏰.html` (~500 lines: head/body markup + `<link>`/`<script src>`
-refs only) plus `css/main.css` (~590 lines) and five JS modules totaling
-~6,700 lines (`js/save.js`, `js/enemy.js`, `js/tower.js`, `js/game.js`,
-`js/ui.js`). `index.html` is a redirect entry point for GitHub Pages.
+refs only) plus `css/main.css` (~590 lines) and eight JS modules totaling
+~8,700 lines (`js/save.js`, `js/enemy.js`, `js/tower.js`, `js/game.js`,
+`js/ui-data.js`, `js/ui-profile.js`, `js/ui-casino.js`, `js/ui.js`).
+`index.html` is a redirect entry point for GitHub Pages.
 
 Key high-level elements:
 

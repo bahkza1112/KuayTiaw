@@ -2,6 +2,19 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.20.4 — แยกไฟล์ ui.js
+
+### Changed
+- `js/ui.js` (396KB/5105 lines) แยกออกเป็น 4 ไฟล์:
+  - `js/ui-data.js` — GAME_VERSION, PATCH_NOTES, CUTSCENES (data-only)
+  - `js/ui-profile.js` — Profile, Avatar, Leaderboard
+  - `js/ui-casino.js` — Slot machine, Casino tabs, Blackjack
+  - `js/ui.js` — core logic เหลือ ~2745 lines (166KB)
+- `Tower Quest 🏰.html`: เพิ่ม `<script>` tags สำหรับ 3 ไฟล์ใหม่ ก่อน ui.js
+- Load order: ui-data.js → ui-profile.js → ui-casino.js → ui.js
+
+---
+
 ## v3.20.3 — ตู้การ์ดสกิล rate โหด
 
 ### Changed
