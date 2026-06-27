@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.20.6 — ป้อมซัพ สาย 1: ระยะ → เพิ่มดาเมจบัฟ
+
+### Changed
+- `js/tower.js` `trackDefs(4)`: สาย 1 เปลี่ยนจาก `rngLv/ระยะ` → `dmgLv/เพิ่มดาเมจบัฟ` (💪)
+- `js/tower.js` `getBuffMult()`: ใช้ `dmgLv` แทน `lv` ในการคำนวณ % บัฟ (+10%/lv)
+- `js/tower.js` popup type 4: แสดง `💪 บัฟดาเมจ +X%` แทนระยะ
+- ระยะซัพพอร์ตคงที่ 1.5 ช่อง (ไม่อัพได้แล้ว)
+
+---
+
 ## v3.20.5 — Synergy Display
 
 ### Added
