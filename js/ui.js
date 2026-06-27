@@ -1,6 +1,12 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.18.3';
+const GAME_VERSION='3.18.4';
 const PATCH_NOTES=[
+  {ver:'3.18.4',date:'2026-06-27',title:'⚖️ ปรับ Balance — เกมยากขึ้น',notes:[
+    'stageMult .22→.27: ศัตรูในด่านสูงมีเลือดมากขึ้น',
+    'waveMult .10→.13: wave ท้ายๆ ของแต่ละด่านหนักขึ้น',
+    'bossChance .08→.10: บอสออกบ่อยขึ้นเล็กน้อย',
+    'startGold 200→175: เงินเริ่มต้นน้อยลง ต้องวางแผนซื้อป้อมมากขึ้น',
+  ]},
   {ver:'3.18.3',date:'2026-06-27',title:'🐛 แก้บัค Dev Panel กดปิดแล้วกลับเมนูหลัก',notes:[
     'Dev Panel เปิดระหว่างเล่น (verBtn) กดปิด ✕ จะกลับสู่หน้าเกมแทนหน้าเมนูหลัก',
   ]},

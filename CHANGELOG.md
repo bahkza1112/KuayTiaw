@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.18.4 — ปรับ Balance ให้เกมยากขึ้น
+
+### Changed
+- `js/game.js` `DEFAULT_CFG`: `stageMult` .22→.27 — ศัตรูในด่านสูงมีเลือดมากขึ้น
+- `js/game.js` `DEFAULT_CFG`: `waveMult` .10→.13 — wave ท้ายๆ หนักขึ้น
+- `js/game.js` `DEFAULT_CFG`: `bossChance` .08→.10 — บอสออกบ่อยขึ้นเล็กน้อย
+- `js/game.js` `DEFAULT_CFG`: `startGold` 200→175 — เงินเริ่มต้นน้อยลง
+
+---
+
 ## v3.18.3 — แก้บัค Dev Panel กลับเมนูหลักผิด
 
 ### Fixed

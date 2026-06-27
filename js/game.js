@@ -241,14 +241,14 @@ const STAGES=[
 
 /* ══ BALANCE CONFIG ══ */
 const DEFAULT_CFG={
-  // Curve — ลด stageMult และ waveMult ให้เบาลง
-  stageMult:.22,    // เดิม .40 → ด่าน 9 จะ ×2.9 แทน ×4.6
-  waveMult:.10,     // เดิม .18 → wave สุดท้ายไม่หนักเกิน
+  // Curve
+  stageMult:.27,    // เดิม .22 → ด่านสูงหนักขึ้น (v3.18.4)
+  waveMult:.13,     // เดิม .10 → wave ท้ายหนักขึ้น (v3.18.4)
   spdStageMult:.04, // ความเร็วเพิ่มช้าลง
   spdCap:2.0,       // เดิม 2.2
   enemyPerWaveBase:4,  // เดิม 5
   enemyPerWaveInc:2,   // เดิม 3 — ด่าน 9 wave 13 จะได้ 4+13×2=30 แทน 44
-  bossChance:.08,   // เดิม .12 — boss ออกน้อยลงหน่อย
+  bossChance:.10,   // เดิม .08 → boss ออกบ่อยขึ้นนิด (v3.18.4)
   // Monster base HP — ปรับ Golem และ Boss ให้สมดุล
   m_hp:[55,75,105,144,380,236,35,160,129,900,58,185,145,330,650,1500,700],  // +3 Act2 bosses
   m_spd:[1.4,1.0,1.15,.85,.5,.55,1.8,1.55,.65,.42,.72,1.15,1.3,0.65,0.44,0.36,0.42],
@@ -260,7 +260,7 @@ const DEFAULT_CFG={
   t_cost:[50,55,75,65,35,60,50,85,90], // gold mine: 50, thunder: 85 gold, void: 90 gold
   t_goldrate:5,t_goldamt:[2,4,6,8],
   // Game settings
-  startGold:200,    // เดิม 150 — ให้ซื้อป้อมได้ 4-5 ตัวก่อน wave 1
+  startGold:175,    // เดิม 200 → ลดเงินเริ่มต้น (v3.18.4)
   baseHP:20,
   spawnInterval:.7, // เดิม .65 — spawn ช้าลงเล็กน้อย ผู้เล่นมีเวลาตัดสินใจ
 };
