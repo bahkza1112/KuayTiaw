@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.20.3 — ตู้การ์ดสกิล rate โหด
+
+### Changed
+- `js/save.js`: SKILL_RARITY_RATE ทุก rarity → 2/10000 (0.02%/ใบ), รวม 0.1%, dud 99.9%
+- `js/save.js`: `_skillRoll()` pool เปลี่ยนจาก 100 → 10000
+- `js/ui.js`: display ใช้ `skillCardRatePct()` แสดง 0.02% ต่อใบ, dud 99.9%
+
+---
+
 ## v3.20.2 — คืนค่า rate ตู้รางวัลเป็นแบบเดิม
 
 ### Fixed

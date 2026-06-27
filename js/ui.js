@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.20.2';
+const GAME_VERSION='3.20.3';
 const PATCH_NOTES=[
+  {ver:'3.20.3',date:'2026-06-27',title:'⭐ ตู้การ์ดสกิล rate โหด 0.02%/ใบ',notes:[
+    'ตู้การ์ดสกิล: ทุกการ์ด 0.02% ต่อใบ รวม 0.1%, dud 99.9%',
+    'Pity 30 ครั้ง ยังการันตี Legendary เหมือนเดิม',
+  ]},
   {ver:'3.20.2',date:'2026-06-27',title:'🔧 คืนค่า rate ตู้รางวัลเป็นแบบเดิม',notes:[
     'ตู้รางวัล: คืน rate กลับเป็น Legendary 0.1%, Epic 1-2%, Rare 2-3%, dud 74.9%',
   ]},
@@ -1636,13 +1640,13 @@ function toggleSkillOdds(){
         <span style="font-family:monospace;color:rgba(179,136,255,.6);">${String(i+1).padStart(3,'0')}</span>
         <span style="color:${d.color};">${d.icon} ${d.name}</span>
         <span class="gacha-rarity-tag rarity-${d.rarity}" style="font-size:7px;">${d.rarity}</span>
-        <span style="color:#aaa;">${skillCardRate(d)}%</span>
+        <span style="color:#aaa;">${skillCardRatePct(d)}%</span>
       </div>`).join('')+`
       <div class="gacha-odds-row">
         <span style="font-family:monospace;color:rgba(179,136,255,.6);">dud</span>
         <span style="color:#888;">เศษ ×1 (🔹70% · 💜22% · 🌟8%)</span>
         <span class="gacha-rarity-tag" style="font-size:7px;background:rgba(255,255,255,.08);color:#888;">ปลอบใจ</span>
-        <span style="color:#aaa;">${100-skillTotalRate()}%</span>
+        <span style="color:#aaa;">99.9%</span>
       </div>`;
   }
 }
