@@ -2753,6 +2753,13 @@ function onCanvasMove(e){
       info.style.left=(e.clientX-gpRect.left+14)+'px';
       info.style.top=(e.clientY-gpRect.top-10)+'px';
       info.style.display='block';
+    } else if(_dt!==null&&!G.over&&!G.win) {
+      // ชี้บน obstacle ในโหมดปกติ — แสดงราคาขุดได้เลย
+      const _dnames=['🌿 พุ่มไม้','🪨 หิน','🌳 ต้นไม้'];
+      info.innerHTML=_dnames[_dt]+'<br>⛏️ ขุดออก: <b>'+getDigCost(_dt)+'</b> ทอง';
+      info.style.left=(e.clientX-gpRect.left+14)+'px';
+      info.style.top=(e.clientY-gpRect.top-10)+'px';
+      info.style.display='block';
     } else if(!_tryShowTowerTip(_hovTw)) {
       info.style.display='none';
     }
