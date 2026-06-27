@@ -560,10 +560,9 @@ function _drawSkillArt(ctx,id,W,H){
   } else {
     // === เศษชิ้นส่วน (shard) ===
     const _sc={
-      shard_leg:['#1a0030','#2a0050','#8b00ff','#c084fc','#fff'],
-      shard_ep: ['#1a0800','#2a1200','#e07000','#ffd54f','#ffe082'],
-      shard_uc: ['#001828','#002a40','#1565c0','#64b5f6','#e3f2fd'],
-    }[id]||['#0a0a18','#121228','#303060','#90caf9','#e8eaf6'];
+      shard_e:['#1a0800','#2a1200','#e07000','#ffd54f','#ffe082'],   // ⭐ เศษดวงดาว — ทอง
+      shard_r:['#1a0030','#2a0050','#7b1fa2','#ce93d8','#f3e5f5'],   // 💜 เศษแกนเวทย์ — ม่วง
+    }[id]||['#0a0a18','#121230','#283060','#90caf9','#e3f2fd'];       // shard_c default — น้ำเงิน
     const[bg1,bg2,gc1,gc2,gc3]=_sc;
     // night/depth background
     _scene(bg1,bg2,gc1);
@@ -1760,7 +1759,7 @@ function openEgTowerSelection(){
   renderTowerSelection(available);
 }
 const _skIconCache={};
-const _SKILL_IDS=new Set(['goldrush','freeze','meteor','overdrive','barrier','shard_c','shard_uc','shard_ep','shard_leg','shard']);
+const _SKILL_IDS=new Set(['goldrush','freeze','meteor','overdrive','barrier','shard_c','shard_r','shard_e','shard']);
 function _skillIconURL(id){
   if(_skIconCache[id]) return _skIconCache[id];
   try{

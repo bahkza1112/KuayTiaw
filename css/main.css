@@ -880,20 +880,18 @@ body{background:#0d1117;display:flex;align-items:flex-start;justify-content:cent
 .gc-front{background:linear-gradient(145deg,#2a0a4a,#1a0535);border:2px solid rgba(179,136,255,.35);box-shadow:0 0 16px rgba(90,0,180,.25);}
 .gc-front::after{content:'';position:absolute;inset:6px;border-radius:9px;border:1px solid rgba(179,136,255,.15);}
 .gc-qmark{font-size:36px;font-weight:900;color:rgba(179,136,255,.3);line-height:1;}
-/* Skill gacha front — ornate RO card back */
+/* Skill gacha front — RO card back (parchment + question mark) */
 #skillGachaGrid .gc-front{
-  background:linear-gradient(160deg,#120420 0%,#1e063a 30%,#0e0220 55%,#1a0530 75%,#120420 100%);
-  border:2px solid rgba(195,162,80,.55);
-  box-shadow:0 0 18px rgba(140,80,0,.3),inset 0 0 22px rgba(0,0,0,.45);
+  background:#f2ede6;
+  border:3px solid #b8a060;
+  box-shadow:0 0 14px rgba(120,90,20,.3),inset 0 0 18px rgba(180,150,80,.12);
   overflow:hidden;}
-#skillGachaGrid .gc-front::before{content:'';position:absolute;inset:5px;border-radius:9px;
-  border:1px solid rgba(195,162,80,.28);
-  background:repeating-linear-gradient(45deg,transparent,transparent 6px,rgba(140,90,0,.04) 6px,rgba(140,90,0,.04) 7px),
-             repeating-linear-gradient(-45deg,transparent,transparent 6px,rgba(140,90,0,.04) 6px,rgba(140,90,0,.04) 7px);}
-#skillGachaGrid .gc-front::after{content:'';position:absolute;inset:10px;border-radius:5px;
-  border:1px solid rgba(195,162,80,.14);
-  background:radial-gradient(ellipse at center,rgba(120,55,200,.18) 0%,transparent 65%);}
-#skillGachaGrid .gc-qmark{font-size:24px;z-index:2;filter:drop-shadow(0 0 8px rgba(195,162,80,.5));}
+#skillGachaGrid .gc-front::before{content:'';position:absolute;inset:5px;border-radius:6px;
+  border:1.5px solid rgba(160,130,50,.3);
+  background:repeating-linear-gradient(45deg,transparent,transparent 7px,rgba(160,130,50,.04) 7px,rgba(160,130,50,.04) 8px),
+             repeating-linear-gradient(-45deg,transparent,transparent 7px,rgba(160,130,50,.04) 7px,rgba(160,130,50,.04) 8px);}
+#skillGachaGrid .gc-front::after{content:'🏰';font-size:28px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:.18;filter:sepia(1);}
+#skillGachaGrid .gc-qmark{display:none;}
 /* Regular gacha back */
 .gc-back{background:linear-gradient(145deg,#1a1230,#100c25);border:2px solid rgba(255,255,255,.15);transform:rotateY(180deg);}
 /* Skill gacha back — transparent, frame inside handles visuals */
@@ -915,52 +913,41 @@ body{background:#0d1117;display:flex;align-items:flex-start;justify-content:cent
 .gc-ico{font-size:28px;line-height:1;}
 .gc-name{font-size:8px;font-weight:700;text-align:center;line-height:1.35;color:#ddd;}
 .gc-dud-txt{font-size:9px;color:#333;font-style:italic;}
-/* ── RO ART CARD FRAME (skill gacha) ── */
-.ro-frame{position:absolute;inset:0;border-radius:12px;display:flex;flex-direction:column;overflow:hidden;}
-.rf-legendary{background:linear-gradient(155deg,#110330,#22074e,#110330);border:2.5px solid #c9a227;box-shadow:0 0 22px rgba(200,162,39,.5),inset 0 0 14px rgba(80,0,180,.25);}
-.rf-epic{background:linear-gradient(155deg,#180700,#2c1000,#180700);border:2.5px solid #ff8f00;box-shadow:0 0 18px rgba(255,143,0,.45);}
-.rf-rare{background:linear-gradient(155deg,#0c0020,#1c0838,#0c0020);border:2px solid #b06ac0;box-shadow:0 0 14px rgba(176,106,192,.35);}
-.rf-uncommon{background:linear-gradient(155deg,#020f1c,#061c35,#020f1c);border:2px solid #4fa5e0;box-shadow:0 0 10px rgba(79,165,224,.25);}
-.rf-common{background:linear-gradient(155deg,#0c0c0c,#181818,#0c0c0c);border:2px solid #4a4a4a;}
-/* header strip */
-.ro-hdr{padding:3px 5px 2px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.1);}
-.rf-legendary .ro-hdr{border-color:rgba(200,162,39,.45);}
-.rf-epic .ro-hdr{border-color:rgba(255,143,0,.4);}
-.rf-rare .ro-hdr{border-color:rgba(176,106,192,.35);}
-.rf-uncommon .ro-hdr{border-color:rgba(79,165,224,.3);}
-.ro-hdr-gem{font-size:7px;line-height:1;}
-.ro-hdr-type{font-size:6px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;}
-.rf-legendary .ro-hdr-type{color:#c9a227;text-shadow:0 0 6px rgba(200,162,39,.5);}
-.rf-epic .ro-hdr-type{color:#ff8f00;}
-.rf-rare .ro-hdr-type{color:#b06ac0;}
-.rf-uncommon .ro-hdr-type{color:#4fa5e0;}
-.rf-common .ro-hdr-type{color:#777;}
-/* art panel */
+/* ── RO WINDOW CARD (skill gacha) ── */
+.ro-frame{position:absolute;inset:0;border-radius:8px;display:flex;flex-direction:column;overflow:hidden;background:#fff;}
+.rf-legendary{border:3px solid #c9a227;box-shadow:0 0 20px rgba(200,162,39,.6),0 3px 12px rgba(0,0,0,.45);}
+.rf-epic     {border:3px solid #e07000;box-shadow:0 0 16px rgba(224,112,0,.55),0 3px 10px rgba(0,0,0,.4);}
+.rf-rare     {border:3px solid #9040b8;box-shadow:0 0 12px rgba(144,64,184,.5),0 2px 8px rgba(0,0,0,.35);}
+.rf-uncommon {border:3px solid #3a88cc;box-shadow:0 0 10px rgba(58,136,204,.45),0 2px 8px rgba(0,0,0,.3);}
+.rf-common   {border:2px solid #a0a0a0;box-shadow:0 2px 6px rgba(0,0,0,.25);}
+/* title bar */
+.ro-hdr{padding:2px 5px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:rgba(0,0,0,.055);border-bottom:1px solid rgba(0,0,0,.1);}
+.ro-hdr-type{font-size:6.5px;font-weight:900;letter-spacing:.4px;color:#222;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:82%;}
+.ro-hdr-gem{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.rf-legendary .ro-hdr-gem{background:#c9a227;box-shadow:0 0 5px rgba(200,162,39,.8);}
+.rf-epic .ro-hdr-gem     {background:#e07000;}
+.rf-rare .ro-hdr-gem     {background:#9040b8;}
+.rf-uncommon .ro-hdr-gem {background:#3a88cc;}
+.rf-common .ro-hdr-gem   {background:#909090;}
+/* scene art */
 .ro-art{flex:1;position:relative;overflow:hidden;min-height:0;}
-.ro-art canvas{display:block;width:100%;height:100%;}
-.ro-art::after{content:'';position:absolute;inset:0;pointer-events:none;
-  box-shadow:inset 0 -10px 16px rgba(0,0,0,.55),inset 0 10px 12px rgba(0,0,0,.3);}
-/* footer */
-.ro-footer{padding:3px 4px 5px;display:flex;flex-direction:column;align-items:center;gap:1px;flex-shrink:0;
-  border-top:1px solid rgba(255,255,255,.07);}
-.ro-name{font-size:7.5px;font-weight:900;text-align:center;letter-spacing:.3px;line-height:1.2;}
-.rf-legendary .ro-name{color:#f0d060;text-shadow:0 0 7px rgba(200,162,39,.6);}
-.rf-epic .ro-name{color:#ffb74d;text-shadow:0 0 5px rgba(255,143,0,.45);}
-.rf-rare .ro-name{color:#dca8f0;}
-.rf-uncommon .ro-name{color:#90caf9;}
-.rf-common .ro-name{color:#bbb;}
-.ro-stars{font-size:8px;line-height:1;color:#ffd54f;letter-spacing:-1px;}
-.ro-status{font-size:6px;text-align:center;line-height:1.3;color:#aaa;padding:0 3px;}
-/* single card overrides */
-.gc-single .ro-hdr-type{font-size:8px;}
-.gc-single .ro-name{font-size:12px;}
-.gc-single .ro-stars{font-size:13px;}
-.gc-single .ro-status{font-size:7.5px;}
-/* pulse on ro-frame instead of gc-back for skill cards */
+.ro-art canvas{display:block;height:100%;width:auto;margin:0 auto;}
+.ro-art::after{content:'';position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 10px rgba(0,0,0,.18);}
+/* footer bar */
+.ro-footer{padding:2px 5px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:rgba(0,0,0,.045);border-top:1px solid rgba(0,0,0,.08);}
+.ro-name{font-size:7px;font-weight:900;color:#222;letter-spacing:.2px;}
+.ro-stars{font-size:8px;color:#e0a800;letter-spacing:-1.5px;line-height:1;}
+.ro-status{font-size:6px;color:#666;text-align:right;line-height:1.2;}
+/* single card */
+.gc-single .ro-hdr-type{font-size:9px;}
+.gc-single .ro-name{font-size:9px;}
+.gc-single .ro-stars{font-size:11px;}
+.gc-single .ro-status{font-size:7px;}
+/* rarity pulse */
 #skillGachaGrid .gc-card.flipped .rf-legendary{animation:gcPulseLeg 1.6s ease-in-out infinite;}
 #skillGachaGrid .gc-card.flipped .rf-epic{animation:gcPulseEpic 1.8s ease-in-out infinite;}
-@keyframes gcPulseLeg{0%,100%{box-shadow:0 0 22px rgba(200,162,39,.5);}50%{box-shadow:0 0 40px rgba(200,162,39,.9),0 0 55px rgba(179,136,255,.3);}}
-@keyframes gcPulseEpic{0%,100%{box-shadow:0 0 18px rgba(255,143,0,.4);}50%{box-shadow:0 0 34px rgba(255,143,0,.75);}}
+@keyframes gcPulseLeg{0%,100%{box-shadow:0 0 20px rgba(200,162,39,.6);}50%{box-shadow:0 0 38px rgba(200,162,39,1),0 0 55px rgba(255,200,40,.4);}}
+@keyframes gcPulseEpic{0%,100%{box-shadow:0 0 16px rgba(224,112,0,.55);}50%{box-shadow:0 0 30px rgba(224,112,0,.9);}}
 /* rarity tag (shared with odds table) */
 .gacha-rarity-tag{font-size:7px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;padding:1px 5px;border-radius:4px;background:rgba(255,255,255,.07);}
 .gacha-rarity-tag.rarity-legendary{color:#b388ff;border:1px solid #b388ff;box-shadow:0 0 6px rgba(179,136,255,.4);}
