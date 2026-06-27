@@ -1855,7 +1855,7 @@ function wsTab(t){
 }
 function openWorkshop(){ showScreen('workshop',true); wsTab('craft'); renderWorkshop(); }
 function isFinalStageCleared(){
-  return (loadProgress()[STAGES.length-1]||0)>=1;
+  return (loadProgress()[0]||0)>=1;
 }
 function _renderCraftCard(unlocked,finalCleared,gems,mats,recipe,ids){
   const {lockId,unlockedId,reqNoteId,craftBtnId}=ids;
