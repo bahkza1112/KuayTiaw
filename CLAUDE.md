@@ -252,3 +252,7 @@ These apply to **every** gameplay update/patch, no exceptions:
 5. **Doc version string** — update the "currently at **vX.Y.Z**" line in
    `CLAUDE.md` (Project Summary) and the "current version **vX.Y.Z**" line in
    `PROJECT_MASTER.md` (opening paragraph) to match `GAME_VERSION`.
+6. **PROJECT_MASTER.md Section 0 sync** — if a tower, enemy, stage, or system
+   was added or removed, update the corresponding table in **Section 0**
+   ("What's Already In The Game") of `PROJECT_MASTER.md` so the quick-reference
+   stays accurate. This is the first thing read each session — keep it up to date.
