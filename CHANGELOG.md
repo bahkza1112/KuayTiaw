@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.19.0 — มอนสเตอร์บิน Act 2 — ฮาร์ปี & มังกรเงา
+
+### Added
+- `js/enemy.js`: ฮาร์ปี 🦅 (type 17) — flying, เร็ว 1.65, HP 110, reward 15 | Shriek ทุก 7 วิ ลด fire rate ป้อมรัศมี 3 ช่อง 40% นาน 3 วิ
+- `js/enemy.js`: มังกรเงา 🐲 (type 18) — flying, HP 220, reward 30 | Shadow Veil: visible 4 วิ / invisible 2 วิ ไม่รับดาเมจขณะซ่อน
+- `js/game.js`: Shriek mechanic — `tw._shriekT`, cd tick ×0.6, render 📣 overlay บนป้อม
+- `js/game.js`: Shadow Veil mechanic — `e._veilInvis`, alpha fade, purple glow ring, damage block ใน `applyDmg`
+- `js/game.js`: Act 2 stage progression — แต่ละด่านแนะนำมอนใหม่: ฮาร์ปี(id:12), ผีดิบ(id:13), มังกรเงา(id:14), นาคาราช(id:16), เทพทำลาย(id:17), ราชาน้ำแข็ง(id:18)
+
+---
+
 ## v3.18.8 — แก้ราคาขายป้อมเมื่ออัพแต้มฟรี
 
 ### Fixed
