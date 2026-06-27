@@ -87,30 +87,29 @@ const GACHA_COST10=270; // ×10 ส่วนลด 10% (ปกติ 300 = ฟ�
 function gachaCost(n){return n===10?GACHA_COST10:GACHA_COST*n;}
 const GACHA_PITY=100; // รับ 001 guaranteed ทุก 100 pull
 const GACHA_POOL=[
-  {code:'001',icon:'🌀',name:'ป้อมกาลเวลา', rarity:'legendary',color:'#b39ddb',w:1,
+  {code:'001',icon:'🌀',name:'ป้อมกาลเวลา', rarity:'legendary',color:'#b39ddb',w:2,
    apply(){setTimeUnlocked();}},
-  {code:'002',icon:'🌟',name:'ดาวตก x3',    rarity:'epic',   color:'#ff8f00',w:10,
+  {code:'002',icon:'🌟',name:'ดาวตก x3',    rarity:'epic',   color:'#ff8f00',w:2,
    apply(){addMaterial(2,3);}},
-  {code:'003',icon:'🌟',name:'ดาวตก x1',    rarity:'epic',   color:'#ffe082',w:20,
+  {code:'003',icon:'🌟',name:'ดาวตก x1',    rarity:'epic',   color:'#ffe082',w:2,
    apply(){addMaterial(2,1);}},
-  {code:'004',icon:'🔘',name:'แกนเวท x3', rarity:'rare',   color:'#ce93d8',w:20,
+  {code:'004',icon:'🔘',name:'แกนเวท x3', rarity:'rare',   color:'#ce93d8',w:2,
    apply(){addMaterial(1,3);}},
-  {code:'005',icon:'🔘',name:'แกนเวท x1', rarity:'rare',   color:'#ce93d8',w:30,
+  {code:'005',icon:'🔘',name:'แกนเวท x1', rarity:'rare',   color:'#ce93d8',w:2,
    apply(){addMaterial(1,1);}},
-  {code:'006',icon:'🪨',name:'หินมืด x5',  rarity:'uncommon',color:'#90caf9',w:30,
+  {code:'006',icon:'🪨',name:'หินมืด x5',  rarity:'uncommon',color:'#90caf9',w:0,
    apply(){addMaterial(0,5);}},
-  {code:'007',icon:'⚔️',name:'ยาเข้มแข็ง',    rarity:'uncommon',color:'#ff8a65',w:30,
+  {code:'007',icon:'⚔️',name:'ยาเข้มแข็ง',    rarity:'uncommon',color:'#ff8a65',w:0,
    apply(){addBagItem('dmg_pot',1);}},
-  {code:'008',icon:'💊',name:'ยาเพิ่ม HP',     rarity:'common', color:'#ef5350',w:30,
+  {code:'008',icon:'💊',name:'ยาเพิ่ม HP',     rarity:'common', color:'#ef5350',w:0,
    apply(){addBagItem('hp_pot',1);}},
-  {code:'009',icon:'🧪',name:'ยาเพิ่มทอง',    rarity:'common', color:'#ffd54f',w:30,
+  {code:'009',icon:'🧪',name:'ยาเพิ่มทอง',    rarity:'common', color:'#ffd54f',w:0,
    apply(){addBagItem('gold_pot',1);}},
-  {code:'010',icon:'🪙',name:'ทองถาวร +50',   rarity:'common', color:'#ffd54f',w:50,
+  {code:'010',icon:'🪙',name:'ทองถาวร +50',   rarity:'common', color:'#ffd54f',w:0,
    apply(){addPGold(50);}},
 ];
-// Weighted roll /1000: 001=0.1%(1), 002=1%(10), 003=2%(20), 004=2%(20), 005=3%(30),
-//   006=3%(30), 007=3%(30), 008=3%(30), 009=3%(30), 010=5%(50), dud=74.9%(749) — total=1000
-const _GACHA_W=[2,2,2,2,2,0,0,0,0,0]; // pool=10000: ทุกรางวัลรวม 10/10000=0.1%, แต่ละใบ 0.02%, dud 99.9%
+// pool=10000: 001-005 แต่ละใบ w:2 = 0.02%, รวม 0.1%, dud 99.9%
+const _GACHA_W=[2,2,2,2,2,0,0,0,0,0];
 function _gachaRoll(){
   const r=Math.floor(Math.random()*10000);
   let cum=0;
