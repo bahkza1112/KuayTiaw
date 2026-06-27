@@ -1346,7 +1346,7 @@ function updateMenuStats(){
 
 /* ══ WORKSHOP ══ */
 const VOID_RECIPE={gems:800,mats:{0:50,1:30,2:10}};
-const TIME_RECIPE={gems:600,mats:{0:20,1:10,2:5}};
+const TIME_RECIPE={gems:1500,mats:{0:70,1:40,2:15}};
 const MAT_ICONS=['🪨','🔘','🌟'];
 const MAT_NAMES=['หินมืด','แกนเวทย์','ดาวตก'];
 /* ══ BAG SCREEN ══ */
