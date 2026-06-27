@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.18.5 — กระสุนเร็วขึ้น
+
+### Changed
+- `js/game.js`: ความเร็วกระสุน `spd` 280→420 px/s (Sniper/Thunder ยังคง bonus เดิม)
+
+---
+
 ## v3.18.4 — ปรับ Balance ให้เกมยากขึ้น
 
 ### Changed
