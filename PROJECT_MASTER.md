@@ -15,6 +15,82 @@ For game design rationale, see [docs/GDD.md](docs/GDD.md),
 
 ---
 
+## 0. What's Already In The Game (Quick Reference)
+
+> **อ่านก่อนเสนอฟีเจอร์ใหม่** — ทุกอย่างในนี้มีอยู่แล้ว อย่าเสนอซ้ำ
+
+### Towers (10 ประเภท, type 0–9)
+| Type | ชื่อ | Icon | จุดเด่น |
+|---|---|---|---|
+| 0 | Cannon | 💣 | Splash 0.8 cell, ราคาถูก |
+| 1 | Ice Tower | ❄️ | Slow 45% / 2s |
+| 2 | Magic Tower | ✨ | Splash 1.2 cell, AoE ใหญ่ |
+| 3 | Sniper | 🎯 | Range 4.5, Crit path |
+| 4 | Support | 💚 | Buff ป้อมใกล้ +10%dmg/lv, Stun immunity |
+| 5 | Archer | 🏹 | ยิงอากาศ + พื้นได้ |
+| 6 | Gold Mine | 💰 | สร้างทอง passive ทุก 5s |
+| 7 | Thunder | ⚡ | Chain lightning 2→4 ตัว (Awaken) |
+| 8 | Void Tower | 🌑 | Mark เพิ่มดาเมจ +25-40%, unlock Workshop/Gacha |
+| 9 | Time Tower | 🌀 | Pulse zone slow 50%, Awaken = Time Stop, unlock Workshop/Gacha |
+
+### Enemies (19 ประเภท, type 0–18)
+| Type | ชื่อ | Act | Ability |
+|---|---|---|---|
+| 0 | Goblin 👺 | 1 | Pack Rush +20% spd เมื่ออยู่ใกล้กัน |
+| 1 | Skeleton 💀 | 1 | แตก 2 ตัวเมื่อตาย (HP 40%) |
+| 2 | Shadow 👻 | 1 | ต้านทาน Ice slow บางส่วน |
+| 3 | Fire Spirit 🔥 | 1 | Scorch Flare ลดดาเมจ 30% |
+| 4 | Demon Boss 👹 | 1 | Boss HP สูง |
+| 5 | Golem 🪨 | 1 | Immune Ice slow, Armor Crack |
+| 6 | Bat 🦇 | 1 | บิน, 25% dodge |
+| 7 | Wyvern 🐉 | 1 | บิน, Stun ป้อม 3s, Berserk |
+| 8 | Shield Knight 🛡️ | 1 | Shield 86HP, regen shield |
+| 9 | Demon Lord 👁️ | 1 | Final boss Act1, Dark Shield 250HP |
+| 10 | Shaman 🧙 | 1 | Heal พวกใกล้ทุก 2s |
+| 11 | Berserker 🧱 | 2 | Berserk เมื่อ HP<35% (+80% spd) |
+| 12 | RB-001 🤖 | 2 | Phase Shift immune 1.5s ทุก 8s |
+| 13 | Brood Queen 🕷️ | 2 | Spawn Goblin 2 ตัวเมื่อตาย |
+| 14 | Naga King 🐍 | 2 | Venom Pulse slow, regen, spawn snakes <40% HP |
+| 15 | Earth God 🌍 | 2 | 3-phase boss, Shockwave stun ป้อม |
+| 16 | Frost King ❄️ | 2 | Immune Ice, Frost Pulse freeze ป้อม |
+| 17 | Harpy 🦅 | 2 | บิน, Shriek ลด fire rate ป้อม |
+| 18 | Shadow Dragon 🐲 | 2 | บิน, Shadow Veil invisible 2s ทุก 4s |
+
+### Stages (21 ด่าน)
+- **Act 1** (id 0–10): Grassland → Dark Forest → Volcanic Pass → Desert Crossing → Treasure Valley → Thunder Cave → Cursed Swamp → Dark Fortress → Dark Throne → Dark Tower Summit → Shadow Remnant
+- **Act 2** (id 11–20): ทะเลทรายเถ้าถ่าน 🔥 → ป่าแข็งนิรันดร์ ❄️ → ทะเลสาบพิษ 🫧 → หุบเขาสายฟ้า ⚡ → ทุ่งพายุทราย 🌪️ → หนองน้ำมืด 🌑 → ยอดเขาน้ำแข็ง 🗻 → วิหารกาลเวลา ⏳ → ปราการโบราณ 🏛️ → แกนโลก 🌍
+
+### Weather System (8 ประเภท)
+Heatwave, Blizzard, Poison, Lightning (50% tower disable), Sandstorm, Darknight (+50%HP +40%spd), dual-weather (stages 17–20)
+
+### Systems ที่มีอยู่แล้ว
+| System | รายละเอียด |
+|---|---|
+| **Gacha Reward** | 30 gems/pull, pool 1000, pity 100 → Time Tower; 10 items |
+| **Gacha Skill Card** | 1 ticket/pull, pool 10000, 0.02%/card, pity 30 → Barrier |
+| **Skill Cards** | 5 ใบ: Goldrush 💰, Freeze ❄️, Meteor ☄️, Overdrive ⚡, Barrier 🛡️ (★1–★5) |
+| **Workshop Craft** | Void Tower (800💎+mats), Time Tower (1500💎+mats) |
+| **Shard Exchange** | 🔹 Common×10→mat0, Rare×5→mat1, Epic×3→mat2 |
+| **Talents** | 6 leveled (0–100): sgold, gkill, awaken cost, tdmg, hpmax, skcool |
+| **Achievements** | 27 รายการ: story(6), combat(6), skill(5), endgame(5), casino(6), collection(6) |
+| **Story Missions** | 14 รายการ: per-stage(11) + milestone(3) |
+| **Daily Login** | 7-day cycle: gems/tickets/gold/potions |
+| **Daily Quests** | pool 7 รายการ, สุ่มมา 3/วัน |
+| **Leaderboard** | Local + cloud submit, story + endgame tabs |
+| **Casino Slot** | 8 สัญลักษณ์, 5 ระดับรางวัล, Auto-spin |
+| **Blackjack** | gold/gems currency, bet system |
+| **Endgame Mode** | Infinite waves, 3 ความยาก, material drops |
+| **Codex** | Encyclopedia ป้อม + ศัตรู + weather |
+| **Profile** | Avatar เลือก/วาดเอง, ชื่อ, สถิติ |
+| **Tower Awaken** | ทุกป้อมมี Awaken state พิเศษ |
+| **Runes** | 6 equippable modifiers per run |
+| **Tutorial** | สอนผู้เล่นใหม่ |
+| **Menu Tour** | แนะนำ UI |
+| **Dev Panel** | Debug + balance tuning + cheat |
+| **Persistent Gold** | สกุลเงินสำหรับ Talent ถาวร |
+
+---
+
 ## 1. Game Overview
 
 **Tower Quest** is a Thai-language, single-player, browser-based tower
@@ -27,10 +103,9 @@ refs only) plus `css/main.css` (~590 lines) and eight JS modules totaling
 
 Key high-level elements:
 
-- **Story Mode**: 11 stages (`STAGES`, `js/game.js` line 2), each with its own
-  grid layout, enemy path, unlockable towers, and a story cutscene. Stage 11
-  (🌑 Shadow Remnant, v1.9.0) is the true final stage (`isFinalStage`), 33
-  total story stars.
+- **Story Mode**: 21 stages in 2 Acts (`STAGES`, `js/game.js` line 2), each with its own
+  grid layout, enemy path, unlockable towers, and a story cutscene. Act 1 (id 0–10),
+  Act 2 (id 11–20). Stage 10 (🌑 Shadow Remnant) is final Act 1; Stage 20 (🌍 แกนโลก) is final Act 2.
 - **Endgame / Survival Mode**: an infinite, difficulty-scaled wave survival
   mode unlocked after finishing story content (`openEgMenu` onward,
   `js/game.js` line 1945).
