@@ -2737,7 +2737,25 @@ function onCanvasMove(e){
       info.style.top=(e.clientY-gpRect.top-10)+'px';
       info.style.display='block';
     } else {
-      info.style.display='none';
+      // ชี้ป้อมที่วางแล้ว — แสดง stats + ราคา upgrade
+      const _hovTw=G.towers.find(t=>t.col===_hc&&t.row===_hr);
+      if(_hovTw&&!G.over&&!G.win){
+        const gpRect2=_gpRectCache||(()=>{_gpRectCache=document.getElementById('gp').getBoundingClientRect();return _gpRectCache;})();
+        const _lv=_hovTw.lv||1;
+        const _upCost=Math.round(CFG.t_cost[_hovTw.type]*(_lv+1)*.85);
+        const _dmg=Math.round(getTowerDmg(_hovTw.type,_lv));
+        const _rng=getTowerRange(_hovTw.type,_hovTw.rngLv||_lv).toFixed(1);
+        const _star=_hovTw.star||1;
+        const _starStr='★'.repeat(_star)+'☆'.repeat(Math.max(0,4-_star));
+        info.innerHTML=TICONS[_hovTw.type]+' <b>'+TNAMES[_hovTw.type]+'</b> Lv'+_lv+' '+_starStr
+          +'<br>🎯 ระยะ '+_rng+' | ⚔️ '+_dmg
+          +(_lv<5?'<br>💰 อัพเกรด: <b>'+_upCost+'</b> ทอง':'<br><span style="color:#ffe082">⭐ อัพเกรดสูงสุดแล้ว</span>');
+        info.style.left=(e.clientX-gpRect2.left+14)+'px';
+        info.style.top=(e.clientY-gpRect2.top-10)+'px';
+        info.style.display='block';
+      } else {
+        info.style.display='none';
+      }
     }
   }
 }

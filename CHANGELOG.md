@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.18.7 — Tooltip แสดงราคาเมื่อชี้ป้อม
+
+### Added
+- `js/game.js` `onCanvasMove()`: ชี้เมาส์บนป้อมที่วางแล้วแสดง tooltip — ชื่อ / Lv / ดาว / ระยะ / ดาเมจ / ราคาอัพเกรด
+
+---
+
 ## v3.18.6 — แก้อาการกระตุกเมื่อมอนเยอะ (offscreen bg canvas)
 
 ### Performance

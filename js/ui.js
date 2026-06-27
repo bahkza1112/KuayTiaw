@@ -1,6 +1,9 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.18.6';
+const GAME_VERSION='3.18.7';
 const PATCH_NOTES=[
+  {ver:'3.18.7',date:'2026-06-27',title:'🔍 Tooltip แสดงราคาเมื่อชี้ป้อม',notes:[
+    'ชี้เมาส์บนป้อมที่วางแล้ว — เห็น ชื่อ / Lv / ⭐ / ระยะ / ดาเมจ / ราคาอัพเกรด ทันที',
+  ]},
   {ver:'3.18.6',date:'2026-06-27',title:'⚡ แก้อาการกระตุกเมื่อมอนเยอะ',notes:[
     'Pre-render พื้นหลัง (grid+terrain) ลงใน offscreen canvas วาดครั้งเดียว แทนการวาดซ้ำทุก frame — ลด canvas ops 300-500 ครั้ง/frame',
     'ต้นไม้/หิน/พุ่มไม้ยังแสดงผลเหมือนเดิม แต่เร็วขึ้นมาก',
