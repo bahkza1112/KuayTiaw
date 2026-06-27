@@ -883,6 +883,165 @@ function drawEnemySprite(ctx,ti,x,y,sz,mv){
       ctx.beginPath();ctx.moveTo(r*.0,r*.22);ctx.lineTo(r*.08,r*.42);ctx.lineTo(r*.16,r*.22);ctx.closePath();ctx.fill();
       ctx.restore();
       break;}
+    case 17:{// ฮาร์ปี — chibi eagle harpy, aggressive flyer
+      const _hp=Math.sin(Date.now()*.009*_sm+x*.05)*r*.06;
+      ctx.save();ctx.translate(0,_hp);
+      const _ht=Date.now()*.003;
+      // wing flap (large sweeping eagle wings)
+      const _wfa=Math.sin(_ht*_sm*1.8)*0.32;
+      // left wing
+      ctx.save();ctx.translate(-r*.22,r*.05);ctx.rotate(-_wfa-.18);
+      _ol(()=>{ctx.beginPath();ctx.moveTo(0,0);ctx.bezierCurveTo(-r*.4,-r*.3,-r*1.15,-r*.1,-r*1.1,r*.45);ctx.bezierCurveTo(-r*.65,r*.35,-r*.2,r*.22,0,0);ctx.closePath();});
+      ctx.fillStyle='#5d4037';ctx.beginPath();ctx.moveTo(0,0);ctx.bezierCurveTo(-r*.4,-r*.3,-r*1.15,-r*.1,-r*1.1,r*.45);ctx.bezierCurveTo(-r*.65,r*.35,-r*.2,r*.22,0,0);ctx.closePath();ctx.fill();
+      // wing feather highlights
+      ctx.fillStyle='#795548';ctx.beginPath();ctx.moveTo(-r*.15,r*.05);ctx.bezierCurveTo(-r*.35,-r*.18,-r*.85,-r*.05,-r*.85,r*.32);ctx.bezierCurveTo(-r*.55,r*.25,-r*.15,r*.18,-r*.15,r*.05);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#fff9c4';ctx.globalAlpha=.25;ctx.beginPath();ctx.moveTo(-r*.1,r*.02);ctx.bezierCurveTo(-r*.25,-r*.1,-r*.55,-r*.03,-r*.52,r*.2);ctx.bezierCurveTo(-r*.35,r*.16,-r*.1,r*.12,-r*.1,r*.02);ctx.closePath();ctx.fill();ctx.globalAlpha=1;
+      ctx.restore();
+      // right wing
+      ctx.save();ctx.translate(r*.22,r*.05);ctx.rotate(_wfa+.18);
+      _ol(()=>{ctx.beginPath();ctx.moveTo(0,0);ctx.bezierCurveTo(r*.4,-r*.3,r*1.15,-r*.1,r*1.1,r*.45);ctx.bezierCurveTo(r*.65,r*.35,r*.2,r*.22,0,0);ctx.closePath();});
+      ctx.fillStyle='#5d4037';ctx.beginPath();ctx.moveTo(0,0);ctx.bezierCurveTo(r*.4,-r*.3,r*1.15,-r*.1,r*1.1,r*.45);ctx.bezierCurveTo(r*.65,r*.35,r*.2,r*.22,0,0);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#795548';ctx.beginPath();ctx.moveTo(r*.15,r*.05);ctx.bezierCurveTo(r*.35,-r*.18,r*.85,-r*.05,r*.85,r*.32);ctx.bezierCurveTo(r*.55,r*.25,r*.15,r*.18,r*.15,r*.05);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#fff9c4';ctx.globalAlpha=.25;ctx.beginPath();ctx.moveTo(r*.1,r*.02);ctx.bezierCurveTo(r*.25,-r*.1,r*.55,-r*.03,r*.52,r*.2);ctx.bezierCurveTo(r*.35,r*.16,r*.1,r*.12,r*.1,r*.02);ctx.closePath();ctx.fill();ctx.globalAlpha=1;
+      ctx.restore();
+      // body (compact torso)
+      _ol(()=>{ctx.beginPath();ctx.ellipse(0,r*.4,r*.3,r*.28,0,0,Math.PI*2);});
+      ctx.fillStyle='#e65100';ctx.beginPath();ctx.ellipse(0,r*.4,r*.3,r*.28,0,0,Math.PI*2);ctx.fill();
+      // chest feather gradient
+      const _hcg=ctx.createRadialGradient(0,r*.32,0,0,r*.4,r*.28);
+      _hcg.addColorStop(0,'#fff9c4');_hcg.addColorStop(.5,'rgba(255,249,196,.35)');_hcg.addColorStop(1,'transparent');
+      ctx.fillStyle=_hcg;ctx.beginPath();ctx.ellipse(0,r*.4,r*.3,r*.28,0,0,Math.PI*2);ctx.fill();
+      // talons
+      ctx.strokeStyle='#4e342e';ctx.lineWidth=r*.09;ctx.lineCap='round';
+      [[-r*.12,r*.68,-r*.18,r*.82],[-r*.04,r*.7,-.04*r,r*.85],[r*.06,r*.68,r*.06,r*.84],[r*.16,r*.66,r*.22,r*.8]].forEach(l=>{ctx.beginPath();ctx.moveTo(l[0],l[1]);ctx.lineTo(l[2],l[3]);ctx.stroke();});
+      ctx.fillStyle='#3e2723';ctx.beginPath();ctx.arc(0,r*.68,r*.14,0,Math.PI*2);ctx.fill();
+      // HUGE chibi head
+      _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.14,r*.74,0,Math.PI*2);});
+      ctx.fillStyle='#bf360c';ctx.beginPath();ctx.arc(0,-r*.14,r*.74,0,Math.PI*2);ctx.fill();
+      // head feather crest
+      ctx.fillStyle='#e65100';
+      [[-r*.28,-r*.76,-r*.42,-r*1.08,-r*.18,-r*.82],[0,-r*.82,0,-r*1.16,r*.1,-r*.86],[r*.28,-r*.76,r*.42,-r*1.08,r*.18,-r*.82]].forEach(pts=>{
+        ctx.beginPath();ctx.moveTo(pts[0],pts[1]);ctx.quadraticCurveTo(pts[2],pts[3],pts[4],pts[5]);ctx.lineTo(pts[0],pts[1]);ctx.fill();
+      });
+      ctx.fillStyle='#ff7043';
+      ctx.beginPath();ctx.moveTo(0,-r*.82);ctx.quadraticCurveTo(r*.05,-r*1.1,r*.08,-r*.88);ctx.fill();
+      // head highlight
+      const _hhg=ctx.createRadialGradient(-r*.22,-r*.42,0,0,-r*.14,r*.74);
+      _hhg.addColorStop(0,'rgba(255,180,120,.35)');_hhg.addColorStop(1,'transparent');
+      ctx.fillStyle=_hhg;ctx.beginPath();ctx.arc(0,-r*.14,r*.74,0,Math.PI*2);ctx.fill();
+      // fierce eagle eyes (amber, small sharp pupils)
+      ctx.fillStyle='#f57c00';ctx.beginPath();ctx.arc(-r*.28,-r*.2,r*.24,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#f57c00';ctx.beginPath();ctx.arc(r*.28,-r*.2,r*.24,0,Math.PI*2);ctx.fill();
+      // eye brow ridge (fierce)
+      ctx.fillStyle='#3e2723';ctx.beginPath();ctx.ellipse(-r*.28,-r*.38,r*.2,r*.07,-.2,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#3e2723';ctx.beginPath();ctx.ellipse(r*.28,-r*.38,r*.2,r*.07,.2,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#1a1a1a';ctx.beginPath();ctx.arc(-r*.28,-r*.2,r*.12,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(r*.28,-r*.2,r*.12,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.85)';ctx.beginPath();ctx.arc(-r*.22,-r*.28,r*.07,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.85)';ctx.beginPath();ctx.arc(r*.22,-r*.28,r*.07,0,Math.PI*2);ctx.fill();
+      // hooked beak (open, shrieking)
+      ctx.fillStyle='#f9a825';
+      ctx.beginPath();ctx.moveTo(-r*.14,r*.12);ctx.lineTo(r*.14,r*.12);ctx.lineTo(r*.22,r*.26);ctx.lineTo(r*.0,r*.22);ctx.lineTo(-r*.22,r*.26);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#e65100';ctx.beginPath();ctx.moveTo(-r*.14,r*.12);ctx.lineTo(r*.14,r*.12);ctx.lineTo(r*.06,r*.2);ctx.lineTo(-r*.06,r*.2);ctx.closePath();ctx.fill();
+      // open mouth pink interior
+      ctx.fillStyle='#e57373';ctx.beginPath();ctx.ellipse(0,r*.2,r*.1,r*.06,0,0,Math.PI*2);ctx.fill();
+      // shriek sound wave (animated)
+      const _hsa=.3+.25*Math.sin(_ht*5);
+      ctx.globalAlpha=_hsa;ctx.strokeStyle='#ffd54f';ctx.lineWidth=r*.05;
+      ctx.beginPath();ctx.arc(0,-r*.14,r*.88,-.4,.4);ctx.stroke();
+      ctx.beginPath();ctx.arc(0,-r*.14,r*1.05,-.3,.3);ctx.stroke();
+      ctx.globalAlpha=1;
+      ctx.restore();
+      break;}
+    case 18:{// มังกรเงา — chibi shadow dragon, invisible cycles
+      const _sd=Math.sin(Date.now()*.003*_sm+x*.05)*r*.04;
+      ctx.save();ctx.translate(0,_sd);
+      const _st=Date.now()*.0022;
+      const _invis=mv._veilInvis||false;
+      // shadow wisps trailing (behind body)
+      if(!_invis){
+        for(let _ks=0;_ks<4;_ks++){
+          const _as=_ks*.9+_st*1.5;
+          const _rs=r*(.72+.15*Math.sin(_st*2+_ks));
+          ctx.globalAlpha=(.3-.06*_ks)*Math.abs(Math.sin(_st+_ks));
+          ctx.fillStyle='#7c4dff';
+          ctx.beginPath();ctx.ellipse(Math.cos(_as+Math.PI)*r*.45,Math.sin(_as+Math.PI)*r*.28+r*.15,r*(.18-.02*_ks),r*(.1-.01*_ks),_as,0,Math.PI*2);ctx.fill();
+        }
+        ctx.globalAlpha=1;
+      }
+      // tail (long, swept back)
+      ctx.strokeStyle='#1a0030';ctx.lineWidth=r*.4;ctx.lineCap='round';ctx.lineJoin='round';
+      ctx.beginPath();ctx.moveTo(r*.12,r*.52);ctx.bezierCurveTo(r*.7,r*.65,r*1.1,r*.35,r*.95,r*.0);ctx.bezierCurveTo(r*.82,-r*.2,r*.62,-r*.1,r*.55,r*.08);ctx.stroke();
+      ctx.strokeStyle='#311b92';ctx.lineWidth=r*.2;
+      ctx.beginPath();ctx.moveTo(r*.12,r*.52);ctx.bezierCurveTo(r*.7,r*.65,r*1.1,r*.35,r*.95,r*.0);ctx.bezierCurveTo(r*.82,-r*.2,r*.62,-r*.1,r*.55,r*.08);ctx.stroke();
+      // tail tip spike
+      ctx.fillStyle='#7c4dff';ctx.beginPath();ctx.moveTo(r*.52,r*.06);ctx.lineTo(r*.66,-r*.08);ctx.lineTo(r*.62,r*.18);ctx.closePath();ctx.fill();
+      // dark wings (furled, bat-like)
+      const _wfs=Math.sin(_st*_sm*1.4)*.22;
+      ctx.save();ctx.translate(-r*.18,r*.08);ctx.rotate(-_wfs-.12);
+      _ol(()=>{ctx.beginPath();ctx.moveTo(0,0);ctx.bezierCurveTo(-r*.35,-r*.45,-r*1.05,-r*.28,-r*1.0,r*.38);ctx.bezierCurveTo(-r*.62,r*.28,-r*.16,r*.18,0,0);ctx.closePath();});
+      ctx.fillStyle='#1a0030';ctx.beginPath();ctx.moveTo(0,0);ctx.bezierCurveTo(-r*.35,-r*.45,-r*1.05,-r*.28,-r*1.0,r*.38);ctx.bezierCurveTo(-r*.62,r*.28,-r*.16,r*.18,0,0);ctx.closePath();ctx.fill();
+      // wing membrane shimmer
+      const _wmg=ctx.createLinearGradient(-r,0,0,0);_wmg.addColorStop(0,'rgba(124,77,255,.3)');_wmg.addColorStop(1,'transparent');
+      ctx.fillStyle=_wmg;ctx.beginPath();ctx.moveTo(0,0);ctx.bezierCurveTo(-r*.35,-r*.45,-r*1.05,-r*.28,-r*1.0,r*.38);ctx.bezierCurveTo(-r*.62,r*.28,-r*.16,r*.18,0,0);ctx.closePath();ctx.fill();
+      ctx.restore();
+      ctx.save();ctx.translate(r*.18,r*.08);ctx.rotate(_wfs+.12);
+      _ol(()=>{ctx.beginPath();ctx.moveTo(0,0);ctx.bezierCurveTo(r*.35,-r*.45,r*1.05,-r*.28,r*1.0,r*.38);ctx.bezierCurveTo(r*.62,r*.28,r*.16,r*.18,0,0);ctx.closePath();});
+      ctx.fillStyle='#1a0030';ctx.beginPath();ctx.moveTo(0,0);ctx.bezierCurveTo(r*.35,-r*.45,r*1.05,-r*.28,r*1.0,r*.38);ctx.bezierCurveTo(r*.62,r*.28,r*.16,r*.18,0,0);ctx.closePath();ctx.fill();
+      const _wmg2=ctx.createLinearGradient(r,0,0,0);_wmg2.addColorStop(0,'rgba(124,77,255,.3)');_wmg2.addColorStop(1,'transparent');
+      ctx.fillStyle=_wmg2;ctx.beginPath();ctx.moveTo(0,0);ctx.bezierCurveTo(r*.35,-r*.45,r*1.05,-r*.28,r*1.0,r*.38);ctx.bezierCurveTo(r*.62,r*.28,r*.16,r*.18,0,0);ctx.closePath();ctx.fill();
+      ctx.restore();
+      // chunky dragon body
+      _ol(()=>{ctx.beginPath();ctx.ellipse(0,r*.42,r*.4,r*.34,0,0,Math.PI*2);});
+      ctx.fillStyle='#1a0030';ctx.beginPath();ctx.ellipse(0,r*.42,r*.4,r*.34,0,0,Math.PI*2);ctx.fill();
+      // belly scales (lighter)
+      ctx.fillStyle='#311b92';ctx.beginPath();ctx.ellipse(0,r*.44,r*.24,r*.22,0,0,Math.PI*2);ctx.fill();
+      const _bdg=ctx.createRadialGradient(0,r*.44,0,0,r*.44,r*.22);
+      _bdg.addColorStop(0,'rgba(179,136,255,.35)');_bdg.addColorStop(1,'transparent');
+      ctx.fillStyle=_bdg;ctx.beginPath();ctx.ellipse(0,r*.44,r*.24,r*.22,0,0,Math.PI*2);ctx.fill();
+      // neck
+      ctx.strokeStyle='#1a0030';ctx.lineWidth=r*.38;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(0,r*.12);ctx.lineTo(0,-r*.18);ctx.stroke();
+      ctx.strokeStyle='#311b92';ctx.lineWidth=r*.18;
+      ctx.beginPath();ctx.moveTo(0,r*.12);ctx.lineTo(0,-r*.18);ctx.stroke();
+      // HUGE chibi dragon head
+      _ol(()=>{ctx.beginPath();ctx.arc(0,-r*.26,r*.78,0,Math.PI*2);});
+      ctx.fillStyle='#1a0030';ctx.beginPath();ctx.arc(0,-r*.26,r*.78,0,Math.PI*2);ctx.fill();
+      // head dark glow
+      const _hdg=ctx.createRadialGradient(-r*.2,-r*.52,0,0,-r*.26,r*.78);
+      _hdg.addColorStop(0,'rgba(103,58,183,.4)');_hdg.addColorStop(1,'transparent');
+      ctx.fillStyle=_hdg;ctx.beginPath();ctx.arc(0,-r*.26,r*.78,0,Math.PI*2);ctx.fill();
+      // horns (2 curved, swept back)
+      ctx.fillStyle='#4a148c';
+      ctx.beginPath();ctx.moveTo(-r*.38,-r*.72);ctx.quadraticCurveTo(-r*.68,-r*1.1,-r*.48,-r*1.28);ctx.quadraticCurveTo(-r*.3,-r*.9,-r*.24,-r*.82);ctx.closePath();ctx.fill();
+      ctx.beginPath();ctx.moveTo(r*.38,-r*.72);ctx.quadraticCurveTo(r*.68,-r*1.1,r*.48,-r*1.28);ctx.quadraticCurveTo(r*.3,-r*.9,r*.24,-r*.82);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#9c27b0';ctx.beginPath();ctx.arc(-r*.46,-r*1.26,r*.08,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(r*.46,-r*1.26,r*.08,0,Math.PI*2);ctx.fill();
+      // snout (dragon muzzle)
+      _ol(()=>{ctx.beginPath();ctx.ellipse(0,r*.02,r*.38,r*.22,0,0,Math.PI*2);});
+      ctx.fillStyle='#21005d';ctx.beginPath();ctx.ellipse(0,r*.02,r*.38,r*.22,0,0,Math.PI*2);ctx.fill();
+      // nostrils
+      ctx.fillStyle='#7c4dff';ctx.globalAlpha=.7;
+      ctx.beginPath();ctx.ellipse(-r*.12,r*.02,r*.06,r*.04,0,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.ellipse(r*.12,r*.02,r*.06,r*.04,0,0,Math.PI*2);ctx.fill();
+      ctx.globalAlpha=1;
+      // GLOWING purple eyes (main feature!)
+      const _seg=.7+.3*Math.sin(_st*4);
+      ctx.fillStyle=`rgba(179,136,255,${_seg})`;ctx.beginPath();ctx.arc(-r*.3,-r*.34,r*.28,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle=`rgba(179,136,255,${_seg})`;ctx.beginPath();ctx.arc(r*.3,-r*.34,r*.28,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle=`rgba(234,128,252,${_seg*.9})`;ctx.beginPath();ctx.arc(-r*.3,-r*.34,r*.14,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(r*.3,-r*.34,r*.14,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.95)';ctx.beginPath();ctx.arc(-r*.24,-r*.42,r*.08,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.95)';ctx.beginPath();ctx.arc(r*.24,-r*.42,r*.08,0,Math.PI*2);ctx.fill();
+      // shadow veil glow ring (when visible, ready to vanish)
+      if(!_invis){
+        const _svg=.15+.1*Math.sin(_st*3);
+        ctx.globalAlpha=_svg;ctx.strokeStyle='#7c4dff';ctx.lineWidth=r*.1;
+        ctx.beginPath();ctx.arc(0,-r*.1,r*.98,0,Math.PI*2);ctx.stroke();
+        ctx.globalAlpha=1;
+      }
+      ctx.restore();
+      break;}
     case 14:{// นาคาราช — chibi cobra king, venom aura
       const _nk=Math.sin(Date.now()*.004*_sm+x*.05)*r*.05;
       ctx.save();ctx.translate(0,_nk);

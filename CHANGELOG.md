@@ -2,6 +2,26 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.21.0 — โมเดล + Balance ฮาร์ปี & มังกรเงา
+
+### Added
+- `js/enemy.js`: `drawEnemySprite` case 17 — ฮาร์ปี 🦅 chibi eagle harpy
+  - Wings: animated flapping eagle wings (bezier curves), brown/amber palette
+  - Body: compact torso with cream chest gradient, iron talons (4-claw)
+  - Head: fierce crest feathers, amber eyes with brow ridge, open hooked beak
+  - FX: animated shriek sound-wave rings around head
+- `js/enemy.js`: `drawEnemySprite` case 18 — มังกรเงา 🐲 chibi shadow dragon
+  - Body: bat-style dark wings (animated flap), thick neck, chunky torso with belly scales
+  - Head: swept-back curved horns, dragon snout/nostrils, glowing purple eyes
+  - FX: shadow wisps orbiting when visible; purple veil ring when about to vanish
+  - Invisible state: fully faded by outer render loop globalAlpha (~0.15)
+
+### Changed
+- `js/game.js` CFG: `m_rew[17]` 15→18, `m_rew[18]` 30→35 (reward/HP ratio correction)
+- `js/game.js` STAGES d13: เพิ่ม ti=14 (นาคาราช) ใน enemyTypes — ตรงธีม ทะเลสาบพิษ
+
+---
+
 ## v3.20.6 — ป้อมซัพ สาย 1: ระยะ → เพิ่มดาเมจบัฟ
 
 ### Changed
