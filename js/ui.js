@@ -1509,13 +1509,13 @@ function toggleGachaOdds(){
         <span style="font-family:monospace;color:rgba(179,136,255,.6);">${num}</span>
         <span style="color:${p.color};">${p.icon} ${p.name}</span>
         <span class="gacha-rarity-tag rarity-${p.rarity}" style="font-size:7px;">${p.rarity}</span>
-        <span style="color:#aaa;">${p.w/10}%</span>
+        <span style="color:#aaa;">${(p.w/100).toFixed(2)}%</span>
       </div>`;}).join('')+`
       <div class="gacha-odds-row">
         <span style="font-family:monospace;color:rgba(179,136,255,.6);">dud</span>
         <span style="color:#888;">เศษ ×1 (🔹70% · 💜22% · 🌟8%)</span>
         <span class="gacha-rarity-tag" style="font-size:7px;background:rgba(255,255,255,.08);color:#888;">ปลอบใจ</span>
-        <span style="color:#aaa;">74.9%</span>
+        <span style="color:#aaa;">99.9%</span>
       </div>`;
   }
 }
