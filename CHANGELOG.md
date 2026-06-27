@@ -2,6 +2,19 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.22.1 — การ์ดสกิล Chibi RO Scene Art
+
+### Changed
+- `js/ui.js` `_drawSkillArt`: เปลี่ยน Canvas art ทั้ง 5 สกิลจาก dark-fantasy abstract เป็น Chibi scene แบบ Ragnarok Online
+  - **goldrush**: ฉากทะเลทราย + เหรียญทอง Chibi character (ตาโต แก้มแดง รอยยิ้ม) + กระบองเพชร + เหรียญบนพื้น + sparkles
+  - **freeze**: ฉากทุ่งหิมะ + กระต่ายหิมะ Chibi (หูยาวมี pink inside จมูกชมพู) + ต้นสนหิมะ + ❄ ลอยรอบ
+  - **meteor**: ฉากกลางคืน + ดาวเต็มฟ้า + ลูกไฟ Chibi (หน้าดุน่ารัก ปากอ้า คิ้วขมวด) + trail + วงกระแทก
+  - **overdrive**: ฉากท้องฟ้าสีเหลือง + สายฟ้า Chibi (มีหน้าน่ารัก) + ก้อนเมฆไฟฟ้า + spark รอบ
+  - **barrier**: ฉากทุ่งหน้าปราสาท + โล่ Chibi (ยิ้ม แก้มแดง อัญมณีสามมุม) + เนินเขาสีเขียว + ต้นไม้
+
+### Fixed
+- ลบ `ctx.clearRect` ที่ซ้ำกัน (duplicate) ใน `_drawSkillArt`
+
 ## v3.22.0 — การ์ดสกิล RO Art Style
 
 ### Added
