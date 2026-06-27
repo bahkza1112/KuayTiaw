@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.18.8 — แก้ราคาขายป้อมเมื่ออัพแต้มฟรี
+
+### Fixed
+- `js/tower.js` `showTowerPopup()` + `sellTowerFromPopup()`: refund formula เปลี่ยนจาก `t_cost * lv * 0.6` เป็น `t_cost * 2^(star-1) * 0.6`
+  - แต้มสกิล (★) เป็นของฟรี — ไม่ควรเพิ่มราคาขาย
+  - ราคาขายตาม star (จำนวน merge จริงๆ): ★1=60%, ★2=120%, ★3=240%, ★4=480% ของราคาซื้อ
+
+---
+
 ## v3.18.7 — Tooltip แสดงราคาเมื่อชี้ป้อม
 
 ### Added

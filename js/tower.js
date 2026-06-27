@@ -387,7 +387,7 @@ function showTowerPopup(tw,px,py){
   const used=(tw.rngLv-1)+(tw.rateLv-1);
   const remain=tw.star-used;
   const _awCost=awakenCost();
-  const refund=Math.floor(CFG.t_cost[tw.type]*tw.lv*.6)+(tw.awakened?Math.floor(_awCost*.6):0);
+  const refund=Math.floor(CFG.t_cost[tw.type]*Math.pow(2,(tw.star||1)-1)*.6)+(tw.awakened?Math.floor(_awCost*.6):0);
   const canAwaken=tw.star>=3&&!tw.awakened&&G.gold>=_awCost;
   const showAwakenBtn=tw.star>=3&&!tw.awakened;
   if(showAwakenBtn&&!localStorage.getItem('tq_hint_awaken')){
@@ -574,7 +574,7 @@ function upgradeTowerFromPopup(stat){
 function sellTowerFromPopup(){
   if(!_popupTw||!G||G.over||G.win) return;
   const tw=_popupTw;
-  const refund=Math.floor(CFG.t_cost[tw.type]*tw.lv*.6)+(tw.awakened?Math.floor(awakenCost(tw.type)*.6):0);
+  const refund=Math.floor(CFG.t_cost[tw.type]*Math.pow(2,(tw.star||1)-1)*.6)+(tw.awakened?Math.floor(awakenCost(tw.type)*.6):0);
   const key=tw.col+'_'+tw.row;
   if(G.gmTimers) delete G.gmTimers[key];
   G.towers=G.towers.filter(t=>t!==tw);
