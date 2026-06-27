@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.21.2 — แก้บัค ป้อมมนตราโมฆะวางได้ในโหมดเนื้อเรื่อง
+
+### Fixed
+- `js/game.js`: `onTbtnPointerDown` เช็ค `currentStage.unlockedTowers` โดยตรง ทำให้ป้อม Void (type 8) วางไม่ได้แม้ผู้เล่นเลือกไว้ใน Tower Selection — แก้เป็นใช้ `selectedTowersForStage` แทน (เหมือนกับที่ `updateTowerPanel` ใช้อยู่แล้ว)
+
 ## v3.21.1 — แก้บัค Death FX + Shadow Dragon Invisible
 
 ### Fixed

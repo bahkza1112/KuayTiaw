@@ -2906,7 +2906,8 @@ function onCanvasLeave(e){
 let _dragTwr=-1,_dragging=false,_dragSX=0,_dragSY=0;
 function onTbtnPointerDown(e,i){
   if(!G||G.over||G.win||paused) return;
-  if(!currentStage.unlockedTowers.includes(i)) return;
+  const _activeTowers=selectedTowersForStage.length>0?selectedTowersForStage:(currentStage.unlockedTowers||[0,1,2,3,4,5,6,7]);
+  if(!_activeTowers.includes(i)) return;
   _dragTwr=i; _dragging=false;
   _dragSX=e.clientX; _dragSY=e.clientY;
   document.addEventListener('pointermove',_onDragMove);
