@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.21.1 — แก้บัค Death FX + Shadow Dragon Invisible
+
+### Fixed
+- `js/enemy.js`: เพิ่ม death FX case 17 (ฮาร์ปี) — ระเบิดขนนกสีส้มน้ำตาล, วงแหวนอำพัน, อนุภาค 🪶
+- `js/enemy.js`: เพิ่ม death FX case 18 (มังกรเงา) — ระเบิดเงาสีม่วงดำ, วง flash, อนุภาค 👻
+- `js/game.js`: `_mv` object เพิ่ม `_veilInvis:e._veilInvis||false` — shadow wisps และ veil ring ซ่อนถูกต้องเมื่อมังกรเงาหายตัว
+
 ## v3.21.0 — โมเดล + Balance ฮาร์ปี & มังกรเงา
 
 ### Added

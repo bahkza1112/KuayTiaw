@@ -2380,7 +2380,7 @@ function render(){
       const _p0=currentPath[Math.min(e.pi,currentPath.length-1)],_p1=currentPath[Math.min(e.pi+1,currentPath.length-1)];
       const _dir=Math.atan2(_p1[1]-_p0[1],_p1[0]-_p0[0]);
       const _moveSpd=e.spd*e.slow*((e._enrageT>0)?(e._enrageMult||1):1)*((e._diveT>0)?1.5:1);
-      const _mv={dir:_dir,spd:_moveSpd};
+      const _mv={dir:_dir,spd:_moveSpd,_veilInvis:e._veilInvis||false};
       // knockback visual — ดีดกลับ 3px ทวนทิศทางเดิน ช่วงแรกโดนตี
       const _kn=e._knockT||0;
       const _kx=_kn>0?Math.cos(_dir+Math.PI)*_kn*3:0;

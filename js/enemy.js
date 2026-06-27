@@ -375,6 +375,25 @@ function _deathFx(e){
       for(let k=0,_n=Math.ceil(38*Math.max(_sc,.5));k<_n;k++){const a=k/_n*Math.PI*2,sp=3.2+Math.random()*4.5;
         G.particles.push({x,y,txt:k%4===0?'🌍':k%4===1?'★':k%4===2?'✦':'●',col:k%3===0?'#64dd17':k%3===1?'#fff9c4':'#b9f6ca',life:1.1+Math.random()*.8,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:1.4,scale:.6+Math.random()*.9});}
       break;}
+    case 17:{ // ฮาร์ปี — ระเบิดขนนกสีส้มน้ำตาลพร้อมเสียงกรี๊ด
+      _ring({x,y,r:0,maxR:sz*5.5,life:.55,lw:4,col:'#ff8f00',delay:0});
+      _ring({x,y,r:0,maxR:sz*3.5,life:.45,lw:2.5,col:'#ffe082',delay:.08});
+      if(!_busy) _ring({x,y,r:0,maxR:sz*7,life:.5,lw:1.5,col:'rgba(255,143,0,.3)',delay:.18});
+      G.hitStopT=Math.max(G.hitStopT||0,.1);
+      G.shakeT=Math.min(.45,G.shakeT+.2);
+      for(let k=0,_n=Math.ceil(20*Math.max(_sc,.5));k<_n;k++){const a=k/_n*Math.PI*2,sp=2.2+Math.random()*3;
+        G.particles.push({x,y,txt:k%5===0?'🪶':k%3===0?'✦':'●',col:k%3===0?'#ff8f00':k%3===1?'#ffe082':'#795548',life:.75+Math.random()*.5,vy:Math.sin(a)*sp-.8,vx:Math.cos(a)*sp,decay:1.9,scale:.5+Math.random()*.75});}
+      break;}
+    case 18:{ // มังกรเงา — ระเบิดเงาสีม่วงดำพร้อมวิญญาณ
+      _flash({x,y,r:sz*7,life:.5,maxLife:.5,col:'rgba(60,0,100,.65)'});
+      _ring({x,y,r:0,maxR:sz*7,life:.7,lw:5,col:'#9c27b0',delay:0});
+      _ring({x,y,r:0,maxR:sz*5,life:.6,lw:3,col:'#ce93d8',delay:.1});
+      if(!_busy) _ring({x,y,r:0,maxR:sz*9,life:.55,lw:2,col:'rgba(124,77,255,.3)',delay:.22});
+      G.hitStopT=Math.max(G.hitStopT||0,.18);
+      G.shakeT=Math.min(.65,G.shakeT+.38);
+      for(let k=0,_n=Math.ceil(28*Math.max(_sc,.5));k<_n;k++){const a=k/_n*Math.PI*2,sp=2.5+Math.random()*3.8;
+        G.particles.push({x,y,txt:k%4===0?'👻':k%4===1?'★':k%3===0?'✦':'●',col:k%3===0?'#9c27b0':k%3===1?'#ce93d8':'#1a0030',life:1.0+Math.random()*.7,vy:Math.sin(a)*sp,vx:Math.cos(a)*sp,decay:1.5,scale:.55+Math.random()*.85});}
+      break;}
     default:{ // fallback
       _ring({x,y,r:sz*.4,maxR:sz*3.8,life:.55,lw:2.5,col:'#fff',delay:0});
       for(let k=0,_n=Math.ceil(8*_sc);k<_n;k++){const a=k/_n*Math.PI*2,sp=1.6+Math.random()*2.4;

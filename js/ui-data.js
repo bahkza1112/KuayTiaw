@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.21.0';
+const GAME_VERSION='3.21.1';
 const PATCH_NOTES=[
+  {ver:'3.21.1',date:'2026-06-27',title:'🔧 แก้บัค Death FX + Shadow Dragon Invisible',notes:[
+    'แก้บัค: ฮาร์ปี 🦅 และมังกรเงา 🐲 ตายโดยไม่มีเอฟเฟกต์ — เพิ่ม Death FX ขนนกส้มและเงาม่วงดำ',
+    'แก้บัค: มังกรเงาในโหมด invisible — ควันเงาและวง Veil ซ่อนถูกต้องแล้วเมื่อหายตัว',
+  ]},
   {ver:'3.21.0',date:'2026-06-27',title:'🦅🐲 โมเดล + Balance ศัตรูบทที่ 2 ใหม่',notes:[
     'ฮาร์ปี 🦅: โมเดล Chibi Eagle Harpy — ปีกนกอินทรีขนาดใหญ่ปัด, หัวเล็กดุดัน, ปากเปิดกรีดร้อง, กรงเล็บเหล็ก',
     'มังกรเงา 🐲: โมเดล Chibi Shadow Dragon — ปีกค้างคาว, ดวงตาม่วงเรืองแสง, ควันเงาลอยตาม, ตัวจางเกือบหายเมื่อ invisible',
