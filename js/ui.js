@@ -1,6 +1,9 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.18.2';
+const GAME_VERSION='3.18.3';
 const PATCH_NOTES=[
+  {ver:'3.18.3',date:'2026-06-27',title:'🐛 แก้บัค Dev Panel กดปิดแล้วกลับเมนูหลัก',notes:[
+    'Dev Panel เปิดระหว่างเล่น (verBtn) กดปิด ✕ จะกลับสู่หน้าเกมแทนหน้าเมนูหลัก',
+  ]},
   {ver:'3.18.2',date:'2026-06-27',title:'🎨 โมเดล Chibi บอส Act 2 ครบทุกตัว',notes:[
     'นาคาราช 🐍: โมเดล Chibi Cobra King — หัวโคบร้าพร้อม hood กาง, ลิ้นสองแฉก, หางขด, มงกุฎทอง, ตาแนวตั้ง, หยดพิษเขียว',
     'เทพทำลาย 🌍: โมเดล Earth Deity — ร่างหินขนาดใหญ่ เปลี่ยนสีตาม Phase (เทา→ลาวา→โมลเทน), rock shards โคจร, รอยร้าวสีไฟ',
@@ -3411,7 +3414,7 @@ function openDev(fromMenu){
 }
 function closeDev(){
   document.getElementById('devpanel').style.display='none';
-  if(!devFromMenu&&G&&!G.over&&!G.win){
+  if(G&&!G.over&&!G.win){ // กลับเกมถ้ายังเล่นอยู่ ไม่ว่าจะเปิด dev จากทางไหน
     showScreen('gp',true);
     paused=false;
     document.getElementById('pauseBtn').textContent='⏸';

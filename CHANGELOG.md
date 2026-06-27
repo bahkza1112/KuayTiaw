@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.18.3 — แก้บัค Dev Panel กลับเมนูหลักผิด
+
+### Fixed
+- `js/ui.js` `closeDev()`: เปลี่ยนจาก `!devFromMenu&&G` → `G&&!G.over&&!G.win` — ปิด dev ขณะเล่นกลับเกมเสมอ ไม่ว่าเปิด dev จาก verBtn (fromMenu=true) หรือ devIngameBtn
+
+---
+
 ## v3.18.2 — Boss Chibi Models: นาคาราช, เทพทำลาย, ราชาน้ำแข็ง
 
 ### Added
