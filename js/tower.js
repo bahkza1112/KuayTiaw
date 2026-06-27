@@ -578,6 +578,7 @@ function sellTowerFromPopup(){
   const key=tw.col+'_'+tw.row;
   if(G.gmTimers) delete G.gmTimers[key];
   G.towers=G.towers.filter(t=>t!==tw);
+  _invalidateBg();
   G.gold+=refund; updateHUD();
   const sx=tw.col*CS+CS/2,sy=tw.row*CS+CS/2;
   G.fxRings.push({x:sx,y:sy,r:4,maxR:CS*1.2,life:.8,lw:3,col:'#f44336',delay:0});

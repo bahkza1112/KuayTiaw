@@ -271,6 +271,9 @@ const COLS=12,ROWS=10,CS=80;
 let currentStage=null,currentPath=null,currentPset=null;
 let G=null,cv=null,ctx=null,rafId=null,speed=1,paused=false,toastTimer=null;
 let _gpRectCache=null; // cache getBoundingClientRect('#gp') — invalidated on resize
+// offscreen bg canvas — pre-renders static grid+terrain, invalidated when towers/digs change
+let _bgCanvas=null,_bgCtx=null,_bgDirty=true;
+function _invalidateBg(){_bgDirty=true;}
 // BUG FIX: track devFromMenu at module scope so closeDev always knows origin
 let devFromMenu=true;
 let autoWave=false;
@@ -311,6 +314,7 @@ function setStage(si){
   currentStage=STAGES[si];
   currentPath=currentStage.path;
   currentPset=new Set(currentPath.map(p=>p[0]+','+p[1]));
+  _invalidateBg();
 }
 function mkState(){
   return{towers:[],enemies:[],projs:[],particles:[],fxRings:[],fxTrails:[],fxFlash:[],
@@ -353,7 +357,7 @@ function digCell(c,r){
   const cost=getDigCost(ot);
   if(G.gold<cost){showToast('💰 ต้องการ '+cost+' ทองขุด'+OBS_NAMES[ot]+'!');return false;}
   G.gold-=cost; G.obstaclesCleared++; G.dugCells.add(c+','+r);
-  delete G.obstacles[c+','+r];
+  delete G.obstacles[c+','+r]; _invalidateBg();
   const bx=c*CS+CS/2,by=r*CS+CS/2;
   if(G.fxRings.length<40) G.fxRings.push({x:bx,y:by,r:0,maxR:CS*1.5,life:.5,lw:2,col:'#a5d6a7'});
   for(let k=0;k<8;k++){const a=k/8*Math.PI*2,sp=1.2+Math.random()*1.5;
@@ -1662,6 +1666,96 @@ function update(dt){
 
 function shadeColor(hex,amt){const n=parseInt(hex.replace('#',''),16);const r=Math.max(0,Math.min(255,((n>>16)&0xff)+amt));const g=Math.max(0,Math.min(255,((n>>8)&0xff)+amt));const b=Math.max(0,Math.min(255,(n&0xff)+amt));return`rgb(${r},${g},${b})`;}
 
+/* ══ BACKGROUND CANVAS (pre-render static grid+terrain, 1 drawImage per frame) ══ */
+function _renderBg(){
+  const s=currentStage;
+  if(!_bgCanvas){
+    _bgCanvas=document.createElement('canvas');
+    _bgCanvas.width=COLS*CS; _bgCanvas.height=ROWS*CS;
+    _bgCtx=_bgCanvas.getContext('2d');
+  }
+  _bgDirty=false;
+  const bc=_bgCtx;
+  bc.clearRect(0,0,COLS*CS,ROWS*CS);
+  // grid — 2.5D tiles
+  const _TH=8;
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+    const isPath=currentPset.has(c+','+r);
+    const tx=c*CS,ty=r*CS;
+    const baseCol=isPath?s.pathColor:s.grassColors[(c*3+r*7)%s.grassColors.length];
+    if(isPath){
+      bc.fillStyle=baseCol; bc.fillRect(tx,ty,CS,CS);
+      const _pv=(c*7+r*13+currentStage.id*3)%5;
+      if(_pv<2){bc.fillStyle='rgba(0,0,0,.06)';bc.fillRect(tx+CS*.2,ty+CS*.2,CS*.6,CS*.55);}
+      bc.fillStyle='rgba(0,0,0,.14)'; bc.fillRect(tx,ty,CS,2); bc.fillRect(tx,ty,2,CS);
+    } else {
+      bc.fillStyle=baseCol; bc.fillRect(tx,ty,CS,CS-_TH);
+      bc.fillStyle=shadeColor(baseCol,-38); bc.fillRect(tx,ty+CS-_TH,CS,_TH);
+      bc.fillStyle='rgba(255,255,255,.11)'; bc.fillRect(tx,ty,CS,2); bc.fillRect(tx,ty,2,CS-_TH);
+      bc.fillStyle='rgba(0,0,0,.18)'; bc.fillRect(tx,ty+CS-_TH-1,CS,1);
+    }
+    bc.strokeStyle='rgba(0,0,0,.05)'; bc.lineWidth=.5; bc.strokeRect(tx,ty,CS,CS);
+  }
+  // ── TERRAIN DECORATIONS ──
+  const _sid=currentStage.id;
+  const _towerCellSet=new Set(G.towers.map(t=>t.col+','+t.row));
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+    if(currentPset.has(c+','+r)) continue;
+    if(_towerCellSet.has(c+','+r)) continue;
+    if(G.dugCells&&G.dugCells.has(c+','+r)) continue;
+    const _obsT=G.obstacles&&G.obstacles[c+','+r];
+    const h=_obsT!==undefined?[40,25,10][_obsT]:(c*17+r*13+_sid*31)%100;
+    const tx=c*CS, ty=r*CS;
+    const ox=((c*11+r*7)%24)-12, oy=((c*7+r*9)%18)-9;
+    const cx2=tx+CS*.5+ox, cy2=ty+CS*.5+oy;
+    if(h<22){// pine tree — 2.5D
+      const ts=CS*.48+((c*5+r*3)%8)*CS*.03;
+      const gc=s.grassColors[0];
+      bc.globalAlpha=.25;bc.fillStyle='#000';
+      bc.beginPath();bc.ellipse(cx2+ts*.22,cy2+ts*.62,ts*.62,ts*.2,0,0,Math.PI*2);bc.fill();
+      bc.globalAlpha=1;
+      bc.fillStyle='#3e2723';bc.fillRect(cx2+ts*.1,cy2+ts*.18,ts*.09,ts*.37);
+      bc.fillStyle='#6d4c41';bc.fillRect(cx2-ts*.1,cy2+ts*.15,ts*.2,ts*.38);
+      [[ts*.72,ts*.32,-.5],[ts*.56,ts*.16,-.34],[ts*.38,0,-.18]].forEach(([w,yo,tipOY],ki)=>{
+        const fc=ki===0?shadeColor(gc,-22):ki===1?gc:shadeColor(gc,18);
+        bc.fillStyle=shadeColor(fc,-35);
+        bc.beginPath();bc.moveTo(cx2+w,cy2+yo);bc.lineTo(cx2+w+ts*.12,cy2+yo+ts*.13);bc.lineTo(cx2+ts*.06,cy2-ts*.5+yo+ts*.13+(ki===2?ts*.06:0));bc.closePath();bc.fill();
+        bc.fillStyle=fc;
+        bc.beginPath();bc.moveTo(cx2,cy2-ts*.5+yo);bc.lineTo(cx2+w,cy2+yo);bc.lineTo(cx2-w,cy2+yo);bc.closePath();bc.fill();
+        bc.strokeStyle='rgba(255,255,255,.18)';bc.lineWidth=ts*.05;
+        bc.beginPath();bc.moveTo(cx2,cy2-ts*.5+yo);bc.lineTo(cx2-w,cy2+yo);bc.stroke();
+        bc.strokeStyle='rgba(0,0,0,.28)';bc.lineWidth=ts*.07;
+        bc.beginPath();bc.moveTo(cx2,cy2-ts*.5+yo);bc.lineTo(cx2+w,cy2+yo);bc.lineTo(cx2-w,cy2+yo);bc.closePath();bc.stroke();
+      });
+    } else if(h<36){// rocks — 2.5D
+      const rs=CS*.14+((c*3+r*7)%8)*CS*.014;
+      bc.globalAlpha=.28;bc.fillStyle='#000';
+      bc.beginPath();bc.ellipse(cx2+rs*.3,cy2+rs*.55,rs*1.7,rs*.45,0,0,Math.PI*2);bc.fill();
+      bc.globalAlpha=1;
+      bc.fillStyle='#424242';bc.beginPath();bc.ellipse(cx2+rs*.1,cy2+rs*.45,rs*1.35,rs*.82,0,0,Math.PI*2);bc.fill();
+      bc.fillStyle='#757575';bc.beginPath();bc.ellipse(cx2,cy2,rs*1.35,rs*.82,0,0,Math.PI*2);bc.fill();
+      bc.fillStyle='#4a4a4a';bc.beginPath();bc.ellipse(cx2+rs*1.05,cy2+rs*.25,rs*.95,rs*.6,.3,0,Math.PI*2);bc.fill();
+      bc.fillStyle='#868686';bc.beginPath();bc.ellipse(cx2+rs*.9,cy2+rs*.05,rs*.95,rs*.6,.3,0,Math.PI*2);bc.fill();
+      bc.fillStyle='rgba(255,255,255,.38)';bc.beginPath();bc.ellipse(cx2-rs*.25,cy2-rs*.32,rs*.45,rs*.28,-.3,0,Math.PI*2);bc.fill();
+      bc.fillStyle='rgba(255,255,255,.22)';bc.beginPath();bc.ellipse(cx2+rs*.65,cy2-rs*.18,rs*.3,rs*.18,-.2,0,Math.PI*2);bc.fill();
+      bc.strokeStyle='rgba(0,0,0,.35)';bc.lineWidth=rs*.14;
+      bc.beginPath();bc.ellipse(cx2,cy2,rs*1.35,rs*.82,0,0,Math.PI*2);bc.stroke();
+    } else if(h<48){// bush cluster — 2.5D
+      const bs=CS*.13;
+      bc.globalAlpha=.2;bc.fillStyle='#000';
+      bc.beginPath();bc.ellipse(cx2+bs*.2,cy2+bs*.9,bs*2.1,bs*.38,0,0,Math.PI*2);bc.fill();
+      bc.globalAlpha=1;
+      [-1,0,1].forEach(k=>{
+        const bx=cx2+k*bs*1.1, by=cy2+(k===0?-bs*.2:0);
+        const col=k===0?shadeColor(s.grassColors[0],8):s.grassColors[0];
+        bc.fillStyle=shadeColor(col,-32);bc.beginPath();bc.arc(bx+bs*.12,by+bs*.28,bs*.92,0,Math.PI*2);bc.fill();
+        bc.fillStyle=col;bc.beginPath();bc.arc(bx,by,bs*.92,0,Math.PI*2);bc.fill();
+        bc.fillStyle='rgba(255,255,255,.22)';bc.beginPath();bc.arc(bx-bs*.28,by-bs*.28,bs*.38,0,Math.PI*2);bc.fill();
+        bc.strokeStyle='rgba(0,0,0,.22)';bc.lineWidth=bs*.1;bc.beginPath();bc.arc(bx,by,bs*.92,0,Math.PI*2);bc.stroke();
+      });
+    }
+  }
+}
 /* ══ RENDER ══ */
 function render(){
   if(!ctx||!G||!currentStage) return;
@@ -1671,119 +1765,9 @@ function render(){
   // V1: screen shake
   let _shook=false;
   if(G.shakeT>0){_shook=true;ctx.save();ctx.translate((Math.random()-.5)*G.shakeT*7,(Math.random()-.5)*G.shakeT*5);}
-  // grid — 2.5D tiles (Kingdom Rush style: minimal grid, rich terrain)
-  const _TH=8;
-  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
-    const isPath=currentPset.has(c+','+r);
-    const tx=c*CS,ty=r*CS;
-    const baseCol=isPath?s.pathColor:s.grassColors[(c*3+r*7)%s.grassColors.length];
-    if(isPath){
-      ctx.fillStyle=baseCol; ctx.fillRect(tx,ty,CS,CS);
-      // subtle stone variation patches
-      const _pv=(c*7+r*13+currentStage.id*3)%5;
-      if(_pv<2){ctx.fillStyle='rgba(0,0,0,.06)';ctx.fillRect(tx+CS*.2,ty+CS*.2,CS*.6,CS*.55);}
-      ctx.fillStyle='rgba(0,0,0,.14)'; ctx.fillRect(tx,ty,CS,2); ctx.fillRect(tx,ty,2,CS);
-    } else {
-      ctx.fillStyle=baseCol; ctx.fillRect(tx,ty,CS,CS-_TH);
-      ctx.fillStyle=shadeColor(baseCol,-38); ctx.fillRect(tx,ty+CS-_TH,CS,_TH);
-      ctx.fillStyle='rgba(255,255,255,.11)'; ctx.fillRect(tx,ty,CS,2); ctx.fillRect(tx,ty,2,CS-_TH);
-      ctx.fillStyle='rgba(0,0,0,.18)'; ctx.fillRect(tx,ty+CS-_TH-1,CS,1);
-    }
-    // very subtle grid (only between tiles, not on top)
-    ctx.strokeStyle='rgba(0,0,0,.05)'; ctx.lineWidth=.5; ctx.strokeRect(tx,ty,CS,CS);
-  }
-  // ── TERRAIN DECORATIONS (Kingdom Rush style) ──
-  const _sid=currentStage.id;
-  const _towerCellSet=new Set(G.towers.map(t=>t.col+','+t.row));
-  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
-    if(currentPset.has(c+','+r)) continue;
-    if(_towerCellSet.has(c+','+r)) continue;
-    // ขุดแล้ว → ข้ามการวาด decoration
-    if(G.dugCells&&G.dugCells.has(c+','+r)) continue;
-    // obstacle cells: บังคับ h ให้ตรง type (t:2=ต้นไม้ h<22, t:1=หิน h22-38, t:0=พุ่มไม้ h38-48)
-    const _obsT=G.obstacles&&G.obstacles[c+','+r];
-    const h=_obsT!==undefined?[40,25,10][_obsT]:(c*17+r*13+_sid*31)%100;
-    const tx=c*CS, ty=r*CS;
-    const ox=((c*11+r*7)%24)-12, oy=((c*7+r*9)%18)-9; // offset within tile
-    const cx2=tx+CS*.5+ox, cy2=ty+CS*.5+oy;
-    if(h<22){// pine tree — 2.5D
-      const ts=CS*.48+((c*5+r*3)%8)*CS*.03;
-      const gc=s.grassColors[0];
-      // ground shadow (offset right+down)
-      ctx.globalAlpha=.25;ctx.fillStyle='#000';
-      ctx.beginPath();ctx.ellipse(cx2+ts*.22,cy2+ts*.62,ts*.62,ts*.2,0,0,Math.PI*2);ctx.fill();
-      ctx.globalAlpha=1;
-      // trunk side (right, darker)
-      ctx.fillStyle='#3e2723';ctx.fillRect(cx2+ts*.1,cy2+ts*.18,ts*.09,ts*.37);
-      // trunk front
-      ctx.fillStyle='#6d4c41';ctx.fillRect(cx2-ts*.1,cy2+ts*.15,ts*.2,ts*.38);
-      // foliage layers — front + right side face
-      [[ts*.72,ts*.32,-.5],[ts*.56,ts*.16,-.34],[ts*.38,0,-.18]].forEach(([w,yo,tipOY],ki)=>{
-        const fc=ki===0?shadeColor(gc,-22):ki===1?gc:shadeColor(gc,18);
-        // right side face (darker slab)
-        ctx.fillStyle=shadeColor(fc,-35);
-        ctx.beginPath();
-        ctx.moveTo(cx2+w,cy2+yo);
-        ctx.lineTo(cx2+w+ts*.12,cy2+yo+ts*.13);
-        ctx.lineTo(cx2+ts*.06,cy2-ts*.5+yo+ts*.13+(ki===2?ts*.06:0));
-        ctx.closePath();ctx.fill();
-        // main triangle (front face)
-        ctx.fillStyle=fc;
-        ctx.beginPath();ctx.moveTo(cx2,cy2-ts*.5+yo);ctx.lineTo(cx2+w,cy2+yo);ctx.lineTo(cx2-w,cy2+yo);ctx.closePath();ctx.fill();
-        // left edge highlight
-        ctx.strokeStyle='rgba(255,255,255,.18)';ctx.lineWidth=ts*.05;
-        ctx.beginPath();ctx.moveTo(cx2,cy2-ts*.5+yo);ctx.lineTo(cx2-w,cy2+yo);ctx.stroke();
-        // outline
-        ctx.strokeStyle='rgba(0,0,0,.28)';ctx.lineWidth=ts*.07;
-        ctx.beginPath();ctx.moveTo(cx2,cy2-ts*.5+yo);ctx.lineTo(cx2+w,cy2+yo);ctx.lineTo(cx2-w,cy2+yo);ctx.closePath();ctx.stroke();
-      });
-    } else if(h<36){// rocks — 2.5D
-      const rs=CS*.14+((c*3+r*7)%8)*CS*.014;
-      // ground shadow
-      ctx.globalAlpha=.28;ctx.fillStyle='#000';
-      ctx.beginPath();ctx.ellipse(cx2+rs*.3,cy2+rs*.55,rs*1.7,rs*.45,0,0,Math.PI*2);ctx.fill();
-      ctx.globalAlpha=1;
-      // rock 1 — side face (shifted down)
-      ctx.fillStyle='#424242';
-      ctx.beginPath();ctx.ellipse(cx2+rs*.1,cy2+rs*.45,rs*1.35,rs*.82,0,0,Math.PI*2);ctx.fill();
-      // rock 1 — top face
-      ctx.fillStyle='#757575';
-      ctx.beginPath();ctx.ellipse(cx2,cy2,rs*1.35,rs*.82,0,0,Math.PI*2);ctx.fill();
-      // rock 2 — side face
-      ctx.fillStyle='#4a4a4a';
-      ctx.beginPath();ctx.ellipse(cx2+rs*1.05,cy2+rs*.25,rs*.95,rs*.6,.3,0,Math.PI*2);ctx.fill();
-      // rock 2 — top face
-      ctx.fillStyle='#868686';
-      ctx.beginPath();ctx.ellipse(cx2+rs*.9,cy2+rs*.05,rs*.95,rs*.6,.3,0,Math.PI*2);ctx.fill();
-      // highlights
-      ctx.fillStyle='rgba(255,255,255,.38)';ctx.beginPath();ctx.ellipse(cx2-rs*.25,cy2-rs*.32,rs*.45,rs*.28,-.3,0,Math.PI*2);ctx.fill();
-      ctx.fillStyle='rgba(255,255,255,.22)';ctx.beginPath();ctx.ellipse(cx2+rs*.65,cy2-rs*.18,rs*.3,rs*.18,-.2,0,Math.PI*2);ctx.fill();
-      // outline
-      ctx.strokeStyle='rgba(0,0,0,.35)';ctx.lineWidth=rs*.14;
-      ctx.beginPath();ctx.ellipse(cx2,cy2,rs*1.35,rs*.82,0,0,Math.PI*2);ctx.stroke();
-    } else if(h<48){// bush cluster — 2.5D
-      const bs=CS*.13;
-      // ground shadow
-      ctx.globalAlpha=.2;ctx.fillStyle='#000';
-      ctx.beginPath();ctx.ellipse(cx2+bs*.2,cy2+bs*.9,bs*2.1,bs*.38,0,0,Math.PI*2);ctx.fill();
-      ctx.globalAlpha=1;
-      [-1,0,1].forEach(k=>{
-        const bx=cx2+k*bs*1.1, by=cy2+(k===0?-bs*.2:0);
-        const col=k===0?shadeColor(s.grassColors[0],8):s.grassColors[0];
-        // dark rim = side face illusion
-        ctx.fillStyle=shadeColor(col,-32);
-        ctx.beginPath();ctx.arc(bx+bs*.12,by+bs*.28,bs*.92,0,Math.PI*2);ctx.fill();
-        // main sphere
-        ctx.fillStyle=col;
-        ctx.beginPath();ctx.arc(bx,by,bs*.92,0,Math.PI*2);ctx.fill();
-        // highlight
-        ctx.fillStyle='rgba(255,255,255,.22)';
-        ctx.beginPath();ctx.arc(bx-bs*.28,by-bs*.28,bs*.38,0,Math.PI*2);ctx.fill();
-        ctx.strokeStyle='rgba(0,0,0,.22)';ctx.lineWidth=bs*.1;
-        ctx.beginPath();ctx.arc(bx,by,bs*.92,0,Math.PI*2);ctx.stroke();
-      });
-    }
-  }
+  // draw pre-rendered background (grid + terrain) in 1 call
+  if(_bgDirty) _renderBg();
+  ctx.drawImage(_bgCanvas,0,0);
   // path arrows — animated flow pulse for readability
   const _flowT=Date.now()*.0015;
   for(let i=0;i<currentPath.length-1;i++){
@@ -2669,6 +2653,7 @@ function tryPlaceTower(type,col,row){
   G.gold-=cost;
   if(_dt!==null&&type===6){G.dugCells.add(col+','+row);delete G.obstacles[col+','+row];G.obstaclesCleared++;}
   G.towers.push({col,row,type,lv:1,dmgLv:1,rngLv:1,rateLv:1,star:1,cd:0,angle:0,spawnAnim:1.0,awakened:false});
+  _invalidateBg();
   // FX: ring pulse + burst particles + flash stamp
   const bx=col*CS+CS/2, by=row*CS+CS/2;
   G.fxFlash.push({x:bx,y:by,r:CS*.6,life:.22,maxLife:.22,col:'rgba(255,255,255,.55)'});
@@ -2891,7 +2876,7 @@ function tryMergeTowers(src,target){
   G.selTowerInfo=null;
   const merged={col:target.col,row:target.row,type:target.type,star:newStar,lv:1,dmgLv:1,rngLv:1,rateLv:1,cd:0,angle:0,spawnAnim:1.0,awakened:false};
   if(G.gmTimers){delete G.gmTimers[src.col+'_'+src.row];delete G.gmTimers[target.col+'_'+target.row];}
-  G.towers.push(merged);
+  G.towers.push(merged); _invalidateBg();
   const mx=target.col*CS+CS/2,my=target.row*CS+CS/2;
   // ── Merge VFX (1-3★ only; 4★ is handled by _showMerge4Confirm) ──
   G.hitStopT=0.12;
@@ -2950,7 +2935,7 @@ function _showMerge4Confirm(src,target){
     G.towers=G.towers.filter(t=>t!==src&&t!==target);
     const merged={col:target.col,row:target.row,type:target.type,star:4,lv:1,dmgLv:1,rngLv:1,rateLv:1,cd:0,angle:0,spawnAnim:1.0,awakened:false};
     if(G.gmTimers){delete G.gmTimers[src.col+'_'+src.row];delete G.gmTimers[target.col+'_'+target.row];}
-    G.towers.push(merged);
+    G.towers.push(merged); _invalidateBg();
     const mx=target.col*CS+CS/2,my=target.row*CS+CS/2;
     G.hitStopT=0.22;G.shakeT=Math.min(G.shakeT+0.2,0.5);
     G.fxFlash.push({x:mx,y:my,r:CS*5,life:0.45,maxLife:0.45,col:'#fff9c4'});
@@ -3135,6 +3120,7 @@ function _doStartEndgame(){
     grassColors:_m.grassColors};
   currentPath=EG_PATH;
   currentPset=new Set(EG_PATH.map(p=>p[0]+','+p[1]));
+  _invalidateBg();
   showScreen('gp',true);
   cv=document.getElementById('cv'); ctx=cv.getContext('2d');
   cv.width=COLS*CS; cv.height=ROWS*CS;

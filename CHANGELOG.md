@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.18.6 — แก้อาการกระตุกเมื่อมอนเยอะ (offscreen bg canvas)
+
+### Performance
+- `js/game.js`: แยก `_renderBg()` — pre-render grid+terrain ไว้ใน offscreen `_bgCanvas` ครั้งเดียว
+- `render()` ใช้แค่ `ctx.drawImage(_bgCanvas,0,0)` แทนการวาด 300-500+ canvas ops ทุก frame
+- `_invalidateBg()` เรียกเมื่อ tower วาง/ขาย/merge, ขุด cell, เปลี่ยนด่าน
+
+---
+
 ## v3.18.5 — กระสุนเร็วขึ้น
 
 ### Changed
