@@ -1897,7 +1897,8 @@ function confirmTowerSelection(){
 /* ══ TOWER SELECT ══ */
 function selTower(i){
   if(!G||G.over||G.win||paused) return;
-  if(!currentStage.unlockedTowers.includes(i)){showToast('🔒 ยังไม่ได้ปลดล็อค!');return;}
+  const _selActive=selectedTowersForStage.length>0?selectedTowersForStage:(currentStage.unlockedTowers||[0,1,2,3,4,5,6,7]);
+  if(!_selActive.includes(i)){showToast('🔒 ยังไม่ได้ปลดล็อค!');return;}
   // deselect dig tool เมื่อเลือกป้อม
   if(G.selDig){G.selDig=false;const db=document.getElementById('digBtn');if(db)db.classList.remove('sel');}
   G.selTwr=(G.selTwr===i)?-1:i;

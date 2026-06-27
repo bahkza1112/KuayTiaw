@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.21.3 — แก้บัค คลิกป้อม Void ติด "ยังไม่ได้ปลดล็อค"
+
+### Fixed
+- `js/ui.js`: `selTower()` เช็ค `currentStage.unlockedTowers` โดยตรง ทำให้กดปุ่มป้อม Void/Time ใน HUD (click-to-place) ขึ้น "ยังไม่ได้ปลดล็อค!" แม้เลือกไว้ใน Tower Selection แล้ว — แก้เป็นใช้ `selectedTowersForStage` เหมือนกับ `updateTowerPanel` และ `onTbtnPointerDown`
+
 ## v3.21.2 — แก้บัค ป้อมมนตราโมฆะวางได้ในโหมดเนื้อเรื่อง
 
 ### Fixed
