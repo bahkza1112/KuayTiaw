@@ -2,6 +2,27 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.22.0 — การ์ดสกิล RO Art Style
+
+### Added
+- `js/ui.js`: `_drawSkillArt(ctx, id, W, H)` — วาด Canvas art แบบมือสำหรับสกิลแต่ละตัว
+  - **goldrush**: เหรียญทองขนาดใหญ่ + แสงรัศมี 8 ทิศ + เหรียญเล็กกระจาย + sparkles
+  - **freeze**: Snowflake mandala สมมาตร 6 แฉก + กิ่งน้ำแข็ง + crystal shards มุม
+  - **meteor**: ลูกไฟตกจากอวกาศ + trail + corona + วงกระแทก + embers
+  - **overdrive**: สายฟ้า + electric rings + ประกายไฟรอบ
+  - **barrier**: วงรูนเวทย์ + hex + อัญมณี 6 จุด + ปราสาทพื้นหลัง
+
+- `js/ui.js`: `_skillCardBackHTML(result, ci)` redesign — โครงสร้างใหม่ `.ro-frame` / `.ro-hdr` / `.ro-art` / `.ro-footer`
+
+- `css/main.css`: RO art card frame classes:
+  - `.ro-frame`, `.rf-legendary/epic/rare/uncommon/common` — border + glow per rarity
+  - `.ro-hdr`, `.ro-hdr-gem`, `.ro-hdr-type` — header strip with rarity gem symbol
+  - `.ro-art canvas` — canvas art panel scaling
+  - `.ro-footer`, `.ro-name`, `.ro-stars`, `.ro-status` — footer text
+  - `#skillGachaGrid .gc-front` — ornate mystery card back redesign (gold diamond pattern)
+  - `#skillGachaGrid .gc-back` — transparent container (frame handles visuals)
+  - Pulse animations wired to `.rf-legendary`/`.rf-epic` instead of `.gc-back`
+
 ## v3.21.3 — แก้บัค คลิกป้อม Void ติด "ยังไม่ได้ปลดล็อค"
 
 ### Fixed

@@ -280,27 +280,164 @@ function _renderSkillGachaUI(){
   }
 }
 const _SKILL_STAR_LABEL={true:'✨ ปลดล็อกใหม่!'};
-function _skillCardBackHTML(result){
+function _skillCardBackHTML(result,ci){
   const d=result.def, res=result.res;
-  if(!d){ // เกลือ — ได้เศษสะสมไปแลกของ
+  const rarity=d?d.rarity:'common';
+  const rfCls='rf-'+rarity;
+  const RL={legendary:'LEGENDARY',epic:'EPIC',rare:'RARE',uncommon:'UNCOMMON',common:'COMMON'};
+  const GEM={legendary:'◆',epic:'◆',rare:'◈',uncommon:'◇',common:'·'};
+  const g=GEM[rarity]||'·';
+  if(!d){
     const sd=BAG_ITEM_DEFS.find(b=>b.id===(result.shardId||'shard_c'));
-    return `<div class="gc-ico">${sd.icon}</div>
-      <div class="gc-name" style="color:${sd.color};">${sd.name}</div>
-      <div class="sk-stars" style="color:#666;">ไม่ได้การ์ด</div>
-      <div class="gacha-rarity-tag rarity-common">ปลอบใจ</div>
-      <div style="font-size:9px;margin-top:3px;color:#90caf9;">${sd.icon} ×1 · เอาไปแลกของได้</div>`;
+    return `<div class="ro-frame rf-common">
+      <div class="ro-hdr"><span class="ro-hdr-gem">·</span><span class="ro-hdr-type">SHARD</span><span class="ro-hdr-gem">·</span></div>
+      <div class="ro-art"><canvas id="skart${ci}" width="160" height="110"></canvas></div>
+      <div class="ro-footer">
+        <div class="ro-name" style="color:#90caf9">${sd.name}</div>
+        <div class="ro-status" style="color:#90caf9">${sd.icon} ×1 · ปลอบใจ</div>
+      </div></div>`;
   }
-  const stars='★'.repeat(res.star)+'☆'.repeat(SKILL_MAX_STAR-res.star);
+  const stars='★'.repeat(res.star)+'<span style="opacity:.25">'+'★'.repeat(SKILL_MAX_STAR-res.star)+'</span>';
   let status;
-  if(res.isNew) status='<span style="color:#69f0ae;">✨ ปลดล็อกใหม่!</span>';
-  else if(res.maxed) status='<span style="color:#ffd54f;">MAX · คืน 🎫1</span>';
-  else if(res.upgraded) status=`<span style="color:#69f0ae;">★${res.star-1} → ★${res.star} ✨</span>`;
-  else status=`<span style="color:#90caf9;">ซ้ำ ${res.shards}/${res.shardsNeeded} → ★${res.star+1}</span>`;
-  return `<div class="gc-ico">${d.icon}</div>
-    <div class="gc-name" style="color:${d.color};">${d.name}</div>
-    <div class="sk-stars">${stars}</div>
-    <div class="gacha-rarity-tag rarity-${d.rarity}">${d.rarity}</div>
-    <div style="font-size:9px;margin-top:3px;">${status}</div>`;
+  if(res.isNew) status='<span style="color:#69f0ae">✨ ปลดล็อกใหม่!</span>';
+  else if(res.maxed) status='<span style="color:#ffd54f">MAX · คืน 🎫×1</span>';
+  else if(res.upgraded) status=`<span style="color:#69f0ae">★${res.star-1}→★${res.star} ✨</span>`;
+  else status=`<span style="color:#90caf9">ซ้ำ ${res.shards}/${res.shardsNeeded}→★${res.star+1}</span>`;
+  return `<div class="ro-frame ${rfCls}">
+    <div class="ro-hdr"><span class="ro-hdr-gem">${g}</span><span class="ro-hdr-type">${RL[rarity]}</span><span class="ro-hdr-gem">${g}</span></div>
+    <div class="ro-art"><canvas id="skart${ci}" width="160" height="110"></canvas></div>
+    <div class="ro-footer">
+      <div class="ro-name">${d.name}</div>
+      <div class="ro-stars">${stars}</div>
+      <div class="ro-status">${status}</div>
+    </div></div>`;
+}
+function _drawSkillArt(ctx,id,W,H){
+  const _lg=(x0,y0,x1,y1,s)=>{const g=ctx.createLinearGradient(x0,y0,x1,y1);s.forEach(([t,c])=>g.addColorStop(t,c));return g;};
+  const _rg=(x,y,r0,r1,s)=>{const g=ctx.createRadialGradient(x,y,r0,x,y,r1);s.forEach(([t,c])=>g.addColorStop(t,c));return g;};
+  ctx.clearRect(0,0,W,H);
+  if(id==='goldrush'){
+    ctx.fillStyle=_lg(0,0,W,H,[[0,'#1a0900'],[.5,'#5c2800'],[1,'#1a0700']]);ctx.fillRect(0,0,W,H);
+    ctx.fillStyle=_rg(W/2,H*.5,0,H*.55,[[0,'rgba(255,195,0,.18)'],[1,'transparent']]);ctx.fillRect(0,0,W,H);
+    // light rays
+    for(let i=0;i<8;i++){const a=i/8*Math.PI*2;ctx.save();ctx.translate(W/2,H*.48);ctx.rotate(a);
+      const rg=ctx.createLinearGradient(0,0,0,-H*.52);rg.addColorStop(0,'rgba(255,195,0,.3)');rg.addColorStop(1,'transparent');
+      ctx.fillStyle=rg;ctx.beginPath();ctx.moveTo(-2,0);ctx.lineTo(2,0);ctx.lineTo(.5,-H*.52);ctx.lineTo(-.5,-H*.52);ctx.fill();ctx.restore();}
+    // big coin
+    const cr=H*.27;ctx.beginPath();ctx.arc(W/2,H*.48,cr,0,Math.PI*2);
+    ctx.fillStyle=_lg(W/2-cr,H*.22,W/2+cr,H*.74,[[0,'#ffe57f'],[.35,'#ffd54f'],[.7,'#ffb300'],[1,'#e65100']]);ctx.fill();
+    ctx.strokeStyle='rgba(255,248,220,.55)';ctx.lineWidth=H*.016;ctx.stroke();
+    // shine
+    ctx.save();ctx.globalAlpha=.42;ctx.beginPath();ctx.ellipse(W/2-cr*.18,H*.37,cr*.3,cr*.11,-Math.PI*.35,0,Math.PI*2);ctx.fillStyle='#fff8e1';ctx.fill();ctx.restore();
+    // G letter
+    ctx.font=`900 ${H*.24}px Georgia,serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#7a3800';ctx.fillText('G',W/2,H*.5);
+    // small coins
+    [[W*.12,H*.18],[W*.83,H*.22],[W*.07,H*.72],[W*.9,H*.66],[W*.22,H*.88],[W*.78,H*.88]].forEach(([x,y])=>{
+      ctx.beginPath();ctx.arc(x,y,H*.045,0,Math.PI*2);ctx.fillStyle='#ffd54f';ctx.fill();ctx.strokeStyle='#ff8f00';ctx.lineWidth=H*.007;ctx.stroke();});
+    // sparkles
+    ctx.fillStyle='rgba(255,240,80,.75)';ctx.font=`${H*.1}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+    [[W*.34,H*.13],[W*.66,H*.11],[W*.16,H*.44],[W*.84,H*.4]].forEach(([x,y])=>ctx.fillText('✦',x,y));
+  } else if(id==='freeze'){
+    ctx.fillStyle=_lg(0,0,W,H,[[0,'#000c1c'],[.5,'#001e3c'],[1,'#000810']]);ctx.fillRect(0,0,W,H);
+    ctx.fillStyle=_rg(W/2,H*.48,0,H*.52,[[0,'rgba(70,150,255,.14)'],[1,'transparent']]);ctx.fillRect(0,0,W,H);
+    const cx=W/2,cy=H*.47,len=H*.33;
+    const arm=()=>{
+      ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,-len);
+      ctx.strokeStyle='rgba(140,210,255,.85)';ctx.lineWidth=H*.02;ctx.stroke();
+      for(let b=1;b<=3;b++){const bp=len*.28*b,bl=len*.28*(4-b)*.19;
+        ctx.save();ctx.translate(0,-bp);
+        [-1,1].forEach(s=>{ctx.save();ctx.rotate(s*Math.PI*.42);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,-bl);ctx.strokeStyle='rgba(180,235,255,.65)';ctx.lineWidth=H*.013;ctx.stroke();ctx.restore();});
+        ctx.restore();}
+      ctx.beginPath();ctx.arc(0,-len,H*.023,0,Math.PI*2);ctx.fillStyle='#e3f4ff';ctx.fill();};
+    ctx.save();ctx.translate(cx,cy);
+    for(let a=0;a<6;a++){ctx.save();ctx.rotate(a*Math.PI/3);arm();ctx.restore();}
+    ctx.beginPath();for(let v=0;v<6;v++){const a=v*Math.PI/3-Math.PI/6;v?ctx.lineTo(Math.cos(a)*H*.065,Math.sin(a)*H*.065):ctx.moveTo(Math.cos(a)*H*.065,Math.sin(a)*H*.065);}
+    ctx.closePath();ctx.fillStyle='rgba(200,235,255,.9)';ctx.fill();ctx.restore();
+    // corner shards
+    [[W*.1,H*.08,1],[W*.9,H*.08,-1],[W*.06,H*.9,1],[W*.94,H*.9,-1]].forEach(([x,y,fl])=>{
+      ctx.save();ctx.translate(x,y);ctx.rotate(Math.atan2(y-cy,x-cx)+Math.PI*.5);
+      ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(-H*.028,-H*.075);ctx.lineTo(H*.028,-H*.075);ctx.closePath();
+      ctx.fillStyle='rgba(110,195,255,.45)';ctx.fill();ctx.restore();});
+  } else if(id==='meteor'){
+    ctx.fillStyle=_lg(0,0,W,H,[[0,'#060000'],[.4,'#140200'],[1,'#1e0400']]);ctx.fillRect(0,0,W,H);
+    // stars
+    for(let i=0;i<30;i++){const sx=(Math.sin(i*17.3)*0.5+0.5)*W,sy=(Math.sin(i*29.7)*0.5+0.5)*H*.58;
+      ctx.beginPath();ctx.arc(sx,sy,H*.006+Math.sin(i*.9)*.004,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${.3+Math.sin(i*.7)*.2})`;ctx.fill();}
+    const mx=W*.53,my=H*.37;
+    // trail
+    const tg=ctx.createLinearGradient(W*.16,H*.04,mx,my);
+    tg.addColorStop(0,'rgba(255,80,0,0)');tg.addColorStop(.55,'rgba(255,130,0,.35)');tg.addColorStop(1,'rgba(255,220,60,.65)');
+    ctx.beginPath();ctx.moveTo(W*.16,H*.04);ctx.lineTo(mx+H*.07,my-H*.02);ctx.lineTo(mx,my+H*.02);ctx.lineTo(mx-H*.07,my-H*.02);ctx.closePath();
+    ctx.fillStyle=tg;ctx.fill();
+    // corona
+    ctx.beginPath();ctx.arc(mx,my,H*.23,0,Math.PI*2);
+    ctx.fillStyle=_rg(mx,my,0,H*.23,[[0,'rgba(255,240,100,.55)'],[.5,'rgba(255,90,0,.25)'],[1,'transparent']]);ctx.fill();
+    // fireball
+    ctx.beginPath();ctx.arc(mx,my,H*.14,0,Math.PI*2);
+    ctx.fillStyle=_lg(mx-H*.14,my-H*.14,mx+H*.14,my+H*.14,[[0,'#fff9c4'],[.3,'#ffcc00'],[.65,'#ff6d00'],[1,'#bf360c']]);ctx.fill();
+    ctx.strokeStyle='rgba(255,220,100,.35)';ctx.lineWidth=H*.012;ctx.stroke();
+    // impact rings
+    [H*.87,H*.78].forEach((ry,i)=>{
+      ctx.beginPath();ctx.ellipse(W/2,ry,W*(i?.28:.38),H*.04,0,0,Math.PI*2);
+      ctx.strokeStyle=`rgba(255,${110+i*55},0,${.5-i*.18})`;ctx.lineWidth=H*.015-i*H*.004;ctx.stroke();});
+    // embers
+    for(let i=0;i<12;i++){const fi=i*37.1,r=H*.2+Math.sin(fi)*.08*H,a=fi;
+      ctx.beginPath();ctx.arc(mx+Math.cos(a)*r,my+Math.sin(a)*r,H*.012,0,Math.PI*2);
+      ctx.fillStyle='rgba(255,155,0,.52)';ctx.fill();}
+  } else if(id==='overdrive'){
+    ctx.fillStyle=_lg(0,0,W,H,[[0,'#07070e'],[.5,'#100f00'],[1,'#07070e']]);ctx.fillRect(0,0,W,H);
+    ctx.fillStyle=_rg(W/2,H*.48,0,H*.5,[[0,'rgba(255,215,0,.1)'],[1,'transparent']]);ctx.fillRect(0,0,W,H);
+    // rings
+    [H*.44,H*.31,H*.19].forEach((r,i)=>{
+      ctx.beginPath();ctx.arc(W/2,H*.48,r,0,Math.PI*2);
+      ctx.strokeStyle=`rgba(255,${205-i*28},0,${.18+i*.07})`;ctx.lineWidth=H*.009;ctx.stroke();});
+    const bx=W/2,by=H*.48;
+    // bolt silhouette (glow)
+    ctx.save();ctx.shadowBlur=H*.08;ctx.shadowColor='rgba(255,220,50,.6)';
+    ctx.beginPath();ctx.moveTo(bx+W*.09,by-H*.38);ctx.lineTo(bx-W*.09,by+H*.04);ctx.lineTo(bx+W*.04,by+H*.04);ctx.lineTo(bx-W*.11,by+H*.4);ctx.lineTo(bx+W*.11,by-H*.04);ctx.lineTo(bx-W*.02,by-H*.04);ctx.closePath();
+    ctx.strokeStyle='rgba(255,248,180,.5)';ctx.lineWidth=H*.028;ctx.lineJoin='round';ctx.stroke();ctx.restore();
+    // bolt fill
+    ctx.beginPath();ctx.moveTo(bx+W*.09,by-H*.38);ctx.lineTo(bx-W*.09,by+H*.04);ctx.lineTo(bx+W*.04,by+H*.04);ctx.lineTo(bx-W*.11,by+H*.4);ctx.lineTo(bx+W*.11,by-H*.04);ctx.lineTo(bx-W*.02,by-H*.04);ctx.closePath();
+    ctx.fillStyle=_lg(bx,by-H*.38,bx,by+H*.4,[[0,'#fff9c4'],[.35,'#ffee58'],[.7,'#ffc107'],[1,'#ff6f00']]);ctx.fill();
+    // sparks
+    for(let i=0;i<14;i++){const fi=i*29.3,r=H*.15+Math.sin(fi)*.22*H,a=fi;
+      const sx=bx+Math.cos(a)*r,sy=by+Math.sin(a)*r;
+      ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(sx+Math.cos(a)*H*.028,sy+Math.sin(a)*H*.028);
+      ctx.strokeStyle='rgba(255,228,70,.5)';ctx.lineWidth=H*.006;ctx.stroke();}
+    ctx.fillStyle='rgba(255,232,80,.7)';ctx.font=`${H*.09}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+    [[W*.08,H*.14],[W*.9,H*.18],[W*.05,H*.8],[W*.93,H*.76]].forEach(([x,y])=>ctx.fillText('✦',x,y));
+  } else if(id==='barrier'){
+    ctx.fillStyle=_lg(0,0,W,H,[[0,'#050010'],[.5,'#0d0022'],[1,'#050010']]);ctx.fillRect(0,0,W,H);
+    ctx.fillStyle=_rg(W/2,H*.43,0,H*.5,[[0,'rgba(120,45,255,.17)'],[1,'transparent']]);ctx.fillRect(0,0,W,H);
+    const cx=W/2,cy=H*.43;
+    // outer ring
+    ctx.beginPath();ctx.arc(cx,cy,H*.37,0,Math.PI*2);ctx.strokeStyle='rgba(175,125,255,.5)';ctx.lineWidth=H*.018;ctx.stroke();
+    // tick marks
+    for(let r=0;r<12;r++){const a=r/12*Math.PI*2,r0=H*.37,r1=H*(r%3?H*.37-.022:H*.37-.038);
+      ctx.beginPath();ctx.moveTo(cx+Math.cos(a)*r0,cy+Math.sin(a)*r0);ctx.lineTo(cx+Math.cos(a)*r1,cy+Math.sin(a)*r1);
+      ctx.strokeStyle=`rgba(200,160,255,${r%3?'.38':'.7'})`;ctx.lineWidth=H*(r%3?.009:.015);ctx.stroke();}
+    // hex
+    ctx.beginPath();for(let v=0;v<6;v++){const a=v*Math.PI/3;v?ctx.lineTo(cx+Math.cos(a)*H*.27,cy+Math.sin(a)*H*.27):ctx.moveTo(cx+Math.cos(a)*H*.27,cy+Math.sin(a)*H*.27);}
+    ctx.closePath();ctx.strokeStyle='rgba(195,155,255,.32)';ctx.lineWidth=H*.01;ctx.stroke();
+    // inner glow
+    ctx.beginPath();ctx.arc(cx,cy,H*.19,0,Math.PI*2);
+    ctx.fillStyle=_rg(cx,cy,0,H*.19,[[0,'rgba(175,110,255,.28)'],[1,'transparent']]);ctx.fill();
+    // 6 ring gems
+    for(let i=0;i<6;i++){const a=i*Math.PI/3;const gx=cx+Math.cos(a)*H*.37,gy=cy+Math.sin(a)*H*.37;
+      ctx.beginPath();ctx.arc(gx,gy,H*.022,0,Math.PI*2);ctx.fillStyle='#b388ff';ctx.fill();
+      ctx.strokeStyle='rgba(230,200,255,.45)';ctx.lineWidth=H*.007;ctx.stroke();}
+    // shield icon
+    ctx.font=`${H*.19}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('🛡️',cx,cy);
+    // castle
+    const bw=W*.46,bxs=W*.27,bys=H*.89,bh=H*.09;
+    ctx.fillStyle='rgba(85,35,165,.55)';ctx.fillRect(bxs,bys,bw,bh);
+    for(let b=0;b<5;b++)ctx.fillRect(bxs+bw*(.06+b*.19),bys-bh*.55,bw*.1,bh*.55);
+    ctx.fillStyle=_rg(cx,bys,0,bw*.55,[[0,'rgba(130,70,255,.18)'],[1,'transparent']]);ctx.fillRect(0,bys-H*.18,W,H*.2);
+  } else {
+    ctx.fillStyle=_lg(0,0,W,H,[[0,'#0d0d14'],[1,'#1a1a2e']]);ctx.fillRect(0,0,W,H);
+    ctx.font=`${H*.32}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillStyle='rgba(180,180,220,.45)';ctx.fillText('✦',W/2,H*.5);
+  }
 }
 function startSkillGacha(n){
   if(_skBusy) return;
@@ -334,10 +471,12 @@ function flipSkillCard(i){
   const back=document.getElementById('skb'+i);
   const card=document.getElementById('skc'+i);
   if(!back||!card) return;
-  back.innerHTML=_skillCardBackHTML(result);
-  const rarity=result.def?result.def.rarity:'common';
-  back.className=`gc-back rarity-back-${rarity}`;
+  back.innerHTML=_skillCardBackHTML(result,i);
+  back.className='gc-back';
   card.classList.add('flipped');
+  const cv=document.getElementById('skart'+i);
+  if(cv){const c=cv.getContext('2d');_drawSkillArt(c,result.def?result.def.id:'shard',cv.width,cv.height);}
+  const rarity=result.def?result.def.rarity:'common';
   setTimeout(()=>_gachaFx(card,rarity,'skillgacha'),300);
   if(_skFlipped.every(Boolean)) setTimeout(_skillGachaDone,900);
 }
