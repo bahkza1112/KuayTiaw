@@ -87,8 +87,8 @@ const GACHA_COST10=270; // ×10 ส่วนลด 10% (ปกติ 300 = ฟ�
 function gachaCost(n){return n===10?GACHA_COST10:GACHA_COST*n;}
 const GACHA_PITY=100; // รับ 001 guaranteed ทุก 100 pull
 const GACHA_POOL=[
-  {code:'001',icon:'🌑',name:'ป้อมมนตราโมฆะ', rarity:'legendary',color:'#b388ff',w:1,
-   apply(){setVoidUnlocked();}},
+  {code:'001',icon:'🌀',name:'ป้อมกาลเวลา', rarity:'legendary',color:'#b39ddb',w:1,
+   apply(){setTimeUnlocked();}},
   {code:'002',icon:'🌟',name:'ดาวตก x3',    rarity:'epic',   color:'#ff8f00',w:10,
    apply(){addMaterial(2,3);}},
   {code:'003',icon:'🌟',name:'ดาวตก x1',    rarity:'epic',   color:'#ffe082',w:20,
@@ -416,6 +416,8 @@ function addMaterial(idx,n){
 }
 function isVoidUnlocked(){return localStorage.getItem('tq_voidUnlocked')==='1';}
 function setVoidUnlocked(){localStorage.setItem('tq_voidUnlocked','1');}
+function isTimeUnlocked(){return localStorage.getItem('tq_timeUnlocked')==='1';}
+function setTimeUnlocked(){localStorage.setItem('tq_timeUnlocked','1');}
 function awardEndgameGems(finalWave,diff){
   const gemsEarned=Math.floor(Math.floor(finalWave/2)*(1+diff*0.5));
   if(gemsEarned>0){ addGems(gemsEarned); showToast('<span class="gico"></span> +'+gemsEarned+' Soul Gems (Endgame)!'); }
@@ -653,6 +655,7 @@ function checkAchievements(){
   if(seenMonsters.size>=allM) unlockAchievement('cdx_m');
   const unlTowers=getUnlockedTowers();
   if(isVoidUnlocked()) unlTowers.add(8);
+  if(isTimeUnlocked()) unlTowers.add(9);
   if(unlTowers.size>=TNAMES.length) unlockAchievement('cdx_t');
   if(loadGems()>=1000) unlockAchievement('gem1k');
   if(isVoidUnlocked()) unlockAchievement('void1');
@@ -715,6 +718,7 @@ function getUnlockedTowers(){
     }
   });
   if(isVoidUnlocked()) unlocked.add(8); // Void Tower ปลดล็อกผ่าน Workshop
+  if(isTimeUnlocked()) unlocked.add(9); // Time Tower ปลดล็อกผ่าน Workshop หรือ Gacha
   return unlocked;
 }
 function unlockMonster(ti){

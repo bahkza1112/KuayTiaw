@@ -1,6 +1,14 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.19.0';
+const GAME_VERSION='3.20.0';
 const PATCH_NOTES=[
+  {ver:'3.20.0',date:'2026-06-27',title:'🌀 ป้อมกาลเวลา — ป้อมใหม่ชนิดที่ 10',notes:[
+    'ป้อมกาลเวลา 🌀 (type 9): ไม่โจมตีโดยตรง — ชาร์จ 6 วิ แล้วปล่อยคลื่นเวลา ช้าศัตรู 50% ในรัศมี (บอส 85%)',
+    'สาย 1 รัศมีเวลา: ขยายรัศมี pulse zone 2.0 → 3.5 ช่อง (Lv1-4)',
+    'สาย 2 ความเข้ม: ลดเวลาชาร์จ + เพิ่มระยะ pulse — Lv1: 6s/1.5s, Lv2: 5s/2s, Lv3: 4s/3s, Lv4: 3s/5s',
+    'Awaken: หยุดเวลา 1.5 วินาที เมื่อ pulse ลงมา (บอสช้า 85%)',
+    'ปลดล็อก: คราฟที่ Workshop (600 gems + วัสดุ) หรือดึงจาก Gacha Legendary',
+    'Gacha Legendary เปลี่ยนจาก Void Tower เป็น Time Tower แล้ว — Void Tower ยังคราฟได้ที่ Workshop',
+  ]},
   {ver:'3.19.0',date:'2026-06-27',title:'🦅🐲 มอนสเตอร์บิน Act 2 — ฮาร์ปี & มังกรเงา',notes:[
     'ฮาร์ปี 🦅 (type 17): บินได้ เร็วมาก — Shriek ทุก 7 วิ ลด fire rate ป้อมในรัศมี 3 ช่อง 40% นาน 3 วิ',
     'มังกรเงา 🐲 (type 18): บินได้ HP สูง — Shadow Veil สลับ visible 4 วิ / invisible 2 วิ ไม่รับดาเมจขณะซ่อน',
@@ -1338,6 +1346,7 @@ function updateMenuStats(){
 
 /* ══ WORKSHOP ══ */
 const VOID_RECIPE={gems:800,mats:{0:30,1:15,2:8}};
+const TIME_RECIPE={gems:600,mats:{0:20,1:10,2:5}};
 const MAT_ICONS=['🪨','🔘','🌟'];
 const MAT_NAMES=['หินมืด','แกนเวทย์','ดาวตก'];
 /* ══ BAG SCREEN ══ */
@@ -1845,48 +1854,48 @@ function wsTab(t){
   document.getElementById('wsTabBtnTalent').className='ws-tab-btn'+(t==='talent'?' ws-tab-active':'');
 }
 function openWorkshop(){ showScreen('workshop',true); wsTab('craft'); renderWorkshop(); }
-function toggleWsSkill(){
-  const d=document.getElementById('wsSkillDetail');
-  const a=document.getElementById('wsSkillArrow');
-  if(!d||!a) return;
-  const show=d.style.display==='none';
-  d.style.display=show?'':'none';
-  a.textContent=show?'▲ ซ่อน':'▼ รายละเอียด';
-}
 function isFinalStageCleared(){
   return (loadProgress()[STAGES.length-1]||0)>=1;
 }
-function renderWorkshop(){
-  const gems=loadGems(), mats=loadMaterials();
-  const unlocked=isVoidUnlocked();
-  const finalCleared=isFinalStageCleared();
-  document.getElementById('wsLockBadge').style.display=(!unlocked&&!finalCleared)?'block':'none';
-  document.getElementById('wsAlreadyUnlocked').style.display=unlocked?'block':'none';
-  document.getElementById('wsRecipeBox').style.display='none';
-  const craftBtn=document.getElementById('wsCraftBtn');
-  const reqNote=document.getElementById('wsCraftReqNote');
-  if(unlocked){craftBtn.style.display='none';if(reqNote)reqNote.style.display='none';}
-  else if(finalCleared){
+function _renderCraftCard(unlocked,finalCleared,gems,mats,recipe,ids){
+  const {lockId,unlockedId,reqNoteId,craftBtnId}=ids;
+  const lockEl=document.getElementById(lockId);
+  const unlockedEl=document.getElementById(unlockedId);
+  const reqNote=document.getElementById(reqNoteId);
+  const craftBtn=document.getElementById(craftBtnId);
+  if(!lockEl||!unlockedEl||!craftBtn) return;
+  if(unlocked){
+    lockEl.style.display='none';unlockedEl.style.display='block';
+    craftBtn.style.display='none';if(reqNote)reqNote.style.display='none';
+  } else if(finalCleared){
+    lockEl.style.display='none';unlockedEl.style.display='none';
     const reqs=[
-      {icon:'<span class="gico"></span>',name:'มณีวิญญาณ',have:gems,need:VOID_RECIPE.gems},
-      {icon:MAT_ICONS[0],name:MAT_NAMES[0],have:mats[0]||0,need:VOID_RECIPE.mats[0]},
-      {icon:MAT_ICONS[1],name:MAT_NAMES[1],have:mats[1]||0,need:VOID_RECIPE.mats[1]},
-      {icon:MAT_ICONS[2],name:MAT_NAMES[2],have:mats[2]||0,need:VOID_RECIPE.mats[2]},
+      {icon:'<span class="gico"></span>',name:'มณีวิญญาณ',have:gems,need:recipe.gems},
+      {icon:MAT_ICONS[0],name:MAT_NAMES[0],have:mats[0]||0,need:recipe.mats[0]||0},
+      {icon:MAT_ICONS[1],name:MAT_NAMES[1],have:mats[1]||0,need:recipe.mats[1]||0},
+      {icon:MAT_ICONS[2],name:MAT_NAMES[2],have:mats[2]||0,need:recipe.mats[2]||0},
     ];
     const allMet=reqs.every(r=>r.have>=r.need);
-    craftBtn.style.display='';
-    craftBtn.disabled=!allMet;
+    craftBtn.style.display='';craftBtn.disabled=!allMet;
     if(reqNote){
       reqNote.style.display='block';
-      reqNote.innerHTML=reqs.map(r=>{
-        const met=r.have>=r.need;
-        return `<span style="color:${met?'#69f0ae':'#ef5350'};">${r.icon} ${r.need.toLocaleString()} ${r.name}</span>`;
-      }).join('&ensp;·&ensp;');
+      reqNote.innerHTML=reqs.map(r=>{const met=r.have>=r.need;return `<span style="color:${met?'#69f0ae':'#ef5350'};">${r.icon} ${r.need.toLocaleString()} ${r.name}</span>`;}).join('&ensp;·&ensp;');
     }
   } else {
-    craftBtn.style.display='none';
-    if(reqNote)reqNote.style.display='none';
+    lockEl.style.display='block';unlockedEl.style.display='none';
+    craftBtn.style.display='none';if(reqNote)reqNote.style.display='none';
   }
+}
+function renderWorkshop(){
+  const gems=loadGems(), mats=loadMaterials();
+  const finalCleared=isFinalStageCleared();
+  // Void Tower card
+  _renderCraftCard(isVoidUnlocked(),finalCleared,gems,mats,VOID_RECIPE,
+    {lockId:'wsLockBadge',unlockedId:'wsAlreadyUnlocked',reqNoteId:'wsCraftReqNote',craftBtnId:'wsCraftBtn'});
+  document.getElementById('wsRecipeBox').style.display='none';
+  // Time Tower card
+  _renderCraftCard(isTimeUnlocked(),finalCleared,gems,mats,TIME_RECIPE,
+    {lockId:'wsTimeLockBadge',unlockedId:'wsTimeAlreadyUnlocked',reqNoteId:'wsTimeCraftReqNote',craftBtnId:'wsTimeCraftBtn'});
   // render shard exchange
   const exSection=document.getElementById('wsShardExchange');
   if(exSection) exSection.innerHTML=_renderShardExchange();
@@ -1945,6 +1954,34 @@ function craftVoidTower(){
   renderWorkshop(); updateMenuStats(); checkAchievements();
   // 🌑 popup ฉลองคราฟสำเร็จ (สไตล์เดียวกับหน้าจอจบด่าน)
   document.getElementById('voidCraftOverlay').style.display='flex';
+}
+function craftTimeTower(){
+  if(isTimeUnlocked()||!isFinalStageCleared())return;
+  const gems=loadGems(), mats=loadMaterials();
+  const ok=gems>=TIME_RECIPE.gems&&(mats[0]||0)>=TIME_RECIPE.mats[0]
+    &&(mats[1]||0)>=TIME_RECIPE.mats[1]&&(mats[2]||0)>=TIME_RECIPE.mats[2];
+  if(!ok){ showToast('❌ ทรัพยากรไม่พอ!'); return; }
+  saveGems(gems-TIME_RECIPE.gems);
+  mats[0]-=TIME_RECIPE.mats[0]; mats[1]-=TIME_RECIPE.mats[1]; mats[2]-=TIME_RECIPE.mats[2];
+  saveMaterials(mats); setTimeUnlocked();
+  renderWorkshop(); updateMenuStats(); checkAchievements();
+  document.getElementById('timeCraftOverlay').style.display='flex';
+}
+function toggleWsSkill(){
+  const d=document.getElementById('wsSkillDetail');
+  const a=document.getElementById('wsSkillArrow');
+  if(!d||!a) return;
+  const open=d.style.display!=='none';
+  d.style.display=open?'none':'block';
+  a.textContent=open?'▼ รายละเอียด':'▲ ซ่อน';
+}
+function toggleWsTimeSkill(){
+  const d=document.getElementById('wsTimeSkillDetail');
+  const a=document.getElementById('wsTimeSkillArrow');
+  if(!d||!a) return;
+  const open=d.style.display!=='none';
+  d.style.display=open?'none':'block';
+  a.textContent=open?'▼ รายละเอียด':'▲ ซ่อน';
 }
 
 /* ══ STORY MISSIONS ══ */
@@ -2650,7 +2687,7 @@ function showStoryScreen(si){
 function showTowerSelection(si){
   towerSelMode='story';
   const s=STAGES[si];
-  const available=(s.unlockedTowers||[0,1,2,3,4,5,6]).concat(isVoidUnlocked()&&!(s.unlockedTowers||[]).includes(8)?[8]:[]);
+  const available=(s.unlockedTowers||[0,1,2,3,4,5,6]).concat(isVoidUnlocked()&&!(s.unlockedTowers||[]).includes(8)?[8]:[]).concat(isTimeUnlocked()&&!(s.unlockedTowers||[]).includes(9)?[9]:[]);
   stageMaxTowers=s.maxTowers||99;
   const hasSkills=Object.keys(loadSkills()).length>0;
   setActiveSkill(null); // รีเซ็ต — เลือกใหม่ทุกด่าน
@@ -2677,7 +2714,7 @@ function showTowerSelection(si){
 function openEgTowerSelection(){
   towerSelMode='endgame';
   stageMaxTowers=[7,6,5][egDiff];
-  const available=[0,1,2,3,4,5,6,7].concat(isVoidUnlocked()?[8]:[]);
+  const available=[0,1,2,3,4,5,6,7].concat(isVoidUnlocked()?[8]:[]).concat(isTimeUnlocked()?[9]:[]);
   setActiveSkill(null); // รีเซ็ต
   showScreen('towersel',true);
   const saved=JSON.parse(localStorage.getItem('tq_sel_endgame_'+egDiff)||'[]');
@@ -3081,8 +3118,8 @@ function _showSkillInfo(id){
 function _closeSkillInfo(){const el=document.getElementById('skInfoModal');if(el)el.remove();}
 function _tsAvailable(){
   return towerSelMode==='endgame'
-    ? [0,1,2,3,4,5,6,7].concat(isVoidUnlocked()?[8]:[])
-    : (STAGES[pendingStageIndex].unlockedTowers||[0,1,2,3,4]).concat(isVoidUnlocked()&&!(STAGES[pendingStageIndex].unlockedTowers||[]).includes(8)?[8]:[]);
+    ? [0,1,2,3,4,5,6,7].concat(isVoidUnlocked()?[8]:[]).concat(isTimeUnlocked()?[9]:[])
+    : (STAGES[pendingStageIndex].unlockedTowers||[0,1,2,3,4]).concat(isVoidUnlocked()&&!(STAGES[pendingStageIndex].unlockedTowers||[]).includes(8)?[8]:[]).concat(isTimeUnlocked()&&!(STAGES[pendingStageIndex].unlockedTowers||[]).includes(9)?[9]:[]);
 }
 function _tsSaveKey(){
   return towerSelMode==='endgame' ? 'tq_sel_endgame_'+egDiff : 'tq_sel_'+pendingStageIndex;

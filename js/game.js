@@ -254,10 +254,10 @@ const DEFAULT_CFG={
   m_spd:[1.4,1.0,1.15,.85,.5,.55,1.8,1.55,.65,.42,.72,1.15,1.3,0.65,0.44,0.36,0.42,1.65,0.80],
   m_rew:[10,10,15,20,60,30,5,20,30,100,10,18,22,45,85,170,90,15,30],
   // Tower — เพิ่ม DPS นิดหน่อยให้ผู้เล่นรู้สึกว่าป้อมมีพลัง
-  t_dmg:[24,12,44,65,0,20,0,20,42],   // [cannon,ice,magic,sniper,support,archer,goldmine,thunder,void] — cannon 28→24, magic 38→44, void 38→42 (v3.0.1)
-  t_rng:[2.2,2.0,2.5,4.5,1.5,2.8,0,2.4,3.0], // support: 2.8→1.5 (v3.0.0 ลดระยะเยอะ)
-  t_rate:[1.2,1.5,.8,.4,0,1.8,0,1.8,0.6], // archer 2.0→1.8 (v3.1.0 — DPS/Cost สูงสุดในเกมที่ ★4lv5)
-  t_cost:[50,55,75,65,35,60,50,85,90], // gold mine: 50, thunder: 85 gold, void: 90 gold
+  t_dmg:[24,12,44,65,0,20,0,20,42,0],   // [cannon,ice,magic,sniper,support,archer,goldmine,thunder,void,time] — time dmg=0 ใช้ pulse slow แทน
+  t_rng:[2.2,2.0,2.5,4.5,1.5,2.8,0,2.4,3.0,2.0], // time: รัศมีเริ่มต้น 2.0 ช่อง
+  t_rate:[1.2,1.5,.8,.4,0,1.8,0,1.8,0.6,0], // time rate=0 (ใช้ pulse mechanic แทน)
+  t_cost:[50,55,75,65,35,60,50,85,90,95], // time: 95 gold
   t_goldrate:5,t_goldamt:[2,4,6,8],
   // Game settings
   startGold:175,    // เดิม 200 → ลดเงินเริ่มต้น (v3.18.4)
@@ -1049,6 +1049,9 @@ function update(dt){
     const e=G.enemies[i];
     if(!e.alive){G.enemies[i]=G.enemies[G.enemies.length-1];G.enemies.pop();continue;}
     if(e.slowT>0){e.slowT-=dt;if(e.slowT<=0)e.slow=1;}
+    // 🌀 Time Tower: _timeStopT = freeze, _timeSlowT = slow to _timeSlow multiplier
+    if(e._timeStopT>0){e._timeStopT-=dt;if(e._timeStopT>0)e.slow=Math.min(e.slow,0);}
+    if(e._timeSlowT>0){e._timeSlowT-=dt;if(e._timeSlowT>0)e.slow=Math.min(e.slow,e._timeSlow||.5);}
     if(e._enrageT>0) e._enrageT-=dt;
     if(e._dodgeFlash>0) e._dodgeFlash-=dt;
     // 🧱 Berserk Sprint
@@ -1339,6 +1342,45 @@ function update(dt){
     if(tw._venomSlowT>0) tw._venomSlowT=Math.max(0,tw._venomSlowT-dt);
     if(tw._frostStunT>0) tw._frostStunT=Math.max(0,tw._frostStunT-dt);
     if(tw._shriekT>0) tw._shriekT=Math.max(0,tw._shriekT-dt);
+    // 🌀 ป้อมกาลเวลา — pulse zone mechanic (charge → active cycle)
+    if(tw.type===9&&G.waveActive){
+      const _rngLv=tw.rngLv||1, _rateLv=tw.rateLv||1;
+      const _radius=CFG.t_rng[9]+((_rngLv-1)*.5); // 2.0/2.5/3.0/3.5
+      const _chargeTimes=[6,5,4,3],_pulseDurs=[1.5,2,3,5];
+      const _chargeMax=_chargeTimes[Math.min(3,_rateLv-1)];
+      const _pulseMax=_pulseDurs[Math.min(3,_rateLv-1)];
+      if(tw._tpCharging===undefined){tw._tpCharging=true;tw._tpTimer=_chargeMax;tw._tpPulsing=false;}
+      tw._tpTimer=Math.max(0,tw._tpTimer-dt);
+      if(tw._tpCharging&&tw._tpTimer<=0){
+        tw._tpCharging=false;tw._tpPulsing=true;tw._tpTimer=_pulseMax;
+        G.fxRings.push({x:(tw.col+.5)*CS,y:(tw.row+.5)*CS,r:0,maxR:_radius*CS,life:.55,lw:3,col:'#b39ddb',delay:0});
+        G.particles.push({x:(tw.col+.5)*CS,y:(tw.row+.5)*CS-8,txt:'🌀',col:'#b39ddb',life:1.0,vy:-1.2,vx:0,decay:1.2,scale:1.0});
+        if(tw.awakened){ // Awaken: Time Stop 1.5s
+          const _stopR=_radius*CS;
+          G.enemies.forEach(e=>{
+            if(!e.alive) return;
+            if(Math.hypot((tw.col+.5)*CS-e.x,(tw.row+.5)*CS-e.y)<=_stopR){
+              if(e.isBoss){e._timeSlowT=1.5;e._timeSlow=.15;}
+              else{e._timeStopT=1.5;}
+            }
+          });
+          G.particles.push({x:(tw.col+.5)*CS,y:(tw.row+.5)*CS-20,txt:'⏱️ หยุดเวลา!',col:'#ede7f6',life:1.3,vy:-1.0,vx:0,decay:1.1,scale:.85});
+        }
+      }
+      if(tw._tpPulsing){
+        if(tw._tpTimer<=0){tw._tpPulsing=false;tw._tpCharging=true;tw._tpTimer=_chargeMax;}
+        else{
+          const _slowR=_radius*CS;
+          G.enemies.forEach(e=>{
+            if(!e.alive) return;
+            if(Math.hypot((tw.col+.5)*CS-e.x,(tw.row+.5)*CS-e.y)<=_slowR){
+              if(e.isBoss){e._timeSlowT=.2;e._timeSlow=.15;}
+              else{e._timeSlowT=.2;e._timeSlow=.5;}
+            }
+          });
+        }
+      }
+    }
     if(CFG.t_dmg[tw.type]===0) return;
     if(G.weather&&G.weather.struckTowers&&G.weather.struckTowers.size&&G.weather.struckTowers.has(tw)) return; // ⚡ struck by lightning
     if(G.towerStunT>0) return; // 🌍 Shockwave stun
@@ -3367,6 +3409,9 @@ function updateEg(dt){
     const e=G.enemies[i];
     if(!e.alive){G.enemies[i]=G.enemies[G.enemies.length-1];G.enemies.pop();continue;}
     if(e.slowT>0){e.slowT-=dt;if(e.slowT<=0)e.slow=1;}
+    // 🌀 Time Tower (EG)
+    if(e._timeStopT>0){e._timeStopT-=dt;if(e._timeStopT>0)e.slow=Math.min(e.slow,0);}
+    if(e._timeSlowT>0){e._timeSlowT-=dt;if(e._timeSlowT>0)e.slow=Math.min(e.slow,e._timeSlow||.5);}
     if(e._enrageT>0) e._enrageT-=dt;
     if(e._dodgeFlash>0) e._dodgeFlash-=dt;
     // 🧱 Berserk Sprint (EG)
@@ -3588,6 +3633,45 @@ function updateEg(dt){
     if(tw._venomSlowT>0) tw._venomSlowT=Math.max(0,tw._venomSlowT-dt);
     if(tw._frostStunT>0) tw._frostStunT=Math.max(0,tw._frostStunT-dt);
     if(tw._shriekT>0) tw._shriekT=Math.max(0,tw._shriekT-dt);
+    // 🌀 ป้อมกาลเวลา — pulse zone mechanic (endgame loop)
+    if(tw.type===9&&G.waveActive){
+      const _rngLv=tw.rngLv||1, _rateLv=tw.rateLv||1;
+      const _radius=CFG.t_rng[9]+((_rngLv-1)*.5);
+      const _chargeTimes=[6,5,4,3],_pulseDurs=[1.5,2,3,5];
+      const _chargeMax=_chargeTimes[Math.min(3,_rateLv-1)];
+      const _pulseMax=_pulseDurs[Math.min(3,_rateLv-1)];
+      if(tw._tpCharging===undefined){tw._tpCharging=true;tw._tpTimer=_chargeMax;tw._tpPulsing=false;}
+      tw._tpTimer=Math.max(0,tw._tpTimer-dt);
+      if(tw._tpCharging&&tw._tpTimer<=0){
+        tw._tpCharging=false;tw._tpPulsing=true;tw._tpTimer=_pulseMax;
+        G.fxRings.push({x:(tw.col+.5)*CS,y:(tw.row+.5)*CS,r:0,maxR:_radius*CS,life:.55,lw:3,col:'#b39ddb',delay:0});
+        G.particles.push({x:(tw.col+.5)*CS,y:(tw.row+.5)*CS-8,txt:'🌀',col:'#b39ddb',life:1.0,vy:-1.2,vx:0,decay:1.2,scale:1.0});
+        if(tw.awakened){
+          const _stopR=_radius*CS;
+          G.enemies.forEach(e=>{
+            if(!e.alive) return;
+            if(Math.hypot((tw.col+.5)*CS-e.x,(tw.row+.5)*CS-e.y)<=_stopR){
+              if(e.isBoss){e._timeSlowT=1.5;e._timeSlow=.15;}
+              else{e._timeStopT=1.5;}
+            }
+          });
+          G.particles.push({x:(tw.col+.5)*CS,y:(tw.row+.5)*CS-20,txt:'⏱️ หยุดเวลา!',col:'#ede7f6',life:1.3,vy:-1.0,vx:0,decay:1.1,scale:.85});
+        }
+      }
+      if(tw._tpPulsing){
+        if(tw._tpTimer<=0){tw._tpPulsing=false;tw._tpCharging=true;tw._tpTimer=_chargeMax;}
+        else{
+          const _slowR=_radius*CS;
+          G.enemies.forEach(e=>{
+            if(!e.alive) return;
+            if(Math.hypot((tw.col+.5)*CS-e.x,(tw.row+.5)*CS-e.y)<=_slowR){
+              if(e.isBoss){e._timeSlowT=.2;e._timeSlow=.15;}
+              else{e._timeSlowT=.2;e._timeSlow=.5;}
+            }
+          });
+        }
+      }
+    }
     if(CFG.t_dmg[tw.type]===0) return;
     if(G.weather&&G.weather.struckTowers&&G.weather.struckTowers.size&&G.weather.struckTowers.has(tw)) return;
     if(G.towerStunT>0) return; // 🌍 Shockwave stun

@@ -2,6 +2,27 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.20.0 — ป้อมกาลเวลา 🌀 (Tower Type 9)
+
+### Added
+- `js/tower.js`: TNAMES/TICONS/TCOLORS/TPROJ/TACCENT/TSPLASH/TSLOW/TBUFF/TCANAIR/TGOLDMINE/TCHAIN/TPIERCE arrays extended for type 9
+- `js/tower.js`: TFLAVOR/TTAGS/TSPECIAL/TSTRENGTH/TWEAKNESS/TAWAKEN_DESC for Time Tower
+- `js/tower.js`: `trackDefs(9)` — สาย 1 รัศมีเวลา (rngLv), สาย 2 ความเข้ม (rateLv)
+- `js/tower.js`: `_twDecal` + `_twWeapon` type 9 — หน้านาฬิกา spinning hands
+- `js/game.js`: CFG arrays extended — `t_dmg[9]=0`, `t_rng[9]=2.0`, `t_rate[9]=0`, `t_cost[9]=95`
+- `js/game.js`: Pulse mechanic (`tw._tpCharging/_tpTimer/_tpPulsing`) — charge→pulse cycle, `_timeSlowT/_timeStopT` on enemies (both story + endgame loops)
+- `js/game.js`: Awaken Time Stop — freeze 1.5s on enemies, bosses 85% slow
+- `js/save.js`: `isTimeUnlocked()` / `setTimeUnlocked()` — `tq_timeUnlocked` localStorage key
+- `js/save.js`: GACHA_POOL 001 changed from Void Tower to Time Tower
+- `js/save.js`: `getUnlockedTowers()` / achievement check include type 9
+- `js/ui.js`: `TIME_RECIPE = {gems:600, mats:{0:20,1:10,2:5}}`
+- `js/ui.js`: `renderWorkshop()` refactored → `_renderCraftCard()` helper, renders both Void + Time cards
+- `js/ui.js`: `craftTimeTower()`, `toggleWsTimeSkill()`, `toggleWsSkill()` functions
+- `js/ui.js`: `showTowerSelection()` / `openEgTowerSelection()` include type 9 when unlocked
+- `Tower Quest 🏰.html`: Time Tower craft card + `timeCraftOverlay`
+
+---
+
 ## v3.19.0 — มอนสเตอร์บิน Act 2 — ฮาร์ปี & มังกรเงา
 
 ### Added

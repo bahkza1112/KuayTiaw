@@ -59,7 +59,7 @@
   <div class="island" id="logoIsland">🏰</div>
   <div class="gtitle">TOWER QUEST</div>
   <div class="gsub">⚔️ ปกป้องอาณาจักรของคุณ!</div>
-  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v3.19.0 — มีอะไรใหม่<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
+  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v3.20.0 — มีอะไรใหม่<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
 
   <!-- battle buttons -->
   <button class="bbattle" id="startBtn">⚔️ โหมดเนื้อเรื่อง</button>
@@ -588,6 +588,41 @@
           <button class="eg-start-btn" id="wsCraftBtn" style="background:linear-gradient(180deg,#7e57c2,#311b92);width:100%;display:none;">🛠️ คราฟป้อมมนตราโมฆะ</button>
         </div>
       </div>
+      <!-- 🌀 Time Tower Craft Card -->
+      <div class="ws-hero" style="flex-direction:column;gap:0;margin-top:12px;">
+        <div style="display:flex;gap:14px;align-items:flex-start;width:100%;">
+          <div class="ws-hero-icon">🌀</div>
+          <div style="flex:1;min-width:0;">
+            <div class="ws-hero-name">ป้อมกาลเวลา</div>
+            <div class="ws-hero-tag">✦ ป้อมลับที่ 10 — คราฟหรือรับจากกาชา Legendary</div>
+            <div class="ws-hero-stats">
+              <span class="ws-stat">⏳ Pulse Zone</span>
+              <span class="ws-stat">🔮 รัศมี 2.0+</span>
+              <span class="ws-stat">⏱️ ช้า 50%</span>
+              <span class="ws-stat">💰 ราคา 95</span>
+            </div>
+          </div>
+        </div>
+        <div style="width:100%;margin-top:10px;border-top:1px solid rgba(179,157,219,.15);padding-top:10px;cursor:pointer;" onclick="toggleWsTimeSkill()">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;font-weight:700;color:#b39ddb;">✨ พลังกาลเวลา</span>
+            <span id="wsTimeSkillArrow" style="font-size:10px;color:#9575cd;">▼ รายละเอียด</span>
+          </div>
+          <div id="wsTimeSkillDetail" style="display:none;margin-top:8px;">
+            <div class="eg-info-txt" style="margin:0;">
+              ชาร์จพลัง 6 วินาที แล้วปล่อย <strong>คลื่นกาลเวลา</strong> ทำให้ศัตรูในรัศมีช้าลง 50% (บอสช้า 85%) นาน 1.5 วินาที<br>
+              🔮 อัพรัศมี: 2.0 → 3.5 ช่อง | อัพความเข้ม: ลดเวลาชาร์จ + เพิ่มระยะพัลส์<br>
+              ⏱️ Awaken: หยุดเวลา 1.5 วินาที (บอสช้า 85%)
+            </div>
+          </div>
+        </div>
+        <div id="wsTimeCraftSection" style="width:100%;margin-top:10px;border-top:1px solid rgba(179,157,219,.15);padding-top:10px;">
+          <div id="wsTimeLockBadge" style="display:none;font-size:11px;color:#ffab40;">🔒 ผ่านด่านสุดท้ายก่อนจึงจะคราฟได้</div>
+          <div id="wsTimeAlreadyUnlocked" style="display:none;font-size:11px;color:#b39ddb;">🌀 ปลดล็อกแล้ว — เลือกใช้ในโหมด Endgame ได้เลย</div>
+          <div id="wsTimeCraftReqNote" style="display:none;font-size:11px;color:#aaa;line-height:1.7;margin-bottom:8px;"></div>
+          <button class="eg-start-btn" id="wsTimeCraftBtn" onclick="craftTimeTower()" style="background:linear-gradient(180deg,#7c4dff,#311b92);width:100%;display:none;">🛠️ คราฟป้อมกาลเวลา</button>
+        </div>
+      </div>
       <!-- 🔹 แลกเศษสะสม (Shard Exchange) -->
       <div class="eg-info-box" style="margin-top:12px;">
         <div class="eg-info-title">🔹 แลกเศษสะสม</div>
@@ -612,6 +647,15 @@
         <h2>ปลดล็อกสำเร็จ!</h2>
         <p>ป้อมมนตราโมฆะพร้อมใช้งานแล้ว — เลือกใช้ได้ในโหมด Endgame ทันที!</p>
         <button class="obtn" id="voidCraftCloseBtn">✨ เยี่ยมมาก!</button>
+      </div>
+    </div>
+    <!-- 🌀 popup ฉลองคราฟ Time Tower สำเร็จ -->
+    <div class="overlay" id="timeCraftOverlay" style="display:none;">
+      <div class="obox tier-void" style="border-color:#7c4dff;">
+        <div class="chest-icon">🌀</div>
+        <h2>ปลดล็อกสำเร็จ!</h2>
+        <p>ป้อมกาลเวลาพร้อมใช้งานแล้ว — เลือกใช้ได้ในโหมด Endgame ทันที!</p>
+        <button class="obtn" onclick="document.getElementById('timeCraftOverlay').style.display='none'">✨ เยี่ยมมาก!</button>
       </div>
     </div>
   </div>

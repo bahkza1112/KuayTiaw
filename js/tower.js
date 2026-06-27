@@ -1,15 +1,15 @@
-const TNAMES=['ปืนใหญ่','น้ำแข็ง','เวทมนตร์','สไนเปอร์','ซัพพอร์ต','ธนู','เหมืองทอง','สายฟ้า','ป้อมมนตราโมฆะ'];
-const TICONS=['💣','❄️','✨','🎯','💚','🏹','💰','⚡','🌑'];
-const TCOLORS=['#c62828','#0d47a1','#4a148c','#1b5e20','#00695c','#4e342e','#f57f17','#f9a825','#311b92'];
-const TPROJ=['#ff7043','#80d8ff','#e040fb','#ffee58','#69f0ae','#a5d6a7','#ffd54f','#ffe57f','#b388ff'];
-const TACCENT=['#ff5252','#40c4ff','#ea80fc','#69f0ae','#64ffda','#8d6e63','#ffca28','#ffe57f','#7e57c2'];
-const TSPLASH=[.8,0,1.2,0,0,0,0,0,0];
-const TSLOW=[0,.45,0,0,0,0,0,0,0];
-const TBUFF=[false,false,false,false,true,false,false,false,false];
-const TCANAIR=[false,false,false,true,false,true,false,true,false]; /* ยิง air ได้ */
-const TGOLDMINE=[false,false,false,false,false,false,true,false,false]; /* สร้างทอง */
-const TCHAIN=[0,0,0,0,0,0,0,2,0]; /* chain lightning targets (Thunder=2) */
-const TPIERCE=[false,false,false,false,false,false,false,true,false]; /* ทะลุโล่: Thunder เท่านั้น — Sniper ต้องอัพ Range ≥3 ก่อน */
+const TNAMES=['ปืนใหญ่','น้ำแข็ง','เวทมนตร์','สไนเปอร์','ซัพพอร์ต','ธนู','เหมืองทอง','สายฟ้า','ป้อมมนตราโมฆะ','ป้อมกาลเวลา'];
+const TICONS=['💣','❄️','✨','🎯','💚','🏹','💰','⚡','🌑','🌀'];
+const TCOLORS=['#c62828','#0d47a1','#4a148c','#1b5e20','#00695c','#4e342e','#f57f17','#f9a825','#311b92','#1a0a4a'];
+const TPROJ=['#ff7043','#80d8ff','#e040fb','#ffee58','#69f0ae','#a5d6a7','#ffd54f','#ffe57f','#b388ff','#b39ddb'];
+const TACCENT=['#ff5252','#40c4ff','#ea80fc','#69f0ae','#64ffda','#8d6e63','#ffca28','#ffe57f','#7e57c2','#b39ddb'];
+const TSPLASH=[.8,0,1.2,0,0,0,0,0,0,0];
+const TSLOW=[0,.45,0,0,0,0,0,0,0,0];
+const TBUFF=[false,false,false,false,true,false,false,false,false,false];
+const TCANAIR=[false,false,false,true,false,true,false,true,false,false]; /* ยิง air ได้ */
+const TGOLDMINE=[false,false,false,false,false,false,true,false,false,false]; /* สร้างทอง */
+const TCHAIN=[0,0,0,0,0,0,0,2,0,0]; /* chain lightning targets (Thunder=2) */
+const TPIERCE=[false,false,false,false,false,false,false,true,false,false]; /* ทะลุโล่: Thunder เท่านั้น — Sniper ต้องอัพ Range ≥3 ก่อน */
 const RARITY_COLORS={2:'#42a5f5',3:'#ab47bc',4:'#ff8f00'}; /* กรอบสีตาม★ — 2=น้ำเงิน(Rare) 3=ม่วง(Epic) 4=ส้มทอง(Legendary), Awaken มีออร่าทองของตัวเอง */
 const TFLAVOR=['ปืนใหญ่หนักที่ยิงกระสุนระเบิด ความเสียหายแบบกระจายทำลายล้างศัตรูที่อยู่รวมกัน',
   'ยิงน้ำแข็งที่ทำให้ศัตรูเยือกแข็ง วางไว้ก่อนทางยาวจะได้ผลดีที่สุด',
@@ -19,7 +19,8 @@ const TFLAVOR=['ปืนใหญ่หนักที่ยิงกระส�
   'นักธนูผู้คล่องแคล่ว ยิงได้ทั้งศัตรูภาคพื้นดินและศัตรูที่บินอยู่บนอากาศ',
   'เหมืองทองที่สร้างรายได้ต่อเนื่อง ไม่โจมตี แต่ผลิตทองทุก 5 วินาที',
   'หอคอยพลังสายฟ้าที่ยิงฟ้าผ่าลงใส่ศัตรู และลัดไปยังศัตรูข้างเคียงอีก 2 ตัว ยิงโดนได้ทั้งพื้นและอากาศ',
-  'ป้อมมนตราต้องห้ามที่ปล่อยพลังโมฆะ มีโอกาสติดมาร์กศัตรู ทำให้รับดาเมจเพิ่มจากป้อมทุกชนิด ปลดล็อกได้จาก Workshop เท่านั้น'];
+  'ป้อมมนตราต้องห้ามที่ปล่อยพลังโมฆะ มีโอกาสติดมาร์กศัตรู ทำให้รับดาเมจเพิ่มจากป้อมทุกชนิด ปลดล็อกได้จาก Workshop เท่านั้น',
+  'ป้อมกาลเวลาที่บิดเบือนเวลาในพื้นที่ ชาร์จพลังแล้วปล่อยคลื่นเวลา ทำให้ศัตรูในรัศมีเคลื่อนที่ช้าลง 50% ปลดล็อกได้จาก Workshop เท่านั้น'];
 const TTAGS=[[{t:'กระจาย',c:'tag-orange'},{t:'ความเสียหายพื้นที่',c:'tag-red'}],
   [{t:'ช้า',c:'tag-blue'},{t:'ซัพพอร์ต',c:'tag-green'}],
   [{t:'กระจายกว้าง',c:'tag-purple'},{t:'ความเสียหายสูง',c:'tag-red'}],
@@ -28,8 +29,10 @@ const TTAGS=[[{t:'กระจาย',c:'tag-orange'},{t:'ความเสี�
   [{t:'ยิง Air',c:'tag-blue'},{t:'อัตรายิงเร็ว',c:'tag-orange'}],
   [{t:'ผลิตทอง',c:'tag-green'},{t:'ไม่โจมตี',c:'tag-purple'}],
   [{t:'Chain Lightning',c:'tag-orange'},{t:'ยิง Air',c:'tag-blue'}],
-  [{t:'Void Mark',c:'tag-purple'},{t:'Workshop',c:'tag-red'}]];
-const TSPECIAL=['กระจาย: 0.8 ช่อง','ชะลอเหลือ 45% นาน 2 วินาที','กระจาย: 1.2 ช่อง','ระยะยิง 4.5 ช่อง (คงที่ไม่ต้องอัพ) — สายคริติคอล: โอกาสคริติคอล +10%/เลเวล (สูงสุด 40%) ดาเมจ x1.75 — 🎯 ล็อกเป้าหมอผีก่อนเสมอเมื่ออยู่ในระยะ','+10% ความเสียหาย/ระดับ ให้ป้อมใกล้เคียง | 🛡️ ออร่ากันหยุดป้อม: ★1-4 = 20/40/60/80% (อเวค 100%) +5%/เลเวลจากสาย "กันหยุดป้อม"','ยิง Air ได้ — ยิงค้างคาวและวิเวิร์นได้ (ร่วมกับ Sniper และ Thunder)','ผลิตทองทุกรอบ (ลดเวลาได้ -20%/เลเวลจากสายคูลดาวน์) เริ่ม 2 ทอง/รอบ (+2/เลเวลจากสายจำนวน) — อเวคได้ทอง x2','Chain Lightning ถึง 2 ตัว — ดาเมจลด 40% ต่อ chain — ยิง Air ได้','Void Mark: 30% โอกาสติดมาร์ก (อเวค 50%) ทำให้ศัตรูรับดาเมจเพิ่ม +25% จากป้อมทุกชนิด (อเวค +40%) นาน 4 วินาที รีเฟรชเวลาได้แต่ไม่บวกซ้ำ'];
+  [{t:'Void Mark',c:'tag-purple'},{t:'Workshop',c:'tag-red'}],
+  [{t:'ช้าเวลา',c:'tag-purple'},{t:'ไม่โจมตี',c:'tag-green'},{t:'Workshop',c:'tag-red'}]];
+const TSPECIAL=['กระจาย: 0.8 ช่อง','ชะลอเหลือ 45% นาน 2 วินาที','กระจาย: 1.2 ช่อง','ระยะยิง 4.5 ช่อง (คงที่ไม่ต้องอัพ) — สายคริติคอล: โอกาสคริติคอล +10%/เลเวล (สูงสุด 40%) ดาเมจ x1.75 — 🎯 ล็อกเป้าหมอผีก่อนเสมอเมื่ออยู่ในระยะ','+10% ความเสียหาย/ระดับ ให้ป้อมใกล้เคียง | 🛡️ ออร่ากันหยุดป้อม: ★1-4 = 20/40/60/80% (อเวค 100%) +5%/เลเวลจากสาย "กันหยุดป้อม"','ยิง Air ได้ — ยิงค้างคาวและวิเวิร์นได้ (ร่วมกับ Sniper และ Thunder)','ผลิตทองทุกรอบ (ลดเวลาได้ -20%/เลเวลจากสายคูลดาวน์) เริ่ม 2 ทอง/รอบ (+2/เลเวลจากสายจำนวน) — อเวคได้ทอง x2','Chain Lightning ถึง 2 ตัว — ดาเมจลด 40% ต่อ chain — ยิง Air ได้','Void Mark: 30% โอกาสติดมาร์ก (อเวค 50%) ทำให้ศัตรูรับดาเมจเพิ่ม +25% จากป้อมทุกชนิด (อเวค +40%) นาน 4 วินาที รีเฟรชเวลาได้แต่ไม่บวกซ้ำ',
+'คลื่นเวลา: ชาร์จ 6s → ปล่อยพัลส์ 1.5s — รัศมี 2.0 ช่อง (อัพได้ถึง 3.5) — ช้าลง 50% (บอสช้า 85%) — ไม่โจมตีโดยตรง'];
 const TSTRENGTH=[
   ['ทำลายหมู่ศัตรูได้ดี','ระยะใกล้-กลาง'],
   ['ชะลอความเร็วศัตรู','เพิ่มเวลาให้ป้อมอื่น'],
@@ -40,6 +43,7 @@ const TSTRENGTH=[
   ['รายได้ต่อเนื่อง','ไม่ต้องการเป้าหมาย'],
   ['Chain ศัตรู 2 ตัวในหนึ่งยิง','ยิง Air ได้'],
   ['เพิ่มดาเมจให้ทุกป้อมที่ยิงเป้าติดมาร์ก','ระยะยิงไกล'],
+  ['ช้าศัตรูได้ทุกประเภท','รัศมีกว้างเมื่ออัพ'],
 ];
 const TWEAKNESS=[
   ['ยิงช้าถ้าศัตรูกระจาย','ระยะสั้นกว่าสไนเปอร์'],
@@ -51,6 +55,7 @@ const TWEAKNESS=[
   ['ไม่โจมตีเลย','ถ้าถูกทำลายเสียทอง'],
   ['ดาเมจต่อตัวต่ำกว่าป้อมอื่น','Chain ต้องการหลายศัตรู'],
   ['ยิงได้ทีละตัว ไม่มี splash','ต้องปลดล็อกจาก Workshop ก่อน'],
+  ['ไม่โจมตีโดยตรง','ต้องชาร์จก่อนปล่อยพัลส์'],
 ];
 const TAWAKEN_DESC=[
   'Splash กว้างขึ้น ×1.5 — ทำลายหมู่ศัตรูในวงกว้างมากขึ้น',
@@ -62,6 +67,7 @@ const TAWAKEN_DESC=[
   'ผลิตทอง ×2 ต่อรอบ — รายได้เพิ่มเท่าตัว',
   'Chain เพิ่มอีก 2 ตัว รวมสูงสุด 4 chain ต่อยิง',
   'Void Mark: proc 30%→50%, โบนัสดาเมจ +25%→+40%',
+  'หยุดเวลา 1.5 วินาที — ศัตรูทั้งหมดในรัศมีหยุดสนิท (บอสช้า 85%) — ใช้งานได้เมื่อชาร์จเต็ม',
 ];
 const STAR_DMG_BONUS=[0,.5,1.1,2.0];// โบนัสดาเมจพื้นฐานตาม★ (★1=+0%, ★2=+50%, ★3=+110%, ★4=+200%)
 function getTowerDmg(t,lv,star){return CFG.t_dmg[t]*(1+STAR_DMG_BONUS[(star||1)-1])*(1+(lv-1)*.25);}
@@ -117,7 +123,7 @@ function _bldSC(){
   _SC={};
   const sz=CS-2,r=sz/2;
   const cw=Math.ceil(r*2.2),ch=Math.ceil(r*1.55),tx=cw/2,ty=Math.ceil(ch*.38);
-  for(let t=0;t<9;t++){
+  for(let t=0;t<10;t++){
     const oc=document.createElement('canvas');
     oc.width=cw;oc.height=ch;
     const ox=oc.getContext('2d');
@@ -170,7 +176,8 @@ function _twStatic(ctx,type,r){
             ['#5c0090','#a04de0','#7a22c0'],['#1e4a1e','#3a9f3a','#2d7030'],
             ['#004d3a','#00b07a','#007a55'],['#5c3400','#c87020','#9a5200'],
             ['#6b3800','#d4820a','#a06008'],['#0a1a44','#1a5abf','#122266'],
-            ['#1a0a3a','#5e35b1','#3d2570']];
+            ['#1a0a3a','#5e35b1','#3d2570'],
+            ['#1a0a4a','#7c4dff','#4a148c']];
   const [bd,bm]=BC[type]||BC[0];
   // shadow under base
   ctx.globalAlpha=.28;ctx.fillStyle='#000';
@@ -255,6 +262,11 @@ function _twDecal(ctx,type,r){
     ctx.strokeStyle='#b388ff';ctx.lineWidth=r*.05;ctx.beginPath();ctx.arc(0,-r*.03,r*.19,0,Math.PI*2);ctx.stroke();
     ctx.fillStyle='#0a0014';ctx.beginPath();ctx.arc(0,-r*.03,r*.12,0,Math.PI*2);ctx.fill();
     ctx.fillStyle='#7e57c2';ctx.beginPath();ctx.arc(0,-r*.03,r*.05,0,Math.PI*2);ctx.fill();
+  } else if(type===9){// time: clock circle
+    ctx.strokeStyle='#b39ddb';ctx.lineWidth=r*.05;ctx.beginPath();ctx.arc(0,-r*.03,r*.18,0,Math.PI*2);ctx.stroke();
+    const _a=Date.now()*.001*.8;
+    ctx.strokeStyle='#ede7f6';ctx.lineWidth=r*.04;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(0,-r*.03);ctx.lineTo(Math.cos(_a-Math.PI/2)*r*.12,Math.sin(_a-Math.PI/2)*r*.12-r*.03);ctx.stroke();
+    ctx.strokeStyle='#b39ddb';ctx.lineWidth=r*.05;ctx.beginPath();ctx.moveTo(0,-r*.03);ctx.lineTo(Math.cos(_a*.07-Math.PI/2)*r*.09,Math.sin(_a*.07-Math.PI/2)*r*.09-r*.03);ctx.stroke();
   }
 }
 function _twWeapon(ctx,type,r,shootT){
@@ -351,6 +363,17 @@ function _twWeapon(ctx,type,r,shootT){
     ctx.fillStyle='#311b92';ctx.beginPath();ctx.arc(0,0,r*.16,0,Math.PI*2);ctx.fill();
     ctx.fillStyle='#b388ff';ctx.beginPath();ctx.arc(-r*.05,-r*.05,r*.06,0,Math.PI*2);ctx.fill();
     const t=Date.now()*.003;for(let k=0;k<3;k++){const a=t+k/3*Math.PI*2;ctx.fillStyle=`rgba(126,87,194,${.5+.4*Math.sin(a)})`;ctx.beginPath();ctx.arc(Math.cos(a)*r*.55,Math.sin(a)*r*.55,r*.07,0,Math.PI*2);ctx.fill();}
+  } else if(type===9){// Time Tower — clock face with spinning hands
+    const p=.4+.45*Math.sin(Date.now()*.003);
+    ctx.globalAlpha=p*.55;ctx.strokeStyle='#b39ddb';ctx.lineWidth=r*.14;ctx.beginPath();ctx.arc(0,0,r*.46,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;
+    ctx.fillStyle='#1a0a4a';ctx.beginPath();ctx.arc(0,0,r*.32,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='#b39ddb';ctx.lineWidth=r*.04;ctx.beginPath();ctx.arc(0,0,r*.28,0,Math.PI*2);ctx.stroke();
+    const _now=Date.now()*.001;
+    // minute hand (fast)
+    const _mha=_now*.8;ctx.strokeStyle='#ede7f6';ctx.lineWidth=r*.055;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(_mha-Math.PI/2)*r*.22,Math.sin(_mha-Math.PI/2)*r*.22);ctx.stroke();
+    // hour hand (slow)
+    const _hha=_now*.07;ctx.strokeStyle='#b39ddb';ctx.lineWidth=r*.07;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(_hha-Math.PI/2)*r*.15,Math.sin(_hha-Math.PI/2)*r*.15);ctx.stroke();
+    ctx.fillStyle='#7c4dff';ctx.beginPath();ctx.arc(0,0,r*.055,0,Math.PI*2);ctx.fill();
   }
 }
 
@@ -369,6 +392,10 @@ function trackDefs(t){
   if(t===6) return [ // 💰 เหมืองทอง
     {key:'rateLv',icon:'⏱️',name:'คูลดาวน์',col:'#80deea',unlockLv:0,unlockText:''},
     {key:'rngLv',icon:'💰',name:'จำนวนทอง',col:'#ffd54f',unlockLv:0,unlockText:''}
+  ];
+  if(t===9) return [ // 🌀 ป้อมกาลเวลา
+    {key:'rngLv',icon:'🔮',name:'รัศมีเวลา',col:'#b39ddb',unlockLv:0,unlockText:''},
+    {key:'rateLv',icon:'⏳',name:'ความเข้ม',col:'#7c4dff',unlockLv:0,unlockText:''}
   ];
   return [ // ปืนใหญ่/น้ำแข็ง/เวทมนตร์/ธนู/สายฟ้า/ป้อมมนตราโมฆะ
     {key:'rngLv',icon:'📡',name:'ระยะ',col:'#4fc3f7',unlockLv:3,unlockText:'เจาะโล่ศัตรู (ดาเมจเข้า HP ตรง ไม่โดนโล่ดูดซับ)'},
@@ -423,6 +450,15 @@ function showTowerPopup(tw,px,py){
     const resist=Math.round(Math.min(1,ownBase+ownBonus)*100);
     statsHtml+=`<div class="tp-stat">📡 ระยะ <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${rngVal} ช่อง</span></div>`;
     statsHtml+=`<div class="tp-stat">🛡️ กันหยุดป้อม <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${resist}%${tw.awakened?' (อเวค)':''}</span></div>`;
+  } else if(tw.type===9){ // 🌀 ป้อมกาลเวลา — รัศมี/ความเข้ม
+    const _rngLv=tw.rngLv||1,_rateLv=tw.rateLv||1;
+    const radius=(2.0+((_rngLv-1)*.5)).toFixed(1);
+    const chargeTimes=[6,5,4,3],pulseDurs=[1.5,2,3,5];
+    const chargeT=chargeTimes[Math.min(3,_rateLv-1)];
+    const pulseT=pulseDurs[Math.min(3,_rateLv-1)];
+    statsHtml+=`<div class="tp-stat">🔮 รัศมีเวลา <small style="opacity:.5">Lv.${_rngLv}</small><span>${radius} ช่อง</span></div>`;
+    statsHtml+=`<div class="tp-stat">⏳ ชาร์จ/พัลส์ <small style="opacity:.5">Lv.${_rateLv}</small><span>${chargeT}s / ${pulseT}s</span></div>`;
+    statsHtml+=`<div class="tp-stat">🐌 ช้าลง <span>50%${tw.awakened?' + หยุดเวลา (อเวค)':''}</span></div>`;
   } else { // ปืนใหญ่/น้ำแข็ง/เวทมนตร์/ธนู/สายฟ้า/ป้อมมนตราโมฆะ — ระยะ/ความเร็ว
     const rngVal=getTowerRange(tw.type,tw.rngLv).toFixed(1);
     const rateVal=getTowerRate(tw.type,tw.rateLv).toFixed(1);
