@@ -292,7 +292,7 @@ function _skillCardBackHTML(result,ci){
     return `<div class="ro-frame rf-common">
       <div class="ro-hdr"><span class="ro-hdr-type">${sd.name}</span><span class="ro-hdr-gem"></span></div>
       <div class="ro-art"><canvas id="skart${ci}" width="160" height="110"></canvas></div>
-      <div class="ro-footer"><span class="ro-name">${sd.icon} ปลอบใจ</span><span class="ro-status">${sd.icon}×1</span></div>
+      <div class="ro-footer"><span class="ro-name">ปลอบใจ</span><span class="ro-status">${sd.icon}×1</span></div>
     </div>`;
   }
   const stars='★'.repeat(res.star)+'<span style="opacity:.2">'+'★'.repeat(SKILL_MAX_STAR-res.star)+'</span>';
@@ -558,9 +558,43 @@ function _drawSkillArt(ctx,id,W,H){
     [[W*.06,H*.3],[W*.96,H*.35]].forEach(([x,y])=>ctx.fillText('✦',x,y));
 
   } else {
-    // shard fallback — simple sand scene
-    _scene('#d4c8a0','#c8b880','#a89060');
-    ctx.font=`${H*.28}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='rgba(160,130,60,.5)';ctx.fillText('✦',W/2,H*.45);
+    // === เศษชิ้นส่วน (shard) ===
+    const _sc={
+      shard_leg:['#1a0030','#2a0050','#8b00ff','#c084fc','#fff'],
+      shard_ep: ['#1a0800','#2a1200','#e07000','#ffd54f','#ffe082'],
+      shard_uc: ['#001828','#002a40','#1565c0','#64b5f6','#e3f2fd'],
+    }[id]||['#0a0a18','#121228','#303060','#90caf9','#e8eaf6'];
+    const[bg1,bg2,gc1,gc2,gc3]=_sc;
+    // night/depth background
+    _scene(bg1,bg2,gc1);
+    // light beam from above
+    const bx=W/2,by=-5;
+    const bg=_lg(bx-W*.3,by,bx,H*.8,[[0,gc2+'44'],[1,'transparent']]);
+    ctx.beginPath();ctx.moveTo(bx-W*.3,by);ctx.lineTo(bx+W*.3,by);ctx.lineTo(bx+W*.08,H*.75);ctx.lineTo(bx-W*.08,H*.75);ctx.closePath();ctx.fillStyle=bg;ctx.fill();
+    // floating stars
+    for(let i=0;i<10;i++){const sx=(Math.sin(i*23.1)*.5+.5)*W,sy=(Math.sin(i*37.7)*.5+.5)*H*.55;
+      ctx.beginPath();ctx.arc(sx,sy,H*.008+Math.sin(i)*.004,0,Math.PI*2);ctx.fillStyle=`rgba(${gc3==='#fff'?'255,255,255':'200,230,255'},.${3+Math.floor(Math.sin(i*.9)*2)})`;ctx.fill();}
+    // gem shadow
+    ctx.beginPath();ctx.ellipse(W/2,H*.74,H*.14,H*.04,0,0,Math.PI*2);ctx.fillStyle='rgba(0,0,0,.3)';ctx.fill();
+    // gem body — diamond shape
+    const gx=W/2,gy=H*.46,gw=H*.2,gh=H*.28;
+    const gemFill=_lg(gx-gw,gy-gh*.5,gx+gw,gy+gh*.5,[[0,gc3],[.4,gc2],[.8,gc1+'cc'],[1,gc1]]);
+    // top facets
+    ctx.beginPath();ctx.moveTo(gx,gy-gh*.65);ctx.lineTo(gx+gw,gy-gh*.05);ctx.lineTo(gx,gy+gh*.55);ctx.lineTo(gx-gw,gy-gh*.05);ctx.closePath();
+    ctx.fillStyle=gemFill;ctx.fill();
+    // inner shine facet left
+    ctx.beginPath();ctx.moveTo(gx,gy-gh*.65);ctx.lineTo(gx+gw*.45,gy-gh*.08);ctx.lineTo(gx,gy-gh*.05);ctx.closePath();
+    ctx.fillStyle='rgba(255,255,255,.35)';ctx.fill();
+    // inner shine facet top-right
+    ctx.beginPath();ctx.moveTo(gx+gw*.1,gy-gh*.62);ctx.lineTo(gx+gw*.85,gy-gh*.08);ctx.lineTo(gx+gw*.45,gy-gh*.18);ctx.closePath();
+    ctx.fillStyle='rgba(255,255,255,.15)';ctx.fill();
+    // outline
+    ctx.beginPath();ctx.moveTo(gx,gy-gh*.65);ctx.lineTo(gx+gw,gy-gh*.05);ctx.lineTo(gx,gy+gh*.55);ctx.lineTo(gx-gw,gy-gh*.05);ctx.closePath();
+    ctx.strokeStyle=gc2+'bb';ctx.lineWidth=H*.016;ctx.lineJoin='round';ctx.stroke();
+    // sparkles around gem
+    ctx.fillStyle=gc2;ctx.font=`${H*.1}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+    [[W*.12,H*.22],[W*.88,H*.28],[W*.18,H*.68],[W*.84,H*.62]].forEach(([x,y],i)=>{
+      ctx.save();ctx.globalAlpha=.7;ctx.font=`${H*(i%2?.07:.1)}px serif`;ctx.fillText('✦',x,y);ctx.restore();});
   }
 }
 function startSkillGacha(n){
@@ -599,7 +633,7 @@ function flipSkillCard(i){
   back.className='gc-back';
   card.classList.add('flipped');
   const cv=document.getElementById('skart'+i);
-  if(cv){const c=cv.getContext('2d');_drawSkillArt(c,result.def?result.def.id:'shard',cv.width,cv.height);}
+  if(cv){const c=cv.getContext('2d');_drawSkillArt(c,result.def?result.def.id:(result.shardId||'shard_c'),cv.width,cv.height);}
   const rarity=result.def?result.def.rarity:'common';
   setTimeout(()=>_gachaFx(card,rarity,'skillgacha'),300);
   if(_skFlipped.every(Boolean)) setTimeout(_skillGachaDone,900);
@@ -1726,7 +1760,7 @@ function openEgTowerSelection(){
   renderTowerSelection(available);
 }
 const _skIconCache={};
-const _SKILL_IDS=new Set(['goldrush','freeze','meteor','overdrive','barrier']);
+const _SKILL_IDS=new Set(['goldrush','freeze','meteor','overdrive','barrier','shard_c','shard_uc','shard_ep','shard_leg','shard']);
 function _skillIconURL(id){
   if(_skIconCache[id]) return _skIconCache[id];
   try{
