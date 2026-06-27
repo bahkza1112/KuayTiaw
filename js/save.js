@@ -110,15 +110,15 @@ const GACHA_POOL=[
 ];
 // Weighted roll /1000: 001=0.1%(1), 002=1%(10), 003=2%(20), 004=2%(20), 005=3%(30),
 //   006=3%(30), 007=3%(30), 008=3%(30), 009=3%(30), 010=5%(50), dud=74.9%(749) — total=1000
-const _GACHA_W=[1,1,1,1,1,0,0,0,0,0]; // 001-005 แต่ละใบ 0.1% (w:1/1000), dud 99.5%
+const _GACHA_W=[2,2,2,2,2,0,0,0,0,0]; // pool=10000: ทุกรางวัลรวม 10/10000=0.1%, แต่ละใบ 0.02%, dud 99.9%
 function _gachaRoll(){
-  const r=Math.floor(Math.random()*1000);
+  const r=Math.floor(Math.random()*10000);
   let cum=0;
   for(let i=0;i<_GACHA_W.length;i++){
     cum+=_GACHA_W[i];
     if(r<cum) return {prizeIdx:i,num:i+1};
   }
-  return {prizeIdx:-1,num:Math.floor(Math.random()*989)+11};
+  return {prizeIdx:-1,num:Math.floor(Math.random()*9989)+11};
 }
 function loadGachaPity(){try{return Number(localStorage.getItem('tq_gpity'))||0;}catch(e){return 0;}}
 function saveGachaPity(n){localStorage.setItem('tq_gpity',String(n));}
