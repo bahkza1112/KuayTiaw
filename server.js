@@ -89,6 +89,22 @@ const TOKEN_SECRET = process.env.SESSION_SECRET || 'tq-secret';
 app.set('trust proxy', 1);
 app.use(express.json({ limit: '2mb' }));
 
+// ── Rate limiting (เรื่อง 3) ─────────────────────────────────────────────────
+const _rlMap = new Map(); // ip → {count, resetAt}
+function rateLimit(maxPerMin) {
+  return (req, res, next) => {
+    const ip = req.ip || req.socket.remoteAddress || 'unknown';
+    const now = Date.now();
+    let s = _rlMap.get(ip);
+    if (!s || now > s.resetAt) { s = { count: 0, resetAt: now + 60000 }; _rlMap.set(ip, s); }
+    s.count++;
+    if (s.count > maxPerMin) return res.status(429).json({ error: 'too many requests' });
+    next();
+  };
+}
+// clean up stale entries every 5 min
+setInterval(() => { const now=Date.now(); _rlMap.forEach((v,k)=>{ if(now>v.resetAt) _rlMap.delete(k); }); }, 300000);
+
 // Stateless token auth — no sessions needed
 function makeToken(uid) {
   return crypto.createHmac('sha256', TOKEN_SECRET).update(uid).digest('hex');
@@ -219,7 +235,7 @@ app.post('/api/leaderboard/claim', authMiddleware, (req, res) => {
   res.json({ ok:true, claimed: pending });
 });
 
-app.post('/api/leaderboard', (req, res) => {
+app.post('/api/leaderboard', rateLimit(10), (req, res) => {
   const { name, score, wave, diff, kills, maxCombo, round, date, avatar, uid } = req.body;
   if (!name || typeof score !== 'number' || typeof wave !== 'number') {
     return res.status(400).json({ error: 'invalid' });
@@ -247,7 +263,7 @@ app.post('/api/leaderboard', (req, res) => {
 // ── Admin: delete leaderboard entry by rank (1-based) ─────────────────────────
 app.delete('/api/leaderboard/:rank', (req, res) => {
   const adminKey = req.headers['x-admin-key'];
-  if (adminKey !== process.env.ADMIN_KEY && adminKey !== 'kt1233') return res.status(403).json({ error: 'forbidden' });
+  if (!process.env.ADMIN_KEY || adminKey !== process.env.ADMIN_KEY) return res.status(403).json({ error: 'forbidden' });
   const lb = loadLb().sort((a,b)=>b.score-a.score);
   const idx = parseInt(req.params.rank) - 1;
   if (idx < 0 || idx >= lb.length) return res.status(404).json({ error: 'not found' });
@@ -267,7 +283,7 @@ app.get('/api/story-leaderboard', (req, res) => {
   res.json({ entries: lb });
 });
 
-app.post('/api/story-leaderboard', (req, res) => {
+app.post('/api/story-leaderboard', rateLimit(10), (req, res) => {
   const { name, totalStars, stagesCleared, date, avatar, uid } = req.body;
   if (!name || typeof totalStars !== 'number') return res.status(400).json({ error:'invalid' });
   const lb = loadSlb();
@@ -279,14 +295,14 @@ app.post('/api/story-leaderboard', (req, res) => {
   lb.sort((a,b)=>b.totalStars-a.totalStars||b.stagesCleared-a.stagesCleared);
   if (lb.length > 100) lb.length = 100;
   writeSlb(lb);
-  const rank = lb.findIndex(e=>e.name===entry.name)+1;
+  const rank = lb.findIndex(key)+1;
   res.json({ ok:true, rank });
 });
 
 // ── Admin: delete story leaderboard entry by rank ─────────────────────────────
 app.delete('/api/story-leaderboard/:rank', (req, res) => {
   const adminKey = req.headers['x-admin-key'];
-  if (adminKey !== process.env.ADMIN_KEY && adminKey !== 'kt1233') return res.status(403).json({ error: 'forbidden' });
+  if (!process.env.ADMIN_KEY || adminKey !== process.env.ADMIN_KEY) return res.status(403).json({ error: 'forbidden' });
   const lb = loadSlb().sort((a,b)=>b.totalStars-a.totalStars||b.stagesCleared-a.stagesCleared);
   const idx = parseInt(req.params.rank) - 1;
   if (idx < 0 || idx >= lb.length) return res.status(404).json({ error: 'not found' });
