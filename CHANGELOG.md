@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.22.5 — Dig Cost Label on Cell
+
+### Changed
+- `js/game.js` render: โหมดขุด hover บนฉากกีดขวาง แสดง pill "⛏️ {ราคา}" กลางเซลล์บน canvas
+  - สีเหลือง `#ffe082` เมื่อ `G.gold >= cost`; สีแดง `#ef5350` เมื่อเงินไม่พอ
+  - พื้นหลัง pill `rgba(0,0,0,.72)` border-radius 7px วาดด้วย quadraticCurveTo
+
 ## v3.22.4 — Map Art Terrain Upgrade
 
 ### Changed

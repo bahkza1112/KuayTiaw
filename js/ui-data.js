@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.22.4';
+const GAME_VERSION='3.22.5';
 const PATCH_NOTES=[
+  {ver:'3.22.5',date:'2026-06-28',title:'⛏️ ขุด — แสดงราคาบนเซลล์',notes:[
+    'โหมดขุด: ชี้เมาส์ไปที่ฉากกีดขวาง แสดงราคาขุดเป็น pill บนเซลล์ทันที',
+    'สีเหลือง = มีเงินพอ | สีแดง = เงินไม่พอ',
+  ]},
   {ver:'3.22.4',date:'2026-06-28',title:'🌿 Map Art — Terrain สวยงาม',notes:[
     'ลบ grid lines ออก — ไม่มีเส้นตารางแล้ว ดูเป็นธรรมชาติมากขึ้น',
     'Path: gradient shadow ตรงขอบ (Kingdom Rush style) + pebbles + รอยล้อสองเส้น',

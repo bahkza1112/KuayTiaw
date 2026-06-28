@@ -2005,6 +2005,29 @@ function render(){
       const tx=G.mx*CS,ty=G.my*CS;
       ctx.globalAlpha=.28;ctx.fillStyle='#ffe082';ctx.fillRect(tx,ty,CS,CS);ctx.globalAlpha=1;
       ctx.strokeStyle='#ffe082';ctx.lineWidth=2;ctx.strokeRect(tx+1,ty+1,CS-2,CS-2);
+      // ── ราคาขุดบนเซลล์ ──
+      const _cost=getDigCost(_dt);
+      const _canAfford=G.gold>=_cost;
+      const _lbl='⛏️ '+_cost;
+      const _cx=tx+CS/2, _cy=ty+CS/2;
+      ctx.font='bold 12px Arial'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      const _tw2=ctx.measureText(_lbl).width;
+      // pill background
+      ctx.fillStyle='rgba(0,0,0,.72)';
+      ctx.beginPath();
+      const _pw=_tw2+16,_ph=22,_px=_cx-_pw/2,_py=_cy-_ph/2,_pr=7;
+      ctx.moveTo(_px+_pr,_py); ctx.lineTo(_px+_pw-_pr,_py);
+      ctx.quadraticCurveTo(_px+_pw,_py,_px+_pw,_py+_pr);
+      ctx.lineTo(_px+_pw,_py+_ph-_pr);
+      ctx.quadraticCurveTo(_px+_pw,_py+_ph,_px+_pw-_pr,_py+_ph);
+      ctx.lineTo(_px+_pr,_py+_ph);
+      ctx.quadraticCurveTo(_px,_py+_ph,_px,_py+_ph-_pr);
+      ctx.lineTo(_px,_py+_pr);
+      ctx.quadraticCurveTo(_px,_py,_px+_pr,_py);
+      ctx.closePath(); ctx.fill();
+      ctx.fillStyle=_canAfford?'#ffe082':'#ef5350';
+      ctx.fillText(_lbl,_cx,_cy+1);
+      ctx.textAlign='left'; ctx.textBaseline='alphabetic';
     }
   }
   // base castle — glowing platform
