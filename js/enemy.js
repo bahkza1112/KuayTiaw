@@ -437,7 +437,7 @@ function killEnemy(e){
   _deathFx(e);
   // death sound (throttled — max once per 80ms)
   const _now=performance.now();
-  if(_now-_sfxLastDie>80){_sfxLastDie=_now;_playSound('die');}
+  if(_now-_sfxLastDie>80){_sfxLastDie=_now;_playSound(MTYPE[e.ti]===1?'boss_die':'die');}
 }
 
 function drawEnemySprite(ctx,ti,x,y,sz,mv){

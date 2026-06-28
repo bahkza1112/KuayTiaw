@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.22.7 — Sound Effects: Place Tower, Wave Start, Boss Die
+
+### Added
+- `js/game.js` `_playSound`: เพิ่ม 3 sound types ใหม่
+  - `place` — thunk + chime เมื่อวางป้อมสำเร็จ (triangle 180→360 Hz + sine 1047→1319 Hz)
+  - `wave_start` — แตรเตือนสองชั้น sawtooth (140→210 + 280→420 Hz) เมื่อเริ่มคลื่น
+  - `boss_die` — boom ต่ำ (sine 80→25 Hz) + mini arpeggio [523,659,784] เมื่อบอสตาย
+- `js/game.js` `tryPlaceTower()`: call `_playSound('place')` หลัง push tower
+- `js/game.js` `startWave()`: call `_playSound('wave_start')` ก่อนเริ่ม wave logic
+- `js/enemy.js` `killEnemy()`: แยกเสียงบอส — `MTYPE===1` → `boss_die`, อื่น → `die`
+
 ## v3.22.6 — Act 2 Completion: Achievement + True Ending
 
 ### Added

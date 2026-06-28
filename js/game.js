@@ -820,6 +820,42 @@ function _playSound(type){
         o.frequency.setValueAtTime(990,ac.currentTime+.06);
         og.gain.setValueAtTime(.22,ac.currentTime); og.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.25);
         o.connect(og); og.connect(v); o.start(); o.stop(ac.currentTime+.25); break;}
+      case 'place':{// satisfying thunk + bright chime — วางป้อม
+        const b=ac.createOscillator(),bg=ac.createGain();
+        b.type='triangle'; b.frequency.setValueAtTime(180,ac.currentTime);
+        b.frequency.exponentialRampToValueAtTime(360,ac.currentTime+.09);
+        bg.gain.setValueAtTime(.45,ac.currentTime); bg.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.16);
+        b.connect(bg); bg.connect(v); b.start(); b.stop(ac.currentTime+.16);
+        const o=ac.createOscillator(),og=ac.createGain();
+        o.type='sine'; o.frequency.setValueAtTime(1047,ac.currentTime+.05);
+        o.frequency.setValueAtTime(1319,ac.currentTime+.09);
+        og.gain.setValueAtTime(.18,ac.currentTime+.05); og.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.28);
+        o.connect(og); og.connect(v); o.start(ac.currentTime+.05); o.stop(ac.currentTime+.28); break;}
+      case 'wave_start':{// tense rising horn blast — เริ่มคลื่น
+        const o=ac.createOscillator(),og=ac.createGain();
+        o.type='sawtooth'; o.frequency.setValueAtTime(140,ac.currentTime);
+        o.frequency.exponentialRampToValueAtTime(210,ac.currentTime+.18);
+        og.gain.setValueAtTime(0,ac.currentTime); og.gain.linearRampToValueAtTime(.5,ac.currentTime+.05);
+        og.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.32);
+        o.connect(og); og.connect(v); o.start(); o.stop(ac.currentTime+.34);
+        const o2=ac.createOscillator(),o2g=ac.createGain();
+        o2.type='sawtooth'; o2.frequency.setValueAtTime(280,ac.currentTime+.14);
+        o2.frequency.exponentialRampToValueAtTime(420,ac.currentTime+.32);
+        o2g.gain.setValueAtTime(0,ac.currentTime+.14); o2g.gain.linearRampToValueAtTime(.35,ac.currentTime+.18);
+        o2g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.48);
+        o2.connect(o2g); o2g.connect(v); o2.start(ac.currentTime+.14); o2.stop(ac.currentTime+.48); break;}
+      case 'boss_die':{// heavy impact boom — บอสตาย
+        const b=ac.createOscillator(),bg=ac.createGain();
+        b.type='sine'; b.frequency.setValueAtTime(80,ac.currentTime);
+        b.frequency.exponentialRampToValueAtTime(25,ac.currentTime+.35);
+        bg.gain.setValueAtTime(1.0,ac.currentTime); bg.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.4);
+        b.connect(bg); bg.connect(v); b.start(); b.stop(ac.currentTime+.4);
+        [523,659,784].forEach((f,i)=>{// triumphant mini arpeggio
+          const o=ac.createOscillator(),og=ac.createGain();
+          o.type='triangle'; o.frequency.setValueAtTime(f,ac.currentTime+.12+i*.07);
+          og.gain.setValueAtTime(.22,ac.currentTime+.12+i*.07); og.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.12+i*.07+.3);
+          o.connect(og); og.connect(v); o.start(ac.currentTime+.12+i*.07); o.stop(ac.currentTime+.12+i*.07+.3);
+        }); break;}
     }
   }catch(e){}
 }
@@ -878,6 +914,7 @@ function toggleBgm(){
 /* ══ WAVE ══ */
 function startWave(){
   if(!G||G.waveActive||G.over||G.win||paused) return;
+  _playSound('wave_start');
   hideWavePreview();
   G.wave++;
   document.getElementById('waveTxt').textContent=G.wave;
@@ -2974,6 +3011,7 @@ function tryPlaceTower(type,col,row){
   if(_dt!==null&&type===6){G.dugCells.add(col+','+row);delete G.obstacles[col+','+row];G.obstaclesCleared++;}
   G.towers.push({col,row,type,lv:1,dmgLv:1,rngLv:1,rateLv:1,star:1,cd:0,angle:0,spawnAnim:1.0,awakened:false});
   _invalidateBg();
+  _playSound('place');
   // FX: ring pulse + burst particles + flash stamp
   const bx=col*CS+CS/2, by=row*CS+CS/2;
   G.fxFlash.push({x:bx,y:by,r:CS*.6,life:.22,maxLife:.22,col:'rgba(255,255,255,.55)'});
