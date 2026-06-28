@@ -2,6 +2,22 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.22.4 — Map Art Terrain Upgrade
+
+### Changed
+- `js/game.js` `_renderBg()`: เปลี่ยนเป็น 5-pass renderer แบบ Kingdom Rush style
+  - Pass 1: base tiles — ลบ grid lines, เพิ่ม micro-texture sub-quad blending
+  - Pass 2: path edge gradient — shadow gradient ตรงขอบ path/grass ทั้ง 4 ด้าน (path side + grass side)
+  - Pass 3: path details — pebbles (2-4 ต่อ cell) + wheel rut lines บนเส้นตรง
+  - Pass 4: grass tufts — 3-7 ใบหญ้าเอียงต่อ cell + ดอกไม้ตามด่าน (ด่าน 1-6)
+  - Pass 5: biome-specific decorations — แยกตาม stage id:
+    - Default (0,1,4,5): pine tree (เดิม)
+    - Desert (3,15): palm tree + fronds + coconut
+    - Ice (12,17): ice crystal cluster (3 แท่ง โปร่งแสง)
+    - Dark (7-10): dark mushroom + purple glow + spots
+    - Swamp (6,13,16): gnarled dead tree + branches + green glow
+    - Volcano (2,11): lava rock + glowing lava crack
+
 ## v3.22.3 — ปรับ Balance ด่าน 16 และ 20
 
 ### Changed

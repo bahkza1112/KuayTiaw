@@ -1,6 +1,12 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.22.3';
+const GAME_VERSION='3.22.4';
 const PATCH_NOTES=[
+  {ver:'3.22.4',date:'2026-06-28',title:'🌿 Map Art — Terrain สวยงาม',notes:[
+    'ลบ grid lines ออก — ไม่มีเส้นตารางแล้ว ดูเป็นธรรมชาติมากขึ้น',
+    'Path: gradient shadow ตรงขอบ (Kingdom Rush style) + pebbles + รอยล้อสองเส้น',
+    'Grass: micro-texture หลายสี + grass tufts ลู่ตามลม + ดอกไม้ตามด่าน',
+    'Biome decorations: ต้นปาล์มทะเลทราย | คริสตัลน้ำแข็ง | เห็ดมืด+ไฟม่วง | ต้นไม้แห้งหนองน้ำ | หินลาวา+ไฟ',
+  ]},
   {ver:'3.22.3',date:'2026-06-28',title:'⚖️ ปรับ Balance ด่าน 16 และ 20',notes:[
     'ด่าน 16 (หนองน้ำมืด): ลด enemyMult เหลือ 0.78 และเพิ่ม startGold เป็น 220 ชดเชย darknight +50% HP',
     'ด่าน 20 (แกนโลก): เพิ่ม startGold เป็น 280 สำหรับด่านสุดท้าย 15 เวฟ ศัตรูครบทุกประเภท',
