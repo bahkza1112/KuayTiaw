@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.22.2';
+const GAME_VERSION='3.22.3';
 const PATCH_NOTES=[
+  {ver:'3.22.3',date:'2026-06-28',title:'⚖️ ปรับ Balance ด่าน 16 และ 20',notes:[
+    'ด่าน 16 (หนองน้ำมืด): ลด enemyMult เหลือ 0.78 และเพิ่ม startGold เป็น 220 ชดเชย darknight +50% HP',
+    'ด่าน 20 (แกนโลก): เพิ่ม startGold เป็น 280 สำหรับด่านสุดท้าย 15 เวฟ ศัตรูครบทุกประเภท',
+  ]},
   {ver:'3.22.2',date:'2026-06-28',title:'📚 Tutorial & UI ปรับปรุง',notes:[
     'Tutorial ในเกม: เพิ่ม 2 ขั้นตอนใหม่ในด่าน 2 สอนระบบ Gacha และการ์ดสกิล',
     'Menu Tour: แก้จำนวนด่านจาก 11 → 21 ด่าน (2 Act) และปรับคำอธิบาย Endgame',

@@ -2,6 +2,12 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.22.3 — ปรับ Balance ด่าน 16 และ 20
+
+### Changed
+- `js/game.js` Stage 16 (หนองน้ำมืด): เพิ่ม `enemyMult:0.78` และ `startGold:220` ชดเชย `weatherFixed:'darknight'` ที่เพิ่ม HP ศัตรู +50% และความเร็ว +40%
+- `js/game.js` Stage 20 (แกนโลก): เพิ่ม `startGold:280` สำหรับด่านสุดท้าย 15 เวฟ ศัตรูครบทุกประเภท
+
 ## v3.22.2 — Tutorial & UI ปรับปรุง
 
 ### Added
