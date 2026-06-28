@@ -2,6 +2,21 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.23.0 — Act 2 Cutscenes: เรื่องราวครบทั้ง 10 ด่าน
+
+### Added
+- `js/ui-data.js` `CUTSCENES`: เพิ่ม cutscene data สำหรับ si=11 ถึง si=20 (Act 2 ทั้งหมด)
+  - si=11 ทะเลทรายเถ้าถ่าน — 3 slides: Act 2 intro, Berserk strategy
+  - si=12 ป่าแข็งนิรันดร์ — 2 slides: ice curse lore, Blizzard weather tips
+  - si=13 ทะเลสาบพิษ — 2 slides: poison lake lore, Phase Shift counter
+  - si=14 หุบเขาสายฟ้า — 2 slides: lightning valley, Shadow Veil + storm combo
+  - si=15 ทุ่งพายุทราย — 3 slides: dimensional rift, Brood Queen warning, Act 2 midpoint
+  - si=16 หนองน้ำมืด — 2 slides: eternal night lore, Energy Drain spread warning
+  - si=17 ยอดเขาน้ำแข็ง — 2 slides: Ice King throne lore, Frost Pulse counter strategy
+  - si=18 วิหารกาลเวลา — 3 slides: time rift lore, Naga+Brood combo, final stretch hype
+  - si=19 ปราการโบราณ — 3 slides: last rally point, stakes, legend inscription
+  - si=20 แกนโลก — 3 slides: world core cracking, boss warnings, True Final call-to-action
+
 ## v3.22.8 — Shadow Energy Drain: Endgame Fix + Codex Sync
 
 ### Fixed
