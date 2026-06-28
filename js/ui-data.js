@@ -1,6 +1,12 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.22.1';
+const GAME_VERSION='3.22.2';
 const PATCH_NOTES=[
+  {ver:'3.22.2',date:'2026-06-28',title:'📚 Tutorial & UI ปรับปรุง',notes:[
+    'Tutorial ในเกม: เพิ่ม 2 ขั้นตอนใหม่ในด่าน 2 สอนระบบ Gacha และการ์ดสกิล',
+    'Menu Tour: แก้จำนวนด่านจาก 11 → 21 ด่าน (2 Act) และปรับคำอธิบาย Endgame',
+    'หน้าหลัก: เพิ่มแถบ Progress แสดงความคืบหน้า Act 1/Act 2',
+    'ปุ่ม Endgame: ย้าย inline style ไป CSS class .beg ลดขนาดโค้ด HTML',
+  ]},
   {ver:'3.22.1',date:'2026-06-28',title:'🎴 การ์ดสกิล Chibi RO Scene Art',notes:[
     'อัพเกรด Canvas Art บนการ์ดสกิลทั้ง 5 ใบให้เป็น Scene + ตัวละคร Chibi แบบ Ragnarok Online',
     'โกลด์รัช: ฉากทะเลทราย + เหรียญทองมีหน้า Chibi (ตาโต แก้มแดง รอยยิ้ม) + กระบองเพชร',

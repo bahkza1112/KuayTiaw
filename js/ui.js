@@ -81,6 +81,18 @@ function updateMenuStats(){
   _updateNewsBadge();
   _updateBagBadge();
   _updateDailyBadge();
+  _updateActProgress();
+}
+function _updateActProgress(){
+  const p=loadProgress();
+  const act1=STAGES.filter(s=>s.id<=10&&s.id>=0);
+  const act2=STAGES.filter(s=>s.id>=11&&s.id<=20);
+  const d1=act1.filter(s=>p[s.id]>0).length;
+  const d2=act2.filter(s=>p[s.id]>0).length;
+  const e1=document.getElementById('mmAct1Progress');
+  const e2=document.getElementById('mmAct2Progress');
+  if(e1) e1.textContent=`Act 1: ${d1}/${act1.length}`;
+  if(e2) e2.textContent=`Act 2: ${d2}/${act2.length}`;
 }
 
 /* ══ WORKSHOP ══ */
@@ -1385,6 +1397,12 @@ const _TUT_STEPS=[
   {stage:1, title:'สภาพอากาศ 🌦️',
    msg:'สภาพอากาศจะเปลี่ยนเป็นระยะ\nและส่งผลต่อป้อม/ศัตรู\nคอยสังเกตไอคอนด้านบนจอ',
    target:null, boxAnchor:'center', arrowIcon:'', click:true},
+  {stage:1, title:'🎁 ตู้กาชา',
+   msg:'ใช้เจม💎 หมุนตู้กาชาจากเมนูหลัก\nรับโปชั่น เจม และการ์ดสกิล\nการ์ดสกิลเพิ่มพลังพิเศษให้ป้อม',
+   target:null, boxAnchor:'center', arrowIcon:'', click:true},
+  {stage:1, title:'🃏 การ์ดสกิล',
+   msg:'เลือกการ์ดสกิลก่อนเริ่มแต่ละด่าน\nจากหน้าเลือกป้อม → แถบ "สกิล"\nเช่น ☄️ Meteor ทำ AoE ใหญ่ ❄️ Freeze หน่วงศัตรู',
+   target:null, boxAnchor:'center', arrowIcon:'', click:true},
   // === ด่าน 3: Volcanic Pass ===
   {stage:2, title:'วัสดุพิเศษ 🪨',
    msg:'เคลียร์เวฟมีโอกาสได้วัสดุพิเศษ\nนำไปใช้ใน 🛠️ Workshop\nเพื่อปลดล็อกป้อมใหม่ถาวร',
@@ -1481,10 +1499,10 @@ const MENU_TOUR_STEPS=[
    msg:'ขอแนะนำเมนูและระบบต่างๆ ในเกม\nกด "ต่อไป" เพื่อเดินทัวร์'},
   {screen:'mm',target:'#startBtn',anchor:'above',
    title:'⚔️ โหมดเนื้อเรื่อง',
-   msg:'เล่นผ่าน 11 ด่านพร้อมเนื้อเรื่อง\nปลดล็อกป้อมใหม่และ Awaken\nแนะนำให้เริ่มที่นี่!'},
+   msg:'เล่นผ่าน 21 ด่าน (2 Act) พร้อมเนื้อเรื่อง\nปลดล็อกป้อมใหม่และ Awaken\nแนะนำให้เริ่มที่นี่!'},
   {screen:'mm',target:'#egMenuBtn',anchor:'above',
    title:'🔥 เอนด์เกม',
-   msg:'โหมดเอาตัวรอดไม่จำกัดเวฟ\nท้าทายที่สุด มีอันดับเซิร์ฟ\nปลดล็อกหลังจบเนื้อเรื่อง'},
+   msg:'โหมดเอาตัวรอดไม่จำกัดเวฟ\nผ่านเวฟรับวัสดุ + Soul Gems\nนำไป Craft ป้อมใหม่ใน Workshop!'},
   {screen:'mm',target:'.mm-resource-bar',anchor:'below',
    title:'💰 ทรัพยากร (ทอง + เจม)',
    msg:'ทอง💰 ซื้อ/อัปเกรดป้อมในเกม\nเจม<span class="gico"></span> ใช้ใน Workshop และกาชา\nกดแถบนี้เพื่อเปิด Workshop'},

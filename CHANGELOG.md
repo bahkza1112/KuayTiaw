@@ -2,6 +2,18 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.22.2 — Tutorial & UI ปรับปรุง
+
+### Added
+- `js/ui.js` `_TUT_STEPS`: เพิ่ม 2 ขั้นตอนใหม่ใน stage 1 (Dark Forest) สอนระบบ Gacha และการ์ดสกิล
+- `Tower Quest 🏰.html`: เพิ่ม `#mmAct1Progress` / `#mmAct2Progress` แสดงความคืบหน้าแต่ละ Act บนหน้าหลัก
+- `js/ui.js` `_updateActProgress()`: ฟังก์ชันอัปเดต progress counter จาก `loadProgress()`
+
+### Changed
+- `js/ui.js` `MENU_TOUR_STEPS`: แก้จำนวนด่านจาก "11 ด่าน" → "21 ด่าน (2 Act)" + ปรับคำอธิบาย Endgame ให้กล่าวถึง Materials/Workshop
+- `Tower Quest 🏰.html` `#egMenuBtn`: ย้าย inline style ทั้งหมดออกไปใช้ CSS class `.beg`
+- `css/main.css`: เพิ่ม class `.beg`, `.beg:hover`, `.mm-progress`, `.mm-progress-act`
+
 ## v3.22.1 — การ์ดสกิล Chibi RO Scene Art
 
 ### Changed
