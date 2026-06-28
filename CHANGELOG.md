@@ -2,6 +2,20 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.22.6 — Act 2 Completion: Achievement + True Ending
+
+### Added
+- `js/save.js` `ACHIEVEMENTS`: เพิ่ม 5 achievement ใหม่สำหรับ Act 2
+  - `s11` ก้าวสู่ Act 2 (reward 30 gems) — ผ่านด่าน 11 ทะเลทรายเถ้าถ่าน
+  - `s15` ผู้ฝ่าพายุ (reward 50 gems) — ผ่านด่าน 15 ทุ่งพายุทราย
+  - `s18` ผู้บิดกาลเวลา (reward 60 gems) — ผ่านด่าน 18 วิหารกาลเวลา
+  - `s20` ผู้พิชิตแกนโลก (reward 150 gems) — ผ่านด่าน 20 แกนโลก
+  - `sall2` ราชันสองบท (reward 400 gems) — ผ่านครบทุก 21 ด่าน
+- `js/save.js` `checkAchievements()`: เพิ่มการตรวจสอบ 5 achievement ใหม่
+- `js/game.js` stage clear logic: เพิ่ม handler สำหรับ `isFinalStage2` (stage 20)
+  - แสดง True Ending overlay "🌍 ACT 2 COMPLETE!" พร้อม green gradient banner + Victory FX
+- `js/save.js` `ACHIEVEMENTS`: ปรับคำอธิบาย `sall` ระบุ "(Act 1)" ชัดเจนขึ้น
+
 ## v3.22.5 — Dig Cost Label on Cell
 
 ### Changed

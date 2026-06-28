@@ -1011,6 +1011,15 @@ function endGame(win){
     banner.style.borderColor='#ce93d8';
     _launchFinalVictoryFX();
   }
+  if(win&&currentStage.isFinalStage2){
+    document.getElementById('endTitle').textContent='🌍 แกนโลกได้รับการปกป้อง!';
+    document.getElementById('endScore').textContent='🏆 คุณเอาชนะกองทัพมืดและรักษาแกนกลางของโลกไว้ได้ตลอดกาล!';
+    banner.style.display='block';
+    banner.innerHTML=`<strong>🌟 ACT 2 COMPLETE!</strong> ยินดีด้วย — คุณผ่านครบทั้ง 21 ด่านแล้ว! แกนโลกปลอดภัย ✨🌍`;
+    banner.style.background='linear-gradient(135deg,rgba(0,120,60,.4),rgba(0,80,160,.3))';
+    banner.style.borderColor='#66bb6a';
+    _launchFinalVictoryFX();
+  }
   document.getElementById('endOverlay').style.display='flex';
 }
 function _launchFinalVictoryFX(){

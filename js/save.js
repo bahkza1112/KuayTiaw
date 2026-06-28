@@ -537,7 +537,13 @@ const ACHIEVEMENTS=[
   {id:'s7',  icon:'🏰',cat:'story',  name:'ป้อมมืด',         desc:'ผ่านด่าน Dark Fortress',         reward:50},
   {id:'s9',  icon:'💀',cat:'story',  name:'ผู้พิชิตความมืด', desc:'ผ่านด่าน Dark Tower Summit',     reward:60},
   {id:'s10', icon:'🌑',cat:'story',  name:'ผู้ยุติเงามืด',   desc:'ผ่านด่านสุดท้าย Shadow Remnant', reward:80},
-  {id:'sall',icon:'👑',cat:'story',  name:'ราชันผู้พิทักษ์', desc:'ผ่านครบทั้ง 11 ด่าน',           reward:200},
+  {id:'sall',icon:'👑',cat:'story',  name:'ราชันผู้พิทักษ์', desc:'ผ่านครบทั้ง 11 ด่าน (Act 1)',    reward:200},
+  // Act 2
+  {id:'s11', icon:'🔥',cat:'story',  name:'ก้าวสู่ Act 2',   desc:'ผ่านด่านแรกของ Act 2 (ทะเลทรายเถ้าถ่าน)', reward:30},
+  {id:'s15', icon:'🌪️',cat:'story',  name:'ผู้ฝ่าพายุ',      desc:'ผ่านด่านทุ่งพายุทราย',           reward:50},
+  {id:'s18', icon:'⏳',cat:'story',  name:'ผู้บิดกาลเวลา',   desc:'ผ่านด่านวิหารกาลเวลา',           reward:60},
+  {id:'s20', icon:'🌍',cat:'story',  name:'ผู้พิชิตแกนโลก',  desc:'ผ่านด่านสุดท้ายของ Act 2 (แกนโลก)', reward:150},
+  {id:'sall2',icon:'🌟',cat:'story', name:'ราชันสองบท',      desc:'ผ่านครบทุก 21 ด่าน (Act 1 + Act 2)', reward:400},
   // Combat
   {id:'k100', icon:'⚔️',cat:'combat', name:'นักรบ',          desc:'สังหารรวม 100 ศัตรู',           reward:20},
   {id:'k1000',icon:'🗡️',cat:'combat', name:'จอมนักรบ',       desc:'สังหารรวม 1,000 ศัตรู',         reward:40},
@@ -641,6 +647,12 @@ function checkAchievements(){
   if(cleared.includes(9)) unlockAchievement('s9');
   if(cleared.includes(10)) unlockAchievement('s10');
   if(cleared.filter(id=>id<=10).length>=11)  unlockAchievement('sall'); // Act 1 only (id 0-10)
+  // Act 2
+  if(cleared.includes(11)) unlockAchievement('s11');
+  if(cleared.includes(15)) unlockAchievement('s15');
+  if(cleared.includes(18)) unlockAchievement('s18');
+  if(cleared.includes(20)) unlockAchievement('s20');
+  if(cleared.filter(id=>id<=20).length>=21) unlockAchievement('sall2');
   // Combat (cumulative stats)
   if(stats.totalKills>=100)  unlockAchievement('k100');
   if(stats.totalKills>=1000) unlockAchievement('k1000');

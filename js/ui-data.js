@@ -1,6 +1,11 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.22.5';
+const GAME_VERSION='3.22.6';
 const PATCH_NOTES=[
+  {ver:'3.22.6',date:'2026-06-28',title:'🌍 Act 2 Completion — Achievement + Ending',notes:[
+    'เพิ่ม Achievement 5 รายการใหม่สำหรับ Act 2: ก้าวสู่ Act 2, ผู้ฝ่าพายุ, ผู้บิดกาลเวลา, ผู้พิชิตแกนโลก, ราชันสองบท',
+    'ด่าน 20 (แกนโลก): เพิ่ม True Ending overlay พิเศษ "ACT 2 COMPLETE!" พร้อม Victory FX',
+    'ปรับคำอธิบาย Achievement ราชันผู้พิทักษ์ ให้ระบุ (Act 1) ชัดเจนขึ้น',
+  ]},
   {ver:'3.22.5',date:'2026-06-28',title:'⛏️ ขุด — แสดงราคาบนเซลล์',notes:[
     'โหมดขุด: ชี้เมาส์ไปที่ฉากกีดขวาง แสดงราคาขุดเป็น pill บนเซลล์ทันที',
     'สีเหลือง = มีเงินพอ | สีแดง = เงินไม่พอ',
