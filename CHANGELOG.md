@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.23.3 — Fix: Dig price pill แสดงบน path/ป้อม
+
+### Fixed
+- `js/game.js` DIG TOOL HOVER HIGHLIGHT: เพิ่ม check `!currentPset.has()` และ `!G.towers.find()` ก่อนแสดง highlight/price pill
+  - แก้บัค: pill ราคา ⛏️ แสดงผิดตำแหน่งบน path cells (เส้นทางศัตรู) เนื่องจาก hash function อาจให้ผล non-null บน path
+  - แก้บัค: pill แสดงบนเซลล์ที่มีป้อมอยู่แล้ว (ขุดไม่ได้อยู่แล้ว)
+  - ตรรกะตอนนี้ตรงกับ `digCell()` ที่มี check เดียวกันอยู่แล้ว
+
 ## v3.23.2 — Perf: ลด lag x2/x3 — แยก Visual FX Loop
 
 ### Changed

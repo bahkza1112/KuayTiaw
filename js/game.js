@@ -2055,7 +2055,7 @@ function render(){
   // ── DIG TOOL HOVER HIGHLIGHT ──
   if(G.selDig&&G.mx>=0&&G.my>=0){
     const _dt=getDecoType(G.mx,G.my);
-    if(_dt!==null){
+    if(_dt!==null&&!currentPset.has(G.mx+','+G.my)&&!G.towers.find(t=>t.col===G.mx&&t.row===G.my)){
       const tx=G.mx*CS,ty=G.my*CS;
       ctx.globalAlpha=.28;ctx.fillStyle='#ffe082';ctx.fillRect(tx,ty,CS,CS);ctx.globalAlpha=1;
       ctx.strokeStyle='#ffe082';ctx.lineWidth=2;ctx.strokeRect(tx+1,ty+1,CS-2,CS-2);

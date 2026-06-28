@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.23.2';
+const GAME_VERSION='3.23.3';
 const PATCH_NOTES=[
+  {ver:'3.23.3',date:'2026-06-29',title:'🐛 แก้ราคาขุดแสดงบน path/ป้อม',notes:[
+    'แก้บัค: pill ราคาขุด (⛏️) แสดงผิดตำแหน่งบน path cells หรือเซลล์ที่มีป้อมอยู่แล้ว',
+    'เพิ่ม check เดียวกับ digCell() — ไม่ highlight หรือแสดงราคาบน path/ป้อม',
+  ]},
   {ver:'3.23.2',date:'2026-06-28',title:'⚡ ลด lag x2/x3 — แยก visual FX loop ออกจาก physics',notes:[
     'แยก updateFX() ออกจาก update() — particle/fxRings/fxTrails/fxFlash/dmgNums รันครั้งเดียวต่อ frame',
     'intermediate physics steps: swap arrays ชั่วคราว — ป้องกัน particle spawn 2-3x ที่ x2/x3',
