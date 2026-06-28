@@ -270,6 +270,7 @@ try{const s=localStorage.getItem('tq_cfg');if(s)CFG=Object.assign(JSON.parse(JSO
 const COLS=12,ROWS=10,CS=80;
 let currentStage=null,currentPath=null,currentPset=null;
 let G=null,cv=null,ctx=null,rafId=null,speed=1,paused=false,toastTimer=null;
+let _noFX=false; // true ในระหว่าง intermediate physics steps — ป้องกัน FX spawn ซ้ำที่ x2/x3
 let _gpRectCache=null; // cache getBoundingClientRect('#gp') — invalidated on resize
 // offscreen bg canvas — pre-renders static grid+terrain, invalidated when towers/digs change
 let _bgCanvas=null,_bgCtx=null,_bgDirty=true;
@@ -611,11 +612,17 @@ function initGame(){
     /* BUG FIX: guard against stale loops after goMenu/goStageSelect */
     if(!G){return;}
     if(paused){rafId=requestAnimationFrame(loop);return;}
-    const rdt=Math.min((ts-last)/1000,.05); last=ts; // cap 50ms — ป้องกัน jump ตอน tab กลับ
+    const rdt=Math.min((ts-last)/1000,.05); last=ts;
     if(G.hitStopT>0){ G.hitStopT-=rdt; render(); }
     else {
-      // รัน update หลายรอบต่อ frame ด้วย dt เดิม → render ทุก frame ที่ 60fps เสมอ ไม่กระตุก
-      for(let i=0;i<speed;i++) update(rdt);
+      // intermediate steps: swap FX arrays → suppress particle/fxRings spawn ซ้ำที่ x2/x3
+      let _pp,_rp,_tp,_fp,_dp;
+      for(let i=0;i<speed;i++){
+        if(i<speed-1&&G){_pp=G.particles;G.particles=[];_rp=G.fxRings;G.fxRings=[];_tp=G.fxTrails;G.fxTrails=[];_fp=G.fxFlash;G.fxFlash=[];_dp=G.dmgNums;G.dmgNums=[];}
+        update(rdt);
+        if(i<speed-1&&G){G.particles=_pp;G.fxRings=_rp;G.fxTrails=_tp;G.fxFlash=_fp;G.dmgNums=_dp;}
+      }
+      updateFX(rdt*speed); // visual FX รันครั้งเดียวต่อ frame
       render();
     }
     if(!G.over&&!G.win) rafId=requestAnimationFrame(loop);
@@ -1698,40 +1705,8 @@ function update(dt){
   G.enemies.forEach(e=>{ if(e.hitFlash>0) e.hitFlash=Math.max(0,e.hitFlash-dt*4); if(e._knockT>0){e._knockT=Math.max(0,e._knockT-dt*8);} if(e._voidMarkT>0){e._voidMarkT-=dt;if(e._voidMarkT<=0){e._voidMarkT=0;e._voidMarkBonus=0;}} });
   // tower spawn bounce anim
   G.towers.forEach(tw=>{ if(tw.spawnAnim>0) tw.spawnAnim=Math.max(0,tw.spawnAnim-dt*2.2); });
-  // FX rings
-  for(let i=G.fxRings.length-1;i>=0;i--){
-    const r=G.fxRings[i];
-    if(r.delay>0){r.delay-=dt;continue;}
-    r.r+=r.maxR*dt*3.5; r.life-=dt*2.8;
-    if(r.life<=0){G.fxRings[i]=G.fxRings[G.fxRings.length-1];G.fxRings.pop();}
-  }
-  // FX trails
-  for(let i=G.fxTrails.length-1;i>=0;i--){
-    const t=G.fxTrails[i]; t.life-=dt*6;
-    if(t.life<=0){G.fxTrails[i]=G.fxTrails[G.fxTrails.length-1];G.fxTrails.pop();}
-  }
-  // particles — trim hard when many enemies on screen
-  if(G.enemies.length>12&&G.particles.length>30) G.particles.splice(0,G.particles.length-30);
-  for(let i=G.particles.length-1;i>=0;i--){
-    const p=G.particles[i];
-    p.x+=p.vx||0; p.y+=p.vy; p.life-=dt*(p.decay||1.4);
-    if(p.scale) p.scale=Math.max(.4,p.scale-dt*1.5);
-    if(p.life<=0){G.particles[i]=G.particles[G.particles.length-1];G.particles.pop();}
-  }
   // combo timer decay
   if(G.comboT>0){G.comboT-=dt;if(G.comboT<=0){G.comboN=0;G.comboT=0;}}
-  // muzzle flashes decay
-  for(let i=G.fxFlash.length-1;i>=0;i--){
-    G.fxFlash[i].life-=dt; if(G.fxFlash[i].life<=0){G.fxFlash[i]=G.fxFlash[G.fxFlash.length-1];G.fxFlash.pop();}
-  }
-  // floating damage numbers
-  if(G.dmgNums.length>60) G.dmgNums.splice(0,G.dmgNums.length-60);
-  for(let i=G.dmgNums.length-1;i>=0;i--){
-    const n=G.dmgNums[i];
-    n.x+=n.vx||0; n.y+=n.vy; n.vy*=.92;
-    n.life-=dt*(n.decay||1.0);
-    if(n.life<=0){G.dmgNums[i]=G.dmgNums[G.dmgNums.length-1];G.dmgNums.pop();}
-  }
   // boss warning decay
   if(G.bossWarning&&G.bossWarning.t>0) G.bossWarning.t-=dt;
   if(G.mergeHintPulseT>0) G.mergeHintPulseT=Math.max(0,G.mergeHintPulseT-dt);
@@ -1771,6 +1746,38 @@ function update(dt){
     document.getElementById('waveBtn').disabled=false;
     showWavePreview();
     if(autoWave) setTimeout(()=>{ if(autoWave&&G&&!G.over&&!G.win&&!G.waveActive) startWave(); },1200);
+  }
+}
+
+/* ══ UPDATE FX — visual-only loops, run once per rendered frame (ไม่ x2/x3) ══ */
+function updateFX(dt){
+  if(!G) return;
+  for(let i=G.fxRings.length-1;i>=0;i--){
+    const r=G.fxRings[i];
+    if(r.delay>0){r.delay-=dt;continue;}
+    r.r+=r.maxR*dt*3.5; r.life-=dt*2.8;
+    if(r.life<=0){G.fxRings[i]=G.fxRings[G.fxRings.length-1];G.fxRings.pop();}
+  }
+  for(let i=G.fxTrails.length-1;i>=0;i--){
+    const t=G.fxTrails[i]; t.life-=dt*6;
+    if(t.life<=0){G.fxTrails[i]=G.fxTrails[G.fxTrails.length-1];G.fxTrails.pop();}
+  }
+  if(G.enemies.length>12&&G.particles.length>30) G.particles.splice(0,G.particles.length-30);
+  for(let i=G.particles.length-1;i>=0;i--){
+    const p=G.particles[i];
+    p.x+=p.vx||0; p.y+=p.vy; p.life-=dt*(p.decay||1.4);
+    if(p.scale) p.scale=Math.max(.4,p.scale-dt*1.5);
+    if(p.life<=0){G.particles[i]=G.particles[G.particles.length-1];G.particles.pop();}
+  }
+  for(let i=G.fxFlash.length-1;i>=0;i--){
+    G.fxFlash[i].life-=dt; if(G.fxFlash[i].life<=0){G.fxFlash[i]=G.fxFlash[G.fxFlash.length-1];G.fxFlash.pop();}
+  }
+  if(G.dmgNums.length>60) G.dmgNums.splice(0,G.dmgNums.length-60);
+  for(let i=G.dmgNums.length-1;i>=0;i--){
+    const n=G.dmgNums[i];
+    n.x+=n.vx||0; n.y+=n.vy; n.vy*=.92;
+    n.life-=dt*(n.decay||1.0);
+    if(n.life<=0){G.dmgNums[i]=G.dmgNums[G.dmgNums.length-1];G.dmgNums.pop();}
   }
 }
 
@@ -3554,7 +3561,13 @@ function initEgGame(){
     const rdt=Math.min((ts-last)/1000,.05); last=ts;
     if(G.hitStopT>0){ G.hitStopT-=rdt; render(); }
     else {
-      for(let i=0;i<speed;i++) updateEg(rdt);
+      let _pp,_rp,_tp,_fp,_dp;
+      for(let i=0;i<speed;i++){
+        if(i<speed-1&&G){_pp=G.particles;G.particles=[];_rp=G.fxRings;G.fxRings=[];_tp=G.fxTrails;G.fxTrails=[];_fp=G.fxFlash;G.fxFlash=[];_dp=G.dmgNums;G.dmgNums=[];}
+        updateEg(rdt);
+        if(i<speed-1&&G){G.particles=_pp;G.fxRings=_rp;G.fxTrails=_tp;G.fxFlash=_fp;G.dmgNums=_dp;}
+      }
+      updateFX(rdt*speed);
       render();
     }
     if(!G.over&&!G.win) rafId=requestAnimationFrame(loop);

@@ -1,6 +1,11 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.23.1';
+const GAME_VERSION='3.23.2';
 const PATCH_NOTES=[
+  {ver:'3.23.2',date:'2026-06-28',title:'⚡ ลด lag x2/x3 — แยก visual FX loop ออกจาก physics',notes:[
+    'แยก updateFX() ออกจาก update() — particle/fxRings/fxTrails/fxFlash/dmgNums รันครั้งเดียวต่อ frame',
+    'intermediate physics steps: swap arrays ชั่วคราว — ป้องกัน particle spawn 2-3x ที่ x2/x3',
+    'ผลลัพธ์: CPU load ที่ x3 ลดจาก 3x เป็น ~1.2x สำหรับ visual work',
+  ]},
   {ver:'3.23.1',date:'2026-06-28',title:'⚡ แก้ไขอาการกระตุก x2/x3 speed',notes:[
     'แก้ game loop ทั้ง Story และ Endgame — เดิมข้ามการ render ที่ x2→30fps, x3→20fps ทำให้กระตุก',
     'ตอนนี้ render ทุก frame ที่ 60fps เสมอ — รัน update หลายรอบต่อ frame แทน',

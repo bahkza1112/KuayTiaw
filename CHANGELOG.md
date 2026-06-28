@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.23.2 — Perf: ลด lag x2/x3 — แยก Visual FX Loop
+
+### Changed
+- `js/game.js` — แยก `updateFX(dt)` ออกจาก `update()`:
+  - fxRings, fxTrails, particles, fxFlash, dmgNums ย้ายไปใน `updateFX()` แทน
+  - `updateFX()` ถูกเรียกครั้งเดียวต่อ frame (ไม่ว่าจะ x1/x2/x3)
+- Story loop + EG loop: intermediate physics steps swap FX arrays กับ `[]` ชั่วคราว
+  - ป้องกัน particle/ring spawn ซ้ำในขั้นตอนที่ไม่ถูก render
+- เดิมที่ x3: FX update work = 3x per frame → ใหม่: 1x per frame
+
 ## v3.23.1 — Fix: อาการกระตุก x2/x3 speed
 
 ### Fixed
