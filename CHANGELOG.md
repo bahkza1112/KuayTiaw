@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.23.1 — Fix: อาการกระตุก x2/x3 speed
+
+### Fixed
+- `js/game.js` Story loop + EG loop: แก้ `_renderTick % speed` frame-skip ที่ทำให้ render ที่ 30fps/20fps
+  - เดิม: `update(dt*speed)` ครั้งเดียว + skip render → กระตุกที่ x2/x3
+  - ใหม่: `for(i<speed) update(rdt)` ทุก frame + `render()` ทุก frame → 60fps เสมอ
+- cap `rdt` ที่ 50ms (ลดจาก 100ms) ป้องกัน physics jump ตอน browser pause/tab switch
+
 ## v3.23.0 — Act 2 Cutscenes: เรื่องราวครบทั้ง 10 ด่าน
 
 ### Added

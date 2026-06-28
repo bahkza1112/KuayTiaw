@@ -1,6 +1,11 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.23.0';
+const GAME_VERSION='3.23.1';
 const PATCH_NOTES=[
+  {ver:'3.23.1',date:'2026-06-28',title:'⚡ แก้ไขอาการกระตุก x2/x3 speed',notes:[
+    'แก้ game loop ทั้ง Story และ Endgame — เดิมข้ามการ render ที่ x2→30fps, x3→20fps ทำให้กระตุก',
+    'ตอนนี้ render ทุก frame ที่ 60fps เสมอ — รัน update หลายรอบต่อ frame แทน',
+    'cap real dt ที่ 50ms — ป้องกัน jump เมื่อ tab กลับหรือ browser pause',
+  ]},
   {ver:'3.23.0',date:'2026-06-28',title:'📖 Act 2 Cutscenes — เรื่องราวครบทั้ง 10 ด่าน',notes:[
     'เพิ่ม Cutscene ทั้ง 10 ด่านของ Act 2 (ด่าน 11-20) — เรื่องราวต่อเนื่องจาก Act 1',
     'แต่ละด่านมีเนื้อเรื่อง ภูมิหลัง และคำแนะนำกลยุทธ์เฉพาะ',

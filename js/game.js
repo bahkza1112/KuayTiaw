@@ -606,17 +606,18 @@ function initGame(){
   updateMenuStats();
   _initRunSkill(); // ⭐ ตั้งค่าการ์ดสกิลที่ใส่ไว้ (อ่าน tq_askill; ไม่ consume)
   startBgm();
-  let last=performance.now(),_renderTick=0;
+  let last=performance.now();
   function loop(ts){
     /* BUG FIX: guard against stale loops after goMenu/goStageSelect */
     if(!G){return;}
     if(paused){rafId=requestAnimationFrame(loop);return;}
-    const rdt=(ts-last)/1000; last=ts;
-    const dt=Math.min(rdt,.1)*speed;
-    _renderTick++;
-    const _doRender=speed<=1||(_renderTick%speed===0);
+    const rdt=Math.min((ts-last)/1000,.05); last=ts; // cap 50ms — ป้องกัน jump ตอน tab กลับ
     if(G.hitStopT>0){ G.hitStopT-=rdt; render(); }
-    else { update(dt); if(_doRender) render(); }
+    else {
+      // รัน update หลายรอบต่อ frame ด้วย dt เดิม → render ทุก frame ที่ 60fps เสมอ ไม่กระตุก
+      for(let i=0;i<speed;i++) update(rdt);
+      render();
+    }
     if(!G.over&&!G.win) rafId=requestAnimationFrame(loop);
   }
   rafId=requestAnimationFrame(loop);
@@ -3546,16 +3547,16 @@ function initEgGame(){
   updateHUD();
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
   startBgm();
-  let last=performance.now(),_renderTick=0;
+  let last=performance.now();
   function loop(ts){
     if(!G) return;
     if(paused){rafId=requestAnimationFrame(loop);return;}
-    const rdt=(ts-last)/1000; last=ts;
-    const dt=Math.min(rdt,.1)*speed;
-    _renderTick++;
-    const _doRender=speed<=1||(_renderTick%speed===0);
+    const rdt=Math.min((ts-last)/1000,.05); last=ts;
     if(G.hitStopT>0){ G.hitStopT-=rdt; render(); }
-    else { updateEg(dt); if(_doRender) render(); }
+    else {
+      for(let i=0;i<speed;i++) updateEg(rdt);
+      render();
+    }
     if(!G.over&&!G.win) rafId=requestAnimationFrame(loop);
   }
   rafId=requestAnimationFrame(loop);
