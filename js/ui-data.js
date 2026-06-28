@@ -1,6 +1,11 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.22.7';
+const GAME_VERSION='3.22.8';
 const PATCH_NOTES=[
+  {ver:'3.22.8',date:'2026-06-28',title:'🌑 Shadow Energy Drain — แก้ Bug Endgame + อัปเดต Codex',notes:[
+    'เงามืด (Shadow): เพิ่ม Energy Drain ให้ทำงานในโหมด Endgame ด้วย (เดิมมีแค่ Story)',
+    'Codex อัปเดต: เงามืด — แสดงความสามารถ Energy Drain แทนที่คำอธิบายเดิม',
+    '_drainT ลดลงถูกต้องในทั้งสองโหมด — บัฟป้อมฟื้นคืนครบ 3 วินาที',
+  ]},
   {ver:'3.22.7',date:'2026-06-28',title:'🔊 เสียง — place tower, wave start, boss die',notes:[
     'วางป้อม: เสียง "thunk + chime" ทุกครั้งที่วางสำเร็จ',
     'เริ่มคลื่น: เสียงแตรเตือนสองชั้น — ตึงเครียดและดุดัน',

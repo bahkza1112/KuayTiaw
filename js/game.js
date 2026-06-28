@@ -3820,6 +3820,26 @@ function updateEg(dt){
     e.x=p0[0]*CS+CS/2+(p1[0]-p0[0])*CS*t2;
     e.y=p0[1]*CS+CS/2+(p1[1]-p0[1])*CS*t2;
   }
+  // 🌑 เงามืด (ti===2) Energy Drain — EG
+  G.enemies.forEach(shadow=>{
+    if(!shadow.alive||shadow.ti!==2) return;
+    shadow.drainCd=(shadow.drainCd||3+Math.random()*2)-dt;
+    if(shadow.drainCd>0) return;
+    shadow.drainCd=3+Math.random()*2;
+    const drainRange=2.5*CS;
+    let drained=false;
+    G.towers.forEach(t=>{
+      if(Math.hypot(t.col*CS+CS/2-shadow.x,t.row*CS+CS/2-shadow.y)>drainRange) return;
+      t._drainT=3.0;
+      drained=true;
+      G.particles.push({x:t.col*CS+CS/2,y:t.row*CS+CS/2-CS*.6,txt:'🌑',col:'#7e57c2',
+        life:1.1,vy:-1.0,vx:0,decay:1.2,scale:.9});
+    });
+    if(drained){
+      G.fxRings.push({x:shadow.x,y:shadow.y,r:4,maxR:drainRange,life:.55,lw:2,col:'#7e57c2',delay:0});
+      G.particles.push({x:shadow.x,y:shadow.y-ESIZES[2]-10,txt:'🌑 Energy Drain!',col:'#b39ddb',life:1.2,vy:-1.2,vx:0,decay:1.1,scale:.9});
+    }
+  });
   // healer monsters in endgame
   G.enemies.forEach(healer=>{
     if(!healer.alive||healer.ti!==10) return;
@@ -3890,6 +3910,7 @@ function updateEg(dt){
     }
   });
   G.towers.forEach(tw=>{
+    if(tw._drainT>0) tw._drainT-=dt;
     if(tw._shootT>0) tw._shootT=Math.max(0,tw._shootT-dt*7);
     if(tw._stunT>0){tw._stunT-=dt;return;} // 🐉 ถูกวิเวิร์นโฉบหยุดทำงาน
     if(_TAMB[tw.type]&&G.enemies.length<=12){

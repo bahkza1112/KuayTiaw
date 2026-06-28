@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.22.8 — Shadow Energy Drain: Endgame Fix + Codex Sync
+
+### Fixed
+- `js/game.js` EG update loop: เพิ่ม Shadow (ti=2) Energy Drain mechanic ใน Endgame loop (เดิมมีแค่ Story mode)
+- `js/game.js` EG tower loop: เพิ่ม `_drainT` decrement ใน Endgame tower section ให้บัฟป้อมฟื้นคืนหลัง 3 วิ
+
+### Changed
+- `js/enemy.js` `MSPECIAL[2]`: อัปเดตคำอธิบาย Codex เงามืด — แสดง Energy Drain แทนที่ "ต้านทานการชะลอของน้ำแข็งบางส่วน" เพื่อตรงกับโค้ดจริง
+
 ## v3.22.7 — Sound Effects: Place Tower, Wave Start, Boss Die
 
 ### Added
