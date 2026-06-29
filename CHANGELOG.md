@@ -2,6 +2,19 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.5 — Balance: น้ำแข็ง Rework — Slow แรงขึ้น + Awaken แช่แข็ง
+
+### Changed
+- `js/tower.js` TSLOW[1]: `0.45` → `0.30` (ศัตรูเหลือ 30% ความเร็ว)
+- `js/tower.js` TSPECIAL[1]: อัปเดตคำอธิบาย slow ใหม่
+- `js/tower.js` TAWAKEN_DESC[1]: 35% แช่แข็ง 2วิ แทนแช่แข็ง 3วิเดิม
+- `js/tower.js` trackDefs: เพิ่ม type 1 custom — สาย 1 = ⏱️ ระยะเวลาสโล (rngLv)
+- `js/tower.js` getTowerRange: ice (type 1) ระยะคงที่ 2.0 ไม่ขึ้นตาม rngLv
+- `js/tower.js` popup stats: แสดง ⏱️ ระยะเวลาสโล แทน 📡 ระยะ
+- `js/game.js` CFG.t_rate[1]: `1.5` → `1.2`
+- `js/game.js` projectile: เพิ่ม `_slowDur` = 1.5 + rngLv×0.5 (Lv1=2s, Lv2=2.5s, Lv3=3s)
+- `js/game.js` hit logic (×2): ใช้ `p._slowDur`, Awaken = 35% freeze/65% slow
+
 ## v3.24.4 — Balance: ปืนใหญ่ Rework — Splash ย้ายไปอยู่ใน Awaken
 
 ### Changed

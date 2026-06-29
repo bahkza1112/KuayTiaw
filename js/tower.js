@@ -4,7 +4,7 @@ const TCOLORS=['#c62828','#0d47a1','#4a148c','#1b5e20','#00695c','#4e342e','#f57
 const TPROJ=['#ff7043','#80d8ff','#e040fb','#ffee58','#69f0ae','#a5d6a7','#ffd54f','#ffe57f','#b388ff','#b39ddb'];
 const TACCENT=['#ff5252','#40c4ff','#ea80fc','#69f0ae','#64ffda','#8d6e63','#ffca28','#ffe57f','#7e57c2','#b39ddb'];
 const TSPLASH=[0,0,1.2,0,0,0,0,0,0,0];
-const TSLOW=[0,.45,0,0,0,0,0,0,0,0];
+const TSLOW=[0,.30,0,0,0,0,0,0,0,0];
 const TBUFF=[false,false,false,false,true,false,false,false,false,false];
 const TCANAIR=[false,false,false,true,false,true,false,true,false,false]; /* ยิง air ได้ */
 const TGOLDMINE=[false,false,false,false,false,false,true,false,false,false]; /* สร้างทอง */
@@ -12,7 +12,7 @@ const TCHAIN=[0,0,0,0,0,0,0,2,0,0]; /* chain lightning targets (Thunder=2) */
 const TPIERCE=[false,false,false,false,false,false,false,true,false,false]; /* ทะลุโล่: Thunder เท่านั้น — Sniper ต้องอัพ Range ≥3 ก่อน */
 const RARITY_COLORS={2:'#42a5f5',3:'#ab47bc',4:'#ff8f00'}; /* กรอบสีตาม★ — 2=น้ำเงิน(Rare) 3=ม่วง(Epic) 4=ส้มทอง(Legendary), Awaken มีออร่าทองของตัวเอง */
 const TFLAVOR=['ปืนใหญ่หนักที่ยิงกระสุนเจาะเกราะ ดาเมจต่อยิงสูง เมื่ออเวคจะปลดพลัง Splash ทำลายล้างวงกว้าง',
-  'ยิงน้ำแข็งที่ทำให้ศัตรูเยือกแข็ง วางไว้ก่อนทางยาวจะได้ผลดีที่สุด',
+  'ยิงลูกน้ำแข็งชะลอศัตรูลงอย่างรุนแรง เมื่ออเวคมีโอกาสแช่แข็งหยุดสนิท',
   'รวมพลังเวทมนตร์เป็นการโจมตีที่รุนแรง กระจายในวงกว้าง แต่ยิงช้า',
   'มือปืนระยะไกลที่แม่นยำ มีความเสียหายต่อเป้าหมายเดียวสูงสุดในเกม',
   'ปล่อยออร่าเสริมกำลังที่เพิ่มความเสียหายให้ป้อมใกล้เคียง ไม่โจมตีโดยตรง',
@@ -31,7 +31,7 @@ const TTAGS=[[{t:'ดาเมจสูง',c:'tag-red'},{t:'อเวค: Splas
   [{t:'Chain Lightning',c:'tag-orange'},{t:'ยิง Air',c:'tag-blue'}],
   [{t:'Void Mark',c:'tag-purple'},{t:'Workshop',c:'tag-red'}],
   [{t:'ช้าเวลา',c:'tag-purple'},{t:'ไม่โจมตี',c:'tag-green'},{t:'Workshop',c:'tag-red'}]];
-const TSPECIAL=['-','ชะลอเหลือ 45% นาน 2 วินาที','กระจาย: 1.2 ช่อง','ระยะยิง 4.5 ช่อง (คงที่ไม่ต้องอัพ) — สายคริติคอล: โอกาสคริติคอล +10%/เลเวล (สูงสุด 40%) ดาเมจ x1.75 — 🎯 ล็อกเป้าหมอผีก่อนเสมอเมื่ออยู่ในระยะ','+10% ความเสียหาย/เลเวลบัฟ ให้ป้อมในรัศมี (อัพสาย "เพิ่มดาเมจบัฟ") | 🛡️ ออร่ากันหยุดป้อม: ★1-4 = 20/40/60/80% (อเวค 100%) +5%/เลเวลจากสาย "กันหยุดป้อม"','ยิง Air ได้ — ยิงค้างคาวและวิเวิร์นได้ (ร่วมกับ Sniper และ Thunder)','ผลิตทองทุกรอบ (ลดเวลาได้ -20%/เลเวลจากสายคูลดาวน์) เริ่ม 2 ทอง/รอบ (+2/เลเวลจากสายจำนวน) — อเวคได้ทอง x2','Chain Lightning ถึง 2 ตัว — ดาเมจลด 40% ต่อ chain — ยิง Air ได้','Void Mark: 30% โอกาสติดมาร์ก (อเวค 50%) ทำให้ศัตรูรับดาเมจเพิ่ม +25% จากป้อมทุกชนิด (อเวค +40%) นาน 4 วินาที รีเฟรชเวลาได้แต่ไม่บวกซ้ำ',
+const TSPECIAL=['-','ชะลอเหลือ 30% นาน 2-3 วิ (อัพสายระยะเวลา)','กระจาย: 1.2 ช่อง','ระยะยิง 4.5 ช่อง (คงที่ไม่ต้องอัพ) — สายคริติคอล: โอกาสคริติคอล +10%/เลเวล (สูงสุด 40%) ดาเมจ x1.75 — 🎯 ล็อกเป้าหมอผีก่อนเสมอเมื่ออยู่ในระยะ','+10% ความเสียหาย/เลเวลบัฟ ให้ป้อมในรัศมี (อัพสาย "เพิ่มดาเมจบัฟ") | 🛡️ ออร่ากันหยุดป้อม: ★1-4 = 20/40/60/80% (อเวค 100%) +5%/เลเวลจากสาย "กันหยุดป้อม"','ยิง Air ได้ — ยิงค้างคาวและวิเวิร์นได้ (ร่วมกับ Sniper และ Thunder)','ผลิตทองทุกรอบ (ลดเวลาได้ -20%/เลเวลจากสายคูลดาวน์) เริ่ม 2 ทอง/รอบ (+2/เลเวลจากสายจำนวน) — อเวคได้ทอง x2','Chain Lightning ถึง 2 ตัว — ดาเมจลด 40% ต่อ chain — ยิง Air ได้','Void Mark: 30% โอกาสติดมาร์ก (อเวค 50%) ทำให้ศัตรูรับดาเมจเพิ่ม +25% จากป้อมทุกชนิด (อเวค +40%) นาน 4 วินาที รีเฟรชเวลาได้แต่ไม่บวกซ้ำ',
 'คลื่นเวลา: ชาร์จ 6s → ปล่อยพัลส์ 1.5s — รัศมี 2.0 ช่อง (อัพได้ถึง 3.5) — ช้าลง 50% (บอสช้า 85%) — ไม่โจมตีโดยตรง'];
 const TSTRENGTH=[
   ['ดาเมจต่อยิงสูง','เมื่ออเวค Splash 2.0 ช่อง'],
@@ -59,7 +59,7 @@ const TWEAKNESS=[
 ];
 const TAWAKEN_DESC=[
   'ปลด Splash 2.0 ช่อง — กระสุนระเบิดถล่มวงกว้างทำลายล้าง',
-  'ระยะเวลาแช่แข็ง 2 → 3 วินาที — ศัตรูติดช้านานขึ้น',
+  '35% โอกาสแช่แข็ง 2 วิ (หยุดสนิท) — ถ้าไม่ติดแช่แข็ง slow 70% ตามปกติ',
   'โอกาสยิงพร้อมกัน 3 นัด 40% (ปกติ 20%) — DPS พุ่งสูงขึ้นมาก',
   'ยิงทะลุเส้นตรง — โดนศัตรูทุกตัวบนเส้นยิงหลังเป้าหมาย',
   'กันหยุดป้อม 100% + ออร่าเพิ่มพลังป้อมรอบข้างแรงขึ้น',
@@ -72,7 +72,7 @@ const TAWAKEN_DESC=[
 const STAR_DMG_BONUS=[0,.5,1,3];// โบนัสดาเมจพื้นฐานตาม★ (★1=+0%, ★2=+50%, ★3=+100%, ★4=+300%)
 function getTowerDmg(t,lv,star){return CFG.t_dmg[t]*(1+STAR_DMG_BONUS[(star||1)-1])*(1+(lv-1)*.25);}
 // 🎯 สไนเปอร์: สายที่ 2 (เดิมระยะ) ถูกเปลี่ยนเป็นคริติคอล — ระยะคงที่ไม่ต้องอัพ
-function getTowerRange(t,lv){return t===3?CFG.t_rng[t]:CFG.t_rng[t]*(1+(lv-1)*.15);}
+function getTowerRange(t,lv){return (t===3||t===1)?CFG.t_rng[t]:CFG.t_rng[t]*(1+(lv-1)*.15);}
 function getTowerRate(t,lv){return CFG.t_rate[t]*(1+(lv-1)*.1);}
 // 🎯 สไนเปอร์: โอกาสคริติคอล +10%/lv (สูงสุด +40% ที่ Lv.5), คริติคอล x1.75 ดาเมจ (v3.0.1: 2→1.75)
 const SNIPER_CRIT_MULT=1.75;
@@ -388,6 +388,10 @@ function _twWeapon(ctx,type,r,shootT){
 let _popupTw=null;
 // 🎛️ สายสกิลของป้อมแต่ละชนิด (2 สายเสมอ) — key ในข้อมูลป้อม + ป้ายกำกับ + ปลดล็อกพิเศษ
 function trackDefs(t){
+  if(t===1) return [ // ❄️ น้ำแข็ง
+    {key:'rngLv',icon:'⏱️',name:'ระยะเวลาสโล',col:'#80d8ff',unlockLv:0,unlockText:''},
+    {key:'rateLv',icon:'⚡',name:'ความเร็ว',col:'#ffe234',unlockLv:3,unlockText:'ยิงรัว (โอกาสคูลดาวน์สั้นลงทันทีหลังยิง)'}
+  ];
   if(t===3) return [ // 🎯 สไนเปอร์
     {key:'rateLv',icon:'⚡',name:'ความเร็ว',col:'#ffe234',unlockLv:3,unlockText:'ยิงรัว (โอกาสคูลดาวน์สั้นลงทันทีหลังยิง)'},
     {key:'rngLv',icon:'🎯',name:'คริติคอล',col:'#ff5252',unlockLv:0,unlockText:''}
@@ -478,7 +482,16 @@ function showTowerPopup(tw,px,py){
     statsHtml+=`<div class="tp-stat">🔮 รัศมีเวลา <small style="opacity:.5">Lv.${_rngLv}</small><span>${radius} ช่อง</span></div>`;
     statsHtml+=`<div class="tp-stat">⏳ ชาร์จ/พัลส์ <small style="opacity:.5">Lv.${_rateLv}</small><span>${chargeT}s / ${pulseT}s</span></div>`;
     statsHtml+=`<div class="tp-stat">🐌 ช้าลง <span>50%${tw.awakened?' + หยุดเวลา (อเวค)':''}</span></div>`;
-  } else { // ปืนใหญ่/น้ำแข็ง/เวทมนตร์/ธนู/สายฟ้า/ป้อมมนตราโมฆะ — ระยะ/ความเร็ว
+  } else if(tw.type===1){ // ❄️ น้ำแข็ง — ระยะเวลาสโล/ความเร็ว
+    const slowDur=(1.5+(tw.rngLv||1)*.5).toFixed(1);
+    const rateVal=getTowerRate(1,tw.rateLv).toFixed(1);
+    const dpsVal=(dmgVal*_bm*parseFloat(rateVal)).toFixed(1);
+    statsHtml+=`<div class="tp-stat">📡 ระยะ <span>${CFG.t_rng[1].toFixed(1)} ช่อง</span></div>`;
+    statsHtml+=`<div class="tp-stat">⏱️ ระยะเวลาสโล <small style="opacity:.5">Lv.${tw.rngLv||1}</small><span>${slowDur} วิ</span></div>`;
+    statsHtml+=`<div class="tp-stat">⚡ อัตรายิง <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${rateVal}${tw.rateLv>=4?' <span style="color:#ffe234;font-size:9px;">⚡ยิงรัว</span>':''}</span></div>`;
+    statsHtml+=`<div class="tp-stat">🐌 slow <span>70%${tw.awakened?' / 35% แช่แข็ง (อเวค)':''}</span></div>`;
+    statsHtml+=`<div class="tp-stat">📊 DPS<span>${dpsVal}${_bmTag}</span></div>`;
+  } else { // ปืนใหญ่/เวทมนตร์/มินิกัน/สายฟ้า/ป้อมมนตราโมฆะ — ระยะ/ความเร็ว
     const rngVal=getTowerRange(tw.type,tw.rngLv).toFixed(1);
     const rateVal=getTowerRate(tw.type,tw.rateLv).toFixed(1);
     const dpsVal=(dmgVal*_bm*parseFloat(rateVal)).toFixed(1);

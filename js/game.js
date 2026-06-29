@@ -256,7 +256,7 @@ const DEFAULT_CFG={
   // Tower — เพิ่ม DPS นิดหน่อยให้ผู้เล่นรู้สึกว่าป้อมมีพลัง
   t_dmg:[24,12,44,65,0,20,0,20,42,0],   // [cannon,ice,magic,sniper,support,archer,goldmine,thunder,void,time] — time dmg=0 ใช้ pulse slow แทน
   t_rng:[2.2,2.0,2.5,4.5,1.5,2.8,0,2.4,3.0,2.0], // time: รัศมีเริ่มต้น 2.0 ช่อง
-  t_rate:[1.2,1.5,.8,.4,0,1.8,0,1.8,0.6,0], // time rate=0 (ใช้ pulse mechanic แทน)
+  t_rate:[1.2,1.2,.8,.4,0,1.8,0,1.8,0.6,0], // time rate=0 (ใช้ pulse mechanic แทน)
   t_cost:[45,55,75,65,35,60,50,85,90,95], // time: 95 gold
   t_goldrate:5,t_goldamt:[2,4,6,8],
   // Game settings
@@ -1516,6 +1516,7 @@ function update(dt){
         splash:((_aw&&tw.type===0)?2.0:TSPLASH[tw.type])*_wSplashMult,slow:_rSlow,alive:true,
         chain:(TCHAIN[tw.type]||0)+_awChainBonus,
         _rngPierce:tw.type===3?(tw.rngLv||tw.lv)>=3:(tw.rngLv||tw.lv)>=4,
+        _slowDur:tw.type===1?(1.5+(tw.rngLv||1)*.5):2,
         _maxR:range*CS,
         _supBoost:_aw?getSupportAwakenBoost(tw.col,tw.row):1
       })-1];
@@ -1639,10 +1640,13 @@ function update(dt){
         }
       }
       if(p.slow>0&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)&&!(G.weather&&G.weather.slowImmune)){
-        // ❄️ Ice Awaken: ติดแข็ง (หยุดสนิท) 3 วินาที — Support ตื่นใกล้เคียงเพิ่มเป็น 6 วินาที
+        // ❄️ Ice: ชะลอ 70% — Awaken: 35% แช่แข็ง 2วิ, ไม่ติด→ slow ปกติ
         if(p.type===1&&p.target.ti===16){/* 🧊 ราชาน้ำแข็ง immune ice slow */}
-        else if(p._awakened&&p.type===1){ p.target.slow=0; p.target.slowT=3*(p._supBoost||1); }
-        else { p.target.slow=p.slow; p.target.slowT=2; }
+        else if(p._awakened&&p.type===1){
+          if(Math.random()<.35){p.target.slow=0;p.target.slowT=2;}
+          else{p.target.slow=p.slow;p.target.slowT=p._slowDur||2;}
+        }
+        else { p.target.slow=p.slow; p.target.slowT=p._slowDur||2; }
       }
       // 🎯 Sniper Awaken: ยิงทะลุเป็นเส้นตรง — สร้างความเสียหายให้ศัตรูที่อยู่หลังเป้าหมายบนเส้นยิงด้วย
       if(p.type===3&&p._awakened){
@@ -4091,6 +4095,7 @@ function updateEg(dt){
         splash:((_aw2&&tw.type===0)?2.0:TSPLASH[tw.type])*_wSplashMult2,slow:_rSlow2,alive:true,
         chain:(TCHAIN[tw.type]||0)+_awChainBonus2,
         _rngPierce:tw.type===3?(tw.rngLv||tw.lv)>=3:(tw.rngLv||tw.lv)>=4,
+        _slowDur:tw.type===1?(1.5+(tw.rngLv||1)*.5):2,
         _maxR:range*CS,
         _supBoost:_aw2?getSupportAwakenBoost(tw.col,tw.row):1
       })-1];
@@ -4145,10 +4150,13 @@ function updateEg(dt){
         }
       }
       if(p.slow>0&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)&&!(G.weather&&G.weather.slowImmune)){
-        // ❄️ Ice Awaken: ติดแข็ง (หยุดสนิท) 3 วินาที — Support ตื่นใกล้เคียงเพิ่มเป็น 6 วินาที
+        // ❄️ Ice: ชะลอ 70% — Awaken: 35% แช่แข็ง 2วิ, ไม่ติด→ slow ปกติ
         if(p.type===1&&p.target.ti===16){/* 🧊 ราชาน้ำแข็ง immune ice slow */}
-        else if(p._awakened&&p.type===1){ p.target.slow=0; p.target.slowT=3*(p._supBoost||1); }
-        else { p.target.slow=p.slow; p.target.slowT=2; }
+        else if(p._awakened&&p.type===1){
+          if(Math.random()<.35){p.target.slow=0;p.target.slowT=2;}
+          else{p.target.slow=p.slow;p.target.slowT=p._slowDur||2;}
+        }
+        else { p.target.slow=p.slow; p.target.slowT=p._slowDur||2; }
       }
       // 🎯 Sniper Awaken: ยิงทะลุเป็นเส้นตรง — สร้างความเสียหายให้ศัตรูที่อยู่หลังเป้าหมายบนเส้นยิงด้วย
       if(p.type===3&&p._awakened){
