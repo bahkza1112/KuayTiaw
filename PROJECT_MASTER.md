@@ -68,11 +68,11 @@ Heatwave, Blizzard, Poison, Lightning (50% tower disable), Sandstorm, Darknight 
 |---|---|
 | **Gacha Reward** | 30 gems/pull, pool 1000, pity 100 → Time Tower; 10 items |
 | **Gacha Skill Card** | 1 ticket/pull, pool 10000, 0.02%/card, pity 30 → Barrier |
-| **Skill Cards** | 5 ใบ: Goldrush 💰, Freeze ❄️, Meteor ☄️, Overdrive ⚡, Barrier 🛡️ (★1–★5) |
+| **Skill Cards** | 5 ใบ: Goldrush 💰, Freeze ❄️, Meteor ☄️, Overdrive ⚡, Barrier 🛡️ (★1–★5) + Chibi RO art |
 | **Workshop Craft** | Void Tower (800💎+mats), Time Tower (1500💎+mats) |
 | **Shard Exchange** | 🔹 Common×10→mat0, Rare×5→mat1, Epic×3→mat2 |
 | **Talents** | 6 leveled (0–100): sgold, gkill, awaken cost, tdmg, hpmax, skcool |
-| **Achievements** | 27 รายการ: story(6), combat(6), skill(5), endgame(5), casino(6), collection(6) |
+| **Achievements** | 32 รายการ: story Act1(6) + Act2(5), combat(6), skill(5), endgame(5), casino(6), collection(6) |
 | **Story Missions** | 14 รายการ: per-stage(11) + milestone(3) |
 | **Daily Login** | 7-day cycle: gems/tickets/gold/potions |
 | **Daily Quests** | pool 7 รายการ, สุ่มมา 3/วัน |
@@ -84,10 +84,18 @@ Heatwave, Blizzard, Poison, Lightning (50% tower disable), Sandstorm, Darknight 
 | **Profile** | Avatar เลือก/วาดเอง, ชื่อ, สถิติ |
 | **Tower Awaken** | ทุกป้อมมี Awaken state พิเศษ |
 | **Runes** | 6 equippable modifiers per run |
-| **Tutorial** | สอนผู้เล่นใหม่ |
-| **Menu Tour** | แนะนำ UI |
+| **Tutorial** | สอนผู้เล่นใหม่ (รวม Gacha + Skill Card tutorial) |
+| **Menu Tour** | แนะนำ UI (อัปเดตเป็น 21 ด่าน) |
 | **Dev Panel** | Debug + balance tuning + cheat |
 | **Persistent Gold** | สกุลเงินสำหรับ Talent ถาวร |
+| **Synergy Display** | badge 💚+X% บนกระดาน + เส้นเชื่อม Support ↔ ป้อม + popup DPS รวม buff |
+| **Sound Effects** | place, wave_start, boss_die, die, shoot (unique per tower type 0–8) |
+| **Projectile Visuals** | unique กระสุนทุกป้อม (type 0–8): cannonball, ice shard, magic orb, sniper, coin, healing orb, void crescent, etc. |
+| **Map Art** | 5-pass terrain renderer: biome decorations (pine/palm/ice crystal/mushroom/dead tree/lava) |
+| **Dig Tool** | ขุดสิ่งกีดขวางบนกระดาน + price pill แสดงบน canvas |
+| **Act Progress** | แสดงความคืบหน้า Act 1 / Act 2 บนหน้าหลัก |
+| **Cutscenes** | ครบทุก 21 ด่าน (Act 1 + Act 2) |
+| **True Ending** | Stage 20 clear → "🌍 ACT 2 COMPLETE!" overlay |
 
 ---
 
