@@ -799,6 +799,19 @@ function _playSound(type){
           og.gain.setValueAtTime(.28,ac.currentTime+i*.08); og.gain.exponentialRampToValueAtTime(.001,ac.currentTime+i*.08+.35);
           o.connect(og); og.connect(v); o.start(ac.currentTime+i*.08); o.stop(ac.currentTime+i*.08+.35);
         }); break;}
+      case 'gold':{// 🪙 bright coin ding
+        const o=ac.createOscillator(),og=ac.createGain();
+        o.type='sine'; o.frequency.setValueAtTime(1200,ac.currentTime);
+        o.frequency.exponentialRampToValueAtTime(1800,ac.currentTime+.04);
+        o.frequency.exponentialRampToValueAtTime(1400,ac.currentTime+.14);
+        og.gain.setValueAtTime(.22,ac.currentTime); og.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.18);
+        o.connect(og); og.connect(v); o.start(); o.stop(ac.currentTime+.18); break;}
+      case 'support':{// 💚 warm soft pulse
+        const o=ac.createOscillator(),og=ac.createGain();
+        o.type='sine'; o.frequency.setValueAtTime(440,ac.currentTime);
+        o.frequency.setValueAtTime(550,ac.currentTime+.06);
+        og.gain.setValueAtTime(.18,ac.currentTime); og.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.28);
+        o.connect(og); og.connect(v); o.start(); o.stop(ac.currentTime+.28); break;}
       case 'void':{// 🌑 eerie detuned void warp
         const o=ac.createOscillator(),og=ac.createGain();
         o.type='sawtooth'; o.frequency.setValueAtTime(300,ac.currentTime);
@@ -868,7 +881,7 @@ function _playSound(type){
   }catch(e){}
 }
 /* tower type → sound name */
-const _TSND=['cannon','ice','magic','sniper',null,'archer',null,'thunder','void'];
+const _TSND=['cannon','ice','magic','sniper','gold','archer','support','thunder','void'];
 // ambient particle cooldown per tower type (seconds, 0 = no ambient)
 const _TAMB=[1.4,1.1,.75,0,0,0,0,.55,0,0,0];
 let _sfxLastDie=0; /* throttle death sounds */
@@ -2758,6 +2771,38 @@ function render(){
       ctx.stroke();
       ctx.globalAlpha=1;
       ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(8,0,2,0,Math.PI*2);ctx.fill();
+      ctx.restore();
+    } else if(p.type===4){
+      // Gold: spinning coin
+      ctx.save();ctx.translate(p.x,p.y);
+      const _gt=Date.now()*.012;
+      const _cw=6*Math.abs(Math.cos(_gt));
+      ctx.fillStyle=pc;ctx.globalAlpha=.85;
+      ctx.beginPath();ctx.ellipse(0,0,Math.max(.5,_cw),6,0,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#fff8e1';ctx.lineWidth=1;ctx.globalAlpha=.6;
+      ctx.beginPath();ctx.ellipse(0,0,Math.max(.5,_cw*.6),3.6,0,0,Math.PI*2);ctx.stroke();
+      ctx.restore();
+    } else if(p.type===6){
+      // Support: healing orb with pulsing cross
+      ctx.save();ctx.translate(p.x,p.y);
+      const _sp=.65+.35*Math.sin(Date.now()*.018);
+      ctx.strokeStyle=pc;ctx.lineWidth=1.4;ctx.globalAlpha=_sp*.7;
+      ctx.beginPath();ctx.arc(0,0,7,0,Math.PI*2);ctx.stroke();
+      ctx.globalAlpha=1;
+      const _sg=ctx.createRadialGradient(0,0,0,0,0,4);
+      _sg.addColorStop(0,'#fff');_sg.addColorStop(1,pc);
+      ctx.fillStyle=_sg;ctx.beginPath();ctx.arc(0,0,3.5,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#fff';ctx.lineWidth=1.8;
+      ctx.beginPath();ctx.moveTo(-3,0);ctx.lineTo(3,0);ctx.moveTo(0,-3);ctx.lineTo(0,3);ctx.stroke();
+      ctx.restore();
+    } else if(p.type===8){
+      // Void: dark crescent orb
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(_pang);
+      const _vg=ctx.createRadialGradient(-1,-1,0,0,0,6);
+      _vg.addColorStop(0,'#e040fb');_vg.addColorStop(.5,pc);_vg.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=_vg;ctx.beginPath();ctx.arc(0,0,6,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#ce93d8';ctx.lineWidth=1.8;ctx.globalAlpha=.85;
+      ctx.beginPath();ctx.arc(2,0,4.5,Math.PI*.3,Math.PI*1.4);ctx.stroke();
       ctx.restore();
     } else {
       // Default: glowing orb

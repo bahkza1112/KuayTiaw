@@ -1,6 +1,12 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.23.3';
+const GAME_VERSION='3.24.0';
 const PATCH_NOTES=[
+  {ver:'3.24.0',date:'2026-06-29',title:'✨ กระสุนและเสียงเฉพาะป้อมครบทุกแบบ',notes:[
+    '🪙 ป้อมทอง: กระสุนเหรียญหมุน + เสียง ding เฉพาะ',
+    '💚 ป้อม Support: กระสุน healing orb แบบ pulse + เสียง soft chime',
+    '🌑 ป้อม Void: กระสุน crescent orb มืด-ม่วง (เสียงมีอยู่แล้ว)',
+    'ทุกป้อมตอนนี้มีกระสุนและเสียงเฉพาะตัว ไม่มี glowing orb ทั่วไปอีกต่อไป',
+  ]},
   {ver:'3.23.3',date:'2026-06-29',title:'🐛 แก้ราคาขุดแสดงบน path/ป้อม',notes:[
     'แก้บัค: pill ราคาขุด (⛏️) แสดงผิดตำแหน่งบน path cells หรือเซลล์ที่มีป้อมอยู่แล้ว',
     'เพิ่ม check เดียวกับ digCell() — ไม่ highlight หรือแสดงราคาบน path/ป้อม',

@@ -2,6 +2,19 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.0 — Feat: กระสุนและเสียงเฉพาะป้อมครบทุกแบบ
+
+### Added
+- `js/game.js` projectile render: เพิ่ม unique visuals สำหรับป้อมที่ขาด
+  - Type 4 (Gold): spinning coin — ellipse animate ด้วย `cos(t)` จำลองเหรียญหมุน
+  - Type 6 (Support): healing orb — pulsing outer ring + cross กลาง
+  - Type 8 (Void): crescent orb — radial gradient ม่วง + arc เว้า
+- `js/game.js` `_playSound()`: เพิ่ม `case 'gold'` (high coin ding) และ `case 'support'` (warm pulse)
+- `js/game.js` `_TSND`: แก้ index 4 และ 6 จาก `null` → `'gold'`, `'support'`
+
+### Result
+ทุกป้อม (0-8) มี unique projectile visual และ unique shoot sound แล้ว — ไม่มีป้อมไหนใช้ default glowing orb หรือ silent อีกต่อไป
+
 ## v3.23.3 — Fix: Dig price pill แสดงบน path/ป้อม
 
 ### Fixed
