@@ -1,6 +1,12 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.24.9';
+const GAME_VERSION='3.24.10';
 const PATCH_NOTES=[
+  {ver:'3.24.10',date:'2026-06-29',title:'⚡ สายฟ้า Rework — ทะลุโล่เสมอ, Lv3 +50% ดาเมจ',notes:[
+    'ทะลุโล่เสมอ (ไม่ต้องอัพ — มีมาตลอด แต่ระบุให้ชัดเจน)',
+    'สาย 1 📡 ระยะ Lv3: เพิ่มดาเมจ +50% (รวม chain ด้วย)',
+    'สาย 2 ⚡ ความเร็ว Lv3: ยิงรัว',
+    'Awaken: Chain 2 → 4 ตัว (ไม่เปลี่ยน)',
+  ]},
   {ver:'3.24.9',date:'2026-06-29',title:'🔫 มินิกัน Rework — DMG 10, Rate 2.5/s, Awaken ×2',notes:[
     'DMG 20 → 10 (ยิงเร็วขึ้นชดเชย)',
     'Range 2.8 → 3.0 ช่อง',

@@ -31,7 +31,7 @@ const TTAGS=[[{t:'ดาเมจสูง',c:'tag-red'},{t:'อเวค: Splas
   [{t:'Chain Lightning',c:'tag-orange'},{t:'ยิง Air',c:'tag-blue'}],
   [{t:'Void Mark',c:'tag-purple'},{t:'Workshop',c:'tag-red'}],
   [{t:'ช้าเวลา',c:'tag-purple'},{t:'ไม่โจมตี',c:'tag-green'},{t:'Workshop',c:'tag-red'}]];
-const TSPECIAL=['-','ชะลอเหลือ 30% นาน 2-3 วิ (อัพสายระยะเวลา)','กระจาย: 1.2 ช่อง','ระยะยิง 4.5 ช่อง (คงที่ไม่ต้องอัพ) — ⚡ ความเร็ว Lv3: เจาะโล่ศัตรู — 🎯 คริติคอล +10%/Lv (Lv1=10% สูงสุด 50%) ดาเมจ ×2 — ล็อกเป้าหมอผีก่อนเสมอ','+10% ความเสียหาย/เลเวลบัฟ ให้ป้อมในรัศมี (อัพสาย "เพิ่มดาเมจบัฟ") | 🛡️ ออร่ากันหยุดป้อม: ★1-4 = 20/30/40/50% (อเวค 50%) +5%/เลเวลจากสาย "กันหยุดป้อม" — อัพสาย Lv3 ต่างฝ่ายต่างปลดล็อกโบนัสเพิ่ม +30%','ยิง Air ได้ — ยิงค้างคาวและวิเวิร์นได้ (ร่วมกับ Sniper และ Thunder) | DMG 10, Rate 2.5/s | 📡 ระยะ Lv3: เจาะโล่ | ⚡ ความเร็ว Lv3: ยิงรัว','ผลิตทองทุกรอบ (ลดเวลาได้ -20%/เลเวลจากสายคูลดาวน์) เริ่ม 2 ทอง/รอบ (+2/เลเวลจากสายจำนวน) — อเวคได้ทอง x2','Chain Lightning ถึง 2 ตัว — ดาเมจลด 40% ต่อ chain — ยิง Air ได้','Void Mark: 30% โอกาสติดมาร์ก (อเวค 50%) ทำให้ศัตรูรับดาเมจเพิ่ม +25% จากป้อมทุกชนิด (อเวค +40%) นาน 4 วินาที รีเฟรชเวลาได้แต่ไม่บวกซ้ำ',
+const TSPECIAL=['-','ชะลอเหลือ 30% นาน 2-3 วิ (อัพสายระยะเวลา)','กระจาย: 1.2 ช่อง','ระยะยิง 4.5 ช่อง (คงที่ไม่ต้องอัพ) — ⚡ ความเร็ว Lv3: เจาะโล่ศัตรู — 🎯 คริติคอล +10%/Lv (Lv1=10% สูงสุด 50%) ดาเมจ ×2 — ล็อกเป้าหมอผีก่อนเสมอ','+10% ความเสียหาย/เลเวลบัฟ ให้ป้อมในรัศมี (อัพสาย "เพิ่มดาเมจบัฟ") | 🛡️ ออร่ากันหยุดป้อม: ★1-4 = 20/30/40/50% (อเวค 50%) +5%/เลเวลจากสาย "กันหยุดป้อม" — อัพสาย Lv3 ต่างฝ่ายต่างปลดล็อกโบนัสเพิ่ม +30%','ยิง Air ได้ — ยิงค้างคาวและวิเวิร์นได้ (ร่วมกับ Sniper และ Thunder) | DMG 10, Rate 2.5/s | 📡 ระยะ Lv3: เจาะโล่ | ⚡ ความเร็ว Lv3: ยิงรัว','ผลิตทองทุกรอบ (ลดเวลาได้ -20%/เลเวลจากสายคูลดาวน์) เริ่ม 2 ทอง/รอบ (+2/เลเวลจากสายจำนวน) — อเวคได้ทอง x2','Chain Lightning ถึง 2 ตัว — ดาเมจลด 40% ต่อ chain — ยิง Air ได้ — ทะลุโล่เสมอ | 📡 ระยะ Lv3: เพิ่มดาเมจ +50% (รวม chain)','Void Mark: 30% โอกาสติดมาร์ก (อเวค 50%) ทำให้ศัตรูรับดาเมจเพิ่ม +25% จากป้อมทุกชนิด (อเวค +40%) นาน 4 วินาที รีเฟรชเวลาได้แต่ไม่บวกซ้ำ',
 'คลื่นเวลา: ชาร์จ 6s → ปล่อยพัลส์ 1.5s — รัศมี 2.0 ช่อง (อัพได้ถึง 3.5) — ช้าลง 50% (บอสช้า 85%) — ไม่โจมตีโดยตรง'];
 const TSTRENGTH=[
   ['ดาเมจต่อยิงสูง','เมื่ออเวค Splash 2.0 ช่อง'],
@@ -400,6 +400,10 @@ function trackDefs(t){
     {key:'dmgLv',icon:'💪',name:'เพิ่มดาเมจบัฟ',col:'#69f0ae',unlockLv:3,unlockText:'เพิ่มกันหยุดป้อม +30% เพิ่มเติม'},
     {key:'rateLv',icon:'🛡️',name:'กันหยุดป้อม',col:'#80cbc4',unlockLv:3,unlockText:'เพิ่มบัฟดาเมจ +30% เพิ่มเติม'}
   ];
+  if(t===7) return [ // ⚡ สายฟ้า
+    {key:'rngLv',icon:'📡',name:'ระยะ',col:'#ffe57f',unlockLv:3,unlockText:'เพิ่มดาเมจ +50% (รวม chain)'},
+    {key:'rateLv',icon:'⚡',name:'ความเร็ว',col:'#ffe234',unlockLv:3,unlockText:'ยิงรัว (โอกาสคูลดาวน์สั้นลงทันทีหลังยิง)'}
+  ];
   if(t===6) return [ // 💰 เหมืองทอง
     {key:'rateLv',icon:'⏱️',name:'คูลดาวน์',col:'#80deea',unlockLv:0,unlockText:''},
     {key:'rngLv',icon:'💰',name:'จำนวนทอง',col:'#ffd54f',unlockLv:0,unlockText:''}
@@ -498,7 +502,8 @@ function showTowerPopup(tw,px,py){
     const _effRate=tw.awakened&&tw.type===5?_baseRate*2:_baseRate;
     const rateVal=_effRate.toFixed(1);
     const dpsVal=(dmgVal*_bm*_effRate).toFixed(1);
-    statsHtml+=`<div class="tp-stat">📡 ระยะ <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${rngVal} ช่อง${tw.rngLv>=4?' <span style="color:#90caf9;font-size:9px;" title="กระสุนเจาะโล่ศัตรู ดาเมจเข้า HP ตรงๆ">🛡️✨เจาะโล่</span>':''}</span></div>`;
+    const _rngBadge=tw.type===7&&tw.rngLv>=3?' <span style="color:#ffe57f;font-size:9px;">⚡+50%ดาเมจ</span>':tw.rngLv>=4?' <span style="color:#90caf9;font-size:9px;" title="กระสุนเจาะโล่ศัตรู ดาเมจเข้า HP ตรงๆ">🛡️✨เจาะโล่</span>':'';
+    statsHtml+=`<div class="tp-stat">📡 ระยะ <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${rngVal} ช่อง${_rngBadge}</span></div>`;
     statsHtml+=`<div class="tp-stat">⚡ อัตรายิง <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${rateVal}${tw.awakened&&tw.type===5?' <span style="color:#ff8a65;font-size:9px;">×2 (อเวค)</span>':tw.rateLv>=4?' <span style="color:#ffe234;font-size:9px;" title="มีโอกาสคูลดาวน์สั้นลงทันทีหลังยิง">⚡ยิงรัว</span>':''}</span></div>`;
     statsHtml+=`<div class="tp-stat">📊 DPS<span>${dpsVal}${_bmTag}</span></div>`;
   }

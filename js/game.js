@@ -1504,6 +1504,8 @@ function update(dt){
         const _crit=getSniperCrit(tw.rngLv);
         if(Math.random()<_crit.chance){_rdmg*=_crit.mult;_rIsCrit=true;}
       }
+      // ⚡ Thunder สาย 1 Lv3: เพิ่มดาเมจ +50%
+      if(tw.type===7&&(tw.rngLv||1)>=3) _rdmg*=1.5;
       let _rSlow=(TSLOW[tw.type]||0);
       const _wSplashMult=((tw.type===0||tw.type===2)&&G.weather&&G.weather.splashMult)?G.weather.splashMult:1;
       // ⚡ Awaken เฉพาะป้อม: Cannon=ปลด Splash 2.0, Thunder=chain เพิ่ม
@@ -4084,6 +4086,8 @@ function updateEg(dt){
         const _crit2=getSniperCrit(tw.rngLv);
         if(Math.random()<_crit2.chance){_rdmg2*=_crit2.mult;_rIsCrit2=true;}
       }
+      // ⚡ Thunder สาย 1 Lv3: เพิ่มดาเมจ +50%
+      if(tw.type===7&&(tw.rngLv||1)>=3) _rdmg2*=1.5;
       let _rSlow2=(TSLOW[tw.type]||0);
       const _wSplashMult2=((tw.type===0||tw.type===2)&&G.weather&&G.weather.splashMult)?G.weather.splashMult:1;
       // ⚡ Awaken เฉพาะป้อม: Cannon=ปลด Splash 2.0, Thunder=chain เพิ่ม

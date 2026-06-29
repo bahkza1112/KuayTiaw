@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.10 — Balance: สายฟ้า Rework — ทะลุโล่เสมอ, Lv3 +50% ดาเมจ
+
+### Changed
+- `js/game.js` (×2): Thunder rngLv≥3 → `_rdmg *= 1.5` ก่อนสร้าง projectile
+- `js/tower.js` trackDefs(7): custom สาย 1 Lv3 unlock "เพิ่มดาเมจ +50%"
+- `js/tower.js` TSPECIAL[7]: เพิ่ม "ทะลุโล่เสมอ" และ "📡 Lv3: +50%"
+- `js/tower.js` popup else branch: badge ⚡+50%ดาเมจ เมื่อ type===7 && rngLv≥3
+
 ## v3.24.9 — Balance: มินิกัน Rework — DMG 10, Rate 2.5/s, Awaken ×2
 
 ### Changed
