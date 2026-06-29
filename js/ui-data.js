@@ -1,6 +1,12 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.24.11';
+const GAME_VERSION='3.24.12';
 const PATCH_NOTES=[
+  {ver:'3.24.12',date:'2026-06-29',title:'🌀 กาลเวลา Rework — ราคา 100g, บอส 40%, Awaken 85%',notes:[
+    'ราคา 95 → 100 ทอง',
+    'Pulse ปกติ: บอสช้า 85% → 40% (เหลือ 40% speed)',
+    'Awaken หยุดเวลา 1.5 วิ — บอสช้า 85% (ไม่เปลี่ยน)',
+    'ศัตรูปกติในพัลส์: slow 50% (ไม่เปลี่ยน)',
+  ]},
   {ver:'3.24.11',date:'2026-06-29',title:'🌑 โมฆะ Rework — ราคา 80g, proc 20%→60%, +20%→+50%',notes:[
     'ราคา 90 → 80 ทอง',
     'Void Mark proc: 30% → 20% (ปกติ), 50% → 60% (อเวค)',

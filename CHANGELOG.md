@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.12 — Balance: ป้อมกาลเวลา Rework — ราคา 100g, บอส slow 40%
+
+### Changed
+- `js/game.js` CFG.t_cost[9]: `95` → `100`
+- `js/game.js` (×2): pulse non-awaken boss `_timeSlow`: `.15` → `.40` (บอสเหลือ 40% speed แทน 15%)
+- `js/tower.js` TSPECIAL[9]: ระบุ "บอสช้า 40%" และ Awaken "85%"
+- `js/tower.js` TAWAKEN_DESC[9]: ระบุ "บอสช้า 85% แทน 40%"
+
 ## v3.24.11 — Balance: ป้อมมนตราโมฆะ Rework — ราคา 80g, proc/bonus ปรับใหม่
 
 ### Changed

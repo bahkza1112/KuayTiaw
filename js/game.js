@@ -257,7 +257,7 @@ const DEFAULT_CFG={
   t_dmg:[24,12,44,65,0,10,0,20,42,0],   // [cannon,ice,magic,sniper,support,minigun,goldmine,thunder,void,time] — time dmg=0 ใช้ pulse slow แทน
   t_rng:[2.2,2.0,2.0,4.5,1.5,3.0,0,2.4,3.0,2.0], // time: รัศมีเริ่มต้น 2.0 ช่อง
   t_rate:[1.2,1.2,.8,.4,0,2.5,0,1.8,0.6,0], // time rate=0 (ใช้ pulse mechanic แทน)
-  t_cost:[45,55,75,70,35,60,50,85,80,95], // time: 95 gold
+  t_cost:[45,55,75,70,35,60,50,85,80,100], // time: 100 gold
   t_goldrate:5,t_goldamt:[2,4,6,8],
   // Game settings
   startGold:175,    // เดิม 200 → ลดเงินเริ่มต้น (v3.18.4)
@@ -1461,7 +1461,7 @@ function update(dt){
           G.enemies.forEach(e=>{
             if(!e.alive) return;
             if(Math.hypot((tw.col+.5)*CS-e.x,(tw.row+.5)*CS-e.y)<=_slowR){
-              if(e.isBoss){e._timeSlowT=.2;e._timeSlow=.15;}
+              if(e.isBoss){e._timeSlowT=.2;e._timeSlow=.40;}
               else{e._timeSlowT=.2;e._timeSlow=.5;}
             }
           });
@@ -4043,7 +4043,7 @@ function updateEg(dt){
           G.enemies.forEach(e=>{
             if(!e.alive) return;
             if(Math.hypot((tw.col+.5)*CS-e.x,(tw.row+.5)*CS-e.y)<=_slowR){
-              if(e.isBoss){e._timeSlowT=.2;e._timeSlow=.15;}
+              if(e.isBoss){e._timeSlowT=.2;e._timeSlow=.40;}
               else{e._timeSlowT=.2;e._timeSlow=.5;}
             }
           });
