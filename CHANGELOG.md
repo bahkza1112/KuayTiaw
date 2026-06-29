@@ -2,6 +2,12 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.14 — UI: แถบเลือดและโล่เล็กลง
+
+### Changed
+- `js/game.js` HP bar: กว้าง `sz*2+4` → `sz*1.4+2`, สูง `6` → `4`px, ตำแหน่ง y ปรับตาม
+- `js/game.js` Shield bar: สูง `4` → `3`px, ช่องว่างเหนือ HP bar ปรับตาม
+
 ## v3.24.13 — Fix: unlock hint ขึ้นหลัง bonus ไปแล้ว (support/thunder)
 
 ### Fixed

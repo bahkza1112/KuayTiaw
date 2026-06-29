@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.24.13';
+const GAME_VERSION='3.24.14';
 const PATCH_NOTES=[
+  {ver:'3.24.14',date:'2026-06-29',title:'🎨 แถบเลือดเล็กและสั้นลง',notes:[
+    'HP bar: กว้าง sz*2+4 → sz*1.4+2, สูง 6 → 4px',
+    'Shield bar: สูง 4 → 3px',
+  ]},
   {ver:'3.24.13',date:'2026-06-29',title:'🐛 Fix: unlock hint แสดงก่อน bonus จริง (support/thunder)',notes:[
     'Support สาย 1/2: unlockLv 3→2 — hint "Lv.2→3 🔓" ขึ้นก่อนได้ bonus ถูกต้อง',
     'สายฟ้า สาย 1: unlockLv 3→2 — hint "+50%ดาเมจ" ขึ้นก่อน Lv3 ถูกต้อง',

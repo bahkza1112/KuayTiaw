@@ -2668,8 +2668,8 @@ function render(){
       // 🐲 Shadow Veil — ม่วงเข้มขณะ invisible
       if(e.ti===18&&e._veilInvis){ctx.globalAlpha=.22+.08*Math.sin(Date.now()*.018);ctx.strokeStyle='#7c4dff';ctx.lineWidth=3;ctx.beginPath();ctx.arc(e.x,e.y,sz+6,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;}
     }
-    // HP bar (taller, more visible)
-    const bw=sz*2+4, bh=6, bx=e.x-sz-2, by=e.y-sz-13;
+    // HP bar
+    const bw=sz*1.4+2, bh=4, bx=e.x-sz*.7-1, by=e.y-sz-10;
     ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(bx,by,bw,bh);
     const hpPct=Math.max(0,e.hp/e.mhp);
     ctx.fillStyle=hpPct>.6?'#4caf50':hpPct>.3?'#ff9800':'#f44336';
@@ -2677,7 +2677,7 @@ function render(){
     ctx.strokeStyle='rgba(0,0,0,.4)';ctx.lineWidth=.5;ctx.strokeRect(bx,by,bw,bh);
     // shield bar (above HP bar)
     if(e.maxShieldHp>0){
-      const sbw=bw, sbh=4, sbx=bx, sby=by-6;
+      const sbw=bw, sbh=3, sbx=bx, sby=by-5;
       ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(sbx,sby,sbw,sbh);
       const shPct=Math.max(0,e.shieldHp/e.maxShieldHp);
       ctx.fillStyle=shPct>.5?'#90caf9':'#42a5f5';
