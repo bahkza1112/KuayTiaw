@@ -1,6 +1,14 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.24.1';
+const GAME_VERSION='3.24.2';
 const PATCH_NOTES=[
+  {ver:'3.24.2',date:'2026-06-29',title:'🎨 หน้าเลือกป้อม — Sprite จริงพร้อม Dark Fantasy UI',notes:[
+    'การ์ดป้อมแสดงภาพ sprite จริงจาก assets/images/ (mix-blend-mode: multiply)',
+    'การ์ดเป็นทรงสี่เหลี่ยมจัตุรัส ภาพป้อมใหญ่ขึ้นชัดขึ้น',
+    'เพิ่ม checkmark ✓ มุมบนซ้ายเมื่อเลือกการ์ด',
+    'เพิ่ม stat pills แสดง ⚔️ DMG / 🎯 Range / 💰 Cost ใต้ชื่อป้อม',
+    'ปรับ glow effect การ์ดที่เลือก: double ring + shadow',
+    'ถ้าโหลด PNG ไม่ได้จะ fallback เป็น procedural canvas อัตโนมัติ',
+  ]},
   {ver:'3.24.1',date:'2026-06-29',title:'🔊 เสียงสายฟ้า 3-layer rumble สมจริง',notes:[
     'เปลี่ยนเสียงป้อมสายฟ้าจาก electric buzz → thunder rumble 3 ชั้น',
     'SUB: ความสั่นลึก <60Hz เหมือนพื้นสั่น',

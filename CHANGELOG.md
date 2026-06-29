@@ -2,6 +2,21 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.2 — UI: หน้าเลือกป้อม Dark Fantasy Sprite Cards
+
+### Changed
+- `css/main.css` `.ts-card-art`: `aspect-ratio` 4/3 → 1/1 (square), bg เป็น dark radial gradient
+- `css/main.css` `.ts-card-art img`: เพิ่ม `mix-blend-mode:multiply` ตัด white bg PNG
+- `css/main.css` `.ts-card`: `border-radius` 10→12px, gap 6→8px
+- `css/main.css` `.ts-card.selected`: double ring glow `box-shadow`
+- `css/main.css`: เพิ่ม `.ts-card-check`, `.ts-card-stats`, `.ts-card-stat`
+
+### Added
+- `js/ui.js` `_TSPRITE[]`: map tower index → `assets/images/tower_*.png` filename
+- `js/ui.js` `_tsFallback()`: fallback จาก PNG → procedural canvas เมื่อโหลดไม่ได้
+- การ์ดป้อมแสดง checkmark ✓ (`.ts-card-check`) ที่มุมบนซ้ายเมื่อ selected
+- stat pills ⚔️ DMG / 🎯 Range / 💰 Cost ใต้ชื่อป้อมทุกใบ
+
 ## v3.24.1 — Fix: เสียงสายฟ้า 3-layer rumble สมจริง
 
 ### Changed

@@ -2036,6 +2036,8 @@ function _skillIconURL(id){
     return (_skIconCache[id]=c.toDataURL());
   }catch(e){return '';}
 }
+const _TSPRITE=['tower_cannon','tower_ice','tower_magic','tower_sniper','tower_support','tower_archer','tower_gold','tower_thunder','tower_void',''];
+function _tsFallback(img,ti){img.onerror=null;img.src=_towerIconURL(ti);img.style.mixBlendMode='normal';}
 const _twIconCache={};
 function _towerIconURL(type){
   if(_twIconCache[type]) return _twIconCache[type];
@@ -2071,13 +2073,19 @@ function renderTowerSelection(available){
     if(TCANAIR[ti]) badges.push('<span class="ts-card-badge badge-air">✈ Air</span>');
     if(TGOLDMINE[ti]) badges.push('<span class="ts-card-badge badge-gold">💰 Gold</span>');
     if(TCHAIN[ti]) badges.push('<span class="ts-card-badge badge-air">⚡ Chain</span>');
+    const _sp=_TSPRITE[ti]||'';
     grid+=`<div class="ts-card${isSel?' selected':''}" onclick="toggleTowerSelection(${ti})">
       ${badges.length?`<div class="ts-card-badges">${badges.join('')}</div>`:''}
-      <div class="ts-card-art"><img src="${_towerIconURL(ti)}"></div>
+      <div class="ts-card-check">✓</div>
+      <div class="ts-card-art"><img src="assets/images/${_sp}.png" onerror="_tsFallback(this,${ti})"></div>
       <div class="ts-card-info">
         <div class="ts-card-name">${TNAMES[ti]}</div>
-        <div class="ts-card-cost">💰${CFG.t_cost[ti]}</div>
-        <div class="ts-card-desc">${(TSTRENGTH[ti]||[]).join(' · ')}</div>
+        <div class="ts-card-stats">
+          ${CFG.t_dmg[ti]?`<span class="ts-card-stat">⚔️${CFG.t_dmg[ti]}</span>`:''}
+          <span class="ts-card-stat">🎯${CFG.t_rng[ti]}</span>
+          <span class="ts-card-cost">💰${CFG.t_cost[ti]}</span>
+        </div>
+        <div class="ts-card-desc">${(TSTRENGTH[ti]||[]).slice(0,2).join(' · ')}</div>
       </div>
     </div>`;
   });
