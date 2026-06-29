@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.24.12';
+const GAME_VERSION='3.24.13';
 const PATCH_NOTES=[
+  {ver:'3.24.13',date:'2026-06-29',title:'🐛 Fix: unlock hint แสดงก่อน bonus จริง (support/thunder)',notes:[
+    'Support สาย 1/2: unlockLv 3→2 — hint "Lv.2→3 🔓" ขึ้นก่อนได้ bonus ถูกต้อง',
+    'สายฟ้า สาย 1: unlockLv 3→2 — hint "+50%ดาเมจ" ขึ้นก่อน Lv3 ถูกต้อง',
+  ]},
   {ver:'3.24.12',date:'2026-06-29',title:'🌀 กาลเวลา Rework — ราคา 100g, บอส 40%, Awaken 85%',notes:[
     'ราคา 95 → 100 ทอง',
     'Pulse ปกติ: บอสช้า 85% → 40% (เหลือ 40% speed)',

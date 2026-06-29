@@ -397,11 +397,11 @@ function trackDefs(t){
     {key:'rngLv',icon:'🎯',name:'คริติคอล',col:'#ff5252',unlockLv:0,unlockText:''}
   ];
   if(t===4) return [ // 💚 ซัพพอร์ต
-    {key:'dmgLv',icon:'💪',name:'เพิ่มดาเมจบัฟ',col:'#69f0ae',unlockLv:3,unlockText:'เพิ่มกันหยุดป้อม +30% เพิ่มเติม'},
-    {key:'rateLv',icon:'🛡️',name:'กันหยุดป้อม',col:'#80cbc4',unlockLv:3,unlockText:'เพิ่มบัฟดาเมจ +30% เพิ่มเติม'}
+    {key:'dmgLv',icon:'💪',name:'เพิ่มดาเมจบัฟ',col:'#69f0ae',unlockLv:2,unlockText:'เพิ่มกันหยุดป้อม +30% เพิ่มเติม'},
+    {key:'rateLv',icon:'🛡️',name:'กันหยุดป้อม',col:'#80cbc4',unlockLv:2,unlockText:'เพิ่มบัฟดาเมจ +30% เพิ่มเติม'}
   ];
   if(t===7) return [ // ⚡ สายฟ้า
-    {key:'rngLv',icon:'📡',name:'ระยะ',col:'#ffe57f',unlockLv:3,unlockText:'เพิ่มดาเมจ +50% (รวม chain)'},
+    {key:'rngLv',icon:'📡',name:'ระยะ',col:'#ffe57f',unlockLv:2,unlockText:'เพิ่มดาเมจ +50% (รวม chain)'},
     {key:'rateLv',icon:'⚡',name:'ความเร็ว',col:'#ffe234',unlockLv:3,unlockText:'ยิงรัว (โอกาสคูลดาวน์สั้นลงทันทีหลังยิง)'}
   ];
   if(t===6) return [ // 💰 เหมืองทอง

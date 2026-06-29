@@ -5,7 +5,7 @@ Guidance for Claude Code (and other AI assistants) working in this repository.
 ## Project Summary
 
 **Tower Quest 🏰** is a browser-based tower defense game written in
-Thai, currently at **v3.24.12**. Since the v1.6.1 refactor, the game is split
+Thai, currently at **v3.24.13**. Since the v1.6.1 refactor, the game is split
 across:
 
 - [`Tower Quest 🏰.html`](Tower%20Quest%20%F0%9F%8F%B0.html) — head/body

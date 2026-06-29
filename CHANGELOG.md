@@ -2,6 +2,14 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.13 — Fix: unlock hint ขึ้นหลัง bonus ไปแล้ว (support/thunder)
+
+### Fixed
+- `js/tower.js` trackDefs(4) สาย 1/2: `unlockLv:3` → `unlockLv:2`
+  - mechanic เปิดที่ `dmgLv/rateLv >= 3` แต่ hint เดิมขึ้นที่ cur=3 ("Lv.3→4") ซึ่งหลัง bonus ไปแล้ว
+- `js/tower.js` trackDefs(7) สาย 1: `unlockLv:3` → `unlockLv:2`
+  - mechanic เปิดที่ `rngLv >= 3` แต่ hint เดิมขึ้นที่ cur=3 ซึ่งหลัง +50% dmg ไปแล้ว
+
 ## v3.24.12 — Balance: ป้อมกาลเวลา Rework — ราคา 100g, บอส slow 40%
 
 ### Changed
