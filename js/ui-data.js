@@ -1439,8 +1439,8 @@ const CUTSCENES = [
       {speaker:'สายลับ',icon:'🏜️',title:'Desert Crossing — Stage 4',
        text:'ข่าวสืบมาว่ากองทัพมืดบุกข้ามทะเลทรายแล้ว ฝูงค้างคาวบินนำหน้า โกเลมยักษ์ตามมาข้างหลัง'},
       {speaker:'ผู้พิทักษ์',icon:'🦇',title:'Air Threat Detected!',
-       text:'ค้างคาวบินอยู่บนฟ้า ป้อมส่วนใหญ่ยิงไม่ถึง! ต้องใช้ Sniper หรือ Archer เท่านั้น',
-       unlock:{towers:[5],label:'Archer Tower Unlocked'}},
+       text:'ค้างคาวบินอยู่บนฟ้า ป้อมส่วนใหญ่ยิงไม่ถึง! ต้องใช้ Sniper หรือ Minigun เท่านั้น',
+       unlock:{towers:[5],label:'Minigun Tower Unlocked'}},
     ]
   },
   // Stage 4: Treasure Valley
@@ -1532,7 +1532,7 @@ const CUTSCENES = [
       {speaker:'นักมายากล',icon:'❄️',title:'ป่าแข็งนิรันดร์ — คำสาปอันยาวนาน',
        text:'ป่าโบราณถูกสาปให้เยือกแข็งชั่วนิรันดร์ตั้งแต่ยุคก่อนประวัติศาสตร์\n\nราชาน้ำแข็งส่งผู้ใต้บังคับบัญชาบุกผ่านหิมะ ทุกตัวปรับตัวกับความหนาวจนต้านทาน Ice Slow ได้สมบูรณ์'},
       {speaker:'วิศวกร',icon:'⚙️',title:'Blizzard ถาวร — ปรับกลยุทธ์ใหม่',
-       text:'พายุหิมะโหมตลอดเวลา ป้อมน้ำแข็งยิงช้าลง 30%\n\nใช้ Magic + Thunder + Cannon เป็นหลัก ฮาร์ปี Shriek หยุดป้อมรอบข้างได้ — ต้องการ Sniper หรือ Archer ในทีมเสมอ'},
+       text:'พายุหิมะโหมตลอดเวลา ป้อมน้ำแข็งยิงช้าลง 30%\n\nใช้ Magic + Thunder + Cannon เป็นหลัก ฮาร์ปี Shriek หยุดป้อมรอบข้างได้ — ต้องการ Sniper หรือ Minigun ในทีมเสมอ'},
     ]
   },
   // Stage 13: ทะเลสาบพิษ
