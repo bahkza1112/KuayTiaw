@@ -257,7 +257,7 @@ const DEFAULT_CFG={
   t_dmg:[24,12,44,65,0,20,0,20,42,0],   // [cannon,ice,magic,sniper,support,archer,goldmine,thunder,void,time] — time dmg=0 ใช้ pulse slow แทน
   t_rng:[2.2,2.0,2.0,4.5,1.5,2.8,0,2.4,3.0,2.0], // time: รัศมีเริ่มต้น 2.0 ช่อง
   t_rate:[1.2,1.2,.8,.4,0,1.8,0,1.8,0.6,0], // time rate=0 (ใช้ pulse mechanic แทน)
-  t_cost:[45,55,75,65,35,60,50,85,90,95], // time: 95 gold
+  t_cost:[45,55,75,70,35,60,50,85,90,95], // time: 95 gold
   t_goldrate:5,t_goldamt:[2,4,6,8],
   // Game settings
   startGold:175,    // เดิม 200 → ลดเงินเริ่มต้น (v3.18.4)
@@ -1490,8 +1490,8 @@ function update(dt){
     if(best&&tw.cd<=0){
       if(tw.type===1&&G.weather&&G.weather.iceDisabled) return; // 🔥 heatwave: ice tower disabled
       tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.rateLv||tw.lv)*(G.skillRateMult||1));
-      // ⚡ สายความเร็ว Lv.4+ ปลดล็อก "ยิงรัว" — มีโอกาสคูลดาวน์สั้นลงทันที
-      if((tw.rateLv||tw.lv)>=4&&Math.random()<0.2){
+      // ⚡ สายความเร็ว Lv.4+ ปลดล็อก "ยิงรัว" — มีโอกาสคูลดาวน์สั้นลงทันที (ไม่ใช้กับ Sniper)
+      if(tw.type!==3&&(tw.rateLv||tw.lv)>=4&&Math.random()<0.2){
         tw.cd*=0.45;
         G.particles.push({x:tw.col*CS+CS/2,y:tw.row*CS+CS/2-22,txt:'⚡รัว!',col:'#ffe234',life:.45,vy:-1.3,vx:0,decay:2.6,scale:.75});
       }
@@ -1515,7 +1515,7 @@ function update(dt){
         dmg:_rdmg,
         splash:((_aw&&tw.type===0)?2.0:TSPLASH[tw.type])*_wSplashMult,slow:_rSlow,alive:true,
         chain:(TCHAIN[tw.type]||0)+_awChainBonus,
-        _rngPierce:tw.type===3?(tw.rngLv||tw.lv)>=3:(tw.rngLv||tw.lv)>=4,
+        _rngPierce:tw.type===3?(tw.rateLv||tw.lv)>=3:(tw.rngLv||tw.lv)>=4,
         _slowDur:tw.type===1?(1.5+(tw.rngLv||1)*.5):2,
         _maxR:range*CS,
         _supBoost:_aw?getSupportAwakenBoost(tw.col,tw.row):1
@@ -4070,8 +4070,8 @@ function updateEg(dt){
     if(best&&tw.cd<=0){
       if(tw.type===1&&G.weather&&G.weather.iceDisabled) return; // 🔥 heatwave: ice tower disabled
       tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.rateLv||tw.lv)*(G.skillRateMult||1));
-      // ⚡ สายความเร็ว Lv.4+ ปลดล็อก "ยิงรัว" — มีโอกาสคูลดาวน์สั้นลงทันที
-      if((tw.rateLv||tw.lv)>=4&&Math.random()<0.2){
+      // ⚡ สายความเร็ว Lv.4+ ปลดล็อก "ยิงรัว" — มีโอกาสคูลดาวน์สั้นลงทันที (ไม่ใช้กับ Sniper)
+      if(tw.type!==3&&(tw.rateLv||tw.lv)>=4&&Math.random()<0.2){
         tw.cd*=0.45;
         G.particles.push({x:tw.col*CS+CS/2,y:tw.row*CS+CS/2-22,txt:'⚡รัว!',col:'#ffe234',life:.45,vy:-1.3,vx:0,decay:2.6,scale:.75});
       }
@@ -4094,7 +4094,7 @@ function updateEg(dt){
         dmg:_rdmg2,
         splash:((_aw2&&tw.type===0)?2.0:TSPLASH[tw.type])*_wSplashMult2,slow:_rSlow2,alive:true,
         chain:(TCHAIN[tw.type]||0)+_awChainBonus2,
-        _rngPierce:tw.type===3?(tw.rngLv||tw.lv)>=3:(tw.rngLv||tw.lv)>=4,
+        _rngPierce:tw.type===3?(tw.rateLv||tw.lv)>=3:(tw.rngLv||tw.lv)>=4,
         _slowDur:tw.type===1?(1.5+(tw.rngLv||1)*.5):2,
         _maxR:range*CS,
         _supBoost:_aw2?getSupportAwakenBoost(tw.col,tw.row):1

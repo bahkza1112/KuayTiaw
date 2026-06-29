@@ -31,7 +31,7 @@ const TTAGS=[[{t:'ดาเมจสูง',c:'tag-red'},{t:'อเวค: Splas
   [{t:'Chain Lightning',c:'tag-orange'},{t:'ยิง Air',c:'tag-blue'}],
   [{t:'Void Mark',c:'tag-purple'},{t:'Workshop',c:'tag-red'}],
   [{t:'ช้าเวลา',c:'tag-purple'},{t:'ไม่โจมตี',c:'tag-green'},{t:'Workshop',c:'tag-red'}]];
-const TSPECIAL=['-','ชะลอเหลือ 30% นาน 2-3 วิ (อัพสายระยะเวลา)','กระจาย: 1.2 ช่อง','ระยะยิง 4.5 ช่อง (คงที่ไม่ต้องอัพ) — สายคริติคอล: โอกาสคริติคอล +10%/เลเวล (สูงสุด 40%) ดาเมจ x1.75 — 🎯 ล็อกเป้าหมอผีก่อนเสมอเมื่ออยู่ในระยะ','+10% ความเสียหาย/เลเวลบัฟ ให้ป้อมในรัศมี (อัพสาย "เพิ่มดาเมจบัฟ") | 🛡️ ออร่ากันหยุดป้อม: ★1-4 = 20/40/60/80% (อเวค 100%) +5%/เลเวลจากสาย "กันหยุดป้อม"','ยิง Air ได้ — ยิงค้างคาวและวิเวิร์นได้ (ร่วมกับ Sniper และ Thunder)','ผลิตทองทุกรอบ (ลดเวลาได้ -20%/เลเวลจากสายคูลดาวน์) เริ่ม 2 ทอง/รอบ (+2/เลเวลจากสายจำนวน) — อเวคได้ทอง x2','Chain Lightning ถึง 2 ตัว — ดาเมจลด 40% ต่อ chain — ยิง Air ได้','Void Mark: 30% โอกาสติดมาร์ก (อเวค 50%) ทำให้ศัตรูรับดาเมจเพิ่ม +25% จากป้อมทุกชนิด (อเวค +40%) นาน 4 วินาที รีเฟรชเวลาได้แต่ไม่บวกซ้ำ',
+const TSPECIAL=['-','ชะลอเหลือ 30% นาน 2-3 วิ (อัพสายระยะเวลา)','กระจาย: 1.2 ช่อง','ระยะยิง 4.5 ช่อง (คงที่ไม่ต้องอัพ) — ⚡ ความเร็ว Lv3: เจาะโล่ศัตรู — 🎯 คริติคอล +10%/Lv (Lv1=10% สูงสุด 50%) ดาเมจ ×2 — ล็อกเป้าหมอผีก่อนเสมอ','+10% ความเสียหาย/เลเวลบัฟ ให้ป้อมในรัศมี (อัพสาย "เพิ่มดาเมจบัฟ") | 🛡️ ออร่ากันหยุดป้อม: ★1-4 = 20/40/60/80% (อเวค 100%) +5%/เลเวลจากสาย "กันหยุดป้อม"','ยิง Air ได้ — ยิงค้างคาวและวิเวิร์นได้ (ร่วมกับ Sniper และ Thunder)','ผลิตทองทุกรอบ (ลดเวลาได้ -20%/เลเวลจากสายคูลดาวน์) เริ่ม 2 ทอง/รอบ (+2/เลเวลจากสายจำนวน) — อเวคได้ทอง x2','Chain Lightning ถึง 2 ตัว — ดาเมจลด 40% ต่อ chain — ยิง Air ได้','Void Mark: 30% โอกาสติดมาร์ก (อเวค 50%) ทำให้ศัตรูรับดาเมจเพิ่ม +25% จากป้อมทุกชนิด (อเวค +40%) นาน 4 วินาที รีเฟรชเวลาได้แต่ไม่บวกซ้ำ',
 'คลื่นเวลา: ชาร์จ 6s → ปล่อยพัลส์ 1.5s — รัศมี 2.0 ช่อง (อัพได้ถึง 3.5) — ช้าลง 50% (บอสช้า 85%) — ไม่โจมตีโดยตรง'];
 const TSTRENGTH=[
   ['ดาเมจต่อยิงสูง','เมื่ออเวค Splash 2.0 ช่อง'],
@@ -75,8 +75,8 @@ function getTowerDmg(t,lv,star){return CFG.t_dmg[t]*(1+STAR_DMG_BONUS[(star||1)-
 function getTowerRange(t,lv){return (t===3||t===1)?CFG.t_rng[t]:CFG.t_rng[t]*(1+(lv-1)*.15);}
 function getTowerRate(t,lv){return CFG.t_rate[t]*(1+(lv-1)*.1);}
 // 🎯 สไนเปอร์: โอกาสคริติคอล +10%/lv (สูงสุด +40% ที่ Lv.5), คริติคอล x1.75 ดาเมจ (v3.0.1: 2→1.75)
-const SNIPER_CRIT_MULT=1.75;
-function getSniperCrit(critLv){return {chance:Math.min(1,((critLv||1)-1)*.1),mult:SNIPER_CRIT_MULT};}
+const SNIPER_CRIT_MULT=2.0;
+function getSniperCrit(critLv){return {chance:Math.min(.5,(critLv||1)*.1),mult:SNIPER_CRIT_MULT};}
 // 💰 เหมืองทอง: สาย rateLv ลดคูลดาวน์ผลิตทอง -20%/lv (v3.11.3: -15%→-20%), สาย rngLv เพิ่มจำนวนทอง +2/lv
 function getGoldMineInterval(rateLv){return CFG.t_goldrate*(1-((rateLv||1)-1)*.20);}
 function getGoldMineAmt(rngLv){return CFG.t_goldamt[0]+((rngLv||1)-1)*2;}
@@ -393,7 +393,7 @@ function trackDefs(t){
     {key:'rateLv',icon:'⚡',name:'ความเร็ว',col:'#ffe234',unlockLv:3,unlockText:'ยิงรัว (โอกาสคูลดาวน์สั้นลงทันทีหลังยิง)'}
   ];
   if(t===3) return [ // 🎯 สไนเปอร์
-    {key:'rateLv',icon:'⚡',name:'ความเร็ว',col:'#ffe234',unlockLv:3,unlockText:'ยิงรัว (โอกาสคูลดาวน์สั้นลงทันทีหลังยิง)'},
+    {key:'rateLv',icon:'⚡',name:'ความเร็ว',col:'#ffe234',unlockLv:3,unlockText:'เจาะโล่ศัตรู (ดาเมจเข้า HP ตรง ไม่โดนโล่ดูดซับ)'},
     {key:'rngLv',icon:'🎯',name:'คริติคอล',col:'#ff5252',unlockLv:0,unlockText:''}
   ];
   if(t===4) return [ // 💚 ซัพพอร์ต
@@ -458,8 +458,8 @@ function showTowerPopup(tw,px,py){
     const crit=getSniperCrit(tw.rngLv);
     const dpsVal=(dmgVal*_bm*parseFloat(rateVal)*(1+crit.chance*(crit.mult-1))).toFixed(1);
     statsHtml+=`<div class="tp-stat">📡 ระยะ <span>${rngVal} ช่อง</span></div>`;
-    statsHtml+=`<div class="tp-stat">⚡ อัตรายิง <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${rateVal}${tw.rateLv>=4?' <span style="color:#ffe234;font-size:9px;" title="มีโอกาสคูลดาวน์สั้นลงทันทีหลังยิง">⚡ยิงรัว</span>':''}</span></div>`;
-    statsHtml+=`<div class="tp-stat">🎯 คริติคอล <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${Math.round(crit.chance*100)}% x${crit.mult}</span></div>`;
+    statsHtml+=`<div class="tp-stat">⚡ อัตรายิง <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${rateVal}${tw.rateLv>=3?' <span style="color:#90caf9;font-size:9px;">🛡️✨เจาะโล่</span>':''}</span></div>`;
+    statsHtml+=`<div class="tp-stat">🎯 คริติคอล <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${Math.round(crit.chance*100)}% ×${crit.mult}</span></div>`;
     statsHtml+=`<div class="tp-stat">📊 DPS<span>${dpsVal}${_bmTag}</span></div>`;
   } else if(tw.type===6){ // 💰 เหมืองทอง — คูลดาวน์/จำนวนทอง
     const interval=getGoldMineInterval(tw.rateLv).toFixed(1);

@@ -2,6 +2,18 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.7 — Balance: สไนเปอร์ Rework — เจาะโล่ย้ายสาย, Crit ×2
+
+### Changed
+- `js/game.js` CFG.t_cost[3]: `65` → `70`
+- `js/game.js` `_rngPierce` (×2): sniper เปลี่ยนจาก `rngLv>=3` → `rateLv>=3`
+- `js/game.js` ยิงรัว check (×2): เพิ่ม `tw.type!==3` — sniper ไม่ได้รับ ยิงรัว
+- `js/tower.js` trackDefs(3) สาย 1: unlock เปลี่ยนจาก "ยิงรัว" → "เจาะโล่"
+- `js/tower.js` SNIPER_CRIT_MULT: `1.75` → `2.0`
+- `js/tower.js` getSniperCrit: `(critLv-1)*.1` → `critLv*.1` (Lv1=10%, Lv5=50%)
+- `js/tower.js` TSPECIAL[3]: อัปเดตคำอธิบาย
+- `js/tower.js` popup sniper: badge เจาะโล่ที่ rateLv≥3 แทน ยิงรัว
+
 ## v3.24.6 — Balance: เวทมนตร์ — ระยะสั้นลง, Awaken Triple 40%→50%
 
 ### Changed

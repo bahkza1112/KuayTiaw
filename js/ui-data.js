@@ -1,6 +1,13 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.24.6';
+const GAME_VERSION='3.24.7';
 const PATCH_NOTES=[
+  {ver:'3.24.7',date:'2026-06-29',title:'🎯 สไนเปอร์ Rework — เจาะโล่ย้าย, Crit ×2',notes:[
+    'ราคา 65 → 70 ทอง',
+    'สาย 1 ⚡ ความเร็ว → Lv3 unlock เจาะโล่ (เดิมคือ ยิงรัว)',
+    'ยิงรัว Lv4+ ถูกปิดสำหรับ Sniper (ใช้เฉพาะป้อมอื่น)',
+    'คริติคอล: เริ่มที่ Lv1=10%, สูงสุด Lv5=50% (เดิม Lv1=0%, สูงสุด 40%)',
+    'SNIPER_CRIT_MULT: 1.75 → 2.0',
+  ]},
   {ver:'3.24.6',date:'2026-06-29',title:'✨ เวทมนตร์ — ระยะสั้นลง, Awaken Triple 40%→50%',notes:[
     'Range 2.5 → 2.0 ช่อง (ระยะสั้นลง)',
     'Awaken Triple shot: 40% → 50% (DPS สูงขึ้นอีก)',
