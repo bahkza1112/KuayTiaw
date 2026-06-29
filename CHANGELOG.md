@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.11 — Balance: ป้อมมนตราโมฆะ Rework — ราคา 80g, proc/bonus ปรับใหม่
+
+### Changed
+- `js/game.js` CFG.t_cost[8]: `90` → `80`
+- `js/game.js` (×2): procChance `0.3/0.5` → `0.2/0.6`
+- `js/game.js` (×2): markBonus `0.25/0.40` → `0.20/0.50`
+- `js/tower.js` TSPECIAL[8]: อัปเดต proc/bonus values
+- `js/tower.js` TAWAKEN_DESC[8]: อัปเดต "proc 20%→60%, +20%→+50%"
+
 ## v3.24.10 — Balance: สายฟ้า Rework — ทะลุโล่เสมอ, Lv3 +50% ดาเมจ
 
 ### Changed
