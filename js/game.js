@@ -254,9 +254,9 @@ const DEFAULT_CFG={
   m_spd:[1.4,1.0,1.15,.85,.5,.55,1.8,1.55,.65,.42,.72,1.15,1.3,0.65,0.44,0.36,0.42,1.65,0.80],
   m_rew:[10,10,15,20,60,30,5,20,30,100,10,18,22,45,85,170,90,18,35],
   // Tower — เพิ่ม DPS นิดหน่อยให้ผู้เล่นรู้สึกว่าป้อมมีพลัง
-  t_dmg:[24,12,44,65,0,20,0,20,42,0],   // [cannon,ice,magic,sniper,support,archer,goldmine,thunder,void,time] — time dmg=0 ใช้ pulse slow แทน
-  t_rng:[2.2,2.0,2.0,4.5,1.5,2.8,0,2.4,3.0,2.0], // time: รัศมีเริ่มต้น 2.0 ช่อง
-  t_rate:[1.2,1.2,.8,.4,0,1.8,0,1.8,0.6,0], // time rate=0 (ใช้ pulse mechanic แทน)
+  t_dmg:[24,12,44,65,0,10,0,20,42,0],   // [cannon,ice,magic,sniper,support,minigun,goldmine,thunder,void,time] — time dmg=0 ใช้ pulse slow แทน
+  t_rng:[2.2,2.0,2.0,4.5,1.5,3.0,0,2.4,3.0,2.0], // time: รัศมีเริ่มต้น 2.0 ช่อง
+  t_rate:[1.2,1.2,.8,.4,0,2.5,0,1.8,0.6,0], // time rate=0 (ใช้ pulse mechanic แทน)
   t_cost:[45,55,75,70,35,60,50,85,90,95], // time: 95 gold
   t_goldrate:5,t_goldamt:[2,4,6,8],
   // Game settings
@@ -1489,7 +1489,7 @@ function update(dt){
     if(best) tw.angle=Math.atan2(best.y/CS-cy,best.x/CS-cx);
     if(best&&tw.cd<=0){
       if(tw.type===1&&G.weather&&G.weather.iceDisabled) return; // 🔥 heatwave: ice tower disabled
-      tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.rateLv||tw.lv)*(G.skillRateMult||1));
+      tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.rateLv||tw.lv)*(G.skillRateMult||1)*(tw.awakened&&tw.type===5?2:1));
       // ⚡ สายความเร็ว Lv.4+ ปลดล็อก "ยิงรัว" — มีโอกาสคูลดาวน์สั้นลงทันที (ไม่ใช้กับ Sniper)
       if(tw.type!==3&&(tw.rateLv||tw.lv)>=4&&Math.random()<0.2){
         tw.cd*=0.45;
@@ -4069,7 +4069,7 @@ function updateEg(dt){
     if(best) tw.angle=Math.atan2(best.y/CS-cy,best.x/CS-cx);
     if(best&&tw.cd<=0){
       if(tw.type===1&&G.weather&&G.weather.iceDisabled) return; // 🔥 heatwave: ice tower disabled
-      tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.rateLv||tw.lv)*(G.skillRateMult||1));
+      tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.rateLv||tw.lv)*(G.skillRateMult||1)*(tw.awakened&&tw.type===5?2:1));
       // ⚡ สายความเร็ว Lv.4+ ปลดล็อก "ยิงรัว" — มีโอกาสคูลดาวน์สั้นลงทันที (ไม่ใช้กับ Sniper)
       if(tw.type!==3&&(tw.rateLv||tw.lv)>=4&&Math.random()<0.2){
         tw.cd*=0.45;

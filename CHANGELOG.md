@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.9 — Balance: มินิกัน Rework — DMG 10, Rate 2.5/s, Awaken ×2
+
+### Changed
+- `js/game.js` CFG.t_dmg[5]: `20` → `10`
+- `js/game.js` CFG.t_rng[5]: `2.8` → `3.0`
+- `js/game.js` CFG.t_rate[5]: `1.8` → `2.5`
+- `js/game.js` fire cooldown (×2): Awaken type===5 → อัตรายิง ×2
+- `js/tower.js` TSPECIAL[5]: อัปเดตคำอธิบาย stats
+- `js/tower.js` TAWAKEN_DESC[5]: อัปเดต "อัตรายิง ×2 จากค่าปัจจุบัน"
+- `js/tower.js` popup else branch: แสดง effective rate ×2 เมื่อ awaken + type===5
+
 ## v3.24.8 — Balance: ซัพพอร์ต Rework — กันหยุด 20-50%, สาย Lv3 unlock
 
 ### Changed
