@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.6 — Balance: เวทมนตร์ — ระยะสั้นลง, Awaken Triple 40%→50%
+
+### Changed
+- `js/game.js` CFG.t_rng[2]: `2.5` → `2.0`
+- `js/game.js` Magic Awaken triple shot: `40%` → `50%` (ทั้ง 2 render loop)
+- `js/tower.js` TAWAKEN_DESC[2]: อัปเดต 40%→50%
+
 ## v3.24.5 — Balance: น้ำแข็ง Rework — Slow แรงขึ้น + Awaken แช่แข็ง
 
 ### Changed

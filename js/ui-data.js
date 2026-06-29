@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.24.5';
+const GAME_VERSION='3.24.6';
 const PATCH_NOTES=[
+  {ver:'3.24.6',date:'2026-06-29',title:'✨ เวทมนตร์ — ระยะสั้นลง, Awaken Triple 40%→50%',notes:[
+    'Range 2.5 → 2.0 ช่อง (ระยะสั้นลง)',
+    'Awaken Triple shot: 40% → 50% (DPS สูงขึ้นอีก)',
+  ]},
   {ver:'3.24.5',date:'2026-06-29',title:'❄️ น้ำแข็ง Rework — Slow แรงขึ้น + Awaken แช่แข็ง',notes:[
     'Rate 1.5 → 1.2/s (ช้าลง)',
     'Slow 45% → 30% ความเร็ว (แรงขึ้น 70% slow)',

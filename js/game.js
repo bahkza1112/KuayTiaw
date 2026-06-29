@@ -255,7 +255,7 @@ const DEFAULT_CFG={
   m_rew:[10,10,15,20,60,30,5,20,30,100,10,18,22,45,85,170,90,18,35],
   // Tower — เพิ่ม DPS นิดหน่อยให้ผู้เล่นรู้สึกว่าป้อมมีพลัง
   t_dmg:[24,12,44,65,0,20,0,20,42,0],   // [cannon,ice,magic,sniper,support,archer,goldmine,thunder,void,time] — time dmg=0 ใช้ pulse slow แทน
-  t_rng:[2.2,2.0,2.5,4.5,1.5,2.8,0,2.4,3.0,2.0], // time: รัศมีเริ่มต้น 2.0 ช่อง
+  t_rng:[2.2,2.0,2.0,4.5,1.5,2.8,0,2.4,3.0,2.0], // time: รัศมีเริ่มต้น 2.0 ช่อง
   t_rate:[1.2,1.2,.8,.4,0,1.8,0,1.8,0.6,0], // time rate=0 (ใช้ pulse mechanic แทน)
   t_cost:[45,55,75,65,35,60,50,85,90,95], // time: 95 gold
   t_goldrate:5,t_goldamt:[2,4,6,8],
@@ -1521,8 +1521,8 @@ function update(dt){
         _supBoost:_aw?getSupportAwakenBoost(tw.col,tw.row):1
       })-1];
       if(_aw) _rp._awakened=true;
-      // ✨ Magic Awaken: โอกาสยิงเพิ่ม 20% (ตื่นแล้ว 40%) สูงสุด 3 นัด
-      if(tw.type===2&&Math.random()<(_aw?.4:.2)){
+      // ✨ Magic Awaken: โอกาสยิงเพิ่ม 20% (ตื่นแล้ว 50%) สูงสุด 3 นัด
+      if(tw.type===2&&Math.random()<(_aw?.5:.2)){
         const _extra=_aw?2:1;
         for(let _m=0;_m<_extra;_m++) G.projs.push(Object.assign({},_rp));
       }
@@ -4100,8 +4100,8 @@ function updateEg(dt){
         _supBoost:_aw2?getSupportAwakenBoost(tw.col,tw.row):1
       })-1];
       if(_aw2) _rp2._awakened=true;
-      // ✨ Magic Awaken: โอกาสยิงเพิ่ม 20% (ตื่นแล้ว 40%) สูงสุด 3 นัด
-      if(tw.type===2&&Math.random()<(_aw2?.4:.2)){
+      // ✨ Magic Awaken: โอกาสยิงเพิ่ม 20% (ตื่นแล้ว 50%) สูงสุด 3 นัด
+      if(tw.type===2&&Math.random()<(_aw2?.5:.2)){
         const _extra2=_aw2?2:1;
         for(let _m=0;_m<_extra2;_m++) G.projs.push(Object.assign({},_rp2));
       }
