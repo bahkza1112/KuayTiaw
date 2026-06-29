@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.1 — Fix: เสียงสายฟ้า 3-layer rumble สมจริง
+
+### Changed
+- `js/game.js` `case 'thunder'`: เปลี่ยนจาก sawtooth+square buzz → 3-layer noise rumble
+  - SUB: stereo noise lowpass 60Hz, build 0.22s, decay 2.3s
+  - LOW RUMBLE: stereo noise double-lowpass 200→140Hz, peak 1.1, decay 2.2s
+  - MID BODY: stereo noise bandpass 80–420Hz, decay 1.9s
+  - Waveshaper (amt=16) เพิ่ม warmth ให้ทุก layer
+
 ## v3.24.0 — Feat: กระสุนและเสียงเฉพาะป้อมครบทุกแบบ
 
 ### Added

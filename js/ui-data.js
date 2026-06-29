@@ -1,6 +1,13 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.24.0';
+const GAME_VERSION='3.24.1';
 const PATCH_NOTES=[
+  {ver:'3.24.1',date:'2026-06-29',title:'🔊 เสียงสายฟ้า 3-layer rumble สมจริง',notes:[
+    'เปลี่ยนเสียงป้อมสายฟ้าจาก electric buzz → thunder rumble 3 ชั้น',
+    'SUB: ความสั่นลึก <60Hz เหมือนพื้นสั่น',
+    'LOW RUMBLE: ก้องหลัก double lowpass ยาว ~2.2 วิ',
+    'MID BODY: texture ความหนาของฟ้าผ่า 80–420Hz',
+    'Waveshaper warmth เพิ่มความอบอุ่นของเสียง',
+  ]},
   {ver:'3.24.0',date:'2026-06-29',title:'✨ กระสุนและเสียงเฉพาะป้อมครบทุกแบบ',notes:[
     '🪙 ป้อมทอง: กระสุนเหรียญหมุน + เสียง ding เฉพาะ',
     '💚 ป้อม Support: กระสุน healing orb แบบ pulse + เสียง soft chime',

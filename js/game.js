@@ -751,18 +751,38 @@ function _playSound(type){
         o.frequency.exponentialRampToValueAtTime(260,ac.currentTime+.18);
         og.gain.setValueAtTime(.4,ac.currentTime); og.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.2);
         o.connect(og); og.connect(v); o.start(); o.stop(ac.currentTime+.2); break;}
-      case 'thunder':{// electric buzz
-        const o=ac.createOscillator(),og=ac.createGain();
-        o.type='sawtooth'; o.frequency.setValueAtTime(160,ac.currentTime);
-        o.frequency.exponentialRampToValueAtTime(60,ac.currentTime+.15);
-        og.gain.setValueAtTime(.7,ac.currentTime); og.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.18);
-        o.connect(og); og.connect(v);
-        const o2=ac.createOscillator(),o2g=ac.createGain();
-        o2.type='square'; o2.frequency.setValueAtTime(440,ac.currentTime);
-        o2.frequency.exponentialRampToValueAtTime(80,ac.currentTime+.12);
-        o2g.gain.setValueAtTime(.3,ac.currentTime); o2g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.12);
-        o2.connect(o2g); o2g.connect(v);
-        o.start(); o.stop(ac.currentTime+.18); o2.start(); o2.stop(ac.currentTime+.12); break;}
+      case 'thunder':{// ⚡ 3-layer rumble: SUB + LOW RUMBLE + MID BODY
+        const t=ac.currentTime;
+        // waveshaper warmth
+        const _ws=ac.createWaveShaper();
+        const _wc=new Float32Array(256);
+        for(let i=0;i<256;i++){const x=i*2/256-1;_wc[i]=((Math.PI+16)*x)/(Math.PI+16*Math.abs(x));}
+        _ws.curve=_wc;_ws.oversample='4x';_ws.connect(v);
+        function _ns2ch(dur,amp=1){
+          const b=ac.createBuffer(2,ac.sampleRate*dur|0,ac.sampleRate);
+          for(let ch=0;ch<2;ch++){const d=b.getChannelData(ch);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*amp;}
+          const s=ac.createBufferSource();s.buffer=b;return s;
+        }
+        function _lp(freq){const f=ac.createBiquadFilter();f.type='lowpass';f.frequency.value=freq;return f;}
+        function _hp(freq){const f=ac.createBiquadFilter();f.type='highpass';f.frequency.value=freq;return f;}
+        // ① SUB — สั่นพื้น <60Hz
+        const _sub=_ns2ch(2.4,1),_subG=ac.createGain();
+        _subG.gain.setValueAtTime(0,t);_subG.gain.linearRampToValueAtTime(1.2,t+.22);
+        _subG.gain.setValueAtTime(1.2,t+.55);_subG.gain.exponentialRampToValueAtTime(.001,t+2.3);
+        const _slp=_lp(60);_sub.connect(_slp);_slp.connect(_subG);_subG.connect(_ws);_sub.start(t);
+        // ② LOW RUMBLE — ก้องหลัก double lowpass
+        const _rum=_ns2ch(2.3,1),_rumG=ac.createGain();
+        _rumG.gain.setValueAtTime(0,t+.03);_rumG.gain.linearRampToValueAtTime(1.1,t+.18);
+        _rumG.gain.setValueAtTime(1.1,t+.5);_rumG.gain.exponentialRampToValueAtTime(.001,t+2.2);
+        const _lp1=_lp(200),_lp2=_lp(140);
+        _rum.connect(_lp1);_lp1.connect(_lp2);_lp2.connect(_rumG);_rumG.connect(_ws);_rum.start(t+.03);
+        // ③ MID BODY — texture ความหนา
+        const _mid=_ns2ch(2.0,.9),_midG=ac.createGain();
+        _midG.gain.setValueAtTime(0,t+.06);_midG.gain.linearRampToValueAtTime(.85,t+.2);
+        _midG.gain.exponentialRampToValueAtTime(.001,t+1.9);
+        const _mhp=_hp(80),_mlp=_lp(420);
+        _mid.connect(_mhp);_mhp.connect(_mlp);_mlp.connect(_midG);_midG.connect(_ws);_mid.start(t+.06);
+        break;}
       case 'die':{// short pop
         const o=ac.createOscillator(),og=ac.createGain();
         o.type='sine'; o.frequency.setValueAtTime(300+Math.random()*200,ac.currentTime);
