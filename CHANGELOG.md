@@ -2,6 +2,16 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.4 — Balance: ปืนใหญ่ Rework — Splash ย้ายไปอยู่ใน Awaken
+
+### Changed
+- `js/tower.js` TSPLASH[0]: `0.8` → `0` (ไม่มี splash ปกติ)
+- `js/tower.js` TSPECIAL[0]: `'กระจาย: 0.8 ช่อง'` → `'-'`
+- `js/tower.js` TAWAKEN_DESC[0]: ปลด Splash 2.0 ช่อง (เดิม ×1.5 = 1.2)
+- `js/tower.js` TFLAVOR/TTAGS/TSTRENGTH/TWEAKNESS[0]: อัปเดตให้ตรงกับ mechanic ใหม่
+- `js/game.js` CFG.t_cost[0]: `50` → `45`
+- `js/game.js`: Awaken cannon splash เปลี่ยนจาก `TSPLASH×1.5` → fixed `2.0` ช่อง
+
 ## v3.24.3 — Balance: ปรับ STAR_DMG_BONUS ★4 ให้ต่างจาก ★3 ชัดขึ้น
 
 ### Changed

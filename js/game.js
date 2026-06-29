@@ -257,7 +257,7 @@ const DEFAULT_CFG={
   t_dmg:[24,12,44,65,0,20,0,20,42,0],   // [cannon,ice,magic,sniper,support,archer,goldmine,thunder,void,time] — time dmg=0 ใช้ pulse slow แทน
   t_rng:[2.2,2.0,2.5,4.5,1.5,2.8,0,2.4,3.0,2.0], // time: รัศมีเริ่มต้น 2.0 ช่อง
   t_rate:[1.2,1.5,.8,.4,0,1.8,0,1.8,0.6,0], // time rate=0 (ใช้ pulse mechanic แทน)
-  t_cost:[50,55,75,65,35,60,50,85,90,95], // time: 95 gold
+  t_cost:[45,55,75,65,35,60,50,85,90,95], // time: 95 gold
   t_goldrate:5,t_goldamt:[2,4,6,8],
   // Game settings
   startGold:175,    // เดิม 200 → ลดเงินเริ่มต้น (v3.18.4)
@@ -1506,15 +1506,14 @@ function update(dt){
       }
       let _rSlow=(TSLOW[tw.type]||0);
       const _wSplashMult=((tw.type===0||tw.type===2)&&G.weather&&G.weather.splashMult)?G.weather.splashMult:1;
-      // ⚡ Awaken เฉพาะป้อม: Cannon=splash ใหญ่ขึ้น, Thunder=chain เพิ่ม
-      const _awSplashMult=(_aw&&tw.type===0)?1.5:1;
+      // ⚡ Awaken เฉพาะป้อม: Cannon=ปลด Splash 2.0, Thunder=chain เพิ่ม
       const _awChainBonus=(_aw&&tw.type===7)?2:0;
       const _rp=G.projs[G.projs.push({
         x:fx,y:fy,tx:best.x,ty:best.y,target:best,ox:fx,oy:fy,
         spd:420+(tw.type===3?120:0)+(tw.type===7?80:0),
         type:tw.type,
         dmg:_rdmg,
-        splash:TSPLASH[tw.type]*_wSplashMult*_awSplashMult,slow:_rSlow,alive:true,
+        splash:((_aw&&tw.type===0)?2.0:TSPLASH[tw.type])*_wSplashMult,slow:_rSlow,alive:true,
         chain:(TCHAIN[tw.type]||0)+_awChainBonus,
         _rngPierce:tw.type===3?(tw.rngLv||tw.lv)>=3:(tw.rngLv||tw.lv)>=4,
         _maxR:range*CS,
@@ -4083,14 +4082,13 @@ function updateEg(dt){
       }
       let _rSlow2=(TSLOW[tw.type]||0);
       const _wSplashMult2=((tw.type===0||tw.type===2)&&G.weather&&G.weather.splashMult)?G.weather.splashMult:1;
-      // ⚡ Awaken เฉพาะป้อม: Cannon=splash ใหญ่ขึ้น, Thunder=chain เพิ่ม
-      const _awSplashMult2=(_aw2&&tw.type===0)?1.5:1;
+      // ⚡ Awaken เฉพาะป้อม: Cannon=ปลด Splash 2.0, Thunder=chain เพิ่ม
       const _awChainBonus2=(_aw2&&tw.type===7)?2:0;
       const _rp2=G.projs[G.projs.push({
         x:fx,y:fy,tx:best.x,ty:best.y,target:best,ox:fx,oy:fy,
         spd:420+(tw.type===3?120:0)+(tw.type===7?80:0),type:tw.type,
         dmg:_rdmg2,
-        splash:TSPLASH[tw.type]*_wSplashMult2*_awSplashMult2,slow:_rSlow2,alive:true,
+        splash:((_aw2&&tw.type===0)?2.0:TSPLASH[tw.type])*_wSplashMult2,slow:_rSlow2,alive:true,
         chain:(TCHAIN[tw.type]||0)+_awChainBonus2,
         _rngPierce:tw.type===3?(tw.rngLv||tw.lv)>=3:(tw.rngLv||tw.lv)>=4,
         _maxR:range*CS,
