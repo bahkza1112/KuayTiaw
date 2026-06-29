@@ -1,6 +1,12 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.24.1';
+const GAME_VERSION='3.24.2';
 const PATCH_NOTES=[
+  {ver:'3.24.2',date:'2026-06-29',title:'🔫 ป้อมธนู → ป้อมมินิกัน',notes:[
+    'เปลี่ยนป้อมธนู 🏹 (type 5) เป็นป้อมมินิกัน 🔫',
+    'วิชวลใหม่: ลำกล้อง 6 ลำหมุนแบบ Gatling Gun อนิเมชั่น',
+    'ไอคอนบนกระดานแสดงหัวลำกล้อง 6 ลำ',
+    'Stats และกลไกทุกอย่างเหมือนเดิม (ยิง Air ได้, rate 1.8)',
+  ]},
   {ver:'3.24.1',date:'2026-06-29',title:'🔊 เสียงสายฟ้า 3-layer rumble สมจริง',notes:[
     'เปลี่ยนเสียงป้อมสายฟ้าจาก electric buzz → thunder rumble 3 ชั้น',
     'SUB: ความสั่นลึก <60Hz เหมือนพื้นสั่น',

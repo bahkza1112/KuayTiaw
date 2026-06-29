@@ -1,5 +1,5 @@
-const TNAMES=['ปืนใหญ่','น้ำแข็ง','เวทมนตร์','สไนเปอร์','ซัพพอร์ต','ธนู','เหมืองทอง','สายฟ้า','ป้อมมนตราโมฆะ','ป้อมกาลเวลา'];
-const TICONS=['💣','❄️','✨','🎯','💚','🏹','💰','⚡','🌑','🌀'];
+const TNAMES=['ปืนใหญ่','น้ำแข็ง','เวทมนตร์','สไนเปอร์','ซัพพอร์ต','มินิกัน','เหมืองทอง','สายฟ้า','ป้อมมนตราโมฆะ','ป้อมกาลเวลา'];
+const TICONS=['💣','❄️','✨','🎯','💚','🔫','💰','⚡','🌑','🌀'];
 const TCOLORS=['#c62828','#0d47a1','#4a148c','#1b5e20','#00695c','#4e342e','#f57f17','#f9a825','#311b92','#1a0a4a'];
 const TPROJ=['#ff7043','#80d8ff','#e040fb','#ffee58','#69f0ae','#a5d6a7','#ffd54f','#ffe57f','#b388ff','#b39ddb'];
 const TACCENT=['#ff5252','#40c4ff','#ea80fc','#69f0ae','#64ffda','#8d6e63','#ffca28','#ffe57f','#7e57c2','#b39ddb'];
@@ -16,7 +16,7 @@ const TFLAVOR=['ปืนใหญ่หนักที่ยิงกระส�
   'รวมพลังเวทมนตร์เป็นการโจมตีที่รุนแรง กระจายในวงกว้าง แต่ยิงช้า',
   'มือปืนระยะไกลที่แม่นยำ มีความเสียหายต่อเป้าหมายเดียวสูงสุดในเกม',
   'ปล่อยออร่าเสริมกำลังที่เพิ่มความเสียหายให้ป้อมใกล้เคียง ไม่โจมตีโดยตรง',
-  'นักธนูผู้คล่องแคล่ว ยิงได้ทั้งศัตรูภาคพื้นดินและศัตรูที่บินอยู่บนอากาศ',
+  'ป้อมมินิกัน 6 ลำกล้องหมุนยิงรัว ยิงได้ทั้งศัตรูภาคพื้นดินและศัตรูที่บินอยู่บนอากาศ',
   'เหมืองทองที่สร้างรายได้ต่อเนื่อง ไม่โจมตี แต่ผลิตทองทุก 5 วินาที',
   'หอคอยพลังสายฟ้าที่ยิงฟ้าผ่าลงใส่ศัตรู และลัดไปยังศัตรูข้างเคียงอีก 2 ตัว ยิงโดนได้ทั้งพื้นและอากาศ',
   'ป้อมมนตราต้องห้ามที่ปล่อยพลังโมฆะ มีโอกาสติดมาร์กศัตรู ทำให้รับดาเมจเพิ่มจากป้อมทุกชนิด ปลดล็อกได้จาก Workshop เท่านั้น',
@@ -63,7 +63,7 @@ const TAWAKEN_DESC=[
   'โอกาสยิงพร้อมกัน 3 นัด 40% (ปกติ 20%) — DPS พุ่งสูงขึ้นมาก',
   'ยิงทะลุเส้นตรง — โดนศัตรูทุกตัวบนเส้นยิงหลังเป้าหมาย',
   'กันหยุดป้อม 100% + ออร่าเพิ่มพลังป้อมรอบข้างแรงขึ้น',
-  'ดาเมจและระยะสูงขึ้น — ไม่มีสกิลพิเศษเพิ่มเติม',
+  'บาร์เรลหมุนเร็วขึ้น 2 เท่า — ดาเมจและระยะสูงขึ้น',
   'ผลิตทอง ×2 ต่อรอบ — รายได้เพิ่มเท่าตัว',
   'Chain เพิ่มอีก 2 ตัว รวมสูงสุด 4 chain ต่อยิง',
   'Void Mark: proc 30%→50%, โบนัสดาเมจ +25%→+40%',
@@ -250,8 +250,10 @@ function _twDecal(ctx,type,r){
     ctx.beginPath();ctx.moveTo(-r*.2,-r*.03);ctx.lineTo(r*.2,-r*.03);ctx.stroke();
     ctx.beginPath();ctx.moveTo(0,-r*.22);ctx.lineTo(0,r*.16);ctx.stroke();
     ctx.fillStyle='rgba(105,240,174,.3)';ctx.beginPath();ctx.arc(0,-r*.03,r*.14,0,Math.PI*2);ctx.fill();
-  } else if(type===5){// arrow shape
-    ctx.fillStyle='#ffe082';ctx.beginPath();ctx.moveTo(0,-r*.18);ctx.lineTo(-r*.08,r*.1);ctx.lineTo(0,r*.04);ctx.lineTo(r*.08,r*.1);ctx.closePath();ctx.fill();
+  } else if(type===5){// minigun barrel cluster
+    ctx.fillStyle='#616161';ctx.beginPath();ctx.arc(0,-r*.03,r*.2,0,Math.PI*2);ctx.fill();
+    for(let i=0;i<6;i++){const a=i/6*Math.PI*2;ctx.fillStyle='#9e9e9e';ctx.beginPath();ctx.arc(Math.cos(a)*r*.1,Math.sin(a)*r*.1-r*.03,r*.065,0,Math.PI*2);ctx.fill();ctx.fillStyle='#212121';ctx.beginPath();ctx.arc(Math.cos(a)*r*.1,Math.sin(a)*r*.1-r*.03,r*.03,0,Math.PI*2);ctx.fill();}
+    ctx.fillStyle='#424242';ctx.beginPath();ctx.arc(0,-r*.03,r*.055,0,Math.PI*2);ctx.fill();
   } else if(type===6){// $
     ctx.fillStyle='#ffd54f';ctx.font=`bold ${Math.round(r*.28)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('$',0,-r*.03);
   } else if(type===7){// lightning bolt
@@ -322,16 +324,21 @@ function _twWeapon(ctx,type,r,shootT){
     ctx.fillStyle='#004d40';ctx.fillRect(-r*.22,-r*.75,r*.44,r*.7);
     ctx.fillStyle='#1de9b6';ctx.beginPath();ctx.arc(0,-r*.5,r*.26,0,Math.PI*2);ctx.fill();
     ctx.fillStyle='#a7ffeb';ctx.beginPath();ctx.arc(-r*.08,-r*.54,r*.13,0,Math.PI*2);ctx.fill();
-  } else if(type===5){// Archer bow
-    ctx.strokeStyle='#5d4037';ctx.lineWidth=r*.18;ctx.lineCap='round';
-    ctx.beginPath();ctx.moveTo(-r*.48,r*.62);ctx.bezierCurveTo(-r*.95,r*.2,-r*.95,-r*.2,-r*.48,-r*.62);ctx.stroke();
-    ctx.strokeStyle='#ffe082';ctx.lineWidth=r*.06;ctx.beginPath();ctx.moveTo(-r*.48,-r*.62);ctx.lineTo(-r*.22,0);ctx.lineTo(-r*.48,r*.62);ctx.stroke();
-    // สายธนูสั่นเบาๆ (idle vibration)
-    const _vib=Math.sin(Date.now()*.012)*r*.05;
-    ctx.strokeStyle='#8d6e63';ctx.lineWidth=r*.1;ctx.beginPath();ctx.moveTo(-r*.22,0);ctx.quadraticCurveTo(r*.2,_vib,r*.62,0);ctx.stroke();
-    ctx.fillStyle='#bdbdbd';ctx.beginPath();ctx.moveTo(r*.65,0);ctx.lineTo(r*.38,-r*.16);ctx.lineTo(r*.38,r*.16);ctx.closePath();ctx.fill();
-    ctx.fillStyle='#f44336';ctx.beginPath();ctx.moveTo(-r*.08,0);ctx.lineTo(-r*.32,-r*.22);ctx.lineTo(-r*.22,0);ctx.closePath();ctx.fill();
-    ctx.beginPath();ctx.moveTo(-r*.08,0);ctx.lineTo(-r*.32,r*.22);ctx.lineTo(-r*.22,0);ctx.closePath();ctx.fill();
+  } else if(type===5){// Minigun rotating barrels
+    const _rot=Date.now()*.008;
+    const _nr=6;const _barrels=[];
+    for(let i=0;i<_nr;i++){const a=_rot+i/_nr*Math.PI*2;_barrels.push({ox:Math.cos(a)*r*.2,depth:Math.sin(a)});}
+    _barrels.sort((a,b)=>a.depth-b.depth);
+    _barrels.forEach(({ox,depth})=>{
+      const br=Math.round(70+depth*50);
+      ctx.fillStyle=`rgb(${br},${br},${br})`;
+      if(ctx.roundRect)ctx.roundRect(ox-r*.065,-r*1.15,r*.13,r*1.05,r*.025);else ctx.rect(ox-r*.065,-r*1.15,r*.13,r*1.05);
+      ctx.fill();
+      ctx.fillStyle=`rgba(0,0,0,${.5+depth*.3})`;ctx.beginPath();ctx.arc(ox,-r*1.1,r*.035,0,Math.PI*2);ctx.fill();
+    });
+    ctx.fillStyle='#424242';ctx.beginPath();ctx.arc(0,0,r*.28,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#757575';ctx.beginPath();ctx.arc(0,0,r*.14,0,Math.PI*2);ctx.fill();
+    if(shootT>0){ctx.globalAlpha=shootT*.9;ctx.fillStyle='#fff9c4';ctx.beginPath();ctx.arc(0,-r*1.2,r*.18,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;}
   } else if(type===6){// Gold mine pickaxe
     // แสงทองเรืองจางๆ รอบกองแร่ (idle pulse)
     const _gp=.25+.35*Math.sin(Date.now()*.004);

@@ -2,6 +2,18 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.2 — Feat: ป้อมธนู → ป้อมมินิกัน
+
+### Changed
+- `js/tower.js` TNAMES[5]: `'ธนู'` → `'มินิกัน'`
+- `js/tower.js` TICONS[5]: `'🏹'` → `'🔫'`
+- `js/tower.js` TFLAVOR[5]: อัปเดตคำอธิบายให้ตรงกับมินิกัน
+- `js/tower.js` TAWAKEN_DESC[5]: อัปเดตเป็น "บาร์เรลหมุนเร็วขึ้น 2 เท่า"
+- `js/tower.js` `_twStatic` type 5: วาดใหม่เป็นหัวลำกล้อง 6 ลำ
+- `js/tower.js` `_twWeapon` type 5: วาดใหม่เป็น Gatling Gun หมุนด้วยอนิเมชั่น
+- `js/enemy.js` MSTRENGTH/MWEAKNESS: อัปเดต "ป้อมธนู" → "ป้อมมินิกัน"
+- `js/game.js` stage unlocks/story: อัปเดต "Archer Tower 🏹" → "Minigun Tower 🔫"
+
 ## v3.24.1 — Fix: เสียงสายฟ้า 3-layer rumble สมจริง
 
 ### Changed

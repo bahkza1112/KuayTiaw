@@ -3,7 +3,7 @@
 This document is a system-by-system map of the game as implemented in
 [`Tower Quest 🏰.html`](Tower%20Quest%20%F0%9F%8F%B0.html) plus its
 `css/main.css` and `js/{save,enemy,tower,game,ui}.js` modules (current
-version **v3.24.1**). Line numbers refer to these files and
+version **v3.24.2**). Line numbers refer to these files and
 may drift as they change — use them as a starting point for searches, not as
 permanent anchors.
 
@@ -202,7 +202,7 @@ Defined via parallel arrays in `js/tower.js`:
 | 2 | เวทมนตร์ (Magic) | ✨ | Splash + magic damage |
 | 3 | สไนเปอร์ (Sniper) | 🎯 | High single-target damage, hits air, pierces shields |
 | 4 | ซัพพอร์ต (Support) | 💚 | Buffs nearby towers (no direct damage) |
-| 5 | ธนู (Archer) | 🏹 | Hits air targets |
+| 5 | มินิกัน (Minigun) | 🔫 | Hits air targets, rapid fire |
 | 6 | เหมืองทอง (Gold Mine) | 💰 | Generates gold over time, no combat |
 | 7 | สายฟ้า (Thunder) | ⚡ | Chain lightning (2 targets), pierces shields |
 | 8 | ป้อมมนตราโมฆะ (Void Tower) | 🌑 | Single-target, ground-only; projectiles apply **Void Mark** (v1.12.0) |
