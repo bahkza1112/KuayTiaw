@@ -31,7 +31,7 @@ const TTAGS=[[{t:'ดาเมจสูง',c:'tag-red'},{t:'อเวค: Splas
   [{t:'Chain Lightning',c:'tag-orange'},{t:'ยิง Air',c:'tag-blue'}],
   [{t:'Void Mark',c:'tag-purple'},{t:'Workshop',c:'tag-red'}],
   [{t:'ช้าเวลา',c:'tag-purple'},{t:'ไม่โจมตี',c:'tag-green'},{t:'Workshop',c:'tag-red'}]];
-const TSPECIAL=['-','ชะลอเหลือ 30% นาน 2-3 วิ (อัพสายระยะเวลา)','กระจาย: 1.2 ช่อง','ระยะยิง 4.5 ช่อง (คงที่ไม่ต้องอัพ) — ⚡ ความเร็ว Lv3: เจาะโล่ศัตรู — 🎯 คริติคอล +10%/Lv (Lv1=10% สูงสุด 50%) ดาเมจ ×2 — ล็อกเป้าหมอผีก่อนเสมอ','+10% ความเสียหาย/เลเวลบัฟ ให้ป้อมในรัศมี (อัพสาย "เพิ่มดาเมจบัฟ") | 🛡️ ออร่ากันหยุดป้อม: ★1-4 = 20/40/60/80% (อเวค 100%) +5%/เลเวลจากสาย "กันหยุดป้อม"','ยิง Air ได้ — ยิงค้างคาวและวิเวิร์นได้ (ร่วมกับ Sniper และ Thunder)','ผลิตทองทุกรอบ (ลดเวลาได้ -20%/เลเวลจากสายคูลดาวน์) เริ่ม 2 ทอง/รอบ (+2/เลเวลจากสายจำนวน) — อเวคได้ทอง x2','Chain Lightning ถึง 2 ตัว — ดาเมจลด 40% ต่อ chain — ยิง Air ได้','Void Mark: 30% โอกาสติดมาร์ก (อเวค 50%) ทำให้ศัตรูรับดาเมจเพิ่ม +25% จากป้อมทุกชนิด (อเวค +40%) นาน 4 วินาที รีเฟรชเวลาได้แต่ไม่บวกซ้ำ',
+const TSPECIAL=['-','ชะลอเหลือ 30% นาน 2-3 วิ (อัพสายระยะเวลา)','กระจาย: 1.2 ช่อง','ระยะยิง 4.5 ช่อง (คงที่ไม่ต้องอัพ) — ⚡ ความเร็ว Lv3: เจาะโล่ศัตรู — 🎯 คริติคอล +10%/Lv (Lv1=10% สูงสุด 50%) ดาเมจ ×2 — ล็อกเป้าหมอผีก่อนเสมอ','+10% ความเสียหาย/เลเวลบัฟ ให้ป้อมในรัศมี (อัพสาย "เพิ่มดาเมจบัฟ") | 🛡️ ออร่ากันหยุดป้อม: ★1-4 = 20/30/40/50% (อเวค 50%) +5%/เลเวลจากสาย "กันหยุดป้อม" — อัพสาย Lv3 ต่างฝ่ายต่างปลดล็อกโบนัสเพิ่ม +30%','ยิง Air ได้ — ยิงค้างคาวและวิเวิร์นได้ (ร่วมกับ Sniper และ Thunder)','ผลิตทองทุกรอบ (ลดเวลาได้ -20%/เลเวลจากสายคูลดาวน์) เริ่ม 2 ทอง/รอบ (+2/เลเวลจากสายจำนวน) — อเวคได้ทอง x2','Chain Lightning ถึง 2 ตัว — ดาเมจลด 40% ต่อ chain — ยิง Air ได้','Void Mark: 30% โอกาสติดมาร์ก (อเวค 50%) ทำให้ศัตรูรับดาเมจเพิ่ม +25% จากป้อมทุกชนิด (อเวค +40%) นาน 4 วินาที รีเฟรชเวลาได้แต่ไม่บวกซ้ำ',
 'คลื่นเวลา: ชาร์จ 6s → ปล่อยพัลส์ 1.5s — รัศมี 2.0 ช่อง (อัพได้ถึง 3.5) — ช้าลง 50% (บอสช้า 85%) — ไม่โจมตีโดยตรง'];
 const TSTRENGTH=[
   ['ดาเมจต่อยิงสูง','เมื่ออเวค Splash 2.0 ช่อง'],
@@ -62,7 +62,7 @@ const TAWAKEN_DESC=[
   '35% โอกาสแช่แข็ง 2 วิ (หยุดสนิท) — ถ้าไม่ติดแช่แข็ง slow 70% ตามปกติ',
   'โอกาสยิงพร้อมกัน 3 นัด 50% (ปกติ 20%) — DPS พุ่งสูงขึ้นมาก',
   'ยิงทะลุเส้นตรง — โดนศัตรูทุกตัวบนเส้นยิงหลังเป้าหมาย',
-  'กันหยุดป้อม 100% + ออร่าเพิ่มพลังป้อมรอบข้างแรงขึ้น',
+  'กันหยุดป้อม 50% (ฐาน) + ออร่าบัฟแรงขึ้น — เอฟเฟกต์รวมกับอัพสายทั้งสองได้สูงสุด',
   'บาร์เรลหมุนเร็วขึ้น 2 เท่า — ดาเมจและระยะสูงขึ้น',
   'ผลิตทอง ×2 ต่อรอบ — รายได้เพิ่มเท่าตัว',
   'Chain เพิ่มอีก 2 ตัว รวมสูงสุด 4 chain ต่อยิง',
@@ -81,15 +81,15 @@ function getSniperCrit(critLv){return {chance:Math.min(.5,(critLv||1)*.1),mult:S
 function getGoldMineInterval(rateLv){return CFG.t_goldrate*(1-((rateLv||1)-1)*.20);}
 function getGoldMineAmt(rngLv){return CFG.t_goldamt[0]+((rngLv||1)-1)*2;}
 // 💚 ซัพพอร์ต: กันป้อมหยุดทำงานจากสกิลมอน — base ตาม★/Awaken + บวกเพิ่มจากสาย rateLv (+5%/lv)
-const STAR_RESIST=[.2,.4,.6,.8];// ★1-4 → 20/40/60/80% (Awaken = 100%)
+const STAR_RESIST=[.2,.3,.4,.5];// ★1-4 → 20/30/40/50% (Awaken = 50%)
 function getSupportResist(col,row){
   if(!G) return 0;
   let resist=0;
   G.towers.forEach(t=>{
     if(t.type!==4) return;
     if(Math.hypot(t.col-col,t.row-row)>getTowerRange(t.type,t.rngLv||1)) return;
-    const base=t.awakened?1:STAR_RESIST[(t.star||1)-1];
-    const bonus=((t.rateLv||1)-1)*.05;
+    const base=t.awakened?.5:STAR_RESIST[(t.star||1)-1];
+    const bonus=((t.rateLv||1)-1)*.05+((t.dmgLv||1)>=3?.3:0);
     resist=Math.max(resist,Math.min(1,base+bonus));
   });
   return resist;
@@ -103,7 +103,7 @@ function getBuffMult(col,row){
   if(self&&self._drainT>0) return 1; // ถูกเงามืดดูดพลัง — บัฟใช้งานไม่ได้ชั่วคราว
   let m=1;
   G.towers.forEach(t=>{
-    if(TBUFF[t.type]&&Math.hypot(t.col-col,t.row-row)<=getTowerRange(t.type,1)) m*=1+((t.dmgLv||1)*.1);
+    if(TBUFF[t.type]&&Math.hypot(t.col-col,t.row-row)<=getTowerRange(t.type,1)) m*=1+((t.dmgLv||1)*.1)+((t.rateLv||1)>=3?.3:0);
   });
   return m;
 }
@@ -397,8 +397,8 @@ function trackDefs(t){
     {key:'rngLv',icon:'🎯',name:'คริติคอล',col:'#ff5252',unlockLv:0,unlockText:''}
   ];
   if(t===4) return [ // 💚 ซัพพอร์ต
-    {key:'dmgLv',icon:'💪',name:'เพิ่มดาเมจบัฟ',col:'#69f0ae',unlockLv:0,unlockText:''},
-    {key:'rateLv',icon:'🛡️',name:'กันหยุดป้อม',col:'#80cbc4',unlockLv:0,unlockText:''}
+    {key:'dmgLv',icon:'💪',name:'เพิ่มดาเมจบัฟ',col:'#69f0ae',unlockLv:3,unlockText:'เพิ่มกันหยุดป้อม +30% เพิ่มเติม'},
+    {key:'rateLv',icon:'🛡️',name:'กันหยุดป้อม',col:'#80cbc4',unlockLv:3,unlockText:'เพิ่มบัฟดาเมจ +30% เพิ่มเติม'}
   ];
   if(t===6) return [ // 💰 เหมืองทอง
     {key:'rateLv',icon:'⏱️',name:'คูลดาวน์',col:'#80deea',unlockLv:0,unlockText:''},
@@ -467,12 +467,13 @@ function showTowerPopup(tw,px,py){
     statsHtml+=`<div class="tp-stat">⏱️ ผลิตทุก <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${interval} วิ</span></div>`;
     statsHtml+=`<div class="tp-stat">💰 ทองต่อครั้ง <small style="opacity:.5">Lv.${tw.rngLv}</small><span>+${amt}${tw.awakened?' (x2 อเวค)':''}</span></div>`;
   } else if(tw.type===4){ // 💚 ซัพพอร์ต — เพิ่มดาเมจบัฟ/กันหยุดป้อม
-    const buffPct=Math.round((tw.dmgLv||1)*10);
-    const ownBase=tw.awakened?1:(STAR_RESIST[(tw.star||1)-1]||0);
-    const ownBonus=((tw.rateLv||1)-1)*.05;
+    const _dmgLv=tw.dmgLv||1,_rateLv2=tw.rateLv||1;
+    const buffPct=Math.round(_dmgLv*10+(_rateLv2>=3?30:0));
+    const ownBase=tw.awakened?.5:(STAR_RESIST[(tw.star||1)-1]||0);
+    const ownBonus=(_rateLv2-1)*.05+(_dmgLv>=3?.3:0);
     const resist=Math.round(Math.min(1,ownBase+ownBonus)*100);
-    statsHtml+=`<div class="tp-stat">💪 บัฟดาเมจ <small style="opacity:.5">Lv.${tw.dmgLv||1}</small><span>+${buffPct}% ให้ป้อมในรัศมี</span></div>`;
-    statsHtml+=`<div class="tp-stat">🛡️ กันหยุดป้อม <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${resist}%${tw.awakened?' (อเวค)':''}</span></div>`;
+    statsHtml+=`<div class="tp-stat">💪 บัฟดาเมจ <small style="opacity:.5">Lv.${_dmgLv}</small><span>+${buffPct}% ให้ป้อมในรัศมี${_rateLv2>=3?' <span style="color:#80cbc4;font-size:9px;">🛡️+30%</span>':''}</span></div>`;
+    statsHtml+=`<div class="tp-stat">🛡️ กันหยุดป้อม <small style="opacity:.5">Lv.${_rateLv2}</small><span>${resist}%${tw.awakened?' (อเวค)':''}${_dmgLv>=3?' <span style="color:#69f0ae;font-size:9px;">💪+30%</span>':''}</span></div>`;
   } else if(tw.type===9){ // 🌀 ป้อมกาลเวลา — รัศมี/ความเข้ม
     const _rngLv=tw.rngLv||1,_rateLv=tw.rateLv||1;
     const radius=(2.0+((_rngLv-1)*.5)).toFixed(1);

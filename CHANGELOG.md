@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.8 — Balance: ซัพพอร์ต Rework — กันหยุด 20-50%, สาย Lv3 unlock
+
+### Changed
+- `js/tower.js` STAR_RESIST: `[.2,.4,.6,.8]` → `[.2,.3,.4,.5]` (★1-4 = 20/30/40/50%)
+- `js/tower.js` getSupportResist: awaken base `1` → `0.5` (50%)
+- `js/tower.js` getSupportResist: เพิ่ม `dmgLv≥3` bonus +30% resist
+- `js/tower.js` getBuffMult: เพิ่ม `rateLv≥3` bonus +30% buff
+- `js/tower.js` trackDefs(4): ทั้งสองสายเพิ่ม `unlockLv:3` พร้อม unlock text
+- `js/tower.js` TSPECIAL[4], TAWAKEN_DESC[4]: อัปเดตคำอธิบาย
+- `js/tower.js` popup type===4: แสดงโบนัส Lv3 unlock ใน stat display
+
 ## v3.24.7 — Balance: สไนเปอร์ Rework — เจาะโล่ย้ายสาย, Crit ×2
 
 ### Changed
