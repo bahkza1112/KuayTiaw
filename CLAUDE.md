@@ -5,7 +5,7 @@ Guidance for Claude Code (and other AI assistants) working in this repository.
 ## Project Summary
 
 **Tower Quest 🏰** is a browser-based tower defense game written in
-Thai, currently at **v3.24.2**. Since the v1.6.1 refactor, the game is split
+Thai, currently at **v3.24.15**. Since the v1.6.1 refactor, the game is split
 across:
 
 - [`Tower Quest 🏰.html`](Tower%20Quest%20%F0%9F%8F%B0.html) — head/body
@@ -256,3 +256,4 @@ These apply to **every** gameplay update/patch, no exceptions:
    was added or removed, update the corresponding table in **Section 0**
    ("What's Already In The Game") of `PROJECT_MASTER.md` so the quick-reference
    stays accurate. This is the first thing read each session — keep it up to date.
+

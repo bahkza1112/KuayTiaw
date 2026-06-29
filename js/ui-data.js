@@ -1,13 +1,16 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.24.2';
+const GAME_VERSION='3.24.15';
 const PATCH_NOTES=[
-  {ver:'3.24.2',date:'2026-06-29',title:'🎨 หน้าเลือกป้อม — Sprite จริงพร้อม Dark Fantasy UI',notes:[
+  {ver:'3.24.15',date:'2026-06-29',title:'🎨 หน้าเลือกป้อม — Sprite Card Dark Fantasy',notes:[
     'การ์ดป้อมแสดงภาพ sprite จริงจาก assets/images/ (mix-blend-mode: multiply)',
     'การ์ดเป็นทรงสี่เหลี่ยมจัตุรัส ภาพป้อมใหญ่ขึ้นชัดขึ้น',
     'เพิ่ม checkmark ✓ มุมบนซ้ายเมื่อเลือกการ์ด',
     'เพิ่ม stat pills แสดง ⚔️ DMG / 🎯 Range / 💰 Cost ใต้ชื่อป้อม',
-    'ปรับ glow effect การ์ดที่เลือก: double ring + shadow',
     'ถ้าโหลด PNG ไม่ได้จะ fallback เป็น procedural canvas อัตโนมัติ',
+  ]},
+  {ver:'3.24.14',date:'2026-06-29',title:'🎨 แถบเลือดเล็กและสั้นลง',notes:[
+    'HP bar: กว้าง sz*2+4 → sz*1.4+2, สูง 6 → 4px',
+    'Shield bar: สูง 4 → 3px',
   ]},
   {ver:'3.24.1',date:'2026-06-29',title:'🔊 เสียงสายฟ้า 3-layer rumble สมจริง',notes:[
     'เปลี่ยนเสียงป้อมสายฟ้าจาก electric buzz → thunder rumble 3 ชั้น',
@@ -1441,8 +1444,8 @@ const CUTSCENES = [
       {speaker:'สายลับ',icon:'🏜️',title:'Desert Crossing — Stage 4',
        text:'ข่าวสืบมาว่ากองทัพมืดบุกข้ามทะเลทรายแล้ว ฝูงค้างคาวบินนำหน้า โกเลมยักษ์ตามมาข้างหลัง'},
       {speaker:'ผู้พิทักษ์',icon:'🦇',title:'Air Threat Detected!',
-       text:'ค้างคาวบินอยู่บนฟ้า ป้อมส่วนใหญ่ยิงไม่ถึง! ต้องใช้ Sniper หรือ Archer เท่านั้น',
-       unlock:{towers:[5],label:'Archer Tower Unlocked'}},
+       text:'ค้างคาวบินอยู่บนฟ้า ป้อมส่วนใหญ่ยิงไม่ถึง! ต้องใช้ Sniper หรือ Minigun เท่านั้น',
+       unlock:{towers:[5],label:'Minigun Tower Unlocked'}},
     ]
   },
   // Stage 4: Treasure Valley
@@ -1534,7 +1537,7 @@ const CUTSCENES = [
       {speaker:'นักมายากล',icon:'❄️',title:'ป่าแข็งนิรันดร์ — คำสาปอันยาวนาน',
        text:'ป่าโบราณถูกสาปให้เยือกแข็งชั่วนิรันดร์ตั้งแต่ยุคก่อนประวัติศาสตร์\n\nราชาน้ำแข็งส่งผู้ใต้บังคับบัญชาบุกผ่านหิมะ ทุกตัวปรับตัวกับความหนาวจนต้านทาน Ice Slow ได้สมบูรณ์'},
       {speaker:'วิศวกร',icon:'⚙️',title:'Blizzard ถาวร — ปรับกลยุทธ์ใหม่',
-       text:'พายุหิมะโหมตลอดเวลา ป้อมน้ำแข็งยิงช้าลง 30%\n\nใช้ Magic + Thunder + Cannon เป็นหลัก ฮาร์ปี Shriek หยุดป้อมรอบข้างได้ — ต้องการ Sniper หรือ Archer ในทีมเสมอ'},
+       text:'พายุหิมะโหมตลอดเวลา ป้อมน้ำแข็งยิงช้าลง 30%\n\nใช้ Magic + Thunder + Cannon เป็นหลัก ฮาร์ปี Shriek หยุดป้อมรอบข้างได้ — ต้องการ Sniper หรือ Minigun ในทีมเสมอ'},
     ]
   },
   // Stage 13: ทะเลสาบพิษ

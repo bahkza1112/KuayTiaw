@@ -1,27 +1,27 @@
-const TNAMES=['ปืนใหญ่','น้ำแข็ง','เวทมนตร์','สไนเปอร์','ซัพพอร์ต','ธนู','เหมืองทอง','สายฟ้า','ป้อมมนตราโมฆะ','ป้อมกาลเวลา'];
-const TICONS=['💣','❄️','✨','🎯','💚','🏹','💰','⚡','🌑','🌀'];
+const TNAMES=['ปืนใหญ่','น้ำแข็ง','เวทมนตร์','สไนเปอร์','ซัพพอร์ต','มินิกัน','เหมืองทอง','สายฟ้า','ป้อมมนตราโมฆะ','ป้อมกาลเวลา'];
+const TICONS=['💣','❄️','✨','🎯','💚','🔫','💰','⚡','🌑','🌀'];
 const TCOLORS=['#c62828','#0d47a1','#4a148c','#1b5e20','#00695c','#4e342e','#f57f17','#f9a825','#311b92','#1a0a4a'];
 const TPROJ=['#ff7043','#80d8ff','#e040fb','#ffee58','#69f0ae','#a5d6a7','#ffd54f','#ffe57f','#b388ff','#b39ddb'];
 const TACCENT=['#ff5252','#40c4ff','#ea80fc','#69f0ae','#64ffda','#8d6e63','#ffca28','#ffe57f','#7e57c2','#b39ddb'];
-const TSPLASH=[.8,0,1.2,0,0,0,0,0,0,0];
-const TSLOW=[0,.45,0,0,0,0,0,0,0,0];
+const TSPLASH=[0,0,1.2,0,0,0,0,0,0,0];
+const TSLOW=[0,.30,0,0,0,0,0,0,0,0];
 const TBUFF=[false,false,false,false,true,false,false,false,false,false];
 const TCANAIR=[false,false,false,true,false,true,false,true,false,false]; /* ยิง air ได้ */
 const TGOLDMINE=[false,false,false,false,false,false,true,false,false,false]; /* สร้างทอง */
 const TCHAIN=[0,0,0,0,0,0,0,2,0,0]; /* chain lightning targets (Thunder=2) */
 const TPIERCE=[false,false,false,false,false,false,false,true,false,false]; /* ทะลุโล่: Thunder เท่านั้น — Sniper ต้องอัพ Range ≥3 ก่อน */
 const RARITY_COLORS={2:'#42a5f5',3:'#ab47bc',4:'#ff8f00'}; /* กรอบสีตาม★ — 2=น้ำเงิน(Rare) 3=ม่วง(Epic) 4=ส้มทอง(Legendary), Awaken มีออร่าทองของตัวเอง */
-const TFLAVOR=['ปืนใหญ่หนักที่ยิงกระสุนระเบิด ความเสียหายแบบกระจายทำลายล้างศัตรูที่อยู่รวมกัน',
-  'ยิงน้ำแข็งที่ทำให้ศัตรูเยือกแข็ง วางไว้ก่อนทางยาวจะได้ผลดีที่สุด',
+const TFLAVOR=['ปืนใหญ่หนักที่ยิงกระสุนเจาะเกราะ ดาเมจต่อยิงสูง เมื่ออเวคจะปลดพลัง Splash ทำลายล้างวงกว้าง',
+  'ยิงลูกน้ำแข็งชะลอศัตรูลงอย่างรุนแรง เมื่ออเวคมีโอกาสแช่แข็งหยุดสนิท',
   'รวมพลังเวทมนตร์เป็นการโจมตีที่รุนแรง กระจายในวงกว้าง แต่ยิงช้า',
   'มือปืนระยะไกลที่แม่นยำ มีความเสียหายต่อเป้าหมายเดียวสูงสุดในเกม',
   'ปล่อยออร่าเสริมกำลังที่เพิ่มความเสียหายให้ป้อมใกล้เคียง ไม่โจมตีโดยตรง',
-  'นักธนูผู้คล่องแคล่ว ยิงได้ทั้งศัตรูภาคพื้นดินและศัตรูที่บินอยู่บนอากาศ',
+  'ป้อมมินิกัน 6 ลำกล้องหมุนยิงรัว ยิงได้ทั้งศัตรูภาคพื้นดินและศัตรูที่บินอยู่บนอากาศ',
   'เหมืองทองที่สร้างรายได้ต่อเนื่อง ไม่โจมตี แต่ผลิตทองทุก 5 วินาที',
   'หอคอยพลังสายฟ้าที่ยิงฟ้าผ่าลงใส่ศัตรู และลัดไปยังศัตรูข้างเคียงอีก 2 ตัว ยิงโดนได้ทั้งพื้นและอากาศ',
   'ป้อมมนตราต้องห้ามที่ปล่อยพลังโมฆะ มีโอกาสติดมาร์กศัตรู ทำให้รับดาเมจเพิ่มจากป้อมทุกชนิด ปลดล็อกได้จาก Workshop เท่านั้น',
   'ป้อมกาลเวลาที่บิดเบือนเวลาในพื้นที่ ชาร์จพลังแล้วปล่อยคลื่นเวลา ทำให้ศัตรูในรัศมีเคลื่อนที่ช้าลง 50% ปลดล็อกได้จาก Workshop เท่านั้น'];
-const TTAGS=[[{t:'กระจาย',c:'tag-orange'},{t:'ความเสียหายพื้นที่',c:'tag-red'}],
+const TTAGS=[[{t:'ดาเมจสูง',c:'tag-red'},{t:'อเวค: Splash',c:'tag-orange'}],
   [{t:'ช้า',c:'tag-blue'},{t:'ซัพพอร์ต',c:'tag-green'}],
   [{t:'กระจายกว้าง',c:'tag-purple'},{t:'ความเสียหายสูง',c:'tag-red'}],
   [{t:'ระยะไกลมาก',c:'tag-blue'},{t:'ความเสียหายสูงสุด',c:'tag-red'}],
@@ -31,10 +31,10 @@ const TTAGS=[[{t:'กระจาย',c:'tag-orange'},{t:'ความเสี�
   [{t:'Chain Lightning',c:'tag-orange'},{t:'ยิง Air',c:'tag-blue'}],
   [{t:'Void Mark',c:'tag-purple'},{t:'Workshop',c:'tag-red'}],
   [{t:'ช้าเวลา',c:'tag-purple'},{t:'ไม่โจมตี',c:'tag-green'},{t:'Workshop',c:'tag-red'}]];
-const TSPECIAL=['กระจาย: 0.8 ช่อง','ชะลอเหลือ 45% นาน 2 วินาที','กระจาย: 1.2 ช่อง','ระยะยิง 4.5 ช่อง (คงที่ไม่ต้องอัพ) — สายคริติคอล: โอกาสคริติคอล +10%/เลเวล (สูงสุด 40%) ดาเมจ x1.75 — 🎯 ล็อกเป้าหมอผีก่อนเสมอเมื่ออยู่ในระยะ','+10% ความเสียหาย/เลเวลบัฟ ให้ป้อมในรัศมี (อัพสาย "เพิ่มดาเมจบัฟ") | 🛡️ ออร่ากันหยุดป้อม: ★1-4 = 20/40/60/80% (อเวค 100%) +5%/เลเวลจากสาย "กันหยุดป้อม"','ยิง Air ได้ — ยิงค้างคาวและวิเวิร์นได้ (ร่วมกับ Sniper และ Thunder)','ผลิตทองทุกรอบ (ลดเวลาได้ -20%/เลเวลจากสายคูลดาวน์) เริ่ม 2 ทอง/รอบ (+2/เลเวลจากสายจำนวน) — อเวคได้ทอง x2','Chain Lightning ถึง 2 ตัว — ดาเมจลด 40% ต่อ chain — ยิง Air ได้','Void Mark: 30% โอกาสติดมาร์ก (อเวค 50%) ทำให้ศัตรูรับดาเมจเพิ่ม +25% จากป้อมทุกชนิด (อเวค +40%) นาน 4 วินาที รีเฟรชเวลาได้แต่ไม่บวกซ้ำ',
-'คลื่นเวลา: ชาร์จ 6s → ปล่อยพัลส์ 1.5s — รัศมี 2.0 ช่อง (อัพได้ถึง 3.5) — ช้าลง 50% (บอสช้า 85%) — ไม่โจมตีโดยตรง'];
+const TSPECIAL=['-','ชะลอเหลือ 30% นาน 2-3 วิ (อัพสายระยะเวลา)','กระจาย: 1.2 ช่อง','ระยะยิง 4.5 ช่อง (คงที่ไม่ต้องอัพ) — ⚡ ความเร็ว Lv3: เจาะโล่ศัตรู — 🎯 คริติคอล +10%/Lv (Lv1=10% สูงสุด 50%) ดาเมจ ×2 — ล็อกเป้าหมอผีก่อนเสมอ','+10% ความเสียหาย/เลเวลบัฟ ให้ป้อมในรัศมี (อัพสาย "เพิ่มดาเมจบัฟ") | 🛡️ ออร่ากันหยุดป้อม: ★1-4 = 20/30/40/50% (อเวค 50%) +5%/เลเวลจากสาย "กันหยุดป้อม" — อัพสาย Lv3 ต่างฝ่ายต่างปลดล็อกโบนัสเพิ่ม +30%','ยิง Air ได้ — ยิงค้างคาวและวิเวิร์นได้ (ร่วมกับ Sniper และ Thunder) | DMG 10, Rate 2.5/s | 📡 ระยะ Lv3: เจาะโล่ | ⚡ ความเร็ว Lv3: ยิงรัว','ผลิตทองทุกรอบ (ลดเวลาได้ -20%/เลเวลจากสายคูลดาวน์) เริ่ม 2 ทอง/รอบ (+2/เลเวลจากสายจำนวน) — อเวคได้ทอง x2','Chain Lightning ถึง 2 ตัว — ดาเมจลด 40% ต่อ chain — ยิง Air ได้ — ทะลุโล่เสมอ | 📡 ระยะ Lv3: เพิ่มดาเมจ +50% (รวม chain)','Void Mark: 20% โอกาสติดมาร์ก (อเวค 60%) ทำให้ศัตรูรับดาเมจเพิ่ม +20% จากป้อมทุกชนิด (อเวค +50%) นาน 4 วินาที รีเฟรชเวลาได้แต่ไม่บวกซ้ำ | 📡 ระยะ Lv3: เจาะโล่ | ⚡ ความเร็ว Lv3: ยิงรัว',
+'คลื่นเวลา: ชาร์จ 6s → ปล่อยพัลส์ 1.5s — รัศมี 2.0 ช่อง (อัพสาย🔮 ได้ถึง 3.5) — ช้าลง 50% ปกติ / บอสช้า 40% — อัพสาย⏳ เพิ่มระยะเวลา pulse — ไม่โจมตีโดยตรง'];
 const TSTRENGTH=[
-  ['ทำลายหมู่ศัตรูได้ดี','ระยะใกล้-กลาง'],
+  ['ดาเมจต่อยิงสูง','เมื่ออเวค Splash 2.0 ช่อง'],
   ['ชะลอความเร็วศัตรู','เพิ่มเวลาให้ป้อมอื่น'],
   ['Splash กว้างที่สุด','ดาเมจสูง'],
   ['ระยะไกลสุดในเกม','ดาเมจต่อตัวสูงสุด'],
@@ -46,7 +46,7 @@ const TSTRENGTH=[
   ['ช้าศัตรูได้ทุกประเภท','รัศมีกว้างเมื่ออัพ'],
 ];
 const TWEAKNESS=[
-  ['ยิงช้าถ้าศัตรูกระจาย','ระยะสั้นกว่าสไนเปอร์'],
+  ['Rate ต่ำ ยิงช้า','ระยะสั้นกว่าสไนเปอร์'],
   ['ดาเมจต่ำ','ไม่มีผลกับบอส'],
   ['อัตรายิงช้ามาก','ราคาแพงที่สุด'],
   ['ยิงได้ทีละตัวเท่านั้น','อัตรายิงช้า'],
@@ -58,38 +58,38 @@ const TWEAKNESS=[
   ['ไม่โจมตีโดยตรง','ต้องชาร์จก่อนปล่อยพัลส์'],
 ];
 const TAWAKEN_DESC=[
-  'Splash กว้างขึ้น ×1.5 — ทำลายหมู่ศัตรูในวงกว้างมากขึ้น',
-  'ระยะเวลาแช่แข็ง 2 → 3 วินาที — ศัตรูติดช้านานขึ้น',
-  'โอกาสยิงพร้อมกัน 3 นัด 40% (ปกติ 20%) — DPS พุ่งสูงขึ้นมาก',
+  'ปลด Splash 2.0 ช่อง — กระสุนระเบิดถล่มวงกว้างทำลายล้าง',
+  '35% โอกาสแช่แข็ง 2 วิ (หยุดสนิท) — ถ้าไม่ติดแช่แข็ง slow 70% ตามปกติ',
+  'โอกาสยิงพร้อมกัน 3 นัด 50% (ปกติ 20%) — DPS พุ่งสูงขึ้นมาก',
   'ยิงทะลุเส้นตรง — โดนศัตรูทุกตัวบนเส้นยิงหลังเป้าหมาย',
-  'กันหยุดป้อม 100% + ออร่าเพิ่มพลังป้อมรอบข้างแรงขึ้น',
-  'ดาเมจและระยะสูงขึ้น — ไม่มีสกิลพิเศษเพิ่มเติม',
+  'กันหยุดป้อม 50% (ฐาน) + ออร่าบัฟแรงขึ้น — เอฟเฟกต์รวมกับอัพสายทั้งสองได้สูงสุด',
+  'บาร์เรลหมุนเร็วขึ้น — อัตรายิง ×2 จากค่าปัจจุบัน (รวมโบนัสอัพสายแล้ว)',
   'ผลิตทอง ×2 ต่อรอบ — รายได้เพิ่มเท่าตัว',
   'Chain เพิ่มอีก 2 ตัว รวมสูงสุด 4 chain ต่อยิง',
-  'Void Mark: proc 30%→50%, โบนัสดาเมจ +25%→+40%',
-  'หยุดเวลา 1.5 วินาที — ศัตรูทั้งหมดในรัศมีหยุดสนิท (บอสช้า 85%) — ใช้งานได้เมื่อชาร์จเต็ม',
+  'Void Mark: proc 20%→60%, โบนัสดาเมจ +20%→+50%',
+  'Awaken หยุดเวลา 1.5 วิ — ศัตรูในรัศมีหยุดสนิท (บอสช้า 85% แทน 40%) — ใช้งานเมื่อชาร์จเต็ม',
 ];
-const STAR_DMG_BONUS=[0,.5,1.1,2.0];// โบนัสดาเมจพื้นฐานตาม★ (★1=+0%, ★2=+50%, ★3=+110%, ★4=+200%)
+const STAR_DMG_BONUS=[0,.5,1,3];// โบนัสดาเมจพื้นฐานตาม★ (★1=+0%, ★2=+50%, ★3=+100%, ★4=+300%)
 function getTowerDmg(t,lv,star){return CFG.t_dmg[t]*(1+STAR_DMG_BONUS[(star||1)-1])*(1+(lv-1)*.25);}
 // 🎯 สไนเปอร์: สายที่ 2 (เดิมระยะ) ถูกเปลี่ยนเป็นคริติคอล — ระยะคงที่ไม่ต้องอัพ
-function getTowerRange(t,lv){return t===3?CFG.t_rng[t]:CFG.t_rng[t]*(1+(lv-1)*.15);}
+function getTowerRange(t,lv){return (t===3||t===1)?CFG.t_rng[t]:CFG.t_rng[t]*(1+(lv-1)*.15);}
 function getTowerRate(t,lv){return CFG.t_rate[t]*(1+(lv-1)*.1);}
 // 🎯 สไนเปอร์: โอกาสคริติคอล +10%/lv (สูงสุด +40% ที่ Lv.5), คริติคอล x1.75 ดาเมจ (v3.0.1: 2→1.75)
-const SNIPER_CRIT_MULT=1.75;
-function getSniperCrit(critLv){return {chance:Math.min(1,((critLv||1)-1)*.1),mult:SNIPER_CRIT_MULT};}
+const SNIPER_CRIT_MULT=2.0;
+function getSniperCrit(critLv){return {chance:Math.min(.5,(critLv||1)*.1),mult:SNIPER_CRIT_MULT};}
 // 💰 เหมืองทอง: สาย rateLv ลดคูลดาวน์ผลิตทอง -20%/lv (v3.11.3: -15%→-20%), สาย rngLv เพิ่มจำนวนทอง +2/lv
 function getGoldMineInterval(rateLv){return CFG.t_goldrate*(1-((rateLv||1)-1)*.20);}
 function getGoldMineAmt(rngLv){return CFG.t_goldamt[0]+((rngLv||1)-1)*2;}
 // 💚 ซัพพอร์ต: กันป้อมหยุดทำงานจากสกิลมอน — base ตาม★/Awaken + บวกเพิ่มจากสาย rateLv (+5%/lv)
-const STAR_RESIST=[.2,.4,.6,.8];// ★1-4 → 20/40/60/80% (Awaken = 100%)
+const STAR_RESIST=[.2,.3,.4,.5];// ★1-4 → 20/30/40/50% (Awaken = 50%)
 function getSupportResist(col,row){
   if(!G) return 0;
   let resist=0;
   G.towers.forEach(t=>{
     if(t.type!==4) return;
     if(Math.hypot(t.col-col,t.row-row)>getTowerRange(t.type,t.rngLv||1)) return;
-    const base=t.awakened?1:STAR_RESIST[(t.star||1)-1];
-    const bonus=((t.rateLv||1)-1)*.05;
+    const base=t.awakened?.5:STAR_RESIST[(t.star||1)-1];
+    const bonus=((t.rateLv||1)-1)*.05+((t.dmgLv||1)>=3?.3:0);
     resist=Math.max(resist,Math.min(1,base+bonus));
   });
   return resist;
@@ -103,7 +103,7 @@ function getBuffMult(col,row){
   if(self&&self._drainT>0) return 1; // ถูกเงามืดดูดพลัง — บัฟใช้งานไม่ได้ชั่วคราว
   let m=1;
   G.towers.forEach(t=>{
-    if(TBUFF[t.type]&&Math.hypot(t.col-col,t.row-row)<=getTowerRange(t.type,1)) m*=1+((t.dmgLv||1)*.1);
+    if(TBUFF[t.type]&&Math.hypot(t.col-col,t.row-row)<=getTowerRange(t.type,1)) m*=1+((t.dmgLv||1)*.1)+((t.rateLv||1)>=3?.3:0);
   });
   return m;
 }
@@ -250,8 +250,10 @@ function _twDecal(ctx,type,r){
     ctx.beginPath();ctx.moveTo(-r*.2,-r*.03);ctx.lineTo(r*.2,-r*.03);ctx.stroke();
     ctx.beginPath();ctx.moveTo(0,-r*.22);ctx.lineTo(0,r*.16);ctx.stroke();
     ctx.fillStyle='rgba(105,240,174,.3)';ctx.beginPath();ctx.arc(0,-r*.03,r*.14,0,Math.PI*2);ctx.fill();
-  } else if(type===5){// arrow shape
-    ctx.fillStyle='#ffe082';ctx.beginPath();ctx.moveTo(0,-r*.18);ctx.lineTo(-r*.08,r*.1);ctx.lineTo(0,r*.04);ctx.lineTo(r*.08,r*.1);ctx.closePath();ctx.fill();
+  } else if(type===5){// minigun barrel cluster
+    ctx.fillStyle='#616161';ctx.beginPath();ctx.arc(0,-r*.03,r*.2,0,Math.PI*2);ctx.fill();
+    for(let i=0;i<6;i++){const a=i/6*Math.PI*2;ctx.fillStyle='#9e9e9e';ctx.beginPath();ctx.arc(Math.cos(a)*r*.1,Math.sin(a)*r*.1-r*.03,r*.065,0,Math.PI*2);ctx.fill();ctx.fillStyle='#212121';ctx.beginPath();ctx.arc(Math.cos(a)*r*.1,Math.sin(a)*r*.1-r*.03,r*.03,0,Math.PI*2);ctx.fill();}
+    ctx.fillStyle='#424242';ctx.beginPath();ctx.arc(0,-r*.03,r*.055,0,Math.PI*2);ctx.fill();
   } else if(type===6){// $
     ctx.fillStyle='#ffd54f';ctx.font=`bold ${Math.round(r*.28)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('$',0,-r*.03);
   } else if(type===7){// lightning bolt
@@ -322,16 +324,21 @@ function _twWeapon(ctx,type,r,shootT){
     ctx.fillStyle='#004d40';ctx.fillRect(-r*.22,-r*.75,r*.44,r*.7);
     ctx.fillStyle='#1de9b6';ctx.beginPath();ctx.arc(0,-r*.5,r*.26,0,Math.PI*2);ctx.fill();
     ctx.fillStyle='#a7ffeb';ctx.beginPath();ctx.arc(-r*.08,-r*.54,r*.13,0,Math.PI*2);ctx.fill();
-  } else if(type===5){// Archer bow
-    ctx.strokeStyle='#5d4037';ctx.lineWidth=r*.18;ctx.lineCap='round';
-    ctx.beginPath();ctx.moveTo(-r*.48,r*.62);ctx.bezierCurveTo(-r*.95,r*.2,-r*.95,-r*.2,-r*.48,-r*.62);ctx.stroke();
-    ctx.strokeStyle='#ffe082';ctx.lineWidth=r*.06;ctx.beginPath();ctx.moveTo(-r*.48,-r*.62);ctx.lineTo(-r*.22,0);ctx.lineTo(-r*.48,r*.62);ctx.stroke();
-    // สายธนูสั่นเบาๆ (idle vibration)
-    const _vib=Math.sin(Date.now()*.012)*r*.05;
-    ctx.strokeStyle='#8d6e63';ctx.lineWidth=r*.1;ctx.beginPath();ctx.moveTo(-r*.22,0);ctx.quadraticCurveTo(r*.2,_vib,r*.62,0);ctx.stroke();
-    ctx.fillStyle='#bdbdbd';ctx.beginPath();ctx.moveTo(r*.65,0);ctx.lineTo(r*.38,-r*.16);ctx.lineTo(r*.38,r*.16);ctx.closePath();ctx.fill();
-    ctx.fillStyle='#f44336';ctx.beginPath();ctx.moveTo(-r*.08,0);ctx.lineTo(-r*.32,-r*.22);ctx.lineTo(-r*.22,0);ctx.closePath();ctx.fill();
-    ctx.beginPath();ctx.moveTo(-r*.08,0);ctx.lineTo(-r*.32,r*.22);ctx.lineTo(-r*.22,0);ctx.closePath();ctx.fill();
+  } else if(type===5){// Minigun rotating barrels
+    const _rot=Date.now()*.008;
+    const _nr=6;const _barrels=[];
+    for(let i=0;i<_nr;i++){const a=_rot+i/_nr*Math.PI*2;_barrels.push({ox:Math.cos(a)*r*.2,depth:Math.sin(a)});}
+    _barrels.sort((a,b)=>a.depth-b.depth);
+    _barrels.forEach(({ox,depth})=>{
+      const br=Math.round(70+depth*50);
+      ctx.fillStyle=`rgb(${br},${br},${br})`;
+      if(ctx.roundRect)ctx.roundRect(ox-r*.065,-r*1.15,r*.13,r*1.05,r*.025);else ctx.rect(ox-r*.065,-r*1.15,r*.13,r*1.05);
+      ctx.fill();
+      ctx.fillStyle=`rgba(0,0,0,${.5+depth*.3})`;ctx.beginPath();ctx.arc(ox,-r*1.1,r*.035,0,Math.PI*2);ctx.fill();
+    });
+    ctx.fillStyle='#424242';ctx.beginPath();ctx.arc(0,0,r*.28,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#757575';ctx.beginPath();ctx.arc(0,0,r*.14,0,Math.PI*2);ctx.fill();
+    if(shootT>0){ctx.globalAlpha=shootT*.9;ctx.fillStyle='#fff9c4';ctx.beginPath();ctx.arc(0,-r*1.2,r*.18,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;}
   } else if(type===6){// Gold mine pickaxe
     // แสงทองเรืองจางๆ รอบกองแร่ (idle pulse)
     const _gp=.25+.35*Math.sin(Date.now()*.004);
@@ -381,13 +388,21 @@ function _twWeapon(ctx,type,r,shootT){
 let _popupTw=null;
 // 🎛️ สายสกิลของป้อมแต่ละชนิด (2 สายเสมอ) — key ในข้อมูลป้อม + ป้ายกำกับ + ปลดล็อกพิเศษ
 function trackDefs(t){
+  if(t===1) return [ // ❄️ น้ำแข็ง
+    {key:'rngLv',icon:'⏱️',name:'ระยะเวลาสโล',col:'#80d8ff',unlockLv:0,unlockText:''},
+    {key:'rateLv',icon:'⚡',name:'ความเร็ว',col:'#ffe234',unlockLv:3,unlockText:'ยิงรัว (โอกาสคูลดาวน์สั้นลงทันทีหลังยิง)'}
+  ];
   if(t===3) return [ // 🎯 สไนเปอร์
-    {key:'rateLv',icon:'⚡',name:'ความเร็ว',col:'#ffe234',unlockLv:3,unlockText:'ยิงรัว (โอกาสคูลดาวน์สั้นลงทันทีหลังยิง)'},
+    {key:'rateLv',icon:'⚡',name:'ความเร็ว',col:'#ffe234',unlockLv:3,unlockText:'เจาะโล่ศัตรู (ดาเมจเข้า HP ตรง ไม่โดนโล่ดูดซับ)'},
     {key:'rngLv',icon:'🎯',name:'คริติคอล',col:'#ff5252',unlockLv:0,unlockText:''}
   ];
   if(t===4) return [ // 💚 ซัพพอร์ต
-    {key:'dmgLv',icon:'💪',name:'เพิ่มดาเมจบัฟ',col:'#69f0ae',unlockLv:0,unlockText:''},
-    {key:'rateLv',icon:'🛡️',name:'กันหยุดป้อม',col:'#80cbc4',unlockLv:0,unlockText:''}
+    {key:'dmgLv',icon:'💪',name:'เพิ่มดาเมจบัฟ',col:'#69f0ae',unlockLv:2,unlockText:'เพิ่มกันหยุดป้อม +30% เพิ่มเติม'},
+    {key:'rateLv',icon:'🛡️',name:'กันหยุดป้อม',col:'#80cbc4',unlockLv:2,unlockText:'เพิ่มบัฟดาเมจ +30% เพิ่มเติม'}
+  ];
+  if(t===7) return [ // ⚡ สายฟ้า
+    {key:'rngLv',icon:'📡',name:'ระยะ',col:'#ffe57f',unlockLv:2,unlockText:'เพิ่มดาเมจ +50% (รวม chain)'},
+    {key:'rateLv',icon:'⚡',name:'ความเร็ว',col:'#ffe234',unlockLv:3,unlockText:'ยิงรัว (โอกาสคูลดาวน์สั้นลงทันทีหลังยิง)'}
   ];
   if(t===6) return [ // 💰 เหมืองทอง
     {key:'rateLv',icon:'⏱️',name:'คูลดาวน์',col:'#80deea',unlockLv:0,unlockText:''},
@@ -447,8 +462,8 @@ function showTowerPopup(tw,px,py){
     const crit=getSniperCrit(tw.rngLv);
     const dpsVal=(dmgVal*_bm*parseFloat(rateVal)*(1+crit.chance*(crit.mult-1))).toFixed(1);
     statsHtml+=`<div class="tp-stat">📡 ระยะ <span>${rngVal} ช่อง</span></div>`;
-    statsHtml+=`<div class="tp-stat">⚡ อัตรายิง <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${rateVal}${tw.rateLv>=4?' <span style="color:#ffe234;font-size:9px;" title="มีโอกาสคูลดาวน์สั้นลงทันทีหลังยิง">⚡ยิงรัว</span>':''}</span></div>`;
-    statsHtml+=`<div class="tp-stat">🎯 คริติคอล <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${Math.round(crit.chance*100)}% x${crit.mult}</span></div>`;
+    statsHtml+=`<div class="tp-stat">⚡ อัตรายิง <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${rateVal}${tw.rateLv>=3?' <span style="color:#90caf9;font-size:9px;">🛡️✨เจาะโล่</span>':''}</span></div>`;
+    statsHtml+=`<div class="tp-stat">🎯 คริติคอล <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${Math.round(crit.chance*100)}% ×${crit.mult}</span></div>`;
     statsHtml+=`<div class="tp-stat">📊 DPS<span>${dpsVal}${_bmTag}</span></div>`;
   } else if(tw.type===6){ // 💰 เหมืองทอง — คูลดาวน์/จำนวนทอง
     const interval=getGoldMineInterval(tw.rateLv).toFixed(1);
@@ -456,12 +471,13 @@ function showTowerPopup(tw,px,py){
     statsHtml+=`<div class="tp-stat">⏱️ ผลิตทุก <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${interval} วิ</span></div>`;
     statsHtml+=`<div class="tp-stat">💰 ทองต่อครั้ง <small style="opacity:.5">Lv.${tw.rngLv}</small><span>+${amt}${tw.awakened?' (x2 อเวค)':''}</span></div>`;
   } else if(tw.type===4){ // 💚 ซัพพอร์ต — เพิ่มดาเมจบัฟ/กันหยุดป้อม
-    const buffPct=Math.round((tw.dmgLv||1)*10);
-    const ownBase=tw.awakened?1:(STAR_RESIST[(tw.star||1)-1]||0);
-    const ownBonus=((tw.rateLv||1)-1)*.05;
+    const _dmgLv=tw.dmgLv||1,_rateLv2=tw.rateLv||1;
+    const buffPct=Math.round(_dmgLv*10+(_rateLv2>=3?30:0));
+    const ownBase=tw.awakened?.5:(STAR_RESIST[(tw.star||1)-1]||0);
+    const ownBonus=(_rateLv2-1)*.05+(_dmgLv>=3?.3:0);
     const resist=Math.round(Math.min(1,ownBase+ownBonus)*100);
-    statsHtml+=`<div class="tp-stat">💪 บัฟดาเมจ <small style="opacity:.5">Lv.${tw.dmgLv||1}</small><span>+${buffPct}% ให้ป้อมในรัศมี</span></div>`;
-    statsHtml+=`<div class="tp-stat">🛡️ กันหยุดป้อม <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${resist}%${tw.awakened?' (อเวค)':''}</span></div>`;
+    statsHtml+=`<div class="tp-stat">💪 บัฟดาเมจ <small style="opacity:.5">Lv.${_dmgLv}</small><span>+${buffPct}% ให้ป้อมในรัศมี${_rateLv2>=3?' <span style="color:#80cbc4;font-size:9px;">🛡️+30%</span>':''}</span></div>`;
+    statsHtml+=`<div class="tp-stat">🛡️ กันหยุดป้อม <small style="opacity:.5">Lv.${_rateLv2}</small><span>${resist}%${tw.awakened?' (อเวค)':''}${_dmgLv>=3?' <span style="color:#69f0ae;font-size:9px;">💪+30%</span>':''}</span></div>`;
   } else if(tw.type===9){ // 🌀 ป้อมกาลเวลา — รัศมี/ความเข้ม
     const _rngLv=tw.rngLv||1,_rateLv=tw.rateLv||1;
     const radius=(2.0+((_rngLv-1)*.5)).toFixed(1);
@@ -471,12 +487,24 @@ function showTowerPopup(tw,px,py){
     statsHtml+=`<div class="tp-stat">🔮 รัศมีเวลา <small style="opacity:.5">Lv.${_rngLv}</small><span>${radius} ช่อง</span></div>`;
     statsHtml+=`<div class="tp-stat">⏳ ชาร์จ/พัลส์ <small style="opacity:.5">Lv.${_rateLv}</small><span>${chargeT}s / ${pulseT}s</span></div>`;
     statsHtml+=`<div class="tp-stat">🐌 ช้าลง <span>50%${tw.awakened?' + หยุดเวลา (อเวค)':''}</span></div>`;
-  } else { // ปืนใหญ่/น้ำแข็ง/เวทมนตร์/ธนู/สายฟ้า/ป้อมมนตราโมฆะ — ระยะ/ความเร็ว
-    const rngVal=getTowerRange(tw.type,tw.rngLv).toFixed(1);
-    const rateVal=getTowerRate(tw.type,tw.rateLv).toFixed(1);
+  } else if(tw.type===1){ // ❄️ น้ำแข็ง — ระยะเวลาสโล/ความเร็ว
+    const slowDur=(1.5+(tw.rngLv||1)*.5).toFixed(1);
+    const rateVal=getTowerRate(1,tw.rateLv).toFixed(1);
     const dpsVal=(dmgVal*_bm*parseFloat(rateVal)).toFixed(1);
-    statsHtml+=`<div class="tp-stat">📡 ระยะ <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${rngVal} ช่อง${tw.rngLv>=4?' <span style="color:#90caf9;font-size:9px;" title="กระสุนเจาะโล่ศัตรู ดาเมจเข้า HP ตรงๆ">🛡️✨เจาะโล่</span>':''}</span></div>`;
-    statsHtml+=`<div class="tp-stat">⚡ อัตรายิง <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${rateVal}${tw.rateLv>=4?' <span style="color:#ffe234;font-size:9px;" title="มีโอกาสคูลดาวน์สั้นลงทันทีหลังยิง">⚡ยิงรัว</span>':''}</span></div>`;
+    statsHtml+=`<div class="tp-stat">📡 ระยะ <span>${CFG.t_rng[1].toFixed(1)} ช่อง</span></div>`;
+    statsHtml+=`<div class="tp-stat">⏱️ ระยะเวลาสโล <small style="opacity:.5">Lv.${tw.rngLv||1}</small><span>${slowDur} วิ</span></div>`;
+    statsHtml+=`<div class="tp-stat">⚡ อัตรายิง <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${rateVal}${tw.rateLv>=4?' <span style="color:#ffe234;font-size:9px;">⚡ยิงรัว</span>':''}</span></div>`;
+    statsHtml+=`<div class="tp-stat">🐌 slow <span>70%${tw.awakened?' / 35% แช่แข็ง (อเวค)':''}</span></div>`;
+    statsHtml+=`<div class="tp-stat">📊 DPS<span>${dpsVal}${_bmTag}</span></div>`;
+  } else { // ปืนใหญ่/เวทมนตร์/มินิกัน/สายฟ้า/ป้อมมนตราโมฆะ — ระยะ/ความเร็ว
+    const rngVal=getTowerRange(tw.type,tw.rngLv).toFixed(1);
+    const _baseRate=getTowerRate(tw.type,tw.rateLv);
+    const _effRate=tw.awakened&&tw.type===5?_baseRate*2:_baseRate;
+    const rateVal=_effRate.toFixed(1);
+    const dpsVal=(dmgVal*_bm*_effRate).toFixed(1);
+    const _rngBadge=tw.type===7&&tw.rngLv>=3?' <span style="color:#ffe57f;font-size:9px;">⚡+50%ดาเมจ</span>':tw.rngLv>=4?' <span style="color:#90caf9;font-size:9px;" title="กระสุนเจาะโล่ศัตรู ดาเมจเข้า HP ตรงๆ">🛡️✨เจาะโล่</span>':'';
+    statsHtml+=`<div class="tp-stat">📡 ระยะ <small style="opacity:.5">Lv.${tw.rngLv}</small><span>${rngVal} ช่อง${_rngBadge}</span></div>`;
+    statsHtml+=`<div class="tp-stat">⚡ อัตรายิง <small style="opacity:.5">Lv.${tw.rateLv}</small><span>${rateVal}${tw.awakened&&tw.type===5?' <span style="color:#ff8a65;font-size:9px;">×2 (อเวค)</span>':tw.rateLv>=4?' <span style="color:#ffe234;font-size:9px;" title="มีโอกาสคูลดาวน์สั้นลงทันทีหลังยิง">⚡ยิงรัว</span>':''}</span></div>`;
     statsHtml+=`<div class="tp-stat">📊 DPS<span>${dpsVal}${_bmTag}</span></div>`;
   }
   // ⬆ แต้มสกิลติดตัว — ได้มาฟรีตามดาว (1★=1, 2★=2, 3★=3, 4★=4) จัดสรรได้ฟรี (ถาวร)

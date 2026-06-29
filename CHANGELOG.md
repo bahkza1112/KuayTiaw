@@ -2,20 +2,142 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
-## v3.24.2 — UI: หน้าเลือกป้อม Dark Fantasy Sprite Cards
+## v3.24.15 — UI: หน้าเลือกป้อม Dark Fantasy Sprite Cards
 
 ### Changed
-- `css/main.css` `.ts-card-art`: `aspect-ratio` 4/3 → 1/1 (square), bg เป็น dark radial gradient
-- `css/main.css` `.ts-card-art img`: เพิ่ม `mix-blend-mode:multiply` ตัด white bg PNG
-- `css/main.css` `.ts-card`: `border-radius` 10→12px, gap 6→8px
-- `css/main.css` `.ts-card.selected`: double ring glow `box-shadow`
+- `css/main.css` `.ts-card-art`: aspect-ratio 4/3 → 1/1 (square), bg เป็น dark radial gradient
+- `css/main.css` `.ts-card-art img`: เพิ่ม mix-blend-mode:multiply ตัด white bg PNG
+- `css/main.css` `.ts-card`: border-radius 10→12px, gap 6→8px
+- `css/main.css` `.ts-card.selected`: double ring glow box-shadow
 - `css/main.css`: เพิ่ม `.ts-card-check`, `.ts-card-stats`, `.ts-card-stat`
 
 ### Added
-- `js/ui.js` `_TSPRITE[]`: map tower index → `assets/images/tower_*.png` filename
+- `js/ui.js` `_TSPRITE[]`: map tower index → assets/images/tower_*.png filename
 - `js/ui.js` `_tsFallback()`: fallback จาก PNG → procedural canvas เมื่อโหลดไม่ได้
 - การ์ดป้อมแสดง checkmark ✓ (`.ts-card-check`) ที่มุมบนซ้ายเมื่อ selected
 - stat pills ⚔️ DMG / 🎯 Range / 💰 Cost ใต้ชื่อป้อมทุกใบ
+
+## v3.24.14 — UI: แถบเลือดและโล่เล็กลง
+
+### Changed
+- `js/game.js` HP bar: กว้าง `sz*2+4` → `sz*1.4+2`, สูง `6` → `4`px, ตำแหน่ง y ปรับตาม
+- `js/game.js` Shield bar: สูง `4` → `3`px, ช่องว่างเหนือ HP bar ปรับตาม
+
+## v3.24.13 — Fix: unlock hint ขึ้นหลัง bonus ไปแล้ว (support/thunder)
+
+### Fixed
+- `js/tower.js` trackDefs(4) สาย 1/2: `unlockLv:3` → `unlockLv:2`
+  - mechanic เปิดที่ `dmgLv/rateLv >= 3` แต่ hint เดิมขึ้นที่ cur=3 ("Lv.3→4") ซึ่งหลัง bonus ไปแล้ว
+- `js/tower.js` trackDefs(7) สาย 1: `unlockLv:3` → `unlockLv:2`
+  - mechanic เปิดที่ `rngLv >= 3` แต่ hint เดิมขึ้นที่ cur=3 ซึ่งหลัง +50% dmg ไปแล้ว
+
+## v3.24.12 — Balance: ป้อมกาลเวลา Rework — ราคา 100g, บอส slow 40%
+
+### Changed
+- `js/game.js` CFG.t_cost[9]: `95` → `100`
+- `js/game.js` (×2): pulse non-awaken boss `_timeSlow`: `.15` → `.40` (บอสเหลือ 40% speed แทน 15%)
+- `js/tower.js` TSPECIAL[9]: ระบุ "บอสช้า 40%" และ Awaken "85%"
+- `js/tower.js` TAWAKEN_DESC[9]: ระบุ "บอสช้า 85% แทน 40%"
+
+## v3.24.11 — Balance: ป้อมมนตราโมฆะ Rework — ราคา 80g, proc/bonus ปรับใหม่
+
+### Changed
+- `js/game.js` CFG.t_cost[8]: `90` → `80`
+- `js/game.js` (×2): procChance `0.3/0.5` → `0.2/0.6`
+- `js/game.js` (×2): markBonus `0.25/0.40` → `0.20/0.50`
+- `js/tower.js` TSPECIAL[8]: อัปเดต proc/bonus values
+- `js/tower.js` TAWAKEN_DESC[8]: อัปเดต "proc 20%→60%, +20%→+50%"
+
+## v3.24.10 — Balance: สายฟ้า Rework — ทะลุโล่เสมอ, Lv3 +50% ดาเมจ
+
+### Changed
+- `js/game.js` (×2): Thunder rngLv≥3 → `_rdmg *= 1.5` ก่อนสร้าง projectile
+- `js/tower.js` trackDefs(7): custom สาย 1 Lv3 unlock "เพิ่มดาเมจ +50%"
+- `js/tower.js` TSPECIAL[7]: เพิ่ม "ทะลุโล่เสมอ" และ "📡 Lv3: +50%"
+- `js/tower.js` popup else branch: badge ⚡+50%ดาเมจ เมื่อ type===7 && rngLv≥3
+
+## v3.24.9 — Balance: มินิกัน Rework — DMG 10, Rate 2.5/s, Awaken ×2
+
+### Changed
+- `js/game.js` CFG.t_dmg[5]: `20` → `10`
+- `js/game.js` CFG.t_rng[5]: `2.8` → `3.0`
+- `js/game.js` CFG.t_rate[5]: `1.8` → `2.5`
+- `js/game.js` fire cooldown (×2): Awaken type===5 → อัตรายิง ×2
+- `js/tower.js` TSPECIAL[5]: อัปเดตคำอธิบาย stats
+- `js/tower.js` TAWAKEN_DESC[5]: อัปเดต "อัตรายิง ×2 จากค่าปัจจุบัน"
+- `js/tower.js` popup else branch: แสดง effective rate ×2 เมื่อ awaken + type===5
+
+## v3.24.8 — Balance: ซัพพอร์ต Rework — กันหยุด 20-50%, สาย Lv3 unlock
+
+### Changed
+- `js/tower.js` STAR_RESIST: `[.2,.4,.6,.8]` → `[.2,.3,.4,.5]` (★1-4 = 20/30/40/50%)
+- `js/tower.js` getSupportResist: awaken base `1` → `0.5` (50%)
+- `js/tower.js` getSupportResist: เพิ่ม `dmgLv≥3` bonus +30% resist
+- `js/tower.js` getBuffMult: เพิ่ม `rateLv≥3` bonus +30% buff
+- `js/tower.js` trackDefs(4): ทั้งสองสายเพิ่ม `unlockLv:3` พร้อม unlock text
+- `js/tower.js` TSPECIAL[4], TAWAKEN_DESC[4]: อัปเดตคำอธิบาย
+- `js/tower.js` popup type===4: แสดงโบนัส Lv3 unlock ใน stat display
+
+## v3.24.7 — Balance: สไนเปอร์ Rework — เจาะโล่ย้ายสาย, Crit ×2
+
+### Changed
+- `js/game.js` CFG.t_cost[3]: `65` → `70`
+- `js/game.js` `_rngPierce` (×2): sniper เปลี่ยนจาก `rngLv>=3` → `rateLv>=3`
+- `js/game.js` ยิงรัว check (×2): เพิ่ม `tw.type!==3` — sniper ไม่ได้รับ ยิงรัว
+- `js/tower.js` trackDefs(3) สาย 1: unlock เปลี่ยนจาก "ยิงรัว" → "เจาะโล่"
+- `js/tower.js` SNIPER_CRIT_MULT: `1.75` → `2.0`
+- `js/tower.js` getSniperCrit: `(critLv-1)*.1` → `critLv*.1` (Lv1=10%, Lv5=50%)
+- `js/tower.js` TSPECIAL[3]: อัปเดตคำอธิบาย
+- `js/tower.js` popup sniper: badge เจาะโล่ที่ rateLv≥3 แทน ยิงรัว
+
+## v3.24.6 — Balance: เวทมนตร์ — ระยะสั้นลง, Awaken Triple 40%→50%
+
+### Changed
+- `js/game.js` CFG.t_rng[2]: `2.5` → `2.0`
+- `js/game.js` Magic Awaken triple shot: `40%` → `50%` (ทั้ง 2 render loop)
+- `js/tower.js` TAWAKEN_DESC[2]: อัปเดต 40%→50%
+
+## v3.24.5 — Balance: น้ำแข็ง Rework — Slow แรงขึ้น + Awaken แช่แข็ง
+
+### Changed
+- `js/tower.js` TSLOW[1]: `0.45` → `0.30` (ศัตรูเหลือ 30% ความเร็ว)
+- `js/tower.js` TSPECIAL[1]: อัปเดตคำอธิบาย slow ใหม่
+- `js/tower.js` TAWAKEN_DESC[1]: 35% แช่แข็ง 2วิ แทนแช่แข็ง 3วิเดิม
+- `js/tower.js` trackDefs: เพิ่ม type 1 custom — สาย 1 = ⏱️ ระยะเวลาสโล (rngLv)
+- `js/tower.js` getTowerRange: ice (type 1) ระยะคงที่ 2.0 ไม่ขึ้นตาม rngLv
+- `js/tower.js` popup stats: แสดง ⏱️ ระยะเวลาสโล แทน 📡 ระยะ
+- `js/game.js` CFG.t_rate[1]: `1.5` → `1.2`
+- `js/game.js` projectile: เพิ่ม `_slowDur` = 1.5 + rngLv×0.5 (Lv1=2s, Lv2=2.5s, Lv3=3s)
+- `js/game.js` hit logic (×2): ใช้ `p._slowDur`, Awaken = 35% freeze/65% slow
+
+## v3.24.4 — Balance: ปืนใหญ่ Rework — Splash ย้ายไปอยู่ใน Awaken
+
+### Changed
+- `js/tower.js` TSPLASH[0]: `0.8` → `0` (ไม่มี splash ปกติ)
+- `js/tower.js` TSPECIAL[0]: `'กระจาย: 0.8 ช่อง'` → `'-'`
+- `js/tower.js` TAWAKEN_DESC[0]: ปลด Splash 2.0 ช่อง (เดิม ×1.5 = 1.2)
+- `js/tower.js` TFLAVOR/TTAGS/TSTRENGTH/TWEAKNESS[0]: อัปเดตให้ตรงกับ mechanic ใหม่
+- `js/game.js` CFG.t_cost[0]: `50` → `45`
+- `js/game.js`: Awaken cannon splash เปลี่ยนจาก `TSPLASH×1.5` → fixed `2.0` ช่อง
+
+## v3.24.3 — Balance: ปรับ STAR_DMG_BONUS ★4 ให้ต่างจาก ★3 ชัดขึ้น
+
+### Changed
+- `js/tower.js` STAR_DMG_BONUS: `[0, .5, 1.1, 2.0]` → `[0, .5, 1, 3]`
+  - ★3: ×2.1 → ×2.0 (เกือบเท่าเดิม)
+  - ★4: ×3.0 → ×4.0 (+33% จากเดิม, ต่างจาก ★3 เป็น 2 เท่าพอดี)
+
+## v3.24.2 — Feat: ป้อมธนู → ป้อมมินิกัน
+
+### Changed
+- `js/tower.js` TNAMES[5]: `'ธนู'` → `'มินิกัน'`
+- `js/tower.js` TICONS[5]: `'🏹'` → `'🔫'`
+- `js/tower.js` TFLAVOR[5]: อัปเดตคำอธิบายให้ตรงกับมินิกัน
+- `js/tower.js` TAWAKEN_DESC[5]: อัปเดตเป็น "บาร์เรลหมุนเร็วขึ้น 2 เท่า"
+- `js/tower.js` `_twStatic` type 5: วาดใหม่เป็นหัวลำกล้อง 6 ลำ
+- `js/tower.js` `_twWeapon` type 5: วาดใหม่เป็น Gatling Gun หมุนด้วยอนิเมชั่น
+- `js/enemy.js` MSTRENGTH/MWEAKNESS: อัปเดต "ป้อมธนู" → "ป้อมมินิกัน"
+- `js/game.js` stage unlocks/story: อัปเดต "Archer Tower 🏹" → "Minigun Tower 🔫"
 
 ## v3.24.1 — Fix: เสียงสายฟ้า 3-layer rumble สมจริง
 

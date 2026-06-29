@@ -2324,9 +2324,9 @@ function renderWeatherTab(){
       lightning:'สร้างป้อมสำรองไว้เสมอ อย่าพึ่งพาป้อมเดียว',
       darknight:'เน้น DPS สูงๆ จัดการก่อนมอนถึงปราสาท',
       heatwave:'Ice Tower ไม่ทำงาน — ใช้ Magic หรือ Cannon Splash แทน',
-      rain:'Cannon และ Magic Splash ลดลง 70% — ใช้ Sniper/Archer/Thunder แทน',
+      rain:'Cannon และ Magic Splash ลดลง 70% — ใช้ Sniper/Minigun/Thunder แทน',
       tornado:'กระสุนทุกนัดพลาดได้ 50% ไม่ว่าจะยิงมอนอะไร — เน้นป้อมหลายตัว rate สูง อย่าพึ่งป้อมเดียว',
-      storm:'ศัตรูเร็วขึ้น 30% + ค้างคาว/วิเวิร์นหลบ 25% — Thunder/Archer จัดการ air unit, เน้น DPS รับมือความเร็ว',
+      storm:'ศัตรูเร็วขึ้น 30% + ค้างคาว/วิเวิร์นหลบ 25% — Thunder/Minigun จัดการ air unit, เน้น DPS รับมือความเร็ว',
       sun:'เหมืองทองหยุดทำงาน — อย่าพึ่งรายได้จาก Gold Mine',
     };
     const tip=tipsMap[w.id]||'';

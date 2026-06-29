@@ -24,7 +24,7 @@ const STAGES=[
    grassColors:['#1b5e20','#2e7d32','#1a3a1a','#0d2b0d','#2a5a2a']},
   {id:2,name:'Volcanic Pass',icon:'🌋',
    desc:'วิญญาณไฟระรานในทุ่งลาวา ต้องใช้ป้อมทุกแบบเพื่อเอาชนะ',
-   waves:7,enemyTypes:[0,1,2,3,4],bossChance:.06,unlockedTowers:[0,1,2,3,4],unlocks:'Archer Tower 🏹',enemyMult:1.2,
+   waves:7,enemyTypes:[0,1,2,3,4],bossChance:.06,unlockedTowers:[0,1,2,3,4],unlocks:'Minigun Tower 🔫',enemyMult:1.2,
    maxTowers:99,story:'ไฟนรกปะทุขึ้นจากใต้ดิน กองทัพวิญญาณไฟหลั่งไหลออกมาไม่หยุดหย่อน ผู้พิทักษ์ต้องใช้ทุกสิ่งที่มีเพื่อสกัดกั้น...',
    path:[[0,5],[1,5],[2,5],[2,4],[2,3],[2,2],[3,2],[4,2],[5,2],[6,2],[6,3],[6,4],[6,5],
          [7,5],[8,5],[9,5],[9,4],[9,3],[9,2],[10,2],[11,2],
@@ -36,7 +36,7 @@ const STAGES=[
   {id:3,name:'Desert Crossing',icon:'🏜️',
    desc:'กองทัพบุกข้ามทะเลทรายแห้งแล้ง ระวังฝูงค้างคาวที่ลอยอยู่บนฟ้า',
    waves:7,enemyTypes:[6,0,1,5],bossChance:0,unlockedTowers:[0,1,2,3,4,5],unlocks:'Gold Mine 💰',
-   maxTowers:6,story:'กองทัพมืดข้ามทะเลทรายที่ร้อนระอุ ฝูงค้างคาวบินนำหน้า โกเลมขนาดยักษ์ตามมาข้างหลัง ป้อมธนูจะเป็นกุญแจสำคัญ...',
+   maxTowers:6,story:'กองทัพมืดข้ามทะเลทรายที่ร้อนระอุ ฝูงค้างคาวบินนำหน้า โกเลมขนาดยักษ์ตามมาข้างหลัง ป้อมมินิกันจะเป็นกุญแจสำคัญ...',
    path:[[0,0],[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0],[10,0],[11,0],
          [11,1],[11,2],[11,3],[10,3],[9,3],[8,3],[7,3],[6,3],[5,3],[4,3],[3,3],
          [3,4],[3,5],[3,6],[4,6],[5,6],[6,6],[7,6],[8,6],[9,6],
@@ -254,10 +254,10 @@ const DEFAULT_CFG={
   m_spd:[1.4,1.0,1.15,.85,.5,.55,1.8,1.55,.65,.42,.72,1.15,1.3,0.65,0.44,0.36,0.42,1.65,0.80],
   m_rew:[10,10,15,20,60,30,5,20,30,100,10,18,22,45,85,170,90,18,35],
   // Tower — เพิ่ม DPS นิดหน่อยให้ผู้เล่นรู้สึกว่าป้อมมีพลัง
-  t_dmg:[24,12,44,65,0,20,0,20,42,0],   // [cannon,ice,magic,sniper,support,archer,goldmine,thunder,void,time] — time dmg=0 ใช้ pulse slow แทน
-  t_rng:[2.2,2.0,2.5,4.5,1.5,2.8,0,2.4,3.0,2.0], // time: รัศมีเริ่มต้น 2.0 ช่อง
-  t_rate:[1.2,1.5,.8,.4,0,1.8,0,1.8,0.6,0], // time rate=0 (ใช้ pulse mechanic แทน)
-  t_cost:[50,55,75,65,35,60,50,85,90,95], // time: 95 gold
+  t_dmg:[24,12,44,65,0,10,0,20,42,0],   // [cannon,ice,magic,sniper,support,minigun,goldmine,thunder,void,time] — time dmg=0 ใช้ pulse slow แทน
+  t_rng:[2.2,2.0,2.0,4.5,1.5,3.0,0,2.4,3.0,2.0], // time: รัศมีเริ่มต้น 2.0 ช่อง
+  t_rate:[1.2,1.2,.8,.4,0,2.5,0,1.8,0.6,0], // time rate=0 (ใช้ pulse mechanic แทน)
+  t_cost:[45,55,75,70,35,60,50,85,80,100], // time: 100 gold
   t_goldrate:5,t_goldamt:[2,4,6,8],
   // Game settings
   startGold:175,    // เดิม 200 → ลดเงินเริ่มต้น (v3.18.4)
@@ -1461,7 +1461,7 @@ function update(dt){
           G.enemies.forEach(e=>{
             if(!e.alive) return;
             if(Math.hypot((tw.col+.5)*CS-e.x,(tw.row+.5)*CS-e.y)<=_slowR){
-              if(e.isBoss){e._timeSlowT=.2;e._timeSlow=.15;}
+              if(e.isBoss){e._timeSlowT=.2;e._timeSlow=.40;}
               else{e._timeSlowT=.2;e._timeSlow=.5;}
             }
           });
@@ -1489,9 +1489,9 @@ function update(dt){
     if(best) tw.angle=Math.atan2(best.y/CS-cy,best.x/CS-cx);
     if(best&&tw.cd<=0){
       if(tw.type===1&&G.weather&&G.weather.iceDisabled) return; // 🔥 heatwave: ice tower disabled
-      tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.rateLv||tw.lv)*(G.skillRateMult||1));
-      // ⚡ สายความเร็ว Lv.4+ ปลดล็อก "ยิงรัว" — มีโอกาสคูลดาวน์สั้นลงทันที
-      if((tw.rateLv||tw.lv)>=4&&Math.random()<0.2){
+      tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.rateLv||tw.lv)*(G.skillRateMult||1)*(tw.awakened&&tw.type===5?2:1));
+      // ⚡ สายความเร็ว Lv.4+ ปลดล็อก "ยิงรัว" — มีโอกาสคูลดาวน์สั้นลงทันที (ไม่ใช้กับ Sniper)
+      if(tw.type!==3&&(tw.rateLv||tw.lv)>=4&&Math.random()<0.2){
         tw.cd*=0.45;
         G.particles.push({x:tw.col*CS+CS/2,y:tw.row*CS+CS/2-22,txt:'⚡รัว!',col:'#ffe234',life:.45,vy:-1.3,vx:0,decay:2.6,scale:.75});
       }
@@ -1504,25 +1504,27 @@ function update(dt){
         const _crit=getSniperCrit(tw.rngLv);
         if(Math.random()<_crit.chance){_rdmg*=_crit.mult;_rIsCrit=true;}
       }
+      // ⚡ Thunder สาย 1 Lv3: เพิ่มดาเมจ +50%
+      if(tw.type===7&&(tw.rngLv||1)>=3) _rdmg*=1.5;
       let _rSlow=(TSLOW[tw.type]||0);
       const _wSplashMult=((tw.type===0||tw.type===2)&&G.weather&&G.weather.splashMult)?G.weather.splashMult:1;
-      // ⚡ Awaken เฉพาะป้อม: Cannon=splash ใหญ่ขึ้น, Thunder=chain เพิ่ม
-      const _awSplashMult=(_aw&&tw.type===0)?1.5:1;
+      // ⚡ Awaken เฉพาะป้อม: Cannon=ปลด Splash 2.0, Thunder=chain เพิ่ม
       const _awChainBonus=(_aw&&tw.type===7)?2:0;
       const _rp=G.projs[G.projs.push({
         x:fx,y:fy,tx:best.x,ty:best.y,target:best,ox:fx,oy:fy,
         spd:420+(tw.type===3?120:0)+(tw.type===7?80:0),
         type:tw.type,
         dmg:_rdmg,
-        splash:TSPLASH[tw.type]*_wSplashMult*_awSplashMult,slow:_rSlow,alive:true,
+        splash:((_aw&&tw.type===0)?2.0:TSPLASH[tw.type])*_wSplashMult,slow:_rSlow,alive:true,
         chain:(TCHAIN[tw.type]||0)+_awChainBonus,
-        _rngPierce:tw.type===3?(tw.rngLv||tw.lv)>=3:(tw.rngLv||tw.lv)>=4,
+        _rngPierce:tw.type===3?(tw.rateLv||tw.lv)>=3:(tw.rngLv||tw.lv)>=4,
+        _slowDur:tw.type===1?(1.5+(tw.rngLv||1)*.5):2,
         _maxR:range*CS,
         _supBoost:_aw?getSupportAwakenBoost(tw.col,tw.row):1
       })-1];
       if(_aw) _rp._awakened=true;
-      // ✨ Magic Awaken: โอกาสยิงเพิ่ม 20% (ตื่นแล้ว 40%) สูงสุด 3 นัด
-      if(tw.type===2&&Math.random()<(_aw?.4:.2)){
+      // ✨ Magic Awaken: โอกาสยิงเพิ่ม 20% (ตื่นแล้ว 50%) สูงสุด 3 นัด
+      if(tw.type===2&&Math.random()<(_aw?.5:.2)){
         const _extra=_aw?2:1;
         for(let _m=0;_m<_extra;_m++) G.projs.push(Object.assign({},_rp));
       }
@@ -1630,8 +1632,8 @@ function update(dt){
         }
         // 🌑 Void Mark (story mode)
         if(p.type===8&&p.target&&p.target.alive){
-          const procChance=p._awakened?0.5:0.3;
-          const markBonus=p._awakened?0.40:0.25;
+          const procChance=p._awakened?0.6:0.2;
+          const markBonus=p._awakened?0.50:0.20;
           if(Math.random()<procChance){
             const e=p.target;
             e._voidMarkT=4;e._voidMarkBonus=Math.max(e._voidMarkBonus||0,markBonus);
@@ -1640,10 +1642,13 @@ function update(dt){
         }
       }
       if(p.slow>0&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)&&!(G.weather&&G.weather.slowImmune)){
-        // ❄️ Ice Awaken: ติดแข็ง (หยุดสนิท) 3 วินาที — Support ตื่นใกล้เคียงเพิ่มเป็น 6 วินาที
+        // ❄️ Ice: ชะลอ 70% — Awaken: 35% แช่แข็ง 2วิ, ไม่ติด→ slow ปกติ
         if(p.type===1&&p.target.ti===16){/* 🧊 ราชาน้ำแข็ง immune ice slow */}
-        else if(p._awakened&&p.type===1){ p.target.slow=0; p.target.slowT=3*(p._supBoost||1); }
-        else { p.target.slow=p.slow; p.target.slowT=2; }
+        else if(p._awakened&&p.type===1){
+          if(Math.random()<.35){p.target.slow=0;p.target.slowT=2;}
+          else{p.target.slow=p.slow;p.target.slowT=p._slowDur||2;}
+        }
+        else { p.target.slow=p.slow; p.target.slowT=p._slowDur||2; }
       }
       // 🎯 Sniper Awaken: ยิงทะลุเป็นเส้นตรง — สร้างความเสียหายให้ศัตรูที่อยู่หลังเป้าหมายบนเส้นยิงด้วย
       if(p.type===3&&p._awakened){
@@ -2663,8 +2668,8 @@ function render(){
       // 🐲 Shadow Veil — ม่วงเข้มขณะ invisible
       if(e.ti===18&&e._veilInvis){ctx.globalAlpha=.22+.08*Math.sin(Date.now()*.018);ctx.strokeStyle='#7c4dff';ctx.lineWidth=3;ctx.beginPath();ctx.arc(e.x,e.y,sz+6,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;}
     }
-    // HP bar (taller, more visible)
-    const bw=sz*2+4, bh=6, bx=e.x-sz-2, by=e.y-sz-13;
+    // HP bar
+    const bw=sz*1.4+2, bh=4, bx=e.x-sz*.7-1, by=e.y-sz-10;
     ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(bx,by,bw,bh);
     const hpPct=Math.max(0,e.hp/e.mhp);
     ctx.fillStyle=hpPct>.6?'#4caf50':hpPct>.3?'#ff9800':'#f44336';
@@ -2672,7 +2677,7 @@ function render(){
     ctx.strokeStyle='rgba(0,0,0,.4)';ctx.lineWidth=.5;ctx.strokeRect(bx,by,bw,bh);
     // shield bar (above HP bar)
     if(e.maxShieldHp>0){
-      const sbw=bw, sbh=4, sbx=bx, sby=by-6;
+      const sbw=bw, sbh=3, sbx=bx, sby=by-5;
       ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(sbx,sby,sbw,sbh);
       const shPct=Math.max(0,e.shieldHp/e.maxShieldHp);
       ctx.fillStyle=shPct>.5?'#90caf9':'#42a5f5';
@@ -4038,7 +4043,7 @@ function updateEg(dt){
           G.enemies.forEach(e=>{
             if(!e.alive) return;
             if(Math.hypot((tw.col+.5)*CS-e.x,(tw.row+.5)*CS-e.y)<=_slowR){
-              if(e.isBoss){e._timeSlowT=.2;e._timeSlow=.15;}
+              if(e.isBoss){e._timeSlowT=.2;e._timeSlow=.40;}
               else{e._timeSlowT=.2;e._timeSlow=.5;}
             }
           });
@@ -4066,9 +4071,9 @@ function updateEg(dt){
     if(best) tw.angle=Math.atan2(best.y/CS-cy,best.x/CS-cx);
     if(best&&tw.cd<=0){
       if(tw.type===1&&G.weather&&G.weather.iceDisabled) return; // 🔥 heatwave: ice tower disabled
-      tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.rateLv||tw.lv)*(G.skillRateMult||1));
-      // ⚡ สายความเร็ว Lv.4+ ปลดล็อก "ยิงรัว" — มีโอกาสคูลดาวน์สั้นลงทันที
-      if((tw.rateLv||tw.lv)>=4&&Math.random()<0.2){
+      tw.cd=1/Math.max(.01,getTowerRate(tw.type,tw.rateLv||tw.lv)*(G.skillRateMult||1)*(tw.awakened&&tw.type===5?2:1));
+      // ⚡ สายความเร็ว Lv.4+ ปลดล็อก "ยิงรัว" — มีโอกาสคูลดาวน์สั้นลงทันที (ไม่ใช้กับ Sniper)
+      if(tw.type!==3&&(tw.rateLv||tw.lv)>=4&&Math.random()<0.2){
         tw.cd*=0.45;
         G.particles.push({x:tw.col*CS+CS/2,y:tw.row*CS+CS/2-22,txt:'⚡รัว!',col:'#ffe234',life:.45,vy:-1.3,vx:0,decay:2.6,scale:.75});
       }
@@ -4081,24 +4086,26 @@ function updateEg(dt){
         const _crit2=getSniperCrit(tw.rngLv);
         if(Math.random()<_crit2.chance){_rdmg2*=_crit2.mult;_rIsCrit2=true;}
       }
+      // ⚡ Thunder สาย 1 Lv3: เพิ่มดาเมจ +50%
+      if(tw.type===7&&(tw.rngLv||1)>=3) _rdmg2*=1.5;
       let _rSlow2=(TSLOW[tw.type]||0);
       const _wSplashMult2=((tw.type===0||tw.type===2)&&G.weather&&G.weather.splashMult)?G.weather.splashMult:1;
-      // ⚡ Awaken เฉพาะป้อม: Cannon=splash ใหญ่ขึ้น, Thunder=chain เพิ่ม
-      const _awSplashMult2=(_aw2&&tw.type===0)?1.5:1;
+      // ⚡ Awaken เฉพาะป้อม: Cannon=ปลด Splash 2.0, Thunder=chain เพิ่ม
       const _awChainBonus2=(_aw2&&tw.type===7)?2:0;
       const _rp2=G.projs[G.projs.push({
         x:fx,y:fy,tx:best.x,ty:best.y,target:best,ox:fx,oy:fy,
         spd:420+(tw.type===3?120:0)+(tw.type===7?80:0),type:tw.type,
         dmg:_rdmg2,
-        splash:TSPLASH[tw.type]*_wSplashMult2*_awSplashMult2,slow:_rSlow2,alive:true,
+        splash:((_aw2&&tw.type===0)?2.0:TSPLASH[tw.type])*_wSplashMult2,slow:_rSlow2,alive:true,
         chain:(TCHAIN[tw.type]||0)+_awChainBonus2,
-        _rngPierce:tw.type===3?(tw.rngLv||tw.lv)>=3:(tw.rngLv||tw.lv)>=4,
+        _rngPierce:tw.type===3?(tw.rateLv||tw.lv)>=3:(tw.rngLv||tw.lv)>=4,
+        _slowDur:tw.type===1?(1.5+(tw.rngLv||1)*.5):2,
         _maxR:range*CS,
         _supBoost:_aw2?getSupportAwakenBoost(tw.col,tw.row):1
       })-1];
       if(_aw2) _rp2._awakened=true;
-      // ✨ Magic Awaken: โอกาสยิงเพิ่ม 20% (ตื่นแล้ว 40%) สูงสุด 3 นัด
-      if(tw.type===2&&Math.random()<(_aw2?.4:.2)){
+      // ✨ Magic Awaken: โอกาสยิงเพิ่ม 20% (ตื่นแล้ว 50%) สูงสุด 3 นัด
+      if(tw.type===2&&Math.random()<(_aw2?.5:.2)){
         const _extra2=_aw2?2:1;
         for(let _m=0;_m<_extra2;_m++) G.projs.push(Object.assign({},_rp2));
       }
@@ -4147,10 +4154,13 @@ function updateEg(dt){
         }
       }
       if(p.slow>0&&p.target&&p.target.alive&&!(p.target.shieldHp>0&&!TPIERCE[p.type]&&!p._rngPierce)&&!(G.weather&&G.weather.slowImmune)){
-        // ❄️ Ice Awaken: ติดแข็ง (หยุดสนิท) 3 วินาที — Support ตื่นใกล้เคียงเพิ่มเป็น 6 วินาที
+        // ❄️ Ice: ชะลอ 70% — Awaken: 35% แช่แข็ง 2วิ, ไม่ติด→ slow ปกติ
         if(p.type===1&&p.target.ti===16){/* 🧊 ราชาน้ำแข็ง immune ice slow */}
-        else if(p._awakened&&p.type===1){ p.target.slow=0; p.target.slowT=3*(p._supBoost||1); }
-        else { p.target.slow=p.slow; p.target.slowT=2; }
+        else if(p._awakened&&p.type===1){
+          if(Math.random()<.35){p.target.slow=0;p.target.slowT=2;}
+          else{p.target.slow=p.slow;p.target.slowT=p._slowDur||2;}
+        }
+        else { p.target.slow=p.slow; p.target.slowT=p._slowDur||2; }
       }
       // 🎯 Sniper Awaken: ยิงทะลุเป็นเส้นตรง — สร้างความเสียหายให้ศัตรูที่อยู่หลังเป้าหมายบนเส้นยิงด้วย
       if(p.type===3&&p._awakened){
