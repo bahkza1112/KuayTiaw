@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.3 — Balance: ปรับ STAR_DMG_BONUS ★4 ให้ต่างจาก ★3 ชัดขึ้น
+
+### Changed
+- `js/tower.js` STAR_DMG_BONUS: `[0, .5, 1.1, 2.0]` → `[0, .5, 1, 3]`
+  - ★3: ×2.1 → ×2.0 (เกือบเท่าเดิม)
+  - ★4: ×3.0 → ×4.0 (+33% จากเดิม, ต่างจาก ★3 เป็น 2 เท่าพอดี)
+
 ## v3.24.2 — Feat: ป้อมธนู → ป้อมมินิกัน
 
 ### Changed
