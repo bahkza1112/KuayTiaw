@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.21 — Art: โปสเตอร์พื้นหลังหน้าเมนู (ช่วง 2/2)
+
+### Added
+- `assets/images/menu_poster.png` — ปราสาท+ป้อมบนเขา ท้องฟ้าทอง-ม่วงพระอาทิตย์ตก generated ผ่าน pollinations.ai (model=flux)
+
+### Changed
+- `css/main.css` `#mm`: เพิ่ม `background-image:url(menu_poster.png)` ซ้อนกับ gradient เดิม (fallback)
+- `css/main.css` `#mm::before`: เปลี่ยนจาก radial เดี่ยวเป็น gradient ซ้อน 2 ชั้นให้ตัวหนังสือ/ปุ่มอ่านง่ายบนพื้นหลังภาพ
+
 ## v3.24.20 — UI: ปุ่มหน้าเมนูธีมตรงกับการ์ดป้อม/สกิล (ช่วง 1/2)
 
 ### Changed
