@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.16 — Fix: การ์ดมินิกันแสดงภาพหน้าไม้ผิด
+
+### Fixed
+- `js/ui.js` `_TSPRITE[5]`: `'tower_archer'` → `''` — slot 5 คือมินิกัน (เปลี่ยนชื่อจาก Archer ไปแล้วตั้งแต่ก่อนหน้า) แต่ asset sprite ที่เพิ่มเข้ามาใน v3.24.15 ยังแมปไปที่ภาพหน้าไม้เก่า ตอนนี้ fallback ไปใช้ `drawTowerIcon()` (canvas) ซึ่งวาด Gatling gun ถูกต้อง จนกว่าจะมีไฟล์ `tower_minigun.png` จริง
+
 ## v3.24.15 — UI: หน้าเลือกป้อม Dark Fantasy Sprite Cards
 
 ### Changed

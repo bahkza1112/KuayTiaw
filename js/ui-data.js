@@ -1,6 +1,9 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.24.15';
+const GAME_VERSION='3.24.16';
 const PATCH_NOTES=[
+  {ver:'3.24.16',date:'2026-06-29',title:'🐛 Fix: การ์ดมินิกันใช้ภาพหน้าไม้ผิด',notes:[
+    'มินิกัน (slot 5) แมปไปที่ tower_archer.png ที่ค้างจากชื่อเดิม — เอาออก ให้ fallback เป็น canvas อัตโนมัติ',
+  ]},
   {ver:'3.24.15',date:'2026-06-29',title:'🎨 หน้าเลือกป้อม — Sprite Card Dark Fantasy',notes:[
     'การ์ดป้อมแสดงภาพ sprite จริงจาก assets/images/ (mix-blend-mode: multiply)',
     'การ์ดเป็นทรงสี่เหลี่ยมจัตุรัส ภาพป้อมใหญ่ขึ้นชัดขึ้น',
