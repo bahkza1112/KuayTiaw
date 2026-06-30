@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.24.18';
+const GAME_VERSION='3.24.19';
 const PATCH_NOTES=[
+  {ver:'3.24.19',date:'2026-06-29',title:'🎨 เพิ่มภาพ Sprite จริงให้ป้อมกาลเวลา + ลบไฟล์ขยะ',notes:[
+    'เพิ่ม assets/images/tower_time.png (นาฬิกาเวทมนตร์สีม่วงบนป้อมหิน) แทน fallback canvas',
+    'ลบไฟล์ tower_archer.png ที่ค้างไม่ได้ใช้แล้วออกจาก assets',
+  ]},
   {ver:'3.24.18',date:'2026-06-29',title:'🎨 ไอคอนสกิลทั้ง 5 ใบเป็นภาพ Sprite จริง',notes:[
     'โกลด์รัช/แช่แข็งสนาม/อุกกาบาต/พลังโจมตี/กำแพงวิญญาณ ใช้ภาพ generated แทน canvas วาดมือ',
     'สไตล์ตรงกับธีมป้อม/มอนในเกม — วัตถุเรืองแสงพื้นขาว',

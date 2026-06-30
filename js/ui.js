@@ -2038,7 +2038,7 @@ function _skillIconURL(id){
     return (_skIconCache[id]=c.toDataURL());
   }catch(e){return '';}
 }
-const _TSPRITE=['tower_cannon','tower_ice','tower_magic','tower_sniper','tower_support','tower_minigun.webp','tower_gold','tower_thunder','tower_void',''];
+const _TSPRITE=['tower_cannon','tower_ice','tower_magic','tower_sniper','tower_support','tower_minigun.webp','tower_gold','tower_thunder','tower_void','tower_time.png'];
 function _tsFallback(img,ti){img.onerror=null;img.src=_towerIconURL(ti);img.style.mixBlendMode='normal';}
 const _twIconCache={};
 function _towerIconURL(type){

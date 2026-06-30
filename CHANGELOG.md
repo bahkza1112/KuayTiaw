@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.19 — Art: เพิ่ม Sprite ป้อมกาลเวลา + ลบไฟล์ขยะ
+
+### Added
+- `assets/images/tower_time.png` — นาฬิกาเวทมนตร์สีม่วงบนป้อมหิน generated ผ่าน pollinations.ai (model=flux)
+
+### Changed
+- `js/ui.js` `_TSPRITE[9]`: `''` → `'tower_time.png'` — ป้อมกาลเวลามี sprite จริงแล้ว ครบทั้ง 10 ป้อม
+
+### Removed
+- `assets/images/tower_archer.png` — ไฟล์ขยะค้างจาก bug v3.24.16 ไม่มีใครเรียกใช้แล้ว
+
 ## v3.24.18 — Art: ไอคอนสกิลทั้ง 5 ใบเป็นภาพ Sprite จริง
 
 ### Added
