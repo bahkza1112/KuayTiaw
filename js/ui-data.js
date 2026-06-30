@@ -1,6 +1,10 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.24.17';
+const GAME_VERSION='3.24.18';
 const PATCH_NOTES=[
+  {ver:'3.24.18',date:'2026-06-29',title:'🎨 ไอคอนสกิลทั้ง 5 ใบเป็นภาพ Sprite จริง',notes:[
+    'โกลด์รัช/แช่แข็งสนาม/อุกกาบาต/พลังโจมตี/กำแพงวิญญาณ ใช้ภาพ generated แทน canvas วาดมือ',
+    'สไตล์ตรงกับธีมป้อม/มอนในเกม — วัตถุเรืองแสงพื้นขาว',
+  ]},
   {ver:'3.24.17',date:'2026-06-29',title:'🎨 เพิ่มภาพ Sprite จริงให้ป้อมมินิกัน',notes:[
     'เพิ่ม assets/images/tower_minigun.webp (Gatling gun บนป้อมหิน) แทน fallback canvas',
   ]},

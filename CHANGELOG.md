@@ -2,6 +2,18 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.18 — Art: ไอคอนสกิลทั้ง 5 ใบเป็นภาพ Sprite จริง
+
+### Added
+- `assets/images/skill_goldrush.png` — หีบทอง generated ผ่าน pollinations.ai (model=flux)
+- `assets/images/skill_freeze.png` — ผลึกน้ำแข็ง/เกล็ดหิมะเรืองแสง
+- `assets/images/skill_meteor.png` — ลูกอุกกาบาตไฟลุก
+- `assets/images/skill_attack.png` — สายฟ้าทองเรืองแสง
+- `assets/images/skill_wall.png` — โล่เวทย์สลักรูน เรืองแสงเขียว
+
+### Changed
+- `js/ui.js` `_skillIconURL(id)`: เพิ่ม `_SKILL_SPRITE` map — คืน path ภาพจริงแทน canvas data URL สำหรับ 5 สกิลนี้ (goldrush/freeze/meteor/overdrive/barrier)
+
 ## v3.24.17 — Art: เพิ่มภาพ Sprite จริงให้ป้อมมินิกัน
 
 ### Added
