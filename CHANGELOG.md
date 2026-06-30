@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.20 — UI: ปุ่มหน้าเมนูธีมตรงกับการ์ดป้อม/สกิล (ช่วง 1/2)
+
+### Changed
+- `css/main.css` `.bbattle`: border เดี่ยว → double-border ทอง (#ffd24d outer / #6d2900 outline inner), border-radius 50px→14px, inset highlight
+- `css/main.css` `.beg`: เพิ่ม outline แดงเข้มซ้อนใน, inset highlight ให้เข้าธีมเดียวกัน
+- ช่วง 2/2 (ภาพโปสเตอร์พื้นหลัง generated) ยังไม่ได้ทำ — รอเซสชันหน้า (ใช้ image generation)
+
 ## v3.24.19 — Art: เพิ่ม Sprite ป้อมกาลเวลา + ลบไฟล์ขยะ
 
 ### Added
