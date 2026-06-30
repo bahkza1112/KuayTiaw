@@ -1,6 +1,9 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.24.21';
+const GAME_VERSION='3.24.22';
 const PATCH_NOTES=[
+  {ver:'3.24.22',date:'2026-06-29',title:'🐛 Fix: โปสเตอร์พื้นหลังหน้าเมนูไม่ขึ้น',notes:[
+    'แก้ลำดับ background layer — gradient ทึบแสงเคยบังภาพโปสเตอร์ไว้ทั้งหมด',
+  ]},
   {ver:'3.24.21',date:'2026-06-29',title:'🎨 โปสเตอร์พื้นหลังหน้าเมนูแบบเล่นใหญ่',notes:[
     'เพิ่มภาพปราสาท+ป้อมบนเขา ท้องฟ้าทอง-ม่วงพระอาทิตย์ตก แบบ epic fantasy poster',
     'overlay เงาให้ตัวหนังสือ/ปุ่มอ่านง่ายขึ้นบนพื้นหลังใหม่',

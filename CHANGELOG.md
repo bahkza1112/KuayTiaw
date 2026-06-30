@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.22 — Fix: โปสเตอร์พื้นหลังหน้าเมนูไม่ขึ้น
+
+### Fixed
+- `css/main.css` `#mm`: สลับลำดับ background layer — `url(...), gradient` แทน `gradient, url(...)` เพราะเลเยอร์แรกวาดทับบนสุดเสมอ gradient ทึบแสงเดิมบังภาพไว้ทั้งหมด
+
 ## v3.24.21 — Art: โปสเตอร์พื้นหลังหน้าเมนู (ช่วง 2/2)
 
 ### Added
