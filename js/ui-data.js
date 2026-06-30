@@ -1,6 +1,9 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.24.16';
+const GAME_VERSION='3.24.17';
 const PATCH_NOTES=[
+  {ver:'3.24.17',date:'2026-06-29',title:'🎨 เพิ่มภาพ Sprite จริงให้ป้อมมินิกัน',notes:[
+    'เพิ่ม assets/images/tower_minigun.webp (Gatling gun บนป้อมหิน) แทน fallback canvas',
+  ]},
   {ver:'3.24.16',date:'2026-06-29',title:'🐛 Fix: การ์ดมินิกันใช้ภาพหน้าไม้ผิด',notes:[
     'มินิกัน (slot 5) แมปไปที่ tower_archer.png ที่ค้างจากชื่อเดิม — เอาออก ให้ fallback เป็น canvas อัตโนมัติ',
   ]},

@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.17 — Art: เพิ่มภาพ Sprite จริงให้ป้อมมินิกัน
+
+### Added
+- `assets/images/tower_minigun.webp` — generated ผ่าน FLUX.1-schnell (HuggingFace Space), Gatling gun บนป้อมหิน ตรงสไตล์ป้อมอื่น
+
+### Changed
+- `js/ui.js` `_TSPRITE[5]`: `''` → `'tower_minigun.webp'`
+- `js/ui.js` card art template: รองรับไฟล์ที่มีนามสกุลอยู่แล้ว (เช่น `.webp`) ไม่บังคับเติม `.png` ต่อท้าย
+
 ## v3.24.16 — Fix: การ์ดมินิกันแสดงภาพหน้าไม้ผิด
 
 ### Fixed
