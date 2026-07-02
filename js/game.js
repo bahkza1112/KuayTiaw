@@ -904,6 +904,23 @@ function _playSound(type){
 }
 /* tower type → sound name */
 const _TSND=['cannon','ice','magic','sniper','gold','archer','support','thunder','void'];
+/* projectile p.type → sprite; spin=true means continuous rotate, else face travel dir */
+const _PSPRITE=['proj_cannon','proj_ice','proj_magic','proj_sniper','proj_gold','proj_arrow','proj_heal','proj_thunder','proj_void'];
+const _PSPIN={0:1,1:1,2:1,4:1,6:1}; // round/spinning ones ignore direction
+let _PROJ_IMG_ON=true; // dev toggle
+const _pimgCache={};
+function _projImg(type){
+  if(!_PROJ_IMG_ON) return null;
+  const n=_PSPRITE[type]; if(!n) return null;
+  let o=_pimgCache[type];
+  if(o===undefined){
+    o=new Image(); o._ok=false;
+    o.onload=()=>{o._ok=true;}; o.onerror=()=>{o._ok=false;};
+    o.src='assets/images/'+n+'.png?v='+(typeof GAME_VERSION!=='undefined'?GAME_VERSION:'1');
+    _pimgCache[type]=o;
+  }
+  return (o&&o._ok)?o:null;
+}
 // ambient particle cooldown per tower type (seconds, 0 = no ambient)
 const _TAMB=[1.4,1.1,.75,0,0,0,0,.55,0,0,0];
 let _sfxLastDie=0; /* throttle death sounds */
@@ -2720,6 +2737,16 @@ function render(){
     ctx.beginPath();ctx.arc(p.x,p.y,8,0,Math.PI*2);ctx.fill();
     ctx.restore();
     const _pang=Math.atan2(p.ty-p.y,p.tx-p.x)||0;
+    // raster projectile sprite (fallback to procedural below if not loaded)
+    const _pimg=_projImg(p.type);
+    if(_pimg){
+      const d=16;
+      ctx.save();ctx.translate(p.x,p.y);
+      ctx.rotate(_PSPIN[p.type]?Date.now()*.01:_pang);
+      ctx.drawImage(_pimg,-d/2,-d/2,d,d);
+      ctx.restore();
+      return;
+    }
     if(p.type===3){
       // Sniper: elongated laser dot with bright tracer line
       ctx.save();

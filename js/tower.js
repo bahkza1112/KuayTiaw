@@ -149,6 +149,76 @@ function _towerFieldImg(type){
   }
   return (o&&o._ok)?o:null;
 }
+// themed muzzle flash per tower type — drawn already translated to muzzle point
+function _twMuzzle(ctx,type,r,st,fa){
+  const k=Math.min(1,st*6);         // intensity 0..1
+  const s=r*Math.min(1,st*8);       // scale that pops then shrinks
+  ctx.globalAlpha=k;
+  const acc=TACCENT[type]||'#ffd54f';
+  switch(type){
+    case 0:{ // cannon — smoke puff + orange fireball
+      ctx.globalAlpha=k*.5;ctx.fillStyle='#5d4037';
+      for(let i=0;i<3;i++){const a=fa+Math.PI+(i-1)*.5;ctx.beginPath();ctx.arc(Math.cos(a)*s*.4,Math.sin(a)*s*.4,s*.35,0,Math.PI*2);ctx.fill();}
+      ctx.globalAlpha=k;
+      const g=ctx.createRadialGradient(0,0,0,0,0,s*.6);
+      g.addColorStop(0,'#fff');g.addColorStop(.4,'#ffb300');g.addColorStop(1,'rgba(255,87,34,0)');
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,s*.6,0,Math.PI*2);ctx.fill();
+      break;}
+    case 1:{ // ice — frost star shards
+      ctx.strokeStyle='#b3e5fc';ctx.lineWidth=r*.05;
+      ctx.save();ctx.rotate(fa);
+      for(let i=0;i<6;i++){ctx.save();ctx.rotate(i*Math.PI/3);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(s*.65,0);ctx.stroke();ctx.restore();}
+      ctx.restore();
+      ctx.fillStyle='#e1f5fe';ctx.beginPath();ctx.arc(0,0,s*.2,0,Math.PI*2);ctx.fill();
+      break;}
+    case 2:{ // magic — arcane sparkle diamond
+      ctx.save();ctx.rotate(Date.now()*.02);
+      ctx.fillStyle=acc;
+      for(let i=0;i<4;i++){ctx.save();ctx.rotate(i*Math.PI/2);ctx.beginPath();ctx.moveTo(0,-s*.6);ctx.lineTo(s*.14,0);ctx.lineTo(0,s*.6);ctx.lineTo(-s*.14,0);ctx.closePath();ctx.fill();ctx.restore();}
+      ctx.restore();
+      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(0,0,s*.18,0,Math.PI*2);ctx.fill();
+      break;}
+    case 3:{ // sniper — sharp thin crack line
+      ctx.save();ctx.rotate(fa);
+      ctx.strokeStyle='#fff';ctx.lineWidth=r*.06;ctx.globalAlpha=k;
+      ctx.beginPath();ctx.moveTo(-s*.3,0);ctx.lineTo(s*.9,0);ctx.stroke();
+      ctx.strokeStyle=acc;ctx.lineWidth=r*.03;
+      ctx.beginPath();ctx.moveTo(0,-s*.25);ctx.lineTo(0,s*.25);ctx.stroke();
+      ctx.restore();
+      break;}
+    case 5:{ // minigun — quick yellow spark spray
+      ctx.fillStyle='#fff59d';
+      for(let i=0;i<5;i++){const a=fa+(Math.random()-.5)*.9,d=s*(.3+Math.random()*.6);ctx.beginPath();ctx.arc(Math.cos(a)*d,Math.sin(a)*d,r*.045,0,Math.PI*2);ctx.fill();}
+      ctx.fillStyle='#ffee58';ctx.beginPath();ctx.arc(0,0,s*.22,0,Math.PI*2);ctx.fill();
+      break;}
+    case 7:{ // thunder — jagged electric arc
+      ctx.save();ctx.rotate(fa);
+      ctx.strokeStyle='#fff';ctx.lineWidth=r*.045;ctx.globalAlpha=k;
+      ctx.beginPath();ctx.moveTo(-s*.2,0);
+      for(let i=1;i<=4;i++){ctx.lineTo(-s*.2+s*1.0*i/4,(i%2?-1:1)*s*.28*Math.random());}
+      ctx.stroke();
+      ctx.strokeStyle=acc;ctx.lineWidth=r*.02;ctx.stroke();
+      ctx.restore();
+      break;}
+    case 8:{ // void — dark implosion ring (contracts as it fades)
+      ctx.strokeStyle='#e040fb';ctx.lineWidth=r*.06;ctx.globalAlpha=k*.9;
+      ctx.beginPath();ctx.arc(0,0,s*.7*(0.4+st*0.6),0,Math.PI*2);ctx.stroke();
+      const g=ctx.createRadialGradient(0,0,0,0,0,s*.4);
+      g.addColorStop(0,'#4a148c');g.addColorStop(1,'rgba(74,20,140,0)');
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,s*.4,0,Math.PI*2);ctx.fill();
+      break;}
+    case 9:{ // time — cyan tick pulse
+      ctx.strokeStyle='#84ffff';ctx.lineWidth=r*.05;ctx.globalAlpha=k*.85;
+      ctx.beginPath();ctx.arc(0,0,s*.6,0,Math.PI*2);ctx.stroke();
+      break;}
+    default:{
+      const g=ctx.createRadialGradient(0,0,0,0,0,s*.55);
+      g.addColorStop(0,'#fff');g.addColorStop(.4,acc);g.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,s*.55,0,Math.PI*2);ctx.fill();
+    }
+  }
+  ctx.globalAlpha=1;
+}
 function drawTowerIcon(ctx,type,sz,angle,lv,shootT){
   const r=sz/2;
   const _img=_towerFieldImg(type);
@@ -165,17 +235,12 @@ function drawTowerIcon(ctx,type,sz,angle,lv,shootT){
     ctx.shadowColor='rgba(0,0,0,.5)';ctx.shadowBlur=r*.14;ctx.shadowOffsetY=r*.08;
     ctx.drawImage(_img,-d/2,-d/2-r*.12,d,d);
     ctx.restore();
-    // muzzle flash toward target when just fired
-    if(st>0.04&&type!==4&&type!==6){ // support/gold don't fire
+    // themed muzzle flash toward target when just fired (support/gold don't fire)
+    if(st>0.04&&type!==4&&type!==6){
       const fa=angle||0;
-      const fl=r*.55*Math.min(1,st*8);
       ctx.save();
-      ctx.globalAlpha=Math.min(1,st*6);
       ctx.translate(Math.cos(fa)*r*.7,Math.sin(fa)*r*.7-r*.15);
-      const g=ctx.createRadialGradient(0,0,0,0,0,fl);
-      g.addColorStop(0,'#fff');g.addColorStop(.4,TACCENT[type]||'#ffd54f');g.addColorStop(1,'rgba(0,0,0,0)');
-      ctx.fillStyle=g;
-      ctx.beginPath();ctx.arc(0,0,fl,0,Math.PI*2);ctx.fill();
+      _twMuzzle(ctx,type,r,st,fa);
       ctx.restore();
     }
     ctx.restore();

@@ -2,6 +2,18 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.38 — กระสุน Sprite จริง + muzzle flash เข้าธีมป้อม
+
+### Added
+- `assets/images/proj_*.png` (9 ไฟล์): cannonball, ice shard, magic orb, sniper bullet, gold coin, arrow, heal orb, lightning bolt, void crescent — เจนผ่าน pollinations (flux) die-cut + key พื้นหลัง + trim
+- `js/game.js`: `_PSPRITE[]` + `_PSPIN{}` + `_projImg()` preloader
+- `js/tower.js` `_twMuzzle(ctx,type,r,st,fa)`: แฟลชปากกระบอกเฉพาะแต่ละป้อม — cannon(ควัน+ไฟ), ice(เกล็ดหิมะ), magic(เพชรหมุน), sniper(เส้นคม), minigun(สปาร์ก), thunder(อาร์คไฟฟ้า), void(วงยุบ), time(pulse cyan)
+- `gen_projectiles.py`: สคริปต์ generate กระสุน
+
+### Changed
+- `js/game.js` projectile draw loop: เพิ่ม raster path — ถ้ารูปโหลดเสร็จวาด PNG กระสุน (หมุนต่อเนื่องสำหรับชนิดกลม / หันตามทิศสำหรับลูกศร-สายฟ้า-void) แล้ว return; ถ้าไม่ได้ fallback procedural เดิม
+- `js/tower.js` `drawTowerIcon()` raster path: เปลี่ยน muzzle flash จาก radial gradient generic → `_twMuzzle()` เข้าธีม
+
 ## v3.24.37 — ป้อมบนสนามเป็น Sprite จริง + muzzle flash
 
 ### Added
