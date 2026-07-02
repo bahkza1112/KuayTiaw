@@ -1288,7 +1288,8 @@ function renderStageSelect(){
         }
       }
     }
-    html+=`<div class="stage-card${unlocked?'':' locked'}${tierClass}" onclick="${unlocked?'startStage('+si+')':'void(0)'}">
+    const _sbg=`background-image:linear-gradient(90deg,rgba(8,12,10,.92) 0%,rgba(8,12,10,.74) 42%,rgba(8,12,10,.5) 100%),url('assets/images/stage_${s.id}.png?v=${GAME_VERSION}');background-size:cover;background-position:center;`;
+    html+=`<div class="stage-card has-banner${unlocked?'':' locked'}${tierClass}" style="${_sbg}" onclick="${unlocked?'startStage('+si+')':'void(0)'}">
       <div class="stage-icon">${s.icon}</div>
       <div class="stage-info">
         <div class="stage-name">ด่าน ${s.id+1}: ${s.name}</div>

@@ -2,6 +2,12 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.34 — แบนเนอร์ฉากในการ์ดเลือกด่าน (11 ด่าน)
+
+### Added
+- `assets/images/stage_0.png` … `stage_10.png` (11 ไฟล์): ภาพฉาก landscape ตามธีมแต่ละด่าน เจนผ่าน pollinations (flux, 1024×512)
+- `js/ui.js` `renderStageSelect`: การ์ดด่านเพิ่ม class `has-banner` + inline `background-image` = ภาพฉาก + gradient เงาซ้าย→ขวาให้ตัวหนังสืออ่านง่าย (มี `?v=GAME_VERSION` cache-bust)
+
 ## v3.24.33 — เจนไอคอนสกิลใหม่ 3 ใบ (แช่แข็ง/พลังโจมตี/กำแพง)
 
 ### Changed
