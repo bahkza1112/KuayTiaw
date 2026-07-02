@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.29 — ลบพื้นหลังสีขาวของรูปป้อม/สกิลทั้งหมด
+
+### Changed
+- `assets/images/tower_*.{png,webp}` + `skill_*.png` (15 ไฟล์): ลบพื้นหลังสีขาวออกด้วย border-connected flood fill + edge feather → พื้นหลังโปร่งใส (เก็บไฮไลต์สีขาวบนตัวป้อมไว้ครบ) แก้ปัญหากล่องขาวรอบรูปเมื่อการ์ดถูกเลือก (mix-blend-mode:normal)
+- `css/main.css` `.ts-card-art img`: ใช้ `mix-blend-mode:normal` ทุกใบ (ไม่ต้อง multiply ซ่อนพื้นขาวอีกแล้ว) คงคอนทราสต์ เลือก=สว่าง / ไม่เลือก=หม่น
+- `js/ui.js`: เพิ่ม `?v=GAME_VERSION` ให้ URL รูปป้อม/สกิล เพื่อบังคับโหลดรูปโปร่งใสใหม่ (กันแคชรูปพื้นขาวเดิม)
+
 ## v3.24.28 — การ์ดป้อมที่เลือกสว่างเด่นชัด
 
 ### Fixed

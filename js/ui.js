@@ -1848,7 +1848,7 @@ const _skIconCache={};
 const _SKILL_IDS=new Set(['goldrush','freeze','meteor','overdrive','barrier','shard_c','shard_r','shard_e','shard']);
 const _SKILL_SPRITE={goldrush:'skill_goldrush.png',freeze:'skill_freeze.png',meteor:'skill_meteor.png',overdrive:'skill_attack.png',barrier:'skill_wall.png'};
 function _skillIconURL(id){
-  if(_SKILL_SPRITE[id]) return 'assets/images/'+_SKILL_SPRITE[id];
+  if(_SKILL_SPRITE[id]) return 'assets/images/'+_SKILL_SPRITE[id]+'?v='+GAME_VERSION;
   if(_skIconCache[id]) return _skIconCache[id];
   try{
     const sz=120,c=document.createElement('canvas');
@@ -2148,7 +2148,7 @@ function renderTowerSelection(available){
     grid+=`<div class="ts-card${isSel?' selected':''}" onclick="toggleTowerSelection(${ti})">
       ${badges.length?`<div class="ts-card-badges">${badges.join('')}</div>`:''}
       <div class="ts-card-check">✓</div>
-      <div class="ts-card-art"><img src="assets/images/${_spFile}" onerror="_tsFallback(this,${ti})"></div>
+      <div class="ts-card-art"><img src="assets/images/${_spFile}?v=${GAME_VERSION}" onerror="_tsFallback(this,${ti})"></div>
       <div class="ts-card-info">
         <div class="ts-card-name">${TNAMES[ti]}</div>
         <div class="ts-card-stats">

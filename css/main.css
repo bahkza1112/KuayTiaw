@@ -677,10 +677,10 @@ body{background:#0d1117;display:flex;align-items:flex-start;justify-content:cent
 .ts-card.selected{border-color:#ffe234;box-shadow:0 0 0 2px rgba(255,226,52,.35),0 4px 20px rgba(255,226,52,.25);}
 .ts-card.locked-card{opacity:.35;cursor:not-allowed;filter:grayscale(1);}
 .ts-card-art{width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 60%,rgba(255,255,255,.08) 0%,rgba(60,100,60,.18) 55%,rgba(0,0,0,.55) 100%);overflow:hidden;position:relative;}
-.ts-card-art img{width:88%;height:88%;object-fit:contain;mix-blend-mode:multiply;filter:brightness(.6) grayscale(.35) drop-shadow(0 3px 10px rgba(0,0,0,.8));transition:filter .2s,mix-blend-mode .2s;}
-/* การ์ดที่เลือก → รูปสว่างเด่น (ไม่ multiply), อันที่ไม่เลือก → มืดลง */
+.ts-card-art img{width:88%;height:88%;object-fit:contain;filter:brightness(.62) saturate(.7) drop-shadow(0 3px 10px rgba(0,0,0,.7));transition:filter .2s;}
+/* การ์ดที่เลือก → รูปสว่างเด่น, อันที่ไม่เลือก → หม่นลง (รูปพื้นหลังโปร่งใสแล้ว) */
 .ts-card.selected .ts-card-art{background:radial-gradient(ellipse at 50% 55%,rgba(255,240,175,.30) 0%,rgba(130,150,70,.22) 55%,rgba(0,0,0,.4) 100%);}
-.ts-card.selected .ts-card-art img{mix-blend-mode:normal;filter:brightness(1.12) saturate(1.08) drop-shadow(0 3px 12px rgba(255,226,52,.4));}
+.ts-card.selected .ts-card-art img{filter:brightness(1.12) saturate(1.08) drop-shadow(0 3px 12px rgba(255,226,52,.4));}
 .ts-card-check{position:absolute;top:4px;left:4px;width:16px;height:16px;background:#ffe234;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;color:#5a3000;font-weight:900;opacity:0;transform:scale(.4);transition:all .2s;z-index:2;pointer-events:none;}
 .ts-card.selected .ts-card-check{opacity:1;transform:scale(1);}
 .ts-card-info{padding:4px 5px 6px;border-top:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.4);}
