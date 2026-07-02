@@ -2,6 +2,12 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.31 — ลบฮาโลขาวรอบรูปป้อม/สกิล
+
+### Changed
+- `assets/images/tower_*.{png,webp}` + `skill_*.png` (15 ไฟล์): reprocess จากไฟล์ต้นฉบับด้วยอัลกอริทึมคัดพื้นหลังแบบ saturation-aware (ลบพิกเซล "จืด+สว่าง" ที่ต่อกับขอบภาพ = ฮาโลขาว/เทา/ครีม) พร้อม graded feather 3 รอบ — ขอบฟุ้งสีขาวรอบรูป (เช่น เกล็ดหิมะ skill_freeze) หายสะอาด โดยเก็บเอฟเฟกต์สีอิ่ม (aura ม่วง/ไฟ/น้ำแข็ง) ของ subject ไว้ครบ
+- หมายเหตุ: skill_meteor (แสงไฟแดง) และ skill_attack (พื้นหินแตกโทนแทน) มีองค์ประกอบสีที่วาดติดมากับภาพ AI ไม่ใช่ฮาโลขาว จึงคงไว้
+
 ## v3.24.30 — เก็บตกพื้นหลังครีม/ขาวที่เหลือ
 
 ### Fixed
