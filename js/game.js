@@ -598,7 +598,9 @@ function initGame(){
   } else if(currentStage.weatherMode==='permanent'){
     rollWeather(currentStage.id);
   }
-  if(currentStage.id===0&&!localStorage.getItem('tq_hint_dig')){
+  // hint ขุดแบบ toast: เด้งเฉพาะตอนการสอนในด่านไม่รัน (ผู้เล่นเก่าที่ผ่าน/ข้ามการสอนแล้ว)
+  // — คนใหม่ให้การสอน (_TUT_STEPS) เป็นคนสอนขุดแทน จะได้ไม่เด้งทับกัน
+  if(currentStage.id===0&&localStorage.getItem('tq_tut_done')&&!localStorage.getItem('tq_hint_dig')){
     localStorage.setItem('tq_hint_dig','1');
     setTimeout(()=>showToast('💡 กด ⛏️ เครื่องมือขุด เพื่อขุดฉากออกและสร้างป้อมในช่องนั้น'),2500);
   }
