@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.35 — แบนเนอร์ฉาก Act 2 (10 ด่าน)
+
+### Added
+- `assets/images/stage_11.png` … `stage_20.png` (10 ไฟล์): ภาพฉาก landscape ตามธีมด่าน Act 2 (ทะเลทรายเถ้าถ่าน, ป่าแข็งนิรันดร์, ทะเลสาบพิษ, หุบเขาสายฟ้า, ทุ่งพายุทราย, หนองน้ำมืด, ยอดเขาน้ำแข็ง, วิหารกาลเวลา, ปราการโบราณ, แกนโลก) เจนผ่าน pollinations (flux, 1024×512) — ไม่ต้องแก้โค้ดเพราะ `renderStageSelect` ใช้ `stage_${id}.png` กับทุกด่านอยู่แล้ว
+
 ## v3.24.34 — แบนเนอร์ฉากในการ์ดเลือกด่าน (11 ด่าน)
 
 ### Added
