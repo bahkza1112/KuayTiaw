@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.30 — เก็บตกพื้นหลังครีม/ขาวที่เหลือ
+
+### Fixed
+- `assets/images/skill_attack.png` + `tower_time.png`: พื้นหลังบางส่วนเป็นสีครีม (min-channel < 232) จึงหลุด flood fill รอบก่อน — reprocess ด้วย threshold 220 ให้พื้นหลังโปร่งใสสมบูรณ์ (aura ม่วงของป้อมกาลเวลาที่แตะขอบเป็นส่วนของ art คงไว้)
+
 ## v3.24.29 — ลบพื้นหลังสีขาวของรูปป้อม/สกิลทั้งหมด
 
 ### Changed
