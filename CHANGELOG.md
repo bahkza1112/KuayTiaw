@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.33 — เจนไอคอนสกิลใหม่ 3 ใบ (แช่แข็ง/พลังโจมตี/กำแพง)
+
+### Changed
+- `assets/images/skill_freeze.png`, `skill_attack.png`, `skill_wall.png`: เจนใหม่ผ่าน pollinations (flux) สไตล์ die-cut sticker บนพื้นขาว แล้วคีย์พื้นออก → ไอคอนโปร่งใสสะอาดเข้าชุดกับ skill_meteor ที่เจนไว้รอบก่อน (คง skill_meteor + skill_goldrush เดิม)
+
 ## v3.24.32 — เจนไอคอนอุกกาบาต/พลังโจมตีใหม่ (พื้นโปร่ง)
 
 ### Changed
