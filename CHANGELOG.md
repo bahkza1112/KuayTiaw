@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.23 — Art: อัพเกรดโปสเตอร์หน้าเมนูความละเอียดสูง
+
+### Changed
+- `assets/images/menu_poster.png` — เปลี่ยนเป็นภาพ 1024×1024 จาก Leonardo.ai (Lucid Origin model) แทนภาพเดิม 886×665 จาก pollinations.ai ที่แตกเมื่อ stretch เต็มจอ
+
 ## v3.24.22 — Fix: โปสเตอร์พื้นหลังหน้าเมนูไม่ขึ้น
 
 ### Fixed

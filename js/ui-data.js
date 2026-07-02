@@ -1,6 +1,9 @@
 ﻿/* ══ WHAT'S NEW (patch notes) ══ */
-const GAME_VERSION='3.24.22';
+const GAME_VERSION='3.24.23';
 const PATCH_NOTES=[
+  {ver:'3.24.23',date:'2026-07-02',title:'🎨 อัพเกรดโปสเตอร์หน้าเมนูความละเอียดสูง',notes:[
+    'เปลี่ยน menu_poster เป็นภาพ 1024×1024 (จากเดิม 886×665) คมชัดขึ้น ไม่แตก',
+  ]},
   {ver:'3.24.22',date:'2026-06-29',title:'🐛 Fix: โปสเตอร์พื้นหลังหน้าเมนูไม่ขึ้น',notes:[
     'แก้ลำดับ background layer — gradient ทึบแสงเคยบังภาพโปสเตอร์ไว้ทั้งหมด',
   ]},
