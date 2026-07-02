@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.36 — มอนสเตอร์ 19 ตัวเป็น Sprite จริงในเกม (hybrid canvas)
+
+### Added
+- `assets/images/enemy_*.png` (19 ไฟล์): เจนใหม่ผ่าน pollinations (flux) สไตล์ chibi Kingdom Rush die-cut sticker บนพื้นขาว แล้ว key พื้นหลังออก (border-connected flood fill + saturation-aware + feather) + trim/center → 512×512 โปร่งใส แทนไฟล์ draft พื้นขาวเดิม
+- `js/enemy.js`: `_ESPRITE[]` (type→filename), `_enemyImg(ti)` image preloader + cache, flag `_ENEMY_IMG_ON`
+- `gen_enemies.py`: สคริปต์ generate + bg-key + trim สำหรับมอนสเตอร์
+
+### Changed
+- `js/enemy.js` `drawEnemySprite()`: เพิ่ม raster path ต้นฟังก์ชัน — ถ้ารูปโหลดเสร็จวาด PNG (คง walk-lean + idle bob + flip หันตามทิศเดิน + เงา) แล้ว return; ถ้ายังไม่โหลด/โหลดไม่ได้ fallback เป็น procedural canvas เดิม
+- มอนสเตอร์ในสนาม (story + endgame) แสดงเป็นภาพจริงทั้งหมด (ก่อนหน้าเป็น canvas ล้วน)
+
 ## v3.24.35 — แบนเนอร์ฉาก Act 2 (10 ด่าน)
 
 ### Added

@@ -440,11 +440,40 @@ function killEnemy(e){
   if(_now-_sfxLastDie>80){_sfxLastDie=_now;_playSound(MTYPE[e.ti]===1?'boss_die':'die');}
 }
 
+// ── raster enemy sprites (hybrid: use PNG if loaded, else procedural below) ──
+const _ESPRITE=['enemy_goblin','enemy_skeleton','enemy_shadow','enemy_fire_spirit','enemy_boss_demon','enemy_golem','enemy_bat','enemy_wyvern','enemy_shield_knight','enemy_dark_lord','enemy_shaman','enemy_berserk','enemy_robot','enemy_mother','enemy_naga_king','enemy_destroyer','enemy_ice_king','enemy_harpy','enemy_shadow_dragon'];
+let _ENEMY_IMG_ON=true; // dev toggle
+const _eimgCache={};
+function _enemyImg(ti){
+  if(!_ENEMY_IMG_ON) return null;
+  const n=_ESPRITE[ti]; if(!n) return null;
+  let o=_eimgCache[ti];
+  if(o===undefined){
+    o=new Image(); o._ok=false;
+    o.onload=()=>{o._ok=true;}; o.onerror=()=>{o._ok=false;o._bad=true;};
+    o.src='assets/images/'+n+'.png?v='+(typeof GAME_VERSION!=='undefined'?GAME_VERSION:'1');
+    _eimgCache[ti]=o;
+  }
+  return (o&&o._ok)?o:null;
+}
 function drawEnemySprite(ctx,ti,x,y,sz,mv){
   const r=sz*.42;
   mv=mv||{};
   const _sm=Math.max(.4,Math.min(2.2,mv.spd||1)); // movement-speed multiplier for idle anim
   const _dir=mv.dir||0;
+  // raster path — keep walk-lean + idle bob; flip to face travel direction
+  const _img=_enemyImg(ti);
+  if(_img){
+    ctx.save();ctx.translate(x,y);
+    ctx.rotate(Math.sin(Date.now()*.007*_sm+x*.05)*.05*_sm*Math.sign(Math.cos(_dir)));
+    const _bob=Math.sin(Date.now()*.006*_sm+x*.05)*sz*.04;
+    const _fx=Math.cos(_dir)<0?-1:1;
+    const d=sz*2.25;
+    ctx.scale(_fx,1);
+    ctx.drawImage(_img,-d/2,-d/2-sz*.12+_bob,d,d);
+    ctx.restore();
+    return;
+  }
   ctx.save();ctx.translate(x,y);
   // walk lean — tilt slightly in the direction of travel, faster sway at higher speed
   ctx.save();ctx.rotate(Math.sin(Date.now()*.007*_sm+x*.05)*.05*_sm*Math.sign(Math.cos(_dir)));

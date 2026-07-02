@@ -3,7 +3,7 @@
 This document is a system-by-system map of the game as implemented in
 [`Tower Quest 🏰.html`](Tower%20Quest%20%F0%9F%8F%B0.html) plus its
 `css/main.css` and `js/{save,enemy,tower,game,ui}.js` modules (current
-version **v3.24.35**). Line numbers refer to these files and
+version **v3.24.36**). Line numbers refer to these files and
 may drift as they change — use them as a starting point for searches, not as
 permanent anchors.
 
@@ -778,12 +778,14 @@ unstyled (internal tool only). No gameplay/save changes from any of these.
   runs by opening the file in a browser.
 - **No framework**: direct DOM manipulation (`document.getElementById`,
   `innerHTML`) and a hand-rolled `requestAnimationFrame` game loop.
-- **Hybrid art**: in-game canvas sprites (towers/enemies/projectiles on the
-  play field) are drawn programmatically on `<canvas>` via `drawTowerIcon`/
-  `drawEnemySprite`, while DOM UI uses raster art in `assets/images/`
-  (tower-select cards, stage banners, skill icons, menu poster — generated via
-  pollinations.ai/Leonardo.ai, backgrounds keyed out). `assets/sounds` and
-  `assets/effects` remain empty/reserved (audio is Web Audio synthesis).
+- **Hybrid art**: enemies on the play field use raster PNG sprites via
+  `drawEnemySprite`'s image path (`_ESPRITE`/`_enemyImg`, `assets/images/
+  enemy_*.png`), falling back to procedural canvas if an image fails to load.
+  Towers/projectiles are still procedural (`drawTowerIcon`). DOM UI uses raster
+  art in `assets/images/` (tower-select cards, stage banners, skill icons, menu
+  poster). All raster art is generated via pollinations.ai (flux)/Leonardo.ai
+  with backgrounds keyed out. `assets/sounds` and `assets/effects` remain
+  empty/reserved (audio is Web Audio synthesis).
 - **All state in memory + localStorage**: no network calls, no backend.
 - **Two parallel game loops**: story-mode (`initGame`/`loop`) and endgame
   (`initEgGame`/its own `loop`), sharing core rendering and combat helper

@@ -5,7 +5,7 @@ Guidance for Claude Code (and other AI assistants) working in this repository.
 ## Project Summary
 
 **Tower Quest 🏰** is a browser-based tower defense game written in
-Thai, currently at **v3.24.35**. Since the v1.6.1 refactor, the game is split
+Thai, currently at **v3.24.36**. Since the v1.6.1 refactor, the game is split
 across:
 
 - [`Tower Quest 🏰.html`](Tower%20Quest%20%F0%9F%8F%B0.html) — head/body
@@ -52,12 +52,13 @@ assets/
 `tower_minigun.webp`), 5 skill-card icons (`skill_*.png`), 21 stage banners
 (`stage_0`–`stage_20.png`), and `menu_poster.png` — mostly generated via
 pollinations.ai (flux) / Leonardo.ai with white backgrounds keyed out. These
-are used in DOM UI (tower-select cards, stage-select cards, menu background).
-The **in-game canvas rendering** (towers/enemies/projectiles on the play
-field) is still 100% procedural (`drawTowerIcon`, `drawEnemySprite`). Enemy
-sprites are still procedural — the `enemy_*.png` files present locally are old
-white-background drafts, untracked and NOT integrated. `assets/sounds` and
-`assets/effects` remain empty scaffolding (audio is Web Audio synthesis).
+are used in DOM UI (tower-select cards, stage-select cards, menu background)
+and, since v3.24.36, **enemies on the play field** render as raster
+`enemy_*.png` sprites via `drawEnemySprite`'s image path (`_ESPRITE`/
+`_enemyImg`), falling back to procedural canvas if a sprite fails to load.
+Towers/projectiles on the canvas are still procedural (`drawTowerIcon`).
+`assets/sounds` and `assets/effects` remain empty scaffolding (audio is Web
+Audio synthesis).
 
 ## Working Conventions
 
