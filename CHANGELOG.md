@@ -2,6 +2,18 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.37 — ป้อมบนสนามเป็น Sprite จริง + muzzle flash
+
+### Added
+- `js/tower.js`: `_TWSPRITE[]` (type→filename, ใช้ไฟล์เดียวกับการ์ดเลือกป้อม), `_towerFieldImg()` preloader + cache, flag `_TOWER_IMG_ON`
+
+### Changed
+- `js/tower.js` `drawTowerIcon()`: เพิ่ม raster path — ถ้ารูปโหลดเสร็จวาด PNG ป้อม (คง `_twAura` ที่พื้น + `_twLevelRing` รอบฐาน + idle bob + upward recoil ตอนยิง) พร้อม muzzle flash radial gradient ตามสี `TACCENT[type]` หันไป `angle` (ยกเว้น type 4 support / 6 gold ที่ไม่ยิง); ถ้าโหลดไม่ได้ fallback เป็น procedural เดิม (มีป้อมหมุนเล็งเป้า `_twWeapon`)
+- ป้อมบนสนามไม่หมุนเล็งเป้าอีกต่อไป (แลกกับ art จริง) — firing feedback ใช้ muzzle flash + recoil + กระสุนวิ่งหาเป้าแทน
+
+### Fixed
+- `Tower Quest 🏰.html`: bump cache-bust `?v=3.24.35→3.24.37` ทั้ง 10 จุด — v3.24.36 bump GAME_VERSION แต่ลืม bump `?v=` ทำให้ผู้เล่นโหลด JS เก่าจากแคชและไม่เห็น sprite มอนสเตอร์
+
 ## v3.24.36 — มอนสเตอร์ 19 ตัวเป็น Sprite จริงในเกม (hybrid canvas)
 
 ### Added

@@ -132,9 +132,57 @@ function _bldSC(){
     _SC[t]={c:oc,tx,ty};
   }
 }
+// ── raster tower sprites (field): PNG body + muzzle flash, no turret rotation ──
+const _TWSPRITE=['tower_cannon','tower_ice','tower_magic','tower_sniper','tower_support','tower_minigun.webp','tower_gold','tower_thunder','tower_void','tower_time.png'];
+let _TOWER_IMG_ON=true; // dev toggle
+const _twimgCache={};
+function _towerFieldImg(type){
+  if(!_TOWER_IMG_ON) return null;
+  let n=_TWSPRITE[type]; if(!n) return null;
+  if(n.indexOf('.')<0) n+='.png';
+  let o=_twimgCache[type];
+  if(o===undefined){
+    o=new Image(); o._ok=false;
+    o.onload=()=>{o._ok=true;}; o.onerror=()=>{o._ok=false;};
+    o.src='assets/images/'+n+'?v='+(typeof GAME_VERSION!=='undefined'?GAME_VERSION:'1');
+    _twimgCache[type]=o;
+  }
+  return (o&&o._ok)?o:null;
+}
 function drawTowerIcon(ctx,type,sz,angle,lv,shootT){
+  const r=sz/2;
+  const _img=_towerFieldImg(type);
+  if(_img){
+    const st=shootT||0; // 1 on fire → 0 (~.14s)
+    ctx.save();
+    _twAura(ctx,type,r);
+    _twLevelRing(ctx,type,r,lv);
+    // body: gentle idle bob + upward recoil kick on fire
+    const bob=Math.sin(Date.now()*.0025+type)*r*.02;
+    const d=sz*1.62;
+    ctx.save();
+    ctx.translate(0,bob-st*r*.14);
+    ctx.shadowColor='rgba(0,0,0,.5)';ctx.shadowBlur=r*.14;ctx.shadowOffsetY=r*.08;
+    ctx.drawImage(_img,-d/2,-d/2-r*.12,d,d);
+    ctx.restore();
+    // muzzle flash toward target when just fired
+    if(st>0.04&&type!==4&&type!==6){ // support/gold don't fire
+      const fa=angle||0;
+      const fl=r*.55*Math.min(1,st*8);
+      ctx.save();
+      ctx.globalAlpha=Math.min(1,st*6);
+      ctx.translate(Math.cos(fa)*r*.7,Math.sin(fa)*r*.7-r*.15);
+      const g=ctx.createRadialGradient(0,0,0,0,0,fl);
+      g.addColorStop(0,'#fff');g.addColorStop(.4,TACCENT[type]||'#ffd54f');g.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=g;
+      ctx.beginPath();ctx.arc(0,0,fl,0,Math.PI*2);ctx.fill();
+      ctx.restore();
+    }
+    ctx.restore();
+    return;
+  }
   if(!_SC)_bldSC();
-  const r=sz/2,s=_SC[type];
+  const s=_SC[type];
   ctx.save();
   _twAura(ctx,type,r);
   if(s)ctx.drawImage(s.c,-s.tx,-s.ty);else _twStatic(ctx,type,r);

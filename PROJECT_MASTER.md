@@ -3,7 +3,7 @@
 This document is a system-by-system map of the game as implemented in
 [`Tower Quest 🏰.html`](Tower%20Quest%20%F0%9F%8F%B0.html) plus its
 `css/main.css` and `js/{save,enemy,tower,game,ui}.js` modules (current
-version **v3.24.36**). Line numbers refer to these files and
+version **v3.24.37**). Line numbers refer to these files and
 may drift as they change — use them as a starting point for searches, not as
 permanent anchors.
 
@@ -781,7 +781,9 @@ unstyled (internal tool only). No gameplay/save changes from any of these.
 - **Hybrid art**: enemies on the play field use raster PNG sprites via
   `drawEnemySprite`'s image path (`_ESPRITE`/`_enemyImg`, `assets/images/
   enemy_*.png`), falling back to procedural canvas if an image fails to load.
-  Towers/projectiles are still procedural (`drawTowerIcon`). DOM UI uses raster
+  Towers on the field also use raster sprites via `drawTowerIcon`'s image path
+  (`_TWSPRITE`/`_towerFieldImg`, muzzle flash + recoil, no turret rotation),
+  same fallback. Projectiles remain procedural. DOM UI uses raster
   art in `assets/images/` (tower-select cards, stage banners, skill icons, menu
   poster). All raster art is generated via pollinations.ai (flux)/Leonardo.ai
   with backgrounds keyed out. `assets/sounds` and `assets/effects` remain

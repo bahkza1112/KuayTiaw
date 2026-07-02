@@ -5,7 +5,7 @@ Guidance for Claude Code (and other AI assistants) working in this repository.
 ## Project Summary
 
 **Tower Quest 🏰** is a browser-based tower defense game written in
-Thai, currently at **v3.24.36**. Since the v1.6.1 refactor, the game is split
+Thai, currently at **v3.24.37**. Since the v1.6.1 refactor, the game is split
 across:
 
 - [`Tower Quest 🏰.html`](Tower%20Quest%20%F0%9F%8F%B0.html) — head/body
@@ -55,10 +55,12 @@ pollinations.ai (flux) / Leonardo.ai with white backgrounds keyed out. These
 are used in DOM UI (tower-select cards, stage-select cards, menu background)
 and, since v3.24.36, **enemies on the play field** render as raster
 `enemy_*.png` sprites via `drawEnemySprite`'s image path (`_ESPRITE`/
-`_enemyImg`), falling back to procedural canvas if a sprite fails to load.
-Towers/projectiles on the canvas are still procedural (`drawTowerIcon`).
-`assets/sounds` and `assets/effects` remain empty scaffolding (audio is Web
-Audio synthesis).
+`_enemyImg`), falling back to procedural canvas if a sprite fails to load. Since v3.24.37
+**towers on the field** likewise render as raster `tower_*` sprites via
+`drawTowerIcon`'s image path (`_TWSPRITE`/`_towerFieldImg`) with a muzzle
+flash + recoil on fire (no turret rotation), again falling back to procedural.
+Projectiles on the canvas are still procedural. `assets/sounds` and
+`assets/effects` remain empty scaffolding (audio is Web Audio synthesis).
 
 ## Working Conventions
 
