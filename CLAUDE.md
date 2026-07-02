@@ -43,13 +43,21 @@ js/                             # save.js, enemy.js, tower.js, game.js, ui-data.
 docs/                           # Design docs: GDD, TowerDesign, EnemyDesign, BalanceSheet, Roadmap
 agents/                          # Per-role guides expanding on the AI Team section below
 assets/
-  images/                      # Reserved for sprite/image assets (currently empty)
+  images/                      # tower_*, skill_*, stage_*, menu_poster sprites (PNG/webp, bg removed)
   sounds/                      # Reserved for audio assets (currently empty)
   effects/                     # Reserved for VFX-related assets (currently empty)
 ```
 
-The `assets/*` folders currently exist as scaffolding only — no image/audio
-assets are used yet (all art is procedural canvas drawing).
+`assets/images/` holds real art now: all 10 tower sprites (`tower_*.png`,
+`tower_minigun.webp`), 5 skill-card icons (`skill_*.png`), 21 stage banners
+(`stage_0`–`stage_20.png`), and `menu_poster.png` — mostly generated via
+pollinations.ai (flux) / Leonardo.ai with white backgrounds keyed out. These
+are used in DOM UI (tower-select cards, stage-select cards, menu background).
+The **in-game canvas rendering** (towers/enemies/projectiles on the play
+field) is still 100% procedural (`drawTowerIcon`, `drawEnemySprite`). Enemy
+sprites are still procedural — the `enemy_*.png` files present locally are old
+white-background drafts, untracked and NOT integrated. `assets/sounds` and
+`assets/effects` remain empty scaffolding (audio is Web Audio synthesis).
 
 ## Working Conventions
 

@@ -778,9 +778,12 @@ unstyled (internal tool only). No gameplay/save changes from any of these.
   runs by opening the file in a browser.
 - **No framework**: direct DOM manipulation (`document.getElementById`,
   `innerHTML`) and a hand-rolled `requestAnimationFrame` game loop.
-- **Procedural art**: tower and enemy sprites are drawn programmatically on
-  `<canvas>` (no image assets currently used) — hence `assets/images`,
-  `assets/sounds`, and `assets/effects` are currently empty/reserved.
+- **Hybrid art**: in-game canvas sprites (towers/enemies/projectiles on the
+  play field) are drawn programmatically on `<canvas>` via `drawTowerIcon`/
+  `drawEnemySprite`, while DOM UI uses raster art in `assets/images/`
+  (tower-select cards, stage banners, skill icons, menu poster — generated via
+  pollinations.ai/Leonardo.ai, backgrounds keyed out). `assets/sounds` and
+  `assets/effects` remain empty/reserved (audio is Web Audio synthesis).
 - **All state in memory + localStorage**: no network calls, no backend.
 - **Two parallel game loops**: story-mode (`initGame`/`loop`) and endgame
   (`initEgGame`/its own `loop`), sharing core rendering and combat helper
