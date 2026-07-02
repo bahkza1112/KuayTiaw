@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.32 — เจนไอคอนอุกกาบาต/พลังโจมตีใหม่ (พื้นโปร่ง)
+
+### Changed
+- `assets/images/skill_meteor.png` + `skill_attack.png`: เจนใหม่ผ่าน pollinations (flux) สไตล์ die-cut sticker บนพื้นขาวเรียบ แล้วคีย์พื้นออก → ไอคอนพื้นหลังโปร่งใสสะอาด ไม่มีพื้นหินแตก/แสงฟุ้งที่วาดติดมากับภาพ AI เดิม (Leonardo แพลนฟรีไม่มีโหมด transparency จึงใช้วิธีเจนบนพื้นเรียบ+คีย์แทน)
+
 ## v3.24.31 — ลบฮาโลขาวรอบรูปป้อม/สกิล
 
 ### Changed
