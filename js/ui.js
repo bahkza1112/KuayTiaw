@@ -1492,7 +1492,7 @@ function skipTutorial(){
 }
 
 /* ══ MENU TOUR ══ */
-let _tourStep=-1;
+let _tourStep=-1,_tourRAF=null;
 const MENU_TOUR_STEPS=[
   {screen:'mm',target:null,anchor:'center',
    title:'🏰 ยินดีต้อนรับสู่ Tower Quest!',
@@ -1506,30 +1506,30 @@ const MENU_TOUR_STEPS=[
   {screen:'mm',target:'.mm-resource-bar',anchor:'below',
    title:'💰 ทรัพยากร (ทอง + เจม)',
    msg:'ทอง💰 ซื้อ/อัปเกรดป้อมในเกม\nเจม<span class="gico"></span> ใช้ใน Workshop และกาชา\nกดแถบนี้เพื่อเปิด Workshop'},
-  {screen:'workshop',open:'openWorkshop',target:'#workshopNavBtn',anchor:'above',
+  {screen:'mm',target:'#workshopNavBtn',anchor:'above',
    title:'🛠️ เวิร์กชอป',
-   msg:'สะสมวัสดุจาก Endgame\nนำมา Craft ปลดล็อกป้อมใหม่\nและอัปเกรด Awaken ป้อม'},
-  {screen:'gacha',open:'openGacha',target:'#gachaNavBtn',anchor:'above',
+   msg:'กดปุ่มนี้เปิดเวิร์กชอป\nสะสมวัสดุจาก Endgame มา Craft\nปลดล็อกป้อมใหม่ + อัปเกรด Awaken'},
+  {screen:'mm',target:'#gachaNavBtn',anchor:'above',
    title:'🎁 กาชา',
-   msg:'ใช้เจม<span class="gico"></span> หมุนตู้รางวัล\nรับโปชั่น เจม การ์ดสกิล\nมีตู้ปกติ + ตู้การ์ดสกิลพิเศษ'},
-  {screen:'bag',open:'openBag',target:'#bagNavBtn',anchor:'above',
+   msg:'กดปุ่มนี้เปิดกาชา\nใช้เจม<span class="gico"></span> หมุนตู้รางวัล\nรับโปชั่น เจม การ์ดสกิล'},
+  {screen:'mm',target:'#bagNavBtn',anchor:'above',
    title:'🎒 กระเป๋า',
-   msg:'เก็บไอเทมและการ์ดสกิล\nการ์ดสกิลใช้ระหว่างเล่น\nเพิ่มพลังพิเศษให้ป้อม'},
-  {screen:'casino',open:'openCasino',target:'#casinoNavBtn',anchor:'above',
+   msg:'กดปุ่มนี้เปิดกระเป๋า\nเก็บไอเทมและการ์ดสกิล\nการ์ดสกิลใช้ระหว่างเล่นเพิ่มพลังป้อม'},
+  {screen:'mm',target:'#casinoNavBtn',anchor:'above',
    title:'🎰 คาสิโน',
-   msg:'ใช้ทองพิเศษ (PG) หมุนสล็อต\nโอกาสรับเจม ตั๋ว ทอง\nPG หาได้จากการเล่น Endgame'},
-  {screen:'leaderboard',open:'openLeaderboard',target:'#lbNavBtn',anchor:'above',
+   msg:'กดปุ่มนี้เปิดคาสิโน\nใช้ทองพิเศษ (PG) หมุนสล็อต\nโอกาสรับเจม ตั๋ว ทอง'},
+  {screen:'mm',target:'#lbNavBtn',anchor:'above',
    title:'🏆 อันดับ',
-   msg:'อันดับ Endgame แบบ Real-time\nทั้งของตัวเองและผู้เล่นอื่น\nอันดับเซิร์ฟ + สถิติส่วนตัว'},
-  {screen:'daily',open:'openDaily',target:'#dailyNavBtn',anchor:'below',
+   msg:'กดปุ่มนี้ดูกระดานอันดับ\nอันดับ Endgame แบบ Real-time\nทั้งของตัวเองและผู้เล่นอื่น'},
+  {screen:'mm',target:'#dailyNavBtn',anchor:'below',
    title:'📅 ภารกิจ',
-   msg:'รับรางวัล Login ประจำวัน\nทำภารกิจรับเจม/ไอเทม\nอย่าลืมเช็คอินทุกวัน!'},
-  {screen:'codex',open:'openCodex',target:'#codexNavBtn',anchor:'below',
+   msg:'กดปุ่มนี้เปิดภารกิจ\nรับรางวัล Login ประจำวัน\nทำภารกิจรับเจม/ไอเทม'},
+  {screen:'mm',target:'#codexNavBtn',anchor:'below',
    title:'📖 สารานุกรม',
-   msg:'ข้อมูลป้อม + ศัตรูทุกชนิด\nรวมถึงภารกิจความสำเร็จ\nสะสมครบรับรางวัลพิเศษ'},
-  {screen:'profile',open:'openProfile',target:'#tourStartBtn',anchor:'above',
+   msg:'กดปุ่มนี้เปิดสารานุกรม\nข้อมูลป้อม + ศัตรูทุกชนิด\nรวมถึงภารกิจความสำเร็จ'},
+  {screen:'mm',target:'#tourStartBtn',anchor:'above',
    title:'👤 โปรไฟล์',
-   msg:'ตั้งชื่อ + เลือก Avatar ในเกม\nLogin Google เพื่อ sync ข้ามเครื่อง\nข้อมูลไม่หายแม้เปลี่ยนอุปกรณ์'},
+   msg:'กดปุ่มนี้เปิดโปรไฟล์\nตั้งชื่อ + เลือก Avatar\nLogin Google เพื่อ sync ข้ามเครื่อง'},
   {screen:'mm',target:null,anchor:'center',
    title:'🎮 พร้อมออกรบแล้ว!',
    msg:'รู้จักเมนูทั้งหมดแล้ว\nกด ⚔️ โหมดเนื้อเรื่อง เพื่อเริ่ม\nขอให้สนุกกับการเล่น!', final:true},
@@ -1545,55 +1545,70 @@ function _tourNext(){
   if(MENU_TOUR_STEPS[_tourStep].final){ endMenuTour(); return; }
   _tourStep++;
   if(_tourStep>=MENU_TOUR_STEPS.length){ endMenuTour(); return; }
-  const ns=MENU_TOUR_STEPS[_tourStep];
-  if(ns.open&&typeof window[ns.open]==='function') window[ns.open]();
-  else if(ns.screen==='mm') showScreen('mm',true);
-  setTimeout(_renderTour,100);
+  // ทุกสเต็ปไฮไลต์ปุ่มบนหน้าเมนู (ไม่สลับหน้า) — rAF จะตามตำแหน่งปุ่มให้เอง
+  _renderTour();
 }
 function endMenuTour(){
   _tourStep=-1;
+  if(_tourRAF){cancelAnimationFrame(_tourRAF);_tourRAF=null;}
   const el=document.getElementById('tourOverlay');
   if(el){el.style.display='none';el.innerHTML='';}
   showScreen('mm',true);
 }
+/* build the step's DOM once, then track the target's live position every frame
+   so the highlight/box never drift when the layout shifts (screen fade-in,
+   font/poster load, scroll) — the old one-shot measure could freeze off-target. */
 function _renderTour(){
   const el=document.getElementById('tourOverlay'); if(!el) return;
-  if(_tourStep<0){el.style.display='none';return;}
+  if(_tourStep<0){el.style.display='none';if(_tourRAF){cancelAnimationFrame(_tourRAF);_tourRAF=null;}return;}
   el.style.display='block';
   const s=MENU_TOUR_STEPS[_tourStep];
   const total=MENU_TOUR_STEPS.length;
-  const tEl=s.target?document.querySelector(s.target):null;
-  let hlStyle='display:none;', boxStyle='top:50%;left:50%;transform:translate(-50%,-50%);width:240px;', arrowStyle='display:none;', arrowTxt='';
-  if(tEl){
-    const r=tEl.getBoundingClientRect(), pad=6, bw=230, bh=190;
-    hlStyle=`top:${r.top-pad}px;left:${r.left-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px;`;
-    const bx=Math.min(Math.max(8,r.left+r.width/2-bw/2),window.innerWidth-bw-8);
-    const spaceAbove=r.top-pad-12;
-    const spaceBelow=window.innerHeight-(r.bottom+pad+12);
-    // ถ้าที่ว่างด้านบนพอ → แสดงบน; ไม่พอ → แสดงล่าง; ไม่พอทั้งคู่ → กลางจอ
-    if(spaceAbove>=bh){
-      const by=r.top-pad-12-bh;
-      boxStyle=`top:${by}px;left:${bx}px;width:${bw}px;`;
-      arrowTxt='⬇️'; arrowStyle=`top:${r.top-pad-26}px;left:${r.left+r.width/2}px;transform:translateX(-50%);`;
-    } else if(spaceBelow>=bh){
-      const by=r.bottom+pad+12;
-      boxStyle=`top:${by}px;left:${bx}px;width:${bw}px;`;
-      arrowTxt='⬆️'; arrowStyle=`top:${r.bottom+pad+2}px;left:${r.left+r.width/2}px;transform:translateX(-50%);`;
-    } else {
-      boxStyle=`top:50%;left:50%;transform:translate(-50%,-50%);width:${bw}px;`;
-    }
-  }
   el.innerHTML=`
-    <div style="position:fixed;inset:0;background:rgba(0,0,0,.5);pointer-events:auto;" onclick=""></div>
-    <div class="tut-highlight" style="position:fixed;border-radius:10px;${hlStyle}"></div>
-    <div style="position:fixed;font-size:18px;pointer-events:none;${arrowStyle}">${arrowTxt}</div>
-    <div class="tut-box" style="position:fixed;${boxStyle}pointer-events:auto;">
+    <div style="position:fixed;inset:0;background:rgba(0,0,0,.55);pointer-events:auto;" onclick=""></div>
+    <div class="tut-highlight tour-hl" style="position:fixed;border-radius:10px;display:none;"></div>
+    <div class="tour-arrow" style="position:fixed;font-size:18px;pointer-events:none;display:none;"></div>
+    <div class="tut-box tour-box" style="position:fixed;width:min(240px,86vw);pointer-events:auto;">
       <div class="tut-title">${s.title}</div>
       <div style="font-size:12px;line-height:1.65;margin-bottom:10px;color:rgba(255,255,255,.85);">${s.msg.replace(/\n/g,'<br>')}</div>
       <div style="font-size:10px;color:rgba(255,255,255,.3);margin-bottom:8px;">${_tourStep+1} / ${total}</div>
       <div class="tut-next" onclick="_tourNext()">${s.final?'🎮 เริ่มเล่น!':'ต่อไป ▶'}</div>
     </div>
-    <div class="tut-skip" style="position:fixed;bottom:16px;right:16px;pointer-events:auto;" onclick="endMenuTour()">ข้าม ✕</div>`;
+    <div class="tour-skip" onclick="endMenuTour()">ข้ามคำแนะนำ ✕</div>`;
+  if(_tourRAF) cancelAnimationFrame(_tourRAF);
+  const track=()=>{ if(_tourStep<0){_tourRAF=null;return;} _positionTour(s); _tourRAF=requestAnimationFrame(track); };
+  track();
+}
+/* position highlight/box/arrow from the target's current bounding box */
+function _positionTour(s){
+  const el=document.getElementById('tourOverlay'); if(!el) return;
+  const hl=el.querySelector('.tour-hl'), box=el.querySelector('.tour-box'), arrow=el.querySelector('.tour-arrow');
+  if(!box) return;
+  const tEl=s.target?document.querySelector(s.target):null;
+  const bw=box.offsetWidth||230, bh=box.offsetHeight||190;
+  if(tEl&&tEl.offsetParent!==null){
+    const r=tEl.getBoundingClientRect(), pad=6;
+    hl.style.display='block';
+    hl.style.top=(r.top-pad)+'px'; hl.style.left=(r.left-pad)+'px';
+    hl.style.width=(r.width+pad*2)+'px'; hl.style.height=(r.height+pad*2)+'px';
+    const bx=Math.min(Math.max(8,r.left+r.width/2-bw/2),window.innerWidth-bw-8);
+    const spaceAbove=r.top-pad-12, spaceBelow=window.innerHeight-(r.bottom+pad+12);
+    if(spaceAbove>=bh){
+      box.style.top=(r.top-pad-12-bh)+'px'; box.style.left=bx+'px'; box.style.transform='';
+      arrow.style.display='block'; arrow.textContent='⬇️';
+      arrow.style.top=(r.top-pad-26)+'px'; arrow.style.left=(r.left+r.width/2)+'px'; arrow.style.transform='translateX(-50%)';
+    } else if(spaceBelow>=bh){
+      box.style.top=(r.bottom+pad+12)+'px'; box.style.left=bx+'px'; box.style.transform='';
+      arrow.style.display='block'; arrow.textContent='⬆️';
+      arrow.style.top=(r.bottom+pad+2)+'px'; arrow.style.left=(r.left+r.width/2)+'px'; arrow.style.transform='translateX(-50%)';
+    } else {
+      box.style.top='50%'; box.style.left='50%'; box.style.transform='translate(-50%,-50%)';
+      arrow.style.display='none';
+    }
+  } else {
+    hl.style.display='none'; arrow.style.display='none';
+    box.style.top='50%'; box.style.left='50%'; box.style.transform='translate(-50%,-50%)';
+  }
 }
 
 /* ══ CUTSCENE ENGINE ══ */
