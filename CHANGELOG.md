@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.28 — การ์ดป้อมที่เลือกสว่างเด่นชัด
+
+### Fixed
+- `css/main.css` `.ts-card-art img`: เดิมทุกการ์ดใช้ `mix-blend-mode:multiply` บนพื้นมืดเท่ากันหมด การ์ดที่เลือกเลยไม่สว่างขึ้น (มีแค่กรอบ/เครื่องหมายถูก) — เพิ่ม dim `brightness(.6) grayscale(.35)` ให้อันที่ไม่เลือก และ `.ts-card.selected .ts-card-art img` เป็น `mix-blend-mode:normal` + `brightness(1.12)` ให้อันที่เลือกสว่างเด่น พร้อม glow พื้นหลังการ์ด
+
 ## v3.24.27 — แก้ hint ขุดเด้งซ้ำกับการสอน
 
 ### Fixed
