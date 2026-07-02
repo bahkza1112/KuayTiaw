@@ -1524,6 +1524,26 @@ function skipTutorial(){
   if(el) el.style.display='none';
 }
 
+/* เล่นการสอนในด่านใหม่ (จากหน้าตั้งค่า) — รีเซ็ตธงแล้วเริ่มใหม่ */
+function replayTutorial(){
+  localStorage.removeItem('tq_tut_done');
+  localStorage.removeItem('tq_tut_idx');
+  if(typeof closeSettings==='function') closeSettings();
+  const gp=document.getElementById('gp');
+  if(G&&!G.over&&!G.win&&gp&&gp.style.display!=='none'&&currentStage&&currentStage.id<=2){
+    initTutorial(); // กำลังอยู่ในด่าน 1-3 → เริ่มสอนของด่านนั้นทันที
+  } else {
+    showToast('📚 เริ่มการสอนใหม่ที่ด่าน 1');
+    startStage(0);
+  }
+}
+/* เล่นทัวร์แนะนำเมนูใหม่ (จากหน้าตั้งค่า) */
+function replayMenuTour(){
+  localStorage.removeItem('tq_menutour_done');
+  if(typeof closeSettings==='function') closeSettings();
+  startMenuTour();
+}
+
 /* ══ MENU TOUR ══ */
 let _tourStep=-1,_tourRAF=null;
 const MENU_TOUR_STEPS=[

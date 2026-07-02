@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.26 — เพิ่มปุ่มเล่นการสอน/แนะนำเมนูอีกครั้ง
+
+### Added
+- `Tower Quest 🏰.html` (`#settingsScreen`): ปุ่ม 📚 เล่นการสอนในด่านอีกครั้ง + 🧭 แนะนำเมนูอีกครั้ง
+- `js/ui.js` `replayTutorial()`: ล้างธง `tq_tut_done`/`tq_tut_idx` แล้วเริ่มสอนใหม่ — ถ้ากำลังอยู่ในด่าน 1-3 เริ่มทันที (`initTutorial`), ไม่งั้นไปด่าน 1 (`startStage(0)`)
+- `js/ui.js` `replayMenuTour()`: ล้างธง `tq_menutour_done` แล้วเรียก `startMenuTour()`
+
 ## v3.24.25 — รื้อการสอนในด่านใหม่หมด (in-game tutorial rework)
 
 ### Changed
