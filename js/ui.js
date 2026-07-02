@@ -1356,61 +1356,73 @@ function _doStartStage(si){
 }
 
 /* ══ TUTORIAL SYSTEM ══ */
-let _tutStep=-1,_tutIv=null,_tutResizeBound=false;
+let _tutStep=-1,_tutIv=null,_tutResizeBound=false,_tutRAF=null;
 /* BUG FIX: tutorial used fixed px offsets that broke on scaled/responsive canvases
    (overlay would spill off its target area on narrow/tall viewports).
    Now positions are computed live from the actual DOM elements' bounding boxes,
    relative to #gp, so it always lines up regardless of screen size. */
 const _TUT_STEPS=[
-  // === ด่าน 1: Grassland ===
+  // === ด่าน 1: Grassland — พื้นฐาน ===
   {stage:0, title:'ยินดีต้อนรับ! 🏰',
    msg:'ปกป้องปราสาทจากศัตรู\nที่เดินตามเส้นทางมาเรื่อยๆ\nโดยวางป้อมปราการสกัดไว้',
    target:null, boxAnchor:'center', arrowIcon:'', click:true},
+  {stage:0, title:'⛏️ เครื่องมือขุด',
+   msg:'หลายช่องมีต้นไม้/หินขวางอยู่\nกดปุ่ม ⛏️ ขุด ด้านล่างก่อน\nเพื่อเปิดโหมดขุดพื้นที่',
+   target:'#digBtn', boxAnchor:'above', arrowIcon:'⬇️', cond:G=>G.selDig},
+  {stage:0, title:'ขุดเคลียร์พื้นที่',
+   msg:'แตะช่องที่มีต้นไม้/หิน บนแผนที่\nเพื่อเคลียร์ออก (เสียทองนิดหน่อย)\nจะได้ช่องว่างไว้วางป้อม',
+   target:'#cv', boxAnchor:'top-right', arrowIcon:'👆', cond:G=>G.obstaclesCleared>0},
   {stage:0, title:'เลือกป้อม',
-   msg:'เลือกป้อมจากแถบด้านล่าง\nแตะ 💣 Cannon เพื่อเริ่ม',
+   msg:'เลือกป้อมจากแถบด้านล่าง\nแตะ 💣 ปืนใหญ่ เพื่อเริ่ม',
    target:'#tb0', boxAnchor:'above', arrowIcon:'⬇️', cond:G=>G.selTwr>=0},
   {stage:0, title:'วางป้อม',
-   msg:'แตะบนแผนที่\nเพื่อวางป้อม!',
+   msg:'แตะช่องว่างบนแผนที่\nเพื่อวางป้อม!',
    target:'#cv', boxAnchor:'top-right', arrowIcon:'👆', cond:G=>G.towers.length>0},
-  {stage:0, title:'ดูข้อมูลป้อม',
-   msg:'แตะที่ป้อมที่วางไว้\nเพื่อดูสถานะและอัปเกรด\nดาเมจ/ระยะ/ความเร็วยิง',
+  {stage:0, title:'ดูข้อมูล & อัปเกรด',
+   msg:'แตะที่ป้อมที่วางไว้\nเพื่อดูสถานะและอัปเกรด\nดาเมจ / ระยะ / ความเร็วยิง',
    target:'#cv', boxAnchor:'top-right', arrowIcon:'👆', cond:()=>!!_popupTw},
   {stage:0, title:'เหรียญทอง 💰',
-   msg:'กำจัดศัตรูเพื่อรับทอง\nใช้ซื้อป้อมใหม่\nหรืออัปเกรดป้อมที่มี',
+   msg:'กำจัดศัตรูเพื่อรับทอง\nใช้ขุดพื้นที่ ซื้อป้อมใหม่\nหรืออัปเกรดป้อมที่มี',
    target:null, boxAnchor:'center', arrowIcon:'', click:true},
   {stage:0, title:'ส่งศัตรูมา!',
-   msg:'กด ▶ Send Wave\nเพื่อเริ่มการต่อสู้!',
+   msg:'กด ▶ ส่งคลื่น\nเพื่อเริ่มการต่อสู้!',
    target:'#waveBtn', boxAnchor:'above', arrowIcon:'⬇️', cond:G=>G.wave>=1},
+  {stage:0, title:'เร่งเวลา & อัตโนมัติ',
+   msg:'กด 1× เพื่อเร่งความเร็วเกม (สูงสุด 3×)\n🔁 อัตโนมัติ ส่งคลื่นถัดไปเองเมื่อเคลียร์\nช่วยให้เล่นไวขึ้น',
+   target:'#speedBtn', boxAnchor:'above', arrowIcon:'⬇️', click:true},
   {stage:0, title:'🎉 เยี่ยมมาก!',
    msg:'ปกป้องปราสาท\nอย่าให้ศัตรูผ่าน!\nไปกันต่อในด่านถัดไป',
    target:null, boxAnchor:'center', arrowIcon:'', click:true},
-  // === ด่าน 2: Dark Forest ===
+  // === ด่าน 2: Dark Forest — ระบบป้อมขั้นสูง ===
   {stage:1, title:'ผสมป้อมหลายชนิด',
-   msg:'แต่ละป้อมมีบทบาทต่างกัน\n(สาด/หน่วง/เป้าเดี่ยว/บัฟ)\nลองผสมกันให้เหมาะกับศัตรู',
+   msg:'แต่ละป้อมมีบทบาทต่างกัน\n(สาด / หน่วง / เป้าเดี่ยว / บัฟ / ทอง)\nลองผสมกันให้เหมาะกับศัตรู',
    target:null, boxAnchor:'center', arrowIcon:'', click:true},
   {stage:1, title:'✨ รวมป้อม (Star Merge)',
    msg:'ลากป้อมชนิด/★เดียวกันทับกัน\nเพื่อรวมเป็น★สูงขึ้น (สูงสุด★4)\nจะได้แต้มสกิลฟรีจัดสรรใหม่ตามดาว',
    target:null, boxAnchor:'center', arrowIcon:'', click:true},
-  {stage:1, title:'ระบบ Awaken ⚡',
+  {stage:1, title:'⚡ ระบบ Awaken',
    msg:'รวมป้อมให้ถึง★3\nแล้วจ่ายทองเพื่อ "ปลุกพลัง"\nรับพลังพิเศษ แต่ป้อมจะล็อกดาวตลอดไป',
    target:null, boxAnchor:'center', arrowIcon:'', click:true},
-  {stage:1, title:'สภาพอากาศ 🌦️',
-   msg:'สภาพอากาศจะเปลี่ยนเป็นระยะ\nและส่งผลต่อป้อม/ศัตรู\nคอยสังเกตไอคอนด้านบนจอ',
-   target:null, boxAnchor:'center', arrowIcon:'', click:true},
+  {stage:1, title:'⬆ อัพสกิลทั้งหมด',
+   msg:'กดปุ่มนี้เพื่ออัปเกรดสกิล\nป้อมทุกตัวในสนามพร้อมกัน\nประหยัดเวลากดทีละตัว',
+   target:'#upgradeAllBtn', boxAnchor:'above', arrowIcon:'⬇️', click:true},
+  {stage:1, title:'🃏 การ์ดสกิล & ปุ่มสกิล',
+   msg:'เลือกการ์ดสกิลก่อนเข้าด่าน (แถบ "สกิล")\nระหว่างเล่นกดปุ่มสกิลลอยเพื่อใช้\nเช่น ☄️ อุกกาบาต, ❄️ แช่แข็งสนาม',
+   target:'#skillBtn', boxAnchor:'above', arrowIcon:'⬇️', click:true},
+  {stage:1, title:'🌦️ สภาพอากาศ',
+   msg:'สภาพอากาศเปลี่ยนเป็นระยะ\nและส่งผลต่อป้อม/ศัตรู\nกดไอคอนบนจอเพื่อดูรายละเอียด',
+   target:'#weatherHud', boxAnchor:'below', arrowIcon:'⬆️', click:true},
   {stage:1, title:'🎁 ตู้กาชา',
    msg:'ใช้เจม💎 หมุนตู้กาชาจากเมนูหลัก\nรับโปชั่น เจม และการ์ดสกิล\nการ์ดสกิลเพิ่มพลังพิเศษให้ป้อม',
    target:null, boxAnchor:'center', arrowIcon:'', click:true},
-  {stage:1, title:'🃏 การ์ดสกิล',
-   msg:'เลือกการ์ดสกิลก่อนเริ่มแต่ละด่าน\nจากหน้าเลือกป้อม → แถบ "สกิล"\nเช่น ☄️ Meteor ทำ AoE ใหญ่ ❄️ Freeze หน่วงศัตรู',
+  // === ด่าน 3: Volcanic Pass — เมต้าเกม ===
+  {stage:2, title:'🪨 วัสดุพิเศษ & Workshop',
+   msg:'เคลียร์เวฟมีโอกาสได้วัสดุพิเศษ\nนำไปใช้ใน 🛠️ เวิร์กชอป\nเพื่อ Craft ปลดล็อกป้อมใหม่ถาวร',
    target:null, boxAnchor:'center', arrowIcon:'', click:true},
-  // === ด่าน 3: Volcanic Pass ===
-  {stage:2, title:'วัสดุพิเศษ 🪨',
-   msg:'เคลียร์เวฟมีโอกาสได้วัสดุพิเศษ\nนำไปใช้ใน 🛠️ Workshop\nเพื่อปลดล็อกป้อมใหม่ถาวร',
+  {stage:2, title:'📖 สารานุกรม & ความสำเร็จ',
+   msg:'เปิดเมนูหลักเพื่อดูสารานุกรม\nข้อมูลป้อม/ศัตรูทุกชนิด\nและภารกิจความสำเร็จต่างๆ',
    target:null, boxAnchor:'center', arrowIcon:'', click:true},
-  {stage:2, title:'Codex & ความสำเร็จ 📖',
-   msg:'เปิดเมนูหลักเพื่อดู Codex\nข้อมูลป้อม/ศัตรู\nและภารกิจความสำเร็จต่างๆ',
-   target:null, boxAnchor:'center', arrowIcon:'', click:true},
-  {stage:2, title:'พร้อมลุยแล้ว! 🔥',
+  {stage:2, title:'🔥 พร้อมลุยแล้ว!',
    msg:'เมื่อผ่านด่านเนื้อเรื่องครบ\nลองโหมด Endgame\nเพื่อความท้าทายไม่จำกัด!',
    target:null, boxAnchor:'center', arrowIcon:'', click:true, final:true},
 ];
@@ -1455,37 +1467,58 @@ function _tutRectRel(sel){
   const g=gp.getBoundingClientRect(), r=el.getBoundingClientRect();
   return {top:r.top-g.top, left:r.left-g.left, right:g.right-r.right, bottom:g.bottom-r.bottom, width:r.width, height:r.height};
 }
+/* build the step's DOM once, then track the target's live box every frame so the
+   highlight/box/arrow never freeze off-target when the canvas/panel reflows. */
 function _renderTut(){
   const el=document.getElementById('tutOverlay'); if(!el) return;
-  if(_tutStep<0){el.style.display='none';return;}
+  if(_tutStep<0){el.style.display='none';if(_tutRAF){cancelAnimationFrame(_tutRAF);_tutRAF=null;}return;}
   el.style.display='block';
   const s=_TUT_STEPS[_tutStep];
-  let hl='display:none;', arrow='display:none;', box='top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;';
-  const rect=s.target?_tutRectRel(s.target):null;
-  if(rect){
-    const pad=6;
-    hl=`top:${rect.top-pad}px;left:${rect.left-pad}px;width:${rect.width+pad*2}px;height:${rect.height+pad*2}px;`;
-    if(s.boxAnchor==='above'){
-      arrow=`top:${rect.top-40}px;left:${rect.left+rect.width/2}px;transform:translateX(-50%);`;
-      box=`top:${Math.max(8,rect.top-118)}px;left:${Math.min(Math.max(8,rect.left+rect.width/2-95),document.getElementById('gp').clientWidth-198)}px;`;
-    } else if(s.boxAnchor==='top-right'){
-      arrow=`top:${rect.top+rect.height*0.4}px;left:${rect.left+rect.width*0.46}px;`;
-      box=`top:${rect.top+10}px;right:10px;`;
-    }
-  }
   el.innerHTML=`
-    <div class="tut-highlight" style="${hl}"></div>
-    <div class="tut-arrow" style="${arrow}">${s.arrowIcon}</div>
-    <div class="tut-box" style="${box}">
+    <div class="tut-highlight" style="display:none;"></div>
+    <div class="tut-arrow" style="display:none;">${s.arrowIcon||''}</div>
+    <div class="tut-box" style="top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
       <div class="tut-title">${s.title}</div>
       ${s.msg.replace(/\n/g,'<br>')}
       ${s.click?`<div class="tut-next" onclick="_tutAdvanceStep()">${s.final?'🎮 เริ่มเล่น':'ต่อไป ▶'}</div>`:''}
     </div>
-    <div class="tut-skip" onclick="skipTutorial()">ข้าม ✕</div>`;
+    <div class="tour-skip" onclick="skipTutorial()">ข้ามการสอน ✕</div>`;
+  if(_tutRAF) cancelAnimationFrame(_tutRAF);
+  const track=()=>{ if(_tutStep<0){_tutRAF=null;return;} _tutPosition(s); _tutRAF=requestAnimationFrame(track); };
+  track();
+}
+/* position highlight/box/arrow relative to #gp from the target's current box */
+function _tutPosition(s){
+  const el=document.getElementById('tutOverlay'), gp=document.getElementById('gp'); if(!el||!gp) return;
+  const hl=el.querySelector('.tut-highlight'), arrow=el.querySelector('.tut-arrow'), box=el.querySelector('.tut-box');
+  if(!box) return;
+  const tEl=s.target?document.querySelector(s.target):null;
+  if(tEl&&tEl.offsetParent!==null){
+    const rect=_tutRectRel(tEl); if(!rect){return;}
+    const pad=6, gw=gp.clientWidth, gh=gp.clientHeight, bw=box.offsetWidth||190, bh=box.offsetHeight||110;
+    hl.style.display='block';
+    hl.style.top=(rect.top-pad)+'px'; hl.style.left=(rect.left-pad)+'px';
+    hl.style.width=(rect.width+pad*2)+'px'; hl.style.height=(rect.height+pad*2)+'px';
+    const cx=rect.left+rect.width/2, bx=Math.min(Math.max(8,cx-bw/2),gw-bw-8);
+    if(s.boxAnchor==='top-right'){
+      arrow.style.display='block'; arrow.style.top=(rect.top+rect.height*0.4)+'px'; arrow.style.left=(rect.left+rect.width*0.46)+'px'; arrow.style.right='auto';
+      box.style.top=Math.min(rect.top+10,gh-bh-8)+'px'; box.style.right='10px'; box.style.left='auto'; box.style.transform='';
+    } else if(s.boxAnchor==='below'){
+      arrow.style.display='block'; arrow.style.top=(rect.top+rect.height+4)+'px'; arrow.style.left=(cx-13)+'px'; arrow.style.right='auto';
+      box.style.top=Math.min(rect.top+rect.height+34,gh-bh-8)+'px'; box.style.left=bx+'px'; box.style.right='auto'; box.style.transform='';
+    } else { // 'above'
+      arrow.style.display='block'; arrow.style.top=(rect.top-34)+'px'; arrow.style.left=(cx-13)+'px'; arrow.style.right='auto';
+      box.style.top=Math.max(8,rect.top-bh-14)+'px'; box.style.left=bx+'px'; box.style.right='auto'; box.style.transform='';
+    }
+  } else {
+    hl.style.display='none'; arrow.style.display='none';
+    box.style.top='50%'; box.style.left='50%'; box.style.right='auto'; box.style.transform='translate(-50%,-50%)';
+  }
 }
 function skipTutorial(){
   _tutStep=-1;
   if(_tutIv){clearInterval(_tutIv);_tutIv=null;}
+  if(_tutRAF){cancelAnimationFrame(_tutRAF);_tutRAF=null;}
   localStorage.setItem('tq_tut_done','1');
   const el=document.getElementById('tutOverlay');
   if(el) el.style.display='none';

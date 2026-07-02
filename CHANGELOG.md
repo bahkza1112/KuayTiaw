@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.25 — รื้อการสอนในด่านใหม่หมด (in-game tutorial rework)
+
+### Changed
+- `js/ui.js` `_TUT_STEPS`: รื้อเนื้อหาการสอนในด่านทั้งหมด (20 สเต็ป) ให้ตรงกับระบบปัจจุบัน — เพิ่มสอน ⛏️ เครื่องมือขุด (dig/obstacle system, เดิมไม่มีสอนเลย), ⬆ อัพสกิลทั้งหมด, เร่งเวลา/อัตโนมัติ, ปุ่มสกิล FAB, สภาพอากาศ, Workshop/วัสดุ, สารานุกรม
+- `css/main.css`: ปุ่มข้ามของ tutorial ใช้สไตล์ `.tour-skip` เด่นชัด (แชร์กับเมนูทัวร์)
+
+### Fixed
+- `js/ui.js` `_renderTut`/`_tutPosition`: เดิมวัดตำแหน่งเป้าหมายครั้งเดียว → กรอบไฮไลต์/นิ้วชี้ค้างผิดตำแหน่งเมื่อ canvas/พาเนลรีโฟลว์ เปลี่ยนเป็น track ทุกเฟรมด้วย `requestAnimationFrame` + วัดขนาดกล่องจริง และเพิ่ม anchor `below`; เป้าหมายที่ซ่อนอยู่ (skill/weather ที่ยังไม่มี) จะ fallback เป็นกล่องกลางจอแทนไฮไลต์ค้างมุมจอ
+
 ## v3.24.24 — Fix: กรอบคำแนะนำเมนูไม่ตรงปุ่ม + ข้ามง่ายขึ้น
 
 ### Fixed
