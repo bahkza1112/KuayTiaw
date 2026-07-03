@@ -3,7 +3,7 @@
 This document is a system-by-system map of the game as implemented in
 [`Tower Quest 🏰.html`](Tower%20Quest%20%F0%9F%8F%B0.html) plus its
 `css/main.css` and `js/{save,enemy,tower,game,ui}.js` modules (current
-version **v3.24.38**). Line numbers refer to these files and
+version **v3.24.39**). Line numbers refer to these files and
 may drift as they change — use them as a starting point for searches, not as
 permanent anchors.
 
@@ -89,7 +89,7 @@ Heatwave, Blizzard, Poison, Lightning (50% tower disable), Sandstorm, Darknight 
 | **Dev Panel** | Debug + balance tuning + cheat |
 | **Persistent Gold** | สกุลเงินสำหรับ Talent ถาวร |
 | **Synergy Display** | badge 💚+X% บนกระดาน + เส้นเชื่อม Support ↔ ป้อม + popup DPS รวม buff |
-| **Sound Effects** | place, wave_start, boss_die, die, shoot (unique per tower type 0–8) |
+| **Sound Effects** | place, wave_start, boss_die, die, shoot (unique per firing tower type 0–3,5,7,8,9 incl. Time) |
 | **Projectile Visuals** | unique กระสุนทุกป้อม (type 0–8): cannonball, ice shard, magic orb, sniper, coin, healing orb, void crescent, etc. |
 | **Map Art** | 5-pass terrain renderer: biome decorations (pine/palm/ice crystal/mushroom/dead tree/lava) |
 | **Dig Tool** | ขุดสิ่งกีดขวางบนกระดาน + price pill แสดงบน canvas |

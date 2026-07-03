@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.39 — เพิ่มเสียงยิงให้ป้อมกาลเวลา (Time Tower)
+
+### Fixed
+- `js/game.js`: `_TSND` เดิมมีแค่ index 0–8 → ป้อมกาลเวลา (type 9) `_TSND[9]===undefined` ยิงแล้วไม่มีเสียง (มีแต่ muzzle animation cyan tick จาก v3.24.38) เพิ่ม `_TSND[9]='time'` + `case 'time'` ใน `_playSound` (เข็มนาฬิกา tick 2 ครั้ง + shimmer คลื่นเวลาบิดโทน cyan ให้เข้ากับแฟลช)
+
 ## v3.24.38 — กระสุน Sprite จริง + muzzle flash เข้าธีมป้อม
 
 ### Added

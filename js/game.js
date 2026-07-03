@@ -846,6 +846,20 @@ function _playSound(type){
         o2g.gain.setValueAtTime(.25,ac.currentTime); o2g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.3);
         o2.connect(o2g); o2g.connect(v);
         o.start(); o.stop(ac.currentTime+.3); o2.start(); o2.stop(ac.currentTime+.3); break;}
+      case 'time':{// ⏳ clock tick + temporal warp shimmer (matches cyan tick muzzle)
+        const t=ac.currentTime;
+        [0,.06].forEach(dt=>{// two crisp clock ticks
+          const o=ac.createOscillator(),og=ac.createGain();
+          o.type='square'; o.frequency.setValueAtTime(1500,t+dt);
+          o.frequency.exponentialRampToValueAtTime(950,t+dt+.03);
+          og.gain.setValueAtTime(.16,t+dt); og.gain.exponentialRampToValueAtTime(.001,t+dt+.05);
+          o.connect(og); og.connect(v); o.start(t+dt); o.stop(t+dt+.06);
+        });
+        const s=ac.createOscillator(),sg=ac.createGain(); // descending time-warp shimmer
+        s.type='sine'; s.frequency.setValueAtTime(1760,t+.02);
+        s.frequency.exponentialRampToValueAtTime(620,t+.3);
+        sg.gain.setValueAtTime(.13,t+.02); sg.gain.exponentialRampToValueAtTime(.001,t+.34);
+        s.connect(sg); sg.connect(v); s.start(t+.02); s.stop(t+.34); break;}
       case 'gacha_big':{// 🎉 triumphant fanfare for legendary/epic reveals
         [523,659,784,1047,1319].forEach((freq,i)=>{
           const o=ac.createOscillator(),og=ac.createGain();
@@ -903,7 +917,7 @@ function _playSound(type){
   }catch(e){}
 }
 /* tower type → sound name */
-const _TSND=['cannon','ice','magic','sniper','gold','archer','support','thunder','void'];
+const _TSND=['cannon','ice','magic','sniper','gold','archer','support','thunder','void','time'];
 /* projectile p.type → sprite; spin=true means continuous rotate, else face travel dir */
 const _PSPRITE=['proj_cannon','proj_ice','proj_magic','proj_sniper','proj_gold','proj_arrow','proj_heal','proj_thunder','proj_void'];
 const _PSPIN={0:1,1:1,2:1,4:1,6:1}; // round/spinning ones ignore direction
