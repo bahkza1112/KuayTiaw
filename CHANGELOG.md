@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.42 — เจนภาพป้อมทั้ง 10 ใหม่ (Leonardo.ai Lucid Origin)
+
+### Changed
+- `assets/images/tower_*.{png,webp}` (ครบ 10 ป้อม): เจนใหม่ทั้งชุดผ่าน Leonardo.ai (Lucid Origin) ด้วย style prefix เดียวกัน (chunky cartoon 3D game asset, 3/4 isometric, stone tower) → ป้อมทั้งเซ็ตสไตล์สม่ำเสมอเข้าชุดกัน คีย์พื้นขาวออกโปร่งใส (saturation-aware flood fill) ธีม dark fantasy ตรงกับเกม
+
 ## v3.24.41 — เจนภาพป้อมสายฟ้าใหม่
 
 ### Changed
