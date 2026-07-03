@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.41 — เจนภาพป้อมสายฟ้าใหม่
+
+### Changed
+- `assets/images/tower_thunder.png`: เจนใหม่ผ่าน pollinations (flux) — ป้อมหินเข้มธีมสายฟ้า (bolt เหลือง + ยอดคริสตัลประกายไฟฟ้า + ฐานหิน) คีย์พื้นออกโปร่งใส เข้าชุดสไตล์กับป้อมอื่น (แทนภาพเดิมที่ฐานมีเศษหินรก)
+
 ## v3.24.40 — แก้ยอดป้อมกาลเวลาโดนตัดขอบบน
 
 ### Fixed
