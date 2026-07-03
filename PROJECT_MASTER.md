@@ -3,7 +3,7 @@
 This document is a system-by-system map of the game as implemented in
 [`Tower Quest 🏰.html`](Tower%20Quest%20%F0%9F%8F%B0.html) plus its
 `css/main.css` and `js/{save,enemy,tower,game,ui}.js` modules (current
-version **v3.24.43**). Line numbers refer to these files and
+version **v3.24.44**). Line numbers refer to these files and
 may drift as they change — use them as a starting point for searches, not as
 permanent anchors.
 
@@ -73,7 +73,7 @@ Heatwave, Blizzard, Poison, Lightning (50% tower disable), Sandstorm, Darknight 
 | **Shard Exchange** | 🔹 Common×10→mat0, Rare×5→mat1, Epic×3→mat2 |
 | **Talents** | 6 leveled (0–100): sgold, gkill, awaken cost, tdmg, hpmax, skcool |
 | **Achievements** | 32 รายการ: story Act1(6) + Act2(5), combat(6), skill(5), endgame(5), casino(6), collection(6) |
-| **Story Missions** | 14 รายการ: per-stage(11) + milestone(3) |
+| **Story Missions** | 27 รายการ: per-stage(21, Act1+Act2) + milestone(6: ผ่าน 3/6/9/15/ครบ21/ครบ21★3) |
 | **Daily Login** | 7-day cycle: gems/tickets/gold/potions |
 | **Daily Quests** | pool 7 รายการ, สุ่มมา 3/วัน |
 | **Leaderboard** | Local + cloud submit, story + endgame tabs |

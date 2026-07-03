@@ -1045,11 +1045,24 @@ const STORY_MISSIONS=[
   {id:'s8', type:'stage',si:8,  label:'ผ่านด่าน 9: Dark Throne 👿',        gold:3000, gems:500, tickets:20},
   {id:'s9', type:'stage',si:9,  label:'ผ่านด่าน 10: Dark Tower Summit 💀', gold:4000, gems:600, tickets:30},
   {id:'s10',type:'stage',si:10, label:'ผ่านด่าน 11: Shadow Remnant 🌑',   gold:5000, gems:800, tickets:50},
+  // per-stage Act 2 (si 11-20 = ด่าน 12-21)
+  {id:'s11',type:'stage',si:11, label:'ผ่านด่าน 12: ทะเลทรายเถ้าถ่าน 🔥',  gold:5500,  gems:850,  tickets:50},
+  {id:'s12',type:'stage',si:12, label:'ผ่านด่าน 13: ป่าแข็งนิรันดร์ ❄️',    gold:6000,  gems:900,  tickets:50},
+  {id:'s13',type:'stage',si:13, label:'ผ่านด่าน 14: ทะเลสาบพิษ 🫧',        gold:6500,  gems:1000, tickets:50},
+  {id:'s14',type:'stage',si:14, label:'ผ่านด่าน 15: หุบเขาสายฟ้า ⚡',       gold:7000,  gems:1100, tickets:60},
+  {id:'s15',type:'stage',si:15, label:'ผ่านด่าน 16: ทุ่งพายุทราย 🌪️',      gold:7500,  gems:1200, tickets:60},
+  {id:'s16',type:'stage',si:16, label:'ผ่านด่าน 17: หนองน้ำมืด 🌑',        gold:8000,  gems:1300, tickets:60},
+  {id:'s17',type:'stage',si:17, label:'ผ่านด่าน 18: ยอดเขาน้ำแข็ง 🗻',     gold:9000,  gems:1400, tickets:70},
+  {id:'s18',type:'stage',si:18, label:'ผ่านด่าน 19: วิหารกาลเวลา ⏳',       gold:10000, gems:1500, tickets:70},
+  {id:'s19',type:'stage',si:19, label:'ผ่านด่าน 20: ปราการโบราณ 🏛️',      gold:11000, gems:1700, tickets:80},
+  {id:'s20',type:'stage',si:20, label:'ผ่านด่าน 21: แกนโลก 🌍',           gold:13000, gems:2000, tickets:100},
   // milestones
   {id:'m3',    type:'milestone',need:3,   label:'🏅 ผ่านด่าน 3 ด่าน',                  gold:1000, gems:200,  tickets:10},
   {id:'m6',    type:'milestone',need:6,   label:'🏅 ผ่านด่าน 6 ด่าน',                  gold:2000, gems:400,  tickets:10},
-  {id:'mall',  type:'milestone',need:11,  label:'🏆 ผ่านครบทุกด่าน!',                  gold:5000, gems:1000, tickets:50},
-  {id:'mall3s',type:'milestone3s',need:11,label:'🌟 ผ่านทุกด่าน 3 ดาว!',              gold:5000, gems:1500, tickets:50},
+  {id:'m9',    type:'milestone',need:9,   label:'🏅 ผ่านด่าน 9 ด่าน',                  gold:3000, gems:550,  tickets:20},
+  {id:'m15',   type:'milestone',need:15,  label:'🏅 ผ่านด่าน 15 ด่าน',                 gold:4000, gems:750,  tickets:30},
+  {id:'mall',  type:'milestone',need:21,  label:'🏆 ผ่านครบทุกด่าน!',                  gold:8000, gems:1500, tickets:80},
+  {id:'mall3s',type:'milestone3s',need:21,label:'🌟 ผ่านทุกด่าน 3 ดาว!',              gold:8000, gems:2500, tickets:100},
 ];
 function loadStoryClaimed(){try{return new Set(JSON.parse(localStorage.getItem('tq_storyclaimed')||'[]'));}catch{return new Set();}}
 function saveStoryClaimed(s){localStorage.setItem('tq_storyclaimed',JSON.stringify([...s]));}
