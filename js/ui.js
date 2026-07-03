@@ -1708,10 +1708,14 @@ function renderCsSlide(){
   lbl.textContent='บทที่ 1  —  ด่าน '+(csState.stageIdx+1);
   setTimeout(()=>lbl.classList.add('show'),50);
 
-  // icon
+  // icon — boss reveal shows a big portrait image, otherwise emoji
   const ico=document.getElementById('csIcon');
   ico.classList.remove('show');
-  ico.textContent=slide.icon||'';
+  if(slide.bossImg){
+    ico.innerHTML=`<img src="assets/images/${slide.bossImg}?v=${GAME_VERSION}" style="width:min(200px,42vw);height:min(200px,42vw);object-fit:contain;filter:drop-shadow(0 6px 20px rgba(0,0,0,.6));" onerror="this.parentNode.textContent='${slide.icon||'👹'}';">`;
+  } else {
+    ico.textContent=slide.icon||'';
+  }
   setTimeout(()=>ico.classList.add('show'),100);
 
   // title

@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.48 — ภาพบอสอลังการในคัตซีน
+
+### Added
+- `assets/images/boss_*.png` (6 ใบ: demon, dark_lord, brood_queen, naga_king, earth_god, frost_king): ภาพ portrait บอสอลังการ เจนผ่าน pollinations (flux) คีย์พื้นโปร่งใส
+- `js/ui.js` `renderCsSlide`: รองรับ `slide.bossImg` — แสดงภาพบอสตัวใหญ่ (min(200px,42vw)) แทน emoji ตอนเปิดตัวบอส (fallback เป็น emoji ถ้าโหลดรูปไม่ได้)
+- `js/ui-data.js` `CUTSCENES`: ใส่ `bossImg` ให้สไลด์เปิดตัวบอส 5 จุด — ปีศาจ (Volcanic), จอมมาร (Act1 final), ราชาน้ำแข็ง, นาคาราช, เทพทำลาย (Act2 final)
+
 ## v3.24.47 — ไอคอนโปชั่นเป็นภาพจริง
 
 ### Added
