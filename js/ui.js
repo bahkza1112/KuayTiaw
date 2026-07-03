@@ -1860,7 +1860,8 @@ function openEgTowerSelection(){
 }
 const _skIconCache={};
 const _SKILL_IDS=new Set(['goldrush','freeze','meteor','overdrive','barrier','shard_c','shard_r','shard_e','shard']);
-const _SKILL_SPRITE={goldrush:'skill_goldrush.png',freeze:'skill_freeze.png',meteor:'skill_meteor.png',overdrive:'skill_attack.png',barrier:'skill_wall.png'};
+const _SKILL_SPRITE={goldrush:'skill_goldrush.png',freeze:'skill_freeze.png',meteor:'skill_meteor.png',overdrive:'skill_attack.png',barrier:'skill_wall.png',
+  gold_pot:'item_gold_pot.png',hp_pot:'item_hp_pot.png',dmg_pot:'item_dmg_pot.png'};
 function _skillIconURL(id){
   if(_SKILL_SPRITE[id]) return 'assets/images/'+_SKILL_SPRITE[id]+'?v='+GAME_VERSION;
   if(_skIconCache[id]) return _skIconCache[id];

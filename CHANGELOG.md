@@ -2,6 +2,12 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.47 — ไอคอนโปชั่นเป็นภาพจริง
+
+### Added
+- `assets/images/item_gold_pot.png`, `item_hp_pot.png`, `item_dmg_pot.png`: ไอคอนขวดยา (ทอง/HP/พลัง) เจนผ่าน pollinations (flux) คีย์พื้นโปร่งใส
+- `js/ui.js` `_SKILL_SPRITE`: เพิ่ม mapping `gold_pot`/`hp_pot`/`dmg_pot` → item_*.png ทำให้กระเป๋าแสดงภาพจริงแทน emoji/canvas fallback (ผ่าน `_skillIconURL`)
+
 ## v3.24.46 — ปรับสมดุลเงินเริ่มต้น Act 2
 
 ### Changed
