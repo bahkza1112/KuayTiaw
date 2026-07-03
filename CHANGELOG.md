@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.43 — แก้ป้อมใหม่ภาพแหว่ง (เนื้อหินโดนกิน)
+
+### Fixed
+- `assets/images/tower_*.{png,webp}` (10 ป้อม): v3.24.42 คีย์พื้นด้วย saturation-aware flood fill ซึ่งกินเนื้อหินเทาอ่อน (จืด+สว่าง เข้าเกณฑ์ is_bg) ที่ต่อกับพื้นขาว → ป้อมแหว่ง แก้โดยคีย์ใหม่จากต้นฉบับด้วยวิธีลบเฉพาะ near-pure-white (thr 236, border-connected) + graded feather → เก็บเนื้อหิน/สีอ่อนไว้ครบทุกใบ
+
 ## v3.24.42 — เจนภาพป้อมทั้ง 10 ใหม่ (Leonardo.ai Lucid Origin)
 
 ### Changed
