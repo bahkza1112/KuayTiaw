@@ -2,6 +2,11 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.40 — แก้ยอดป้อมกาลเวลาโดนตัดขอบบน
+
+### Fixed
+- `assets/images/tower_time.png`: เนื้อภาพ (เปลว aura ม่วง) ติดขอบบนของ frame (opaque ถึง row 0) ทำให้ยอดดูโดนตัดแบน — ไล่ alpha ของแถวบนสุด ~42 แถวให้จางลงสู่ 0 เพื่อให้ปลาย aura dissipate เนียน (ตัวนาฬิกาไม่กระทบ)
+
 ## v3.24.39 — เพิ่มเสียงยิงให้ป้อมกาลเวลา (Time Tower)
 
 ### Fixed
