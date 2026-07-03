@@ -2,6 +2,12 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.45 — เก็บงานภาพ: ป้อมเวท + ลบเงาขาวใต้มอนสเตอร์
+
+### Fixed
+- `assets/images/tower_magic.png`: เจนใหม่ผ่าน Leonardo (ตัด "runes" ในพรอมต์ + ย้ำ no text) แก้ตัวอักษรรูนมั่ว ("RGENAT") ที่ AI สร้างบนตัวป้อมเดิม
+- `assets/images/enemy_*.png` (19 ตัว): ลบเงาแผ่นสีขาว-เทาใต้เท้ามอนสเตอร์ (พื้นเงาจากตอนเจนบนพื้นขาว ที่ดูผิดธรรมชาติบนสนามมืด) ด้วย border-connected flood fill เฉพาะพิกเซลจืด+สว่าง (thr 176, sat 34) — ปลอดภัยกับตัวมอน (โครงกระดูก/เกราะเงิน/หินโกเลม/สีอิ่มไม่โดนกิน)
+
 ## v3.24.44 — เพิ่มรางวัลผ่านด่าน Act 2 (Story Missions)
 
 ### Added
