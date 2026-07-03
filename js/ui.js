@@ -303,7 +303,7 @@ function _skillCardBackHTML(result,ci){
     const sd=BAG_ITEM_DEFS.find(b=>b.id===(result.shardId||'shard_c'));
     return `<div class="ro-frame rf-common">
       <div class="ro-hdr"><span class="ro-hdr-type">${sd.name}</span><span class="ro-hdr-gem"></span></div>
-      <div class="ro-art"><canvas id="skart${ci}" width="160" height="110"></canvas></div>
+      <div class="ro-art" style="display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 55%,${sd.color}33 0%,rgba(0,0,0,.35) 100%);"><img src="${_skillIconURL(sd.id)}" style="width:78%;height:88%;object-fit:contain;filter:drop-shadow(0 3px 8px rgba(0,0,0,.5));"></div>
       <div class="ro-footer"><span class="ro-name">ปลอบใจ</span><span class="ro-status">${sd.icon}×1</span></div>
     </div>`;
   }
@@ -315,7 +315,7 @@ function _skillCardBackHTML(result,ci){
   else status=`<span style="color:#555">${res.shards}/${res.shardsNeeded}</span>`;
   return `<div class="ro-frame ${rfCls}">
     <div class="ro-hdr"><span class="ro-hdr-type">${d.name}</span><span class="ro-hdr-gem"></span></div>
-    <div class="ro-art"><canvas id="skart${ci}" width="160" height="110"></canvas></div>
+    <div class="ro-art" style="display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 55%,${d.color}33 0%,rgba(0,0,0,.35) 100%);"><img src="${_skillIconURL(d.id)}" style="width:80%;height:90%;object-fit:contain;filter:drop-shadow(0 3px 10px rgba(0,0,0,.55));"></div>
     <div class="ro-footer"><span class="ro-stars">${stars}</span><span class="ro-status">${status}</span></div>
   </div>`;
 }
@@ -1865,7 +1865,8 @@ function openEgTowerSelection(){
 const _skIconCache={};
 const _SKILL_IDS=new Set(['goldrush','freeze','meteor','overdrive','barrier','shard_c','shard_r','shard_e','shard']);
 const _SKILL_SPRITE={goldrush:'skill_goldrush.png',freeze:'skill_freeze.png',meteor:'skill_meteor.png',overdrive:'skill_attack.png',barrier:'skill_wall.png',
-  gold_pot:'item_gold_pot.png',hp_pot:'item_hp_pot.png',dmg_pot:'item_dmg_pot.png'};
+  gold_pot:'item_gold_pot.png',hp_pot:'item_hp_pot.png',dmg_pot:'item_dmg_pot.png',
+  shard_c:'item_shard_c.png',shard_r:'item_shard_r.png',shard_e:'item_shard_e.png'};
 function _skillIconURL(id){
   if(_SKILL_SPRITE[id]) return 'assets/images/'+_SKILL_SPRITE[id]+'?v='+GAME_VERSION;
   if(_skIconCache[id]) return _skIconCache[id];

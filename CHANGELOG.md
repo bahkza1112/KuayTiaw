@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.49 — การ์ดตู้สุ่มใช้ภาพจริง
+
+### Changed
+- `js/ui.js` `_skillCardBackHTML`: เปลี่ยนพื้นที่ art ของการ์ดตู้สุ่มจาก `<canvas>` (วาดด้วย `_drawSkillArt` แนว chibi/ฉากเก่า) เป็น `<img>` ที่ใช้ `_skillIconURL` → การ์ดสกิลใช้ skill_*.png, การ์ดปลอบใจ(เศษ)ใช้ item_shard_*.png วางบน gradient สีตาม rarity (canvas หายไป `document.getElementById('skart'+i)` เป็น null → `_drawSkillArt` ไม่ถูกเรียก)
+- `js/ui.js` `_SKILL_SPRITE`: เพิ่ม mapping `shard_c`/`shard_r`/`shard_e` → item_shard_*.png
+
+### Added
+- `assets/images/item_shard_c.png`, `item_shard_r.png`, `item_shard_e.png`: ภาพคริสตัลเศษ (หินมืด/แกนเวทย์ม่วง/ดวงดาวทอง) เจนผ่าน pollinations คีย์พื้นโปร่งใส
+
 ## v3.24.48 — ภาพบอสอลังการในคัตซีน
 
 ### Added
