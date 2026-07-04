@@ -3,7 +3,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Tower Quest 🏰</title>
-<link rel="stylesheet" href="css/main.css?v=3.24.56">
+<link rel="stylesheet" href="css/main.css?v=3.24.57">
 </head>
 <body>
 
@@ -56,9 +56,9 @@
   <div id="menuSettingsBtn" onclick="openSettings()" style="position:absolute;top:136px;left:14px;z-index:10;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:rgba(200,200,200,.7);font-size:10px;padding:5px 12px;border-radius:50px;cursor:pointer;">⚙ ตั้งค่า</div>
 
   <!-- logo -->
-  <img class="mm-emblem" id="logoIsland" src="assets/images/logo.png?v=3.24.56" alt="Tower Quest">
+  <img class="mm-emblem" id="logoIsland" src="assets/images/logo.png?v=3.24.57" alt="Tower Quest">
   <div class="gsub">⚔️ ปกป้องอาณาจักรของคุณ!</div>
-  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v3.24.56 — มีอะไรใหม่<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
+  <div id="verBtn" style="font-size:10px;color:rgba(255,224,130,.45);letter-spacing:1px;margin-top:-18px;margin-bottom:18px;cursor:pointer;">📰 v3.24.57 — มีอะไรใหม่<span id="newsBadge" class="news-badge" style="display:none;"></span></div>
 
   <!-- battle buttons -->
   <button class="bbattle" id="startBtn">⚔️ โหมดเนื้อเรื่อง</button>
@@ -553,44 +553,42 @@
   <div class="eg-body">
     <!-- ── แท็บ คราฟ ── -->
     <div id="wsTabCraft">
+      <div class="ws-flip-row">
       <!-- 🌑 Void Tower — Flip Card -->
       <div class="ws-flip" id="wsFlipVoid">
         <div class="ws-flip-inner">
           <!-- ด้านหน้า: ไอคอน + ชื่อ + สถิติ -->
           <div class="ws-flip-face ws-flip-front">
-            <button class="ws-flip-btn" onclick="wsFlip(this)">🛠️ คราฟ ▶</button>
-            <div style="display:flex;gap:14px;align-items:flex-start;width:100%;">
-              <div class="ws-hero-icon"><img src="assets/images/tower_void.png?v=3.24.56" style="width:52px;height:52px;object-fit:contain;"></div>
-              <div style="flex:1;min-width:0;padding-right:56px;">
-                <div class="ws-hero-name">ป้อมมนตราโมฆะ</div>
-                <div class="ws-hero-tag">✦ ป้อมลับที่ 9 — ปลดล็อกได้ที่เวิร์กชอปเท่านั้น</div>
-              </div>
+            <button class="ws-flip-btn" onclick="wsFlip(this)">คราฟ ▶</button>
+            <div class="ws-card-art">
+              <span class="ws-card-rank">✦9</span>
+              <img src="assets/images/tower_void.png?v=3.24.57" alt="">
             </div>
-            <div class="ws-hero-stats">
-              <span class="ws-stat">⚔️ ดาเมจ 42</span>
-              <span class="ws-stat">📡 ระยะ 3.0</span>
-              <span class="ws-stat">⚡ 0.6 วิ/นัด</span>
-              <span class="ws-stat">💰 ราคา 90</span>
+            <div class="ws-card-name">ป้อมมนตราโมฆะ</div>
+            <div class="ws-card-tag">ปลดล็อกได้ที่เวิร์กชอปเท่านั้น</div>
+            <div class="ws-card-stats">
+              <span class="ws-stat">⚔️ 42</span>
+              <span class="ws-stat">📡 3.0</span>
+              <span class="ws-stat">⚡ 0.6วิ</span>
+              <span class="ws-stat">💰 90</span>
             </div>
-            <div style="margin-top:10px;border-top:1px solid rgba(179,136,255,.15);padding-top:10px;">
-              <div class="eg-info-txt" style="margin:0;font-size:11px;">
-                <span style="color:#ce93d8;font-weight:700;">✨ พลังมนตราโมฆะ</span> — ปล่อยพลังโมฆะใส่ศัตรู มีโอกาสติด <strong>Void Mark</strong> ทำให้ศัตรูตัวนั้นรับดาเมจเพิ่มจากป้อมทุกชนิด<br>
-                🌙 Awaken: โอกาสติดมาร์ก 50% และดาเมจที่รับ +40%
-              </div>
+            <div class="ws-card-desc">
+              <span style="color:#ce93d8;font-weight:700;">✨ พลังมนตราโมฆะ</span> — ปล่อยพลังโมฆะใส่ศัตรู มีโอกาสติด <strong>Void Mark</strong> รับดาเมจเพิ่มจากป้อมทุกชนิด<br>
+              🌙 Awaken: โอกาสมาร์ก 50% ดาเมจรับ +40%
             </div>
-            <div style="margin-top:auto;text-align:center;font-size:10px;color:#9575cd;padding-top:8px;">แตะ “🛠️ คราฟ ▶” เพื่อพลิกดูวัสดุคราฟ</div>
+            <div class="ws-card-hint">แตะ “คราฟ ▶” เพื่อพลิกดูวัสดุ</div>
           </div>
           <!-- ด้านหลัง: ส่วนคราฟ / สถานะ -->
           <div class="ws-flip-face ws-flip-back">
             <button class="ws-flip-btn" onclick="wsFlip(this)">◀ กลับ</button>
-            <div class="ws-hero-name" style="font-size:14px;padding-right:56px;">🛠️ คราฟป้อมมนตราโมฆะ</div>
-            <div class="ws-hero-tag" style="margin-bottom:8px;">ใช้มณีวิญญาณ + วัสดุจากโหมดเอนด์เกม</div>
-            <div id="wsCraftSection" style="width:100%;">
+            <div class="ws-card-back-title">🛠️ คราฟป้อมมนตราโมฆะ</div>
+            <div class="ws-card-tag" style="margin-bottom:4px;">ใช้มณีวิญญาณ + วัสดุเอนด์เกม</div>
+            <div class="ws-card-back-body" id="wsCraftSection">
               <div id="wsRecipeBox" style="display:none;"><div class="ws-recipe-grid" id="wsRecipeGrid"></div></div>
-              <div id="wsLockBadge" style="display:none;font-size:12px;color:#ffab40;">🔒 ผ่านด่านแรกก่อนจึงจะคราฟได้</div>
-              <div id="wsAlreadyUnlocked" style="display:none;font-size:12px;color:#b388ff;">🌑 ปลดล็อกแล้ว — เลือกใช้ในโหมด Endgame ได้เลย</div>
-              <div id="wsCraftReqNote" style="display:none;font-size:11px;color:#aaa;line-height:1.9;margin-bottom:10px;"></div>
-              <button class="eg-start-btn" id="wsCraftBtn" style="background:linear-gradient(180deg,#7e57c2,#311b92);width:100%;display:none;">🛠️ คราฟป้อมมนตราโมฆะ</button>
+              <div id="wsLockBadge" style="display:none;font-size:10.5px;color:#ffab40;">🔒 ผ่านด่านแรกก่อนจึงจะคราฟได้</div>
+              <div id="wsAlreadyUnlocked" style="display:none;font-size:10.5px;color:#b388ff;">🌑 ปลดล็อกแล้ว — ใช้ใน Endgame ได้เลย</div>
+              <div id="wsCraftReqNote" style="display:none;font-size:9.5px;color:#aaa;line-height:1.8;margin-bottom:8px;"></div>
+              <button class="eg-start-btn" id="wsCraftBtn" style="background:linear-gradient(180deg,#7e57c2,#311b92);width:100%;display:none;padding:9px 0;font-size:11px;">🛠️ คราฟ</button>
             </div>
           </div>
         </div>
@@ -599,40 +597,38 @@
       <div class="ws-flip" id="wsFlipTime">
         <div class="ws-flip-inner">
           <div class="ws-flip-face ws-flip-front">
-            <button class="ws-flip-btn" onclick="wsFlip(this)">🛠️ คราฟ ▶</button>
-            <div style="display:flex;gap:14px;align-items:flex-start;width:100%;">
-              <div class="ws-hero-icon"><img src="assets/images/tower_time.png?v=3.24.56" style="width:52px;height:52px;object-fit:contain;"></div>
-              <div style="flex:1;min-width:0;padding-right:56px;">
-                <div class="ws-hero-name">ป้อมกาลเวลา</div>
-                <div class="ws-hero-tag">✦ ป้อมลับที่ 10 — คราฟหรือรับจากกาชา Legendary</div>
-              </div>
+            <button class="ws-flip-btn" onclick="wsFlip(this)">คราฟ ▶</button>
+            <div class="ws-card-art">
+              <span class="ws-card-rank">✦10</span>
+              <img src="assets/images/tower_time.png?v=3.24.57" alt="">
             </div>
-            <div class="ws-hero-stats">
-              <span class="ws-stat">⏳ Pulse Zone</span>
-              <span class="ws-stat">🔮 รัศมี 2.0+</span>
-              <span class="ws-stat">⏱️ ช้า 50%</span>
-              <span class="ws-stat">💰 ราคา 95</span>
+            <div class="ws-card-name">ป้อมกาลเวลา</div>
+            <div class="ws-card-tag">คราฟหรือรับจากกาชา Legendary</div>
+            <div class="ws-card-stats">
+              <span class="ws-stat">⏳ Pulse</span>
+              <span class="ws-stat">🔮 2.0+</span>
+              <span class="ws-stat">⏱️ 50%</span>
+              <span class="ws-stat">💰 95</span>
             </div>
-            <div style="margin-top:10px;border-top:1px solid rgba(179,157,219,.15);padding-top:10px;">
-              <div class="eg-info-txt" style="margin:0;font-size:11px;">
-                <span style="color:#b39ddb;font-weight:700;">✨ พลังกาลเวลา</span> — ชาร์จ 6 วิ แล้วปล่อย <strong>คลื่นกาลเวลา</strong> ทำให้ศัตรูในรัศมีช้าลง 50% (บอส 85%) นาน 1.5 วิ<br>
-                ⏱️ Awaken: หยุดเวลา 1.5 วินาที
-              </div>
+            <div class="ws-card-desc">
+              <span style="color:#b39ddb;font-weight:700;">✨ พลังกาลเวลา</span> — ชาร์จ 6 วิ แล้วปล่อย <strong>คลื่นกาลเวลา</strong> ช้าลง 50% (บอส 85%) นาน 1.5 วิ<br>
+              ⏱️ Awaken: หยุดเวลา 1.5 วินาที
             </div>
-            <div style="margin-top:auto;text-align:center;font-size:10px;color:#9575cd;padding-top:8px;">แตะ “🛠️ คราฟ ▶” เพื่อพลิกดูวัสดุคราฟ</div>
+            <div class="ws-card-hint">แตะ “คราฟ ▶” เพื่อพลิกดูวัสดุ</div>
           </div>
           <div class="ws-flip-face ws-flip-back">
             <button class="ws-flip-btn" onclick="wsFlip(this)">◀ กลับ</button>
-            <div class="ws-hero-name" style="font-size:14px;padding-right:56px;">🛠️ คราฟป้อมกาลเวลา</div>
-            <div class="ws-hero-tag" style="margin-bottom:8px;">ใช้มณีวิญญาณ + วัสดุจากโหมดเอนด์เกม</div>
-            <div id="wsTimeCraftSection" style="width:100%;">
-              <div id="wsTimeLockBadge" style="display:none;font-size:12px;color:#ffab40;">🔒 ผ่านด่านแรกก่อนจึงจะคราฟได้</div>
-              <div id="wsTimeAlreadyUnlocked" style="display:none;font-size:12px;color:#b39ddb;">🌀 ปลดล็อกแล้ว — เลือกใช้ในโหมด Endgame ได้เลย</div>
-              <div id="wsTimeCraftReqNote" style="display:none;font-size:11px;color:#aaa;line-height:1.9;margin-bottom:10px;"></div>
-              <button class="eg-start-btn" id="wsTimeCraftBtn" onclick="craftTimeTower()" style="background:linear-gradient(180deg,#7c4dff,#311b92);width:100%;display:none;">🛠️ คราฟป้อมกาลเวลา</button>
+            <div class="ws-card-back-title">🛠️ คราฟป้อมกาลเวลา</div>
+            <div class="ws-card-tag" style="margin-bottom:4px;">ใช้มณีวิญญาณ + วัสดุเอนด์เกม</div>
+            <div class="ws-card-back-body" id="wsTimeCraftSection">
+              <div id="wsTimeLockBadge" style="display:none;font-size:10.5px;color:#ffab40;">🔒 ผ่านด่านแรกก่อนจึงจะคราฟได้</div>
+              <div id="wsTimeAlreadyUnlocked" style="display:none;font-size:10.5px;color:#b39ddb;">🌀 ปลดล็อกแล้ว — ใช้ใน Endgame ได้เลย</div>
+              <div id="wsTimeCraftReqNote" style="display:none;font-size:9.5px;color:#aaa;line-height:1.8;margin-bottom:8px;"></div>
+              <button class="eg-start-btn" id="wsTimeCraftBtn" onclick="craftTimeTower()" style="background:linear-gradient(180deg,#7c4dff,#311b92);width:100%;display:none;padding:9px 0;font-size:11px;">🛠️ คราฟ</button>
             </div>
           </div>
         </div>
+      </div>
       </div>
       <!-- 🔹 แลกเศษสะสม (Shard Exchange) -->
       <div class="eg-info-box" style="margin-top:12px;">
@@ -927,15 +923,15 @@
     <button class="obtn" onclick="closeSettings()">✔ ปิด</button>
   </div>
 </div>
-<script src="js/cloud-save.js?v=3.24.56"></script>
-<script src="js/save.js?v=3.24.56"></script>
-<script src="js/enemy.js?v=3.24.56"></script>
-<script src="js/tower.js?v=3.24.56"></script>
-<script src="js/game.js?v=3.24.56"></script>
-<script src="js/ui-data.js?v=3.24.56"></script>
-<script src="js/ui-profile.js?v=3.24.56"></script>
-<script src="js/ui-casino.js?v=3.24.56"></script>
-<script src="js/ui.js?v=3.24.56"></script>
+<script src="js/cloud-save.js?v=3.24.57"></script>
+<script src="js/save.js?v=3.24.57"></script>
+<script src="js/enemy.js?v=3.24.57"></script>
+<script src="js/tower.js?v=3.24.57"></script>
+<script src="js/game.js?v=3.24.57"></script>
+<script src="js/ui-data.js?v=3.24.57"></script>
+<script src="js/ui-profile.js?v=3.24.57"></script>
+<script src="js/ui-casino.js?v=3.24.57"></script>
+<script src="js/ui.js?v=3.24.57"></script>
 
 
 </body></html>

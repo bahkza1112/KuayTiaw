@@ -2,6 +2,12 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.57 — ปรับหน้าตาการ์ดคราฟให้เหมือนไพ่จริง
+
+### Changed
+- `css/main.css`: ปรับ `.ws-flip*` จากกล่องแนวนอนเป็นการ์ดโปสการ์ดแนวตั้ง (`aspect-ratio:3/4.35`, กรอบมุก 2 ชั้น + inset border, glow) เพิ่ม `.ws-flip-row` (flex ให้การ์ดวางเรียงคู่กันตรงกลาง), `.ws-card-art` (กรอบภาพป้อมพร้อม radial glow + rank badge มุมซ้ายบน), `.ws-card-name/-tag/-stats/-desc/-hint`, `.ws-card-back-title/-body`
+- `Tower Quest 🏰.html`: ปรับโครง card หน้า/หลังของป้อมมนตราโมฆะ+กาลเวลาให้ใช้คลาสใหม่ (ตัวหนังสือ/สถิติย่อกระชับขึ้นให้พอดีทรงการ์ด) ไอดี DOM เดิมทั้งหมดคงไว้ `renderWorkshop`/`_renderCraftCard` ทำงานเหมือนเดิม
+
 ## v3.24.56 — การ์ดคราฟแบบพลิกได้
 
 ### Changed
