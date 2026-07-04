@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.56 — การ์ดคราฟแบบพลิกได้
+
+### Changed
+- แท็บคราฟใน Workshop: เปลี่ยนการ์ดป้อมมนตราโมฆะ/กาลเวลาจากกล่อง `.ws-hero` เดี่ยว เป็นการ์ดพลิก 3D (`.ws-flip`) — ด้านหน้าโชว์ไอคอน/ชื่อ/สถิติ/สรุปสกิล, ด้านหลังเป็นส่วนคราฟ (สถานะ lock/unlocked, req note, ปุ่มคราฟ) ปุ่ม `🛠️ คราฟ ▶`/`◀ กลับ` สลับหน้า
+- `css/main.css`: เพิ่มคลาส `.ws-flip`, `.ws-flip-inner`, `.ws-flip-face`, `.ws-flip-front/back`, `.ws-flip-btn` (rotateY + backface-visibility)
+- `js/ui.js`: เพิ่ม `wsFlip(el)` toggle คลาส `flipped`; `openWorkshop()` รีเซ็ตการ์ดกลับหน้าหน้าทุกครั้งที่เปิด. ไอดีเดิม (`wsLockBadge`, `wsCraftBtn`, `wsTimeCraftBtn` ฯลฯ) ย้ายไปด้านหลังแต่คงชื่อไว้ `renderWorkshop`/`_renderCraftCard` ทำงานเหมือนเดิม
+
 ## v3.24.49 — การ์ดตู้สุ่มใช้ภาพจริง
 
 ### Changed

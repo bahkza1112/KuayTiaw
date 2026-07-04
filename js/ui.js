@@ -900,7 +900,7 @@ function wsTab(t){
   document.getElementById('wsTabBtnCraft').className='ws-tab-btn'+(t==='craft'?' ws-tab-active':'');
   document.getElementById('wsTabBtnTalent').className='ws-tab-btn'+(t==='talent'?' ws-tab-active':'');
 }
-function openWorkshop(){ showScreen('workshop',true); wsTab('craft'); renderWorkshop(); }
+function openWorkshop(){ showScreen('workshop',true); wsTab('craft'); document.querySelectorAll('.ws-flip.flipped').forEach(c=>c.classList.remove('flipped')); renderWorkshop(); }
 function isFinalStageCleared(){
   return (loadProgress()[0]||0)>=1;
 }
@@ -1014,6 +1014,10 @@ function craftTimeTower(){
   saveMaterials(mats); setTimeUnlocked();
   renderWorkshop(); updateMenuStats(); checkAchievements();
   document.getElementById('timeCraftOverlay').style.display='flex';
+}
+function wsFlip(el){
+  const c=el.closest('.ws-flip');
+  if(c) c.classList.toggle('flipped');
 }
 function toggleWsSkill(){
   const d=document.getElementById('wsSkillDetail');
