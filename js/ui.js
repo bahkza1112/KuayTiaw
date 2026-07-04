@@ -1019,6 +1019,10 @@ function wsFlip(el){
   const c=el.closest('.ws-flip');
   if(c) c.classList.toggle('flipped');
 }
+function wsFlipCard(ev,face){
+  if(ev.target.closest('button,.ws-recipe-item')) return;
+  wsFlip(face);
+}
 function toggleWsSkill(){
   const d=document.getElementById('wsSkillDetail');
   const a=document.getElementById('wsSkillArrow');

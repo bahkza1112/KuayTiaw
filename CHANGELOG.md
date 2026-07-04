@@ -2,6 +2,13 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.58 — กดที่การ์ดพลิกได้เลย + ขยายภาพป้อม
+
+### Changed
+- `Tower Quest 🏰.html`: `.ws-flip-face` ทั้งหน้า/หลัง เพิ่ม `onclick="wsFlipCard(event,this)"` ให้กดที่ไหนของการ์ดก็พลิกได้ ปุ่ม `wsFlip`/`◀ กลับ` เดิมเปลี่ยนจาก `<button>` เป็น `<span>` label (ตกแต่งอย่างเดียว ไม่ intercept คลิก)
+- `js/ui.js`: เพิ่ม `wsFlipCard(ev,face)` — เช็ก `ev.target.closest('button,.ws-recipe-item')` ก่อน ถ้าคลิกโดนปุ่มคราฟจริง (`wsCraftBtn`/`wsTimeCraftBtn`) จะไม่พลิกการ์ด ปล่อยให้ปุ่มทำงานตามปกติ
+- `css/main.css`: `.ws-card-art` สูงขึ้น 88px→132px, `.ws-card-art img` ใหญ่ขึ้น 68px→108px; `.ws-flip-face` ได้ `cursor:pointer`, `.ws-flip-btn` เปลี่ยนเป็น label (`pointer-events:none`)
+
 ## v3.24.57 — ปรับหน้าตาการ์ดคราฟให้เหมือนไพ่จริง
 
 ### Changed
