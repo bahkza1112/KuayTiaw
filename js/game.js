@@ -715,6 +715,26 @@ function _noiseBurst(ac,dest,dur,amp,type){
   for(let i=0;i<d.length;i++){const decay=type==='crack'?(1-i/d.length):1;d[i]=(Math.random()*2-1)*amp*decay;}
   const ns=ac.createBufferSource(); ns.buffer=buf; ns.connect(dest); return ns;
 }
+let _warmCurveCache=null;
+function _warmCurve(){
+  if(_warmCurveCache) return _warmCurveCache;
+  const c=new Float32Array(256);
+  for(let i=0;i<256;i++){const x=i*2/256-1;c[i]=((Math.PI+16)*x)/(Math.PI+16*Math.abs(x));}
+  return _warmCurveCache=c;
+}
+/* ⚡ ยืมเทคนิค "อบอุ่นสมจริง" จากเสียงสายฟ้า (stereo noise ผ่าน waveshaper + bandpass) มาเสริมความหนา/สมจริง
+   ให้เสียงป้อมอื่นๆ เป็นชั้นเนื้อเสียงซ้อนใต้โทนหลัก ไม่ใช่แค่ oscillator เพียว */
+function _bodyWarmth(ac,dest,dur,amp,lpFreq,hpFreq){
+  const ws=ac.createWaveShaper(); ws.curve=_warmCurve(); ws.oversample='2x'; ws.connect(dest);
+  const lp=ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=lpFreq;
+  const hp=ac.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=hpFreq||20;
+  const g=ac.createGain(); const t=ac.currentTime;
+  g.gain.setValueAtTime(amp,t); g.gain.exponentialRampToValueAtTime(.001,t+dur);
+  const buf=ac.createBuffer(2,Math.max(1,ac.sampleRate*dur|0),ac.sampleRate);
+  for(let ch=0;ch<2;ch++){const d=buf.getChannelData(ch);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;}
+  const src=ac.createBufferSource(); src.buffer=buf;
+  src.connect(hp); hp.connect(lp); lp.connect(g); g.connect(ws); src.start(t);
+}
 function _playSound(type){
   if(!_sfxOn) return;
   const ac=_getAC(); if(!ac) return;
@@ -724,6 +744,7 @@ function _playSound(type){
     switch(type){
       case 'cannon':{// punchy thump + filtered boom noise + click transient
         const t=ac.currentTime;
+        _bodyWarmth(ac,v,.22,.55,450,35); // สมจริง: เนื้อเสียงบูมหนักซ้อนใต้
         const b=ac.createOscillator(),bg=ac.createGain();
         b.type='sine'; b.frequency.setValueAtTime(130,t);
         b.frequency.exponentialRampToValueAtTime(32,t+.16);
@@ -736,6 +757,7 @@ function _playSound(type){
         const click=_noiseBurst(ac,cg,.02,1,'crack'); cg.connect(v); click.start(t); break;}
       case 'ice':{// crisp descending crystal + shimmer harmonic + tinkle transient
         const t=ac.currentTime;
+        _bodyWarmth(ac,v,.16,.22,3200,900); // สมจริง: เนื้อเสียงลมเย็นฟู่ซ้อนใต้
         const o=ac.createOscillator(),og=ac.createGain();
         o.type='triangle'; o.frequency.setValueAtTime(980,t);
         o.frequency.exponentialRampToValueAtTime(300,t+.22);
@@ -751,6 +773,7 @@ function _playSound(type){
         const click=_noiseBurst(ac,cf,.05,1,'crack'); cf.connect(cg); cg.connect(v); click.start(t); break;}
       case 'magic':{// arcane sweep + sparkle overtone
         const t=ac.currentTime;
+        _bodyWarmth(ac,v,.26,.28,1600,280); // สมจริง: เนื้อเสียงพลังเวทหนาซ้อนใต้
         const o=ac.createOscillator(),og=ac.createGain();
         o.type='sawtooth'; o.frequency.setValueAtTime(300,t);
         o.frequency.exponentialRampToValueAtTime(700,t+.1);
@@ -765,6 +788,7 @@ function _playSound(type){
         s.connect(sg); sg.connect(v); s.start(t+.04); s.stop(t+.2); break;}
       case 'sniper':{// sharp crack + tail resonance + sub thump
         const t=ac.currentTime;
+        _bodyWarmth(ac,v,.09,.45,3600,1300); // สมจริง: เนื้อเสียงคมซ้อนใต้ crack
         const cf=ac.createBiquadFilter(); cf.type='bandpass'; cf.frequency.value=2600; cf.Q.value=.8;
         const cg=ac.createGain(); cg.gain.setValueAtTime(1.0,t); cg.gain.exponentialRampToValueAtTime(.001,t+.07);
         const crack=_noiseBurst(ac,cf,.07,1,'crack'); cf.connect(cg); cg.connect(v); crack.start(t);
@@ -774,6 +798,7 @@ function _playSound(type){
         b.connect(bg); bg.connect(v); b.start(t); b.stop(t+.1); break;}
       case 'archer':{// snappy pluck twang + release thwip
         const t=ac.currentTime;
+        _bodyWarmth(ac,v,.13,.2,2800,950); // สมจริง: เนื้อเสียงลมสะบัดซ้อนใต้
         const o=ac.createOscillator(),og=ac.createGain();
         o.type='triangle'; o.frequency.setValueAtTime(600,t);
         o.frequency.exponentialRampToValueAtTime(240,t+.15);
@@ -881,6 +906,7 @@ function _playSound(type){
         s.connect(sg); sg.connect(v); s.start(t+.02); s.stop(t+.22); break;}
       case 'support':{// 💚 warm bell chime pulse — two harmonics + soft attack shimmer
         const t=ac.currentTime;
+        _bodyWarmth(ac,v,.28,.16,1300,320); // สมจริง: เนื้อเสียงอบอุ่นซ้อนใต้
         const o=ac.createOscillator(),og=ac.createGain();
         o.type='sine'; o.frequency.setValueAtTime(440,t);
         o.frequency.exponentialRampToValueAtTime(550,t+.08);
@@ -892,6 +918,7 @@ function _playSound(type){
         h.connect(hg); hg.connect(v); h.start(t+.02); h.stop(t+.3); break;}
       case 'void':{// 🌑 eerie detuned void warp + implosion transient
         const t=ac.currentTime;
+        _bodyWarmth(ac,v,.32,.32,900,120); // สมจริง: เนื้อเสียงมืดหนาซ้อนใต้
         const vf=ac.createBiquadFilter(); vf.type='lowpass'; vf.frequency.setValueAtTime(2500,t); vf.frequency.exponentialRampToValueAtTime(200,t+.1);
         const vg=ac.createGain(); vg.gain.setValueAtTime(.5,t); vg.gain.exponentialRampToValueAtTime(.001,t+.1);
         const implode=_noiseBurst(ac,vf,.1,1); vf.connect(vg); vg.connect(v); implode.start(t);
@@ -908,6 +935,7 @@ function _playSound(type){
         o.start(t); o.stop(t+.3); o2.start(t); o2.stop(t+.3); break;}
       case 'time':{// ⏳ clock tick + click transient + temporal warp shimmer (matches cyan tick muzzle)
         const t=ac.currentTime;
+        _bodyWarmth(ac,v,.28,.18,4200,1600); // สมจริง: เนื้อเสียงระลอกเวลาซ้อนใต้
         [0,.06].forEach(dt=>{// two crisp clock ticks
           const o=ac.createOscillator(),og=ac.createGain();
           o.type='square'; o.frequency.setValueAtTime(1500,t+dt);

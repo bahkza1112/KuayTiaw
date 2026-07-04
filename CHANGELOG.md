@@ -2,6 +2,19 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.65 — เสียงป้อมทุกชนิดสมจริงขึ้นแบบสายฟ้า
+
+### Added
+- `js/game.js`: เพิ่ม `_warmCurve()` (waveshaper curve แคชไว้ใช้ซ้ำ) และ `_bodyWarmth(ac,dest,dur,amp,
+  lpFreq,hpFreq)` — helper ที่ดึงเทคนิคจากเสียง `thunder` เดิม (stereo noise ผ่าน bandpass filter แล้ว
+  saturate ด้วย waveshaper) มาใช้ซ้ำง่ายๆ เป็นชั้น "เนื้อเสียง" ซ้อนใต้โทนหลักของเสียงป้อมอื่น
+
+### Changed
+- เพิ่ม `_bodyWarmth()` เป็นชั้นเสริมให้ทุกเคสเสียงป้อมที่เหลือ: `cannon` (บูมหนัก), `ice` (ลมเย็นฟู่),
+  `magic` (พลังเวทหนา), `sniper` (คมซ้อนใต้ crack), `archer` (ลมสะบัด), `support` (อบอุ่น), `void`
+  (มืดหนา), `time` (ระลอกเวลา) — ทำให้ทุกป้อมมีมิติ/ความสมจริงใกล้เคียงเสียงสายฟ้าที่มีอยู่เดิม ไม่แก้
+  โทนหลัก/melody ของแต่ละเสียง เพิ่มแค่ชั้นเนื้อเสียงซ้อนใต้เท่านั้น
+
 ## v3.24.64 — แก้ภาพ fx_muzzle_magic มีพื้นหลังเทาหลงเหลือ
 
 ### Fixed
