@@ -916,11 +916,12 @@ function _renderCraftCard(unlocked,finalCleared,gems,mats,recipe,ids){
     craftBtn.style.display='none';if(reqNote)reqNote.style.display='none';
   } else if(finalCleared){
     lockEl.style.display='none';unlockedEl.style.display='none';
+    const _mimg=n=>`<img src="assets/images/${n}?v=${GAME_VERSION}" style="width:15px;height:15px;object-fit:contain;vertical-align:-3px;">`;
     const reqs=[
-      {icon:'<span class="gico"></span>',name:'มณีวิญญาณ',have:gems,need:recipe.gems},
-      {icon:MAT_ICONS[0],name:MAT_NAMES[0],have:mats[0]||0,need:recipe.mats[0]||0},
-      {icon:MAT_ICONS[1],name:MAT_NAMES[1],have:mats[1]||0,need:recipe.mats[1]||0},
-      {icon:MAT_ICONS[2],name:MAT_NAMES[2],have:mats[2]||0,need:recipe.mats[2]||0},
+      {icon:_mimg('item_soul_gem.png'),name:'มณีวิญญาณ',have:gems,need:recipe.gems},
+      {icon:_mimg('item_mat_stone.png'),name:MAT_NAMES[0],have:mats[0]||0,need:recipe.mats[0]||0},
+      {icon:_mimg('item_mat_core.png'),name:MAT_NAMES[1],have:mats[1]||0,need:recipe.mats[1]||0},
+      {icon:_mimg('item_mat_star.png'),name:MAT_NAMES[2],have:mats[2]||0,need:recipe.mats[2]||0},
     ];
     const allMet=reqs.every(r=>r.have>=r.need);
     craftBtn.style.display='';craftBtn.disabled=!allMet;
