@@ -817,22 +817,24 @@ function _playSound(type){
         b.type='sine'; b.frequency.setValueAtTime(150,t); b.frequency.exponentialRampToValueAtTime(45,t+.09);
         bg.gain.setValueAtTime(.5,t); bg.gain.exponentialRampToValueAtTime(.001,t+.1);
         b.connect(bg); bg.connect(v); b.start(t); b.stop(t+.1); break;}
-      case 'archer':{// snappy pluck twang + release thwip
+      case 'archer':{// 🔫 minigun — metallic mechanical gunshot: crack + bolt thump + brass shell ring
         const t=ac.currentTime;
-        _bodyWarmth(ac,v,.13,.2,2800,950); // สมจริง: เนื้อเสียงลมสะบัดซ้อนใต้
-        const o=ac.createOscillator(),og=ac.createGain();
-        o.type='triangle'; o.frequency.setValueAtTime(600,t);
-        o.frequency.exponentialRampToValueAtTime(240,t+.15);
-        og.gain.setValueAtTime(.42,t); og.gain.exponentialRampToValueAtTime(.001,t+.17);
-        o.connect(og); og.connect(v); o.start(t); o.stop(t+.17);
-        const o2=ac.createOscillator(),o2g=ac.createGain(); // detuned harmonic for pluck body
-        o2.type='triangle'; o2.frequency.setValueAtTime(900,t);
-        o2.frequency.exponentialRampToValueAtTime(360,t+.1);
-        o2g.gain.setValueAtTime(.15,t); o2g.gain.exponentialRampToValueAtTime(.001,t+.1);
-        o2.connect(o2g); o2g.connect(v); o2.start(t); o2.stop(t+.1);
-        const hf=ac.createBiquadFilter(); hf.type='highpass'; hf.frequency.value=3000;
-        const hg=ac.createGain(); hg.gain.setValueAtTime(.2,t); hg.gain.exponentialRampToValueAtTime(.001,t+.03);
-        const thwip=_noiseBurst(ac,hf,.03,1,'crack'); hf.connect(hg); hg.connect(v); thwip.start(t); break;}
+        _bodyWarmth(ac,v,.1,.22,3200,1100); // สมจริง: เนื้อเสียงโลหะกระด้างซ้อนใต้
+        // sharp metallic crack (bandpass noise — the actual "bang")
+        const cf=ac.createBiquadFilter(); cf.type='bandpass'; cf.frequency.value=2200; cf.Q.value=1.1;
+        const cg=ac.createGain(); cg.gain.setValueAtTime(.85,t); cg.gain.exponentialRampToValueAtTime(.001,t+.045);
+        const crack=_noiseBurst(ac,cf,.045,1,'crack'); cf.connect(cg); cg.connect(v); crack.start(t);
+        // low mechanical bolt/chamber thump
+        const b=ac.createOscillator(),bg=ac.createGain();
+        b.type='square'; b.frequency.setValueAtTime(180,t); b.frequency.exponentialRampToValueAtTime(70,t+.05);
+        bg.gain.setValueAtTime(.3,t); bg.gain.exponentialRampToValueAtTime(.001,t+.055);
+        b.connect(bg); bg.connect(v); b.start(t); b.stop(t+.055);
+        // brief brass shell-casing metallic ring tail
+        const r=ac.createOscillator(),rg=ac.createGain();
+        r.type='square'; r.frequency.setValueAtTime(2800,t+.01);
+        r.frequency.exponentialRampToValueAtTime(1900,t+.07);
+        rg.gain.setValueAtTime(.06,t+.01); rg.gain.exponentialRampToValueAtTime(.001,t+.08);
+        r.connect(rg); rg.connect(v); r.start(t+.01); r.stop(t+.08); break;}
       case 'thunder':{// ⚡ instant zap crack + 3-layer rumble tail: SUB + LOW RUMBLE + MID BODY
         const t=ac.currentTime;
         // instant zap transient (electric snap on top of the rumble)
