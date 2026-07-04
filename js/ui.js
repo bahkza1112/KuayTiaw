@@ -303,7 +303,7 @@ function _skillCardBackHTML(result,ci){
     const sd=BAG_ITEM_DEFS.find(b=>b.id===(result.shardId||'shard_c'));
     return `<div class="ro-frame rf-common">
       <div class="ro-hdr"><span class="ro-hdr-type">${sd.name}</span><span class="ro-hdr-gem"></span></div>
-      <div class="ro-art" style="display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 55%,${sd.color}33 0%,rgba(0,0,0,.35) 100%);"><img src="${_skillIconURL(sd.id)}" style="width:78%;height:88%;object-fit:contain;filter:drop-shadow(0 3px 8px rgba(0,0,0,.5));"></div>
+      <div class="ro-art" style="display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 48%,rgba(255,255,255,.5) 0%,rgba(255,255,255,0) 72%);"><img src="${_skillIconURL(sd.id)}" style="width:78%;height:88%;object-fit:contain;filter:drop-shadow(0 3px 7px rgba(0,0,0,.4));"></div>
       <div class="ro-footer"><span class="ro-name">ปลอบใจ</span><span class="ro-status">${sd.icon}×1</span></div>
     </div>`;
   }
@@ -315,7 +315,7 @@ function _skillCardBackHTML(result,ci){
   else status=`<span style="color:#555">${res.shards}/${res.shardsNeeded}</span>`;
   return `<div class="ro-frame ${rfCls}">
     <div class="ro-hdr"><span class="ro-hdr-type">${d.name}</span><span class="ro-hdr-gem"></span></div>
-    <div class="ro-art" style="display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 55%,${d.color}33 0%,rgba(0,0,0,.35) 100%);"><img src="${_skillIconURL(d.id)}" style="width:80%;height:90%;object-fit:contain;filter:drop-shadow(0 3px 10px rgba(0,0,0,.55));"></div>
+    <div class="ro-art" style="display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 48%,rgba(255,255,255,.5) 0%,rgba(255,255,255,0) 72%);"><img src="${_skillIconURL(d.id)}" style="width:80%;height:90%;object-fit:contain;filter:drop-shadow(0 3px 9px rgba(0,0,0,.45));"></div>
     <div class="ro-footer"><span class="ro-stars">${stars}</span><span class="ro-status">${status}</span></div>
   </div>`;
 }
@@ -696,18 +696,18 @@ function renderBag(){
     // วัสดุ + เศษสะสม
     const gems=loadGems();
     const matDefs=[
-      {icon:'<span class="gico"></span>',name:'มณีวิญญาณ',col:'#80d8ff',qty:gems,desc:'ใช้คราฟป้อมมนตราโมฆะใน Workshop'},
-      {icon:MAT_ICONS[0],name:MAT_NAMES[0],col:'#90caf9',qty:mats[0]||0,desc:'วัสดุสามัญจากการเล่น'},
-      {icon:MAT_ICONS[1],name:MAT_NAMES[1],col:'#ce93d8',qty:mats[1]||0,desc:'วัสดุหายากจากการเล่น'},
-      {icon:MAT_ICONS[2],name:MAT_NAMES[2],col:'#ffe082',qty:mats[2]||0,desc:'วัสดุพิเศษจากการเล่น'},
+      {icon:'<span class="gico"></span>',img:'item_soul_gem.png',name:'มณีวิญญาณ',col:'#80d8ff',qty:gems,desc:'ใช้คราฟป้อมมนตราโมฆะใน Workshop'},
+      {icon:MAT_ICONS[0],img:'item_mat_stone.png',name:MAT_NAMES[0],col:'#90caf9',qty:mats[0]||0,desc:'วัสดุสามัญจากการเล่น'},
+      {icon:MAT_ICONS[1],img:'item_mat_core.png',name:MAT_NAMES[1],col:'#ce93d8',qty:mats[1]||0,desc:'วัสดุหายากจากการเล่น'},
+      {icon:MAT_ICONS[2],img:'item_mat_star.png',name:MAT_NAMES[2],col:'#ffe082',qty:mats[2]||0,desc:'วัสดุพิเศษจากการเล่น'},
     ];
     const shardDefs=[
-      {id:'shard_c',icon:SHARD_C_SVG,name:'เศษหินมืด',col:'#64b5f6',desc:'เศษสะสมสามัญ · แลกได้ที่ Workshop'},
-      {id:'shard_r',icon:'💜',name:'เศษแกนเวทย์',   col:'#ce93d8',desc:'เศษสะสมหายาก · แลกได้ที่ Workshop'},
-      {id:'shard_e',icon:'🌟',name:'เศษดวงดาว',   col:'#ffe082',desc:'เศษสะสมพิเศษ · แลกได้ที่ Workshop'},
+      {id:'shard_c',icon:SHARD_C_SVG,img:'item_shard_c.png',name:'เศษหินมืด',col:'#64b5f6',desc:'เศษสะสมสามัญ · แลกได้ที่ Workshop'},
+      {id:'shard_r',icon:'💜',img:'item_shard_r.png',name:'เศษแกนเวทย์',   col:'#ce93d8',desc:'เศษสะสมหายาก · แลกได้ที่ Workshop'},
+      {id:'shard_e',icon:'🌟',img:'item_shard_e.png',name:'เศษดวงดาว',   col:'#ffe082',desc:'เศษสะสมพิเศษ · แลกได้ที่ Workshop'},
     ];
     const rowHtml=m=>`<div class="bag-item">
-        <div class="bag-ico" style="font-size:24px;">${m.icon}</div>
+        <div class="bag-ico" style="font-size:24px;">${m.img?`<img src="assets/images/${m.img}?v=${GAME_VERSION}" style="width:100%;height:100%;object-fit:contain;">`:m.icon}</div>
         <div class="bag-info">
           <div class="bag-name" style="color:${m.col};">${m.name}</div>
           <div class="bag-desc">${m.desc}</div>
