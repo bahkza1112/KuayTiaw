@@ -149,11 +149,34 @@ function _towerFieldImg(type){
   }
   return (o&&o._ok)?o:null;
 }
+// raster muzzle-flash sprites (hybrid: use PNG if loaded, else procedural below)
+const _MZSPRITE=['fx_muzzle_cannon','fx_muzzle_ice','fx_muzzle_magic','fx_muzzle_sniper',null,'fx_muzzle_archer',null,'fx_muzzle_thunder','fx_muzzle_void','fx_muzzle_time'];
+let _MZ_IMG_ON=true; // dev toggle
+const _mzimgCache={};
+function _muzzleImg(type){
+  if(!_MZ_IMG_ON) return null;
+  const n=_MZSPRITE[type]; if(!n) return null;
+  let o=_mzimgCache[type];
+  if(o===undefined){
+    o=new Image(); o._ok=false;
+    o.onload=()=>{o._ok=true;}; o.onerror=()=>{o._ok=false;o._bad=true;};
+    o.src='assets/images/'+n+'.png?v='+(typeof GAME_VERSION!=='undefined'?GAME_VERSION:'1');
+    _mzimgCache[type]=o;
+  }
+  return (o&&o._ok)?o:null;
+}
 // themed muzzle flash per tower type — drawn already translated to muzzle point
 function _twMuzzle(ctx,type,r,st,fa){
   const k=Math.min(1,st*6);         // intensity 0..1
   const s=r*Math.min(1,st*8);       // scale that pops then shrinks
   ctx.globalAlpha=k;
+  const _mzImg=_muzzleImg(type);
+  if(_mzImg){
+    const d=s*1.9; // raster burst art, symmetric so no rotation needed
+    ctx.drawImage(_mzImg,-d/2,-d/2,d,d);
+    ctx.globalAlpha=1;
+    return;
+  }
   const acc=TACCENT[type]||'#ffd54f';
   switch(type){
     case 0:{ // cannon — smoke puff + orange fireball

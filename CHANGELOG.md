@@ -2,6 +2,71 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.64 — แก้ภาพ fx_muzzle_magic มีพื้นหลังเทาหลงเหลือ
+
+### Fixed
+- `assets/images/fx_muzzle_magic.png`: ภาพที่เจนรอบแรก (v3.24.63) มีพื้นหลังเทาอ่อนหลงเหลือเป็นหย่อมๆ
+  ระหว่างปลายหนามของ sprite (คีย์พื้นด้วย border-connected flood fill ไม่ครอบคลุมหย่อมที่ไม่ติดขอบภาพ)
+  — regenerate ใหม่ด้วย seed อื่นแทนการแพตช์ (แพตช์รอบแรกด้วย global chroma-key แบบหยาบไปกินเส้นขอบดำ/
+  เงาของภาพเสียหาย จึงยกเลิกและเจนใหม่ทั้งภาพแทน) bump version เพื่อ invalidate cache ของไฟล์เดิม
+
+## v3.24.63 — มัซเซิลแฟลชป้อมเป็นภาพจริงอลังการกว่าเดิม
+
+### Added
+- `assets/images/fx_muzzle_{cannon,ice,magic,sniper,archer,thunder,void,time}.png` (8 ไฟล์): ภาพระเบิด/
+  ประกายมัซเซิลแฟลชสไตล์การ์ตูน die-cut sticker เจนผ่าน pollinations (flux) คีย์พื้นหลังโปร่งใส
+  (ใช้ pipeline เดียวกับ `gen_projectiles.py`/`gen_enemies.py` — ไม่ใช้ HuggingFace)
+- `gen_muzzle_fx.py`: สคริปต์ generate มัซเซิลแฟลช (import `fetch`/`key_white`/`trim_center` จาก
+  `gen_enemies.py`)
+- `js/tower.js` `_twMuzzle`: เพิ่ม path ภาพ raster (`_MZSPRITE`/`_muzzleImg`, hybrid pattern เดียวกับ
+  `_ESPRITE`/`_TWSPRITE`/`_PSPRITE`) วาดภาพ burst แทนเส้น procedural เดิม เมื่อโหลดสำเร็จ — fallback เป็น
+  procedural เดิมถ้าภาพโหลดไม่ได้ ป้อม type4(Support)/type6(Gold Mine) ไม่มี sprite เพราะไม่ยิงกระสุน
+
+## v3.24.62 — เอฟเฟกต์ยิงป้อมอลังการขึ้นทุกชนิด
+
+### Added
+- `js/game.js`: เพิ่ม `_fireFX(tw,fx,fy,isCrit)` — ฟังก์ชันรวมเอฟเฟกต์ตอนยิง (muzzle flash ring + particle
+  burst ธีมเฉพาะชนิด + fxFlash) ใช้ร่วมกันทั้ง story-mode และ endgame combat loop แทนโค้ด ad-hoc ที่เดิม
+  มีแค่บางชนิด (magic/ice/thunder ใน story, thunder เท่านั้นใน endgame) — ตอนนี้ครบทุกชนิดที่ยิงได้
+  (cannon/ice/magic/sniper/archer/thunder/void/time) เหมือนกันทั้งสองโหมด
+- ดีไซน์ต่อชนิด: cannon (ควันพวย+ประกายไฟ+shockwave ring), ice (เกล็ดหิมะฟุ้ง+frost ring), magic (sparkle
+  nova หมุน), sniper (แสงเลเซอร์ชัดขึ้น, คง crit callout เดิม), archer/minigun (สะเก็ดไฟ spray), thunder
+  (อาร์คไฟฟ้า, คงเดิม+ring), void (วงกลืนแสงหมุนเข้า), time (อนุภาคติ๊กนาฬิกา ◇)
+- Awaken tower ได้ ring/flash ใหญ่ขึ้น ~25-70% ให้เห็นความต่างชัดเจน
+- ยังคง particle/ring budget cap เดิม (`G.particles.length<120`, `G.fxRings.length<40`) ไม่กระทบ perf
+
+## v3.24.61 — แก้ mapping เสียงป้อมที่สลับป้ายกัน (dead code)
+
+### Fixed
+- `js/game.js` `_TSND`: type4 (Support) เคยชี้ไปเสียง `'gold'` และ type6 (Gold Mine) เคยชี้ไปเสียง
+  `'support'` แบบสลับป้าย — ยืนยันแล้วว่าทั้งสองป้อมไม่ได้ยิงกระสุนอยู่แล้ว (การ์ดยิง gate ด้วย
+  `CFG.t_dmg[tw.type]===0` ที่บรรทัด `update()`, ทั้ง Support/Gold Mine มี `t_dmg=0`) จึงเปลี่ยนทั้งสอง
+  index เป็น `null` แทน ไม่มีผลต่อ gameplay/เสียงที่ได้ยินจริง (เป็นแค่ data ที่ไม่เคยถูกอ่านถึง)
+  ไม่กระทบ save data
+
+## v3.24.60 — ทำเสียงป้อมทุกชนิดใหม่หมด
+
+### Changed
+- `js/game.js` `_playSound`: ทำเสียงป้อมที่เหลือใหม่ทั้งหมดต่อจาก v3.24.59 (cannon/ice/magic/sniper/archer) ให้ครบทุกชนิดป้อม —
+  `thunder` (เพิ่ม zap transient แหลม + square osc snap ก่อนรัมเบิล 3 เลเยอร์เดิม),
+  `support` (bell chime 2 harmonic + attack shimmer แทน pulse เรียบเดิม),
+  `void` (เพิ่ม noise implosion กรอง lowpass ก่อน warp เดิม),
+  `time` (เพิ่ม highpass click transient overlay บนเสียง tick เดิม)
+- ทั้งหมดยังเป็น procedural Web Audio synthesis ล้วน ไม่มีไฟล์เสียงเพิ่ม
+
+### Note
+- พบว่า mapping `_TSND` (tower type → sound name) มี type 4 (Support) ชี้ไปเสียง `'gold'`
+  และ type 6 (Gold Mine) ชี้ไปเสียง `'support'` (สลับป้ายชื่อกัน) — ป้อมทั้งสองไม่ได้ยิงกระสุนอยู่แล้ว
+  (Support=buff aura, Gold Mine=passive) จึง grep ไม่พบจุดเรียกใช้ตรงจาก `_playSound('gold')`/
+  `_playSound('support')` โดยตรง คาดว่าเป็น dead mapping ที่มีมาแต่เดิม ไม่ได้แก้ในรอบนี้ (นอกขอบเขตงาน)
+
+## v3.24.59 — ปรับปรุงเสียงยิงป้อม/เอฟเฟกต์ให้กระแทกมันขึ้น
+
+### Changed
+- `js/game.js` `_playSound`: ปรับปรุงเสียงสังเคราะห์ (Web Audio) หลายเสียงที่รู้สึก "น่าเบื่อ/แบน" ให้มีมิติแบบเกม TD ทั่วไปมากขึ้น — เพิ่มเสียง transient คลิก/thud/crunch (noise ผ่าน filter) ซ้อนกับโทนเดิม: `cannon` (boom กรองความถี่ + click), `ice` (shimmer harmonic + tinkle), `magic` (sparkle overtone + lowpass sweep), `sniper` (bandpass crack + sub thump), `archer` (pluck harmonic คู่ + thwip), `die` (crunch noise), `gold` (metallic shimmer overtone), `place` (dirt thud กรองความถี่ต่ำ)
+- เพิ่ม helper `_noiseBurst(ac,dest,dur,amp,type)` รวม logic สร้าง noise buffer ที่ซ้ำกันหลายจุดเดิม (cannon/sniper) เป็นฟังก์ชันเดียวใช้ร่วมกับเคสใหม่ทั้งหมด
+- ไม่มีเสียงไฟล์เพิ่ม (`assets/sounds` ยังว่าง) — ยังคงเป็น procedural synthesis ล้วน ปรับที่ envelope/filter/overtone เท่านั้น
+
 ## v3.24.58 — กดที่การ์ดพลิกได้เลย + ขยายภาพป้อม
 
 ### Changed
