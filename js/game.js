@@ -709,6 +709,18 @@ function updateTowerPanel(){
 let _AC=null,_sfxVol=0.35,_sfxOn=true;
 function _getAC(){if(!_AC){try{_AC=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}return _AC;}
 function _resumeAC(){const ac=_getAC();if(ac&&ac.state==='suspended')ac.resume();}
+/* ── มิติ/ความลึกเสียง: shared room-reverb bus (feedback delay) + stereo width ── */
+let _revBus=null;
+function _getRevBus(ac){
+  if(_revBus&&_revBus._ac===ac) return _revBus;
+  const input=ac.createGain();
+  const delay=ac.createDelay(1); delay.delayTime.value=.045;
+  const fb=ac.createGain(); fb.gain.value=.32;
+  const lp=ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=2400;
+  const wet=ac.createGain(); wet.gain.value=1;
+  input.connect(delay); delay.connect(lp); lp.connect(fb); fb.connect(delay); lp.connect(wet); wet.connect(ac.destination);
+  _revBus={_ac:ac,input}; return _revBus;
+}
 function _noiseBurst(ac,dest,dur,amp,type){
   const buf=ac.createBuffer(1,Math.max(1,ac.sampleRate*dur|0),ac.sampleRate);
   const d=buf.getChannelData(0);
@@ -739,7 +751,16 @@ function _playSound(type){
   if(!_sfxOn) return;
   const ac=_getAC(); if(!ac) return;
   _resumeAC();
-  const v=ac.createGain(); v.gain.setValueAtTime(_sfxVol,ac.currentTime); v.connect(ac.destination);
+  const v=ac.createGain(); v.gain.setValueAtTime(_sfxVol,ac.currentTime);
+  // มิติ: stereo width แบบสุ่มเบาๆ + ส่งเข้า shared room-reverb ให้มีความลึก/พื้นที่มากขึ้น
+  if(ac.createStereoPanner){
+    const pan=ac.createStereoPanner(); pan.pan.value=(Math.random()-.5)*.6;
+    v.connect(pan); pan.connect(ac.destination);
+  } else v.connect(ac.destination);
+  try{
+    const rb=_getRevBus(ac); const send=ac.createGain(); send.gain.value=.24;
+    v.connect(send); send.connect(rb.input);
+  }catch(e){}
   try{
     switch(type){
       case 'cannon':{// punchy thump + filtered boom noise + click transient

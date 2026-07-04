@@ -2,6 +2,19 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.24.66 — เสียงทุกชนิดมีมิติ/ความลึกมากขึ้น
+
+### Added
+- `js/game.js` `_getRevBus(ac)`: shared room-reverb bus แบบ feedback delay (delay 45ms → lowpass 2.4kHz
+  → feedback 32% วนกลับเข้า delay) สร้างครั้งเดียวต่อ AudioContext ใช้ร่วมกันทุกเสียงในเกม (ประหยัดกว่าสร้าง
+  reverb แยกทุกครั้งที่เล่นเสียง)
+
+### Changed
+- `_playSound`: ทุกเสียง (ไม่ใช่แค่ป้อม — รวม die/gold/place/wave_start/gacha ฯลฯ) ตอนนี้ผ่าน
+  `StereoPannerNode` แพนสุ่มเบาๆ (±0.3) ให้มิติซ้าย-ขวาไม่ซ้ำกันทุกครั้ง และส่ง 24% ของสัญญาณเข้า
+  shared reverb bus เพิ่มความรู้สึก "มีพื้นที่/ความลึก" แทนที่จะฟังแบนราบจากจุดเดียว — ถ้าเบราว์เซอร์ไม่รองรับ
+  `StereoPannerNode` จะ fallback ไปต่อตรงเหมือนเดิม (ไม่มี error)
+
 ## v3.24.65 — เสียงป้อมทุกชนิดสมจริงขึ้นแบบสายฟ้า
 
 ### Added
