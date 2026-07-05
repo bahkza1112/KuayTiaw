@@ -302,7 +302,7 @@ function drawTowerIcon(ctx,type,sz,angle,lv,shootT,star){
     _twLevelRing(ctx,type,r,lv);
     // body: gentle idle bob + upward recoil kick on fire
     const bob=Math.sin(Date.now()*.0025+type)*r*.02;
-    const d=sz*1.62;
+    const d=sz*1.42; // trimmed from 1.62 (v3.25.3) — towers on adjacent tiles were overlapping
     ctx.save();
     ctx.translate(0,bob-st*r*.14);
     ctx.shadowColor='rgba(0,0,0,.5)';ctx.shadowBlur=r*.14;ctx.shadowOffsetY=r*.08;
