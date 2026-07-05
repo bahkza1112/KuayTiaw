@@ -3,7 +3,7 @@
 This document is a system-by-system map of the game as implemented in
 [`Tower Quest 🏰.html`](Tower%20Quest%20%F0%9F%8F%B0.html) plus its
 `css/main.css` and `js/{save,enemy,tower,game,ui}.js` modules (current
-version **v3.25.3**). Line numbers refer to these files and
+version **v3.25.4**). Line numbers refer to these files and
 may drift as they change — use them as a starting point for searches, not as
 permanent anchors.
 
@@ -781,7 +781,10 @@ unstyled (internal tool only). No gameplay/save changes from any of these.
 - **Hybrid art**: enemies on the play field use raster PNG sprites via
   `drawEnemySprite`'s image path (`_ESPRITE`/`_enemyImg`, `assets/images/
   enemy_*.png`), falling back to procedural canvas if an image fails to load.
-  Towers on the field also use raster sprites via `drawTowerIcon`'s image path
+  Since v3.25.4 enemies also have an idle glow-pulse (`_enemyImg2`, `enemy_
+  {name}_g2.png` — same brighten-existing-highlights technique as towers,
+  crossfaded on top of frame A). Towers on the field also use raster sprites
+  via `drawTowerIcon`'s image path
   (`_TWSPRITE`/`_towerFieldImg` + recoil, no turret rotation), same fallback.
   Since v3.25.0 tower art also evolves by star rank: `_towerFieldImg(type,star)`
   picks `tower_{name}_s{2,3,4}.png` for 2★/3★/4★ (falling back a tier at a

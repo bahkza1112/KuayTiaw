@@ -456,6 +456,22 @@ function _enemyImg(ti){
   }
   return (o&&o._ok)?o:null;
 }
+/* ── idle glow-pulse frame B (enemy_{name}_g2.png), same technique as towers: brighter/more
+   saturated glow highlights only, crossfaded on top of frame A — not an AI regeneration, so the
+   character silhouette stays pixel-identical ── */
+const _eimgCache2={};
+function _enemyImg2(ti){
+  if(!_ENEMY_IMG_ON) return null;
+  const n=_ESPRITE[ti]; if(!n) return null;
+  let o=_eimgCache2[ti];
+  if(o===undefined){
+    o=new Image(); o._ok=false;
+    o.onload=()=>{o._ok=true;}; o.onerror=()=>{o._ok=false;};
+    o.src='assets/images/'+n+'_g2.png?v='+(typeof GAME_VERSION!=='undefined'?GAME_VERSION:'1');
+    _eimgCache2[ti]=o;
+  }
+  return (o&&o._ok)?o:null;
+}
 function drawEnemySprite(ctx,ti,x,y,sz,mv){
   const r=sz*.42;
   mv=mv||{};
@@ -471,6 +487,13 @@ function drawEnemySprite(ctx,ti,x,y,sz,mv){
     const d=sz*2.25;
     ctx.scale(_fx,1);
     ctx.drawImage(_img,-d/2,-d/2-sz*.12+_bob,d,d);
+    const _img2=_enemyImg2(ti);
+    if(_img2){
+      const _pulse=Math.sin(Date.now()*.0018+ti*1.7)*.5+.5;
+      ctx.globalAlpha=_pulse*.6;
+      ctx.drawImage(_img2,-d/2,-d/2-sz*.12+_bob,d,d);
+      ctx.globalAlpha=1;
+    }
     ctx.restore();
     return;
   }
