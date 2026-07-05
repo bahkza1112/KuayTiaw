@@ -169,6 +169,36 @@ function _towerFieldImg(type,star){
   }
   return null;
 }
+/* ── idle glow-pulse animation: frame B (tower_{name}[_s{tier}]_g2.png) is the same art
+   with brighter/more saturated glow highlights, crossfaded on top of frame A over time.
+   No new AI regeneration involved — a fresh AI redraw would give a different-looking tower
+   each time since pollinations/flux has no image-conditioning (img2img) to keep it consistent. */
+const _twimgCache2={};
+function _loadTwImg2(type,tier){
+  const key=type+'_'+tier+'_g2';
+  let o=_twimgCache2[key];
+  if(o===undefined){
+    const fname=_twFilename(type,tier);
+    o=new Image(); o._ok=false;
+    if(fname){
+      const g2name=fname.replace(/\.(png|webp)$/i,'')+'_g2.png';
+      o.onload=()=>{o._ok=true;}; o.onerror=()=>{o._ok=false;};
+      o.src='assets/images/'+g2name+'?v='+(typeof GAME_VERSION!=='undefined'?GAME_VERSION:'1');
+    }
+    _twimgCache2[key]=o;
+  }
+  return o;
+}
+function _towerFieldImg2(type,star){
+  if(!_TOWER_IMG_ON) return null;
+  if(!_TWSPRITE[type]) return null;
+  const tier=_twStarTier(star||1);
+  for(let t=tier;t>=0;t--){
+    const o=_loadTwImg2(type,t);
+    if(o._ok) return o;
+  }
+  return null;
+}
 // raster muzzle-flash sprites (hybrid: use PNG if loaded, else procedural below)
 const _MZSPRITE=['fx_muzzle_cannon','fx_muzzle_ice','fx_muzzle_magic','fx_muzzle_sniper',null,'fx_muzzle_archer',null,'fx_muzzle_thunder','fx_muzzle_void','fx_muzzle_time'];
 let _MZ_IMG_ON=true; // dev toggle
@@ -277,6 +307,14 @@ function drawTowerIcon(ctx,type,sz,angle,lv,shootT,star){
     ctx.translate(0,bob-st*r*.14);
     ctx.shadowColor='rgba(0,0,0,.5)';ctx.shadowBlur=r*.14;ctx.shadowOffsetY=r*.08;
     ctx.drawImage(_img,-d/2,-d/2-r*.12,d,d);
+    // idle glow-pulse: crossfade in the brighter-glow frame B over time (per-type phase offset)
+    const _img2=_towerFieldImg2(type,star);
+    if(_img2){
+      const _pulse=Math.sin(Date.now()*.0018+type*1.7)*.5+.5;
+      ctx.globalAlpha=_pulse*.65;
+      ctx.drawImage(_img2,-d/2,-d/2-r*.12,d,d);
+      ctx.globalAlpha=1;
+    }
     ctx.restore();
     // themed muzzle flash toward target when just fired (support/gold don't fire)
     if(st>0.04&&type!==4&&type!==6){

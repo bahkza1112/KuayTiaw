@@ -2,6 +2,21 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.25.1 — ป้อมมีไฟเรืองแสงเต้นเบาๆ ตอนวางเฉยๆ (Idle Glow-Pulse)
+
+### Added
+- `assets/images/tower_*_g2.png` (40 ไฟล์ — เฟรม B ของทุกป้อมทุกขั้นดาว รวม 1★ พื้นฐาน): สร้างจากภาพ
+  เดิมโดย **ไม่เจนใหม่ผ่าน AI** — boost ความสว่าง/ความอิ่มสีเฉพาะพิกเซลที่เป็นจุดเรืองแสงอยู่แล้ว (HSV: v>0.55
+  & s>0.25) ให้ได้ "เฟรมเรืองแสงจ้ากว่าเดิม" ที่โครงร่าง/silhouette เป๊ะเหมือนเฟรมเดิมทุกพิกเซล
+  หลีกเลี่ยงปัญหา pollinations/flux ไม่มี img2img (เจนใหม่ทีไรได้ป้อมหน้าตาไม่เหมือนเดิม)
+- `gen_glow_frames.py`: สคริปต์สร้างเฟรม B ทั้ง 40 ไฟล์ด้วยฟังก์ชัน `glow_pulse_frame()` (numpy HSV boost)
+
+### Changed
+- `js/tower.js`: เพิ่ม `_towerFieldImg2(type,star)`/`_loadTwImg2` (โหลด `tower_{name}[_s{tier}]_g2.png`
+  พร้อม fallback ถอยขั้นดาวเหมือน `_towerFieldImg`) — `drawTowerIcon` วาดเฟรม B ทับเฟรม A ด้วย
+  `globalAlpha` แบบ sin-wave (คาบ ~3.5s, phase offset ต่อชนิดป้อมกันเต้นพร้อมกันหมด) ให้เห็นจุดเรืองแสง
+  เต้น/สว่างวูบวาบตอนป้อมยืนเฉยๆ ระหว่างเวฟ
+
 ## v3.25.0 — ป้อมเปลี่ยนรูปตามดาว (Tower Star Evolution Art)
 
 ### Added

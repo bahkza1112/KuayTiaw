@@ -3,7 +3,7 @@
 This document is a system-by-system map of the game as implemented in
 [`Tower Quest 🏰.html`](Tower%20Quest%20%F0%9F%8F%B0.html) plus its
 `css/main.css` and `js/{save,enemy,tower,game,ui}.js` modules (current
-version **v3.25.0**). Line numbers refer to these files and
+version **v3.25.1**). Line numbers refer to these files and
 may drift as they change — use them as a starting point for searches, not as
 permanent anchors.
 
@@ -788,7 +788,12 @@ unstyled (internal tool only). No gameplay/save changes from any of these.
   time, down to the base 1★ file, while a higher tier is still loading or
   missing) — `drawTowerIcon`'s new optional `star` param threads this through
   from `tw.star` at the field-render and popup-icon call sites only (menu/
-  codex previews still show the base art). The muzzle flash itself
+  codex previews still show the base art). Since v3.25.1 every tower/tier also
+  has an idle glow-pulse: `_towerFieldImg2` loads a frame-B variant
+  (`tower_{name}[_s{tier}]_g2.png`, same pixels but with glow-highlight pixels
+  brightened via HSV boost — not a fresh AI regeneration, which would give a
+  different-looking tower each time) crossfaded on top of frame A via a
+  per-type sin-wave in `drawTowerIcon`. The muzzle flash itself
   (`_twMuzzle`, `js/tower.js`) also renders raster burst art (`_MZSPRITE`/
   `_muzzleImg`, `fx_muzzle_*.png`, v3.24.63), falling back to the original
   procedural per-type flash if an image fails to load;
