@@ -298,7 +298,7 @@ function drawTowerIcon(ctx,type,sz,angle,lv,shootT,star){
   if(_img){
     const st=shootT||0; // 1 on fire → 0 (~.14s)
     ctx.save();
-    _twAura(ctx,type,r);
+    _twAura(ctx,type,r,star);
     _twLevelRing(ctx,type,r,lv);
     // body: gentle idle bob + upward recoil kick on fire
     const bob=Math.sin(Date.now()*.0025+type)*r*.02;
@@ -340,16 +340,34 @@ function drawTowerIcon(ctx,type,sz,angle,lv,shootT,star){
   ctx.restore();
 }
 // soft colored glow on the ground beneath the tower, tinted per tower type
-function _twAura(ctx,type,r){
+// ★ grows/brightens with star rank so the aura keeps pace with the bigger evolved art,
+// and 4★ (max evolution) gets an extra ring of orbiting sparkles for a grander presence
+function _twAura(ctx,type,r,star){
+  const tier=star||1;
+  const growth=1+(tier-1)*.11; // 1★→1.0, 2★→1.11, 3★→1.22, 4★→1.33
   const c=TACCENT[type]||'#ffffff';
-  const pulse=.30+.12*Math.sin(Date.now()*.0025);
+  const pulse=(.30+.12*Math.sin(Date.now()*.0025))*(1+(tier-1)*.15);
   ctx.save();
   ctx.globalAlpha=pulse;
-  const g=ctx.createRadialGradient(0,r*.55,0,0,r*.55,r*1.15);
+  const g=ctx.createRadialGradient(0,r*.55,0,0,r*.55,r*1.15*growth);
   g.addColorStop(0,c);g.addColorStop(1,'rgba(0,0,0,0)');
   ctx.fillStyle=g;
-  ctx.beginPath();ctx.ellipse(0,r*.55,r*1.05,r*.34,0,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.ellipse(0,r*.55,r*1.05*growth,r*.34*growth,0,0,Math.PI*2);ctx.fill();
   ctx.restore();
+  if(tier>=4){
+    // ✦ orbiting sparkles for max-evolution towers
+    ctx.save();
+    const n=4;
+    for(let i=0;i<n;i++){
+      const ang=Date.now()*.0012+i*(Math.PI*2/n);
+      const sx=Math.cos(ang)*r*1.0, sy=r*.55+Math.sin(ang)*r*.32;
+      const tw=.5+.5*Math.sin(Date.now()*.006+i*2.1);
+      ctx.globalAlpha=.55+.35*tw;
+      ctx.fillStyle='#ffe082';
+      ctx.beginPath();ctx.arc(sx,sy,r*.045*(.7+tw*.5),0,Math.PI*2);ctx.fill();
+    }
+    ctx.restore();
+  }
 }
 // rings of light around the base — one extra ring per level above 1
 function _twLevelRing(ctx,type,r,lv){
