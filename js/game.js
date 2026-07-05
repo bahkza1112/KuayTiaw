@@ -2583,8 +2583,8 @@ function render(){
     ctx.translate(cx2, cy2-CS*.18);
     ctx.scale(_tws,_tws);
     if(!perfMode){ctx.shadowColor='rgba(0,0,0,.95)';ctx.shadowBlur=7;ctx.shadowOffsetX=0;ctx.shadowOffsetY=3;}
-    drawTowerIcon(ctx,tw.type,CS-2,tw.angle,tw.lv,tw._shootT||0);
-    if(!perfMode){ctx.shadowBlur=0;ctx.shadowOffsetY=0;drawTowerIcon(ctx,tw.type,CS-2,tw.angle,tw.lv,tw._shootT||0);}
+    drawTowerIcon(ctx,tw.type,CS-2,tw.angle,tw.lv,tw._shootT||0,tw.star);
+    if(!perfMode){ctx.shadowBlur=0;ctx.shadowOffsetY=0;drawTowerIcon(ctx,tw.type,CS-2,tw.angle,tw.lv,tw._shootT||0,tw.star);}
     ctx.restore();
     // level badge
     if(tw.lv>1){

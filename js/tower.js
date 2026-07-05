@@ -136,18 +136,38 @@ function _bldSC(){
 const _TWSPRITE=['tower_cannon','tower_ice','tower_magic','tower_sniper','tower_support','tower_minigun.webp','tower_gold','tower_thunder','tower_void','tower_time.png'];
 let _TOWER_IMG_ON=true; // dev toggle
 const _twimgCache={};
-function _towerFieldImg(type){
-  if(!_TOWER_IMG_ON) return null;
-  let n=_TWSPRITE[type]; if(!n) return null;
-  if(n.indexOf('.')<0) n+='.png';
-  let o=_twimgCache[type];
+/* ★ evolution art: tower_{name}_s2/_s3/_s4.png for 2★/3★/4★ (1★ = base _TWSPRITE file).
+   falls back down a tier (and finally to the base file) while a higher tier is still loading or missing. */
+function _twStarTier(star){ return star>=4?4:star>=3?3:star>=2?2:0; }
+function _twFilename(type,tier){
+  const base=_TWSPRITE[type]; if(!base) return null;
+  if(tier===0) return base.indexOf('.')<0?base+'.png':base;
+  const stem=base.replace(/\.(png|webp)$/i,'');
+  return stem+'_s'+tier+'.png';
+}
+function _loadTwImg(type,tier){
+  const key=type+'_'+tier;
+  let o=_twimgCache[key];
   if(o===undefined){
+    const fname=_twFilename(type,tier);
     o=new Image(); o._ok=false;
-    o.onload=()=>{o._ok=true;}; o.onerror=()=>{o._ok=false;};
-    o.src='assets/images/'+n+'?v='+(typeof GAME_VERSION!=='undefined'?GAME_VERSION:'1');
-    _twimgCache[type]=o;
+    if(fname){
+      o.onload=()=>{o._ok=true;}; o.onerror=()=>{o._ok=false;};
+      o.src='assets/images/'+fname+'?v='+(typeof GAME_VERSION!=='undefined'?GAME_VERSION:'1');
+    }
+    _twimgCache[key]=o;
   }
-  return (o&&o._ok)?o:null;
+  return o;
+}
+function _towerFieldImg(type,star){
+  if(!_TOWER_IMG_ON) return null;
+  if(!_TWSPRITE[type]) return null;
+  const tier=_twStarTier(star||1);
+  for(let t=tier;t>=0;t--){
+    const o=_loadTwImg(type,t);
+    if(o._ok) return o;
+  }
+  return null;
 }
 // raster muzzle-flash sprites (hybrid: use PNG if loaded, else procedural below)
 const _MZSPRITE=['fx_muzzle_cannon','fx_muzzle_ice','fx_muzzle_magic','fx_muzzle_sniper',null,'fx_muzzle_archer',null,'fx_muzzle_thunder','fx_muzzle_void','fx_muzzle_time'];
@@ -242,9 +262,9 @@ function _twMuzzle(ctx,type,r,st,fa){
   }
   ctx.globalAlpha=1;
 }
-function drawTowerIcon(ctx,type,sz,angle,lv,shootT){
+function drawTowerIcon(ctx,type,sz,angle,lv,shootT,star){
   const r=sz/2;
-  const _img=_towerFieldImg(type);
+  const _img=_towerFieldImg(type,star);
   if(_img){
     const st=shootT||0; // 1 on fire → 0 (~.14s)
     ctx.save();
@@ -699,7 +719,7 @@ function showTowerPopup(tw,px,py){
         ix.stroke();
         ix.restore();
       }
-      ix.translate(21,23);drawTowerIcon(ix,tw.type,40,0);
+      ix.translate(21,23);drawTowerIcon(ix,tw.type,40,0,undefined,undefined,tw.star);
     }
   });
   // position near tower but inside #gp

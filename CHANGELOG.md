@@ -2,6 +2,30 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.25.0 — ป้อมเปลี่ยนรูปตามดาว (Tower Star Evolution Art)
+
+### Added
+- `assets/images/tower_{name}_s{2,3,4}.png` (30 ไฟล์ — 10 ป้อม × 3 ขั้นดาว): ภาพวิวัฒนาการป้อมตามดาว
+  เจนผ่าน pollinations (flux), คีย์พื้นหลังโปร่งใส ป้อม 1★ ยังคงใช้ `tower_{name}.png` เดิม
+- `gen_tower_evolution.py`: สคริปต์ generate ภาพวิวัฒนาการทั้ง 30 ไฟล์ (ธีมต่อป้อม + ปรับคำอธิบายต่อขั้น
+  ดาว: 2★ เสริมเกราะ/อัญมณี, 3★ อัพเกรดหนักลวดลายวิจิตร, 4★ ขั้นสุด ทองอร่ามลวดลายรูนอลังการ)
+- `gen_enemies.py` `key_tolerant(img, tol, feather, corner_patch)`: เพิ่มฟังก์ชันคีย์พื้นหลังแบบ
+  border-connected flood fill เทียบกับสีอ้างอิงที่สุ่มจาก 4 มุมภาพ ทนทานกว่า `key_white` เดิมสำหรับพื้นหลังที่
+  ไม่ใช่สีขาวล้วน (เทา/ม่วงอ่อน/vignette) ซึ่งพบว่าเกิดกับภาพวิวัฒนาการหลายใบ (โมเดล AI ไม่ได้ทำตาม "plain
+  white background" ในพรอมต์เสมอไป)
+- `fix_tower_bg.py`: สคริปต์แก้ภาพที่คีย์พื้นหลังไม่สะอาด (11 จาก 30 ไฟล์) ด้วย `key_tolerant` แทน
+  `key_white` — 2 ไฟล์ (`tower_time_s3`, `tower_void_s3`) มี vignette กว้างเกินไป (ดำสนิทถึงขาวสนิทในภาพ
+  เดียว ซึ่งทับซ้อนกับโทนสีของตัวป้อมเอง) ต้องเจนใหม่ด้วย seed อื่นแทนการพยายามคีย์พื้นซ้ำ
+
+### Changed
+- `js/tower.js` `_towerFieldImg(type,star)`: รองรับภาพตามขั้นดาว (`_twStarTier`, `_twFilename`,
+  `_loadTwImg`) — เลือกภาพขั้นสูงสุดที่โหลดสำเร็จแล้ว ถอยลงขั้นล่างอัตโนมัติ (จนถึงภาพพื้นฐาน 1★) ถ้าภาพขั้น
+  สูงกว่ายังโหลดไม่เสร็จหรือไม่มีไฟล์ — ไม่มี blank frame ระหว่างโหลด
+- `drawTowerIcon(ctx,type,sz,angle,lv,shootT,star)`: เพิ่มพารามิเตอร์ `star` (optional, ท้ายสุด) ส่งต่อไป
+  `_towerFieldImg` เรียกจาก `js/game.js` (field render, ทั้ง 2 จุด) และ popup icon ใน `js/tower.js` ด้วย
+  `tw.star`; จุดเรียกอื่น (`js/ui.js` การ์ดเลือกป้อม/โคเด็กซ์) ไม่ส่ง `star` จึงยังแสดงภาพพื้นฐานเหมือนเดิม
+  (ตั้งใจ — preview ทั่วไปไม่ผูกกับป้อมที่วางจริง)
+
 ## v3.24.67 — เสียงมินิกันเหมือนปืนกลจริงขึ้น
 
 ### Changed

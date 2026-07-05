@@ -93,6 +93,66 @@ def key_white(img, thr=232, feather=2):
             px[x, y] = v
     return img
 
+def key_tolerant(img, tol=42, feather=2, corner_patch=8):
+    """Border-connected flood fill keying out a possibly non-white/vignette background,
+    matched against a reference color sampled from the four corners (handles grey/lavender/
+    gradient backgrounds that key_white's near-white-only threshold misses)."""
+    img = img.convert("RGBA")
+    w, h = img.size
+    px = img.load()
+    samples = []
+    for cx, cy in [(0, 0), (w - 1, 0), (0, h - 1), (w - 1, h - 1)]:
+        for dx in range(corner_patch):
+            for dy in range(corner_patch):
+                x = cx + (dx if cx == 0 else -dx)
+                y = cy + (dy if cy == 0 else -dy)
+                samples.append(px[x, y][:3])
+    ref = tuple(sum(s[i] for s in samples) // len(samples) for i in range(3))
+    def dist(a, b):
+        return abs(a[0] - b[0]) + abs(a[1] - b[1]) + abs(a[2] - b[2])
+    visited = bytearray(w * h)
+    dq = deque()
+    for x in range(w):
+        for y in (0, h - 1):
+            idx = y * w + x
+            if not visited[idx] and dist(px[x, y][:3], ref) <= tol:
+                visited[idx] = 1; dq.append((x, y))
+    for y in range(h):
+        for x in (0, w - 1):
+            idx = y * w + x
+            if not visited[idx] and dist(px[x, y][:3], ref) <= tol:
+                visited[idx] = 1; dq.append((x, y))
+    while dq:
+        x, y = dq.popleft()
+        r, g, b, a = px[x, y]
+        px[x, y] = (r, g, b, 0)
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < w and 0 <= ny < h:
+                idx = ny * w + nx
+                if not visited[idx]:
+                    npx = px[nx, ny]
+                    if dist(npx[:3], ref) <= tol:
+                        visited[idx] = 1; dq.append((nx, ny))
+    for _ in range(feather):
+        px = img.load()
+        soft = []
+        for y in range(h):
+            for x in range(w):
+                if px[x, y][3] == 0:
+                    continue
+                edge = False
+                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    nx, ny = x + dx, y + dy
+                    if 0 <= nx < w and 0 <= ny < h and px[nx, ny][3] == 0:
+                        edge = True; break
+                if edge:
+                    r, g, b, a = px[x, y]
+                    soft.append((x, y, (r, g, b, int(a * 0.6))))
+        for x, y, v in soft:
+            px[x, y] = v
+    return img
+
 def trim_center(img, pad_ratio=0.06):
     bbox = img.getbbox()
     if not bbox:

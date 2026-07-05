@@ -3,7 +3,7 @@
 This document is a system-by-system map of the game as implemented in
 [`Tower Quest 🏰.html`](Tower%20Quest%20%F0%9F%8F%B0.html) plus its
 `css/main.css` and `js/{save,enemy,tower,game,ui}.js` modules (current
-version **v3.24.67**). Line numbers refer to these files and
+version **v3.25.0**). Line numbers refer to these files and
 may drift as they change — use them as a starting point for searches, not as
 permanent anchors.
 
@@ -783,9 +783,15 @@ unstyled (internal tool only). No gameplay/save changes from any of these.
   enemy_*.png`), falling back to procedural canvas if an image fails to load.
   Towers on the field also use raster sprites via `drawTowerIcon`'s image path
   (`_TWSPRITE`/`_towerFieldImg` + recoil, no turret rotation), same fallback.
-  The muzzle flash itself (`_twMuzzle`, `js/tower.js`) also renders raster
-  burst art (`_MZSPRITE`/`_muzzleImg`, `fx_muzzle_*.png`, v3.24.63), falling
-  back to the original procedural per-type flash if an image fails to load;
+  Since v3.25.0 tower art also evolves by star rank: `_towerFieldImg(type,star)`
+  picks `tower_{name}_s{2,3,4}.png` for 2★/3★/4★ (falling back a tier at a
+  time, down to the base 1★ file, while a higher tier is still loading or
+  missing) — `drawTowerIcon`'s new optional `star` param threads this through
+  from `tw.star` at the field-render and popup-icon call sites only (menu/
+  codex previews still show the base art). The muzzle flash itself
+  (`_twMuzzle`, `js/tower.js`) also renders raster burst art (`_MZSPRITE`/
+  `_muzzleImg`, `fx_muzzle_*.png`, v3.24.63), falling back to the original
+  procedural per-type flash if an image fails to load;
   Support/Gold Mine have no muzzle sprite since they never fire. Projectiles
   also use raster sprites (`_PSPRITE`/`_projImg`, `proj_*.png`), same
   fallback. DOM UI uses raster
