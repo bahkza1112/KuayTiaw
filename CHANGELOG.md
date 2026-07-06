@@ -2,6 +2,20 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.25.7 — Audio: bouncy arcade BGM + UI click sound
+
+### Changed
+- `js/game.js` (`_BGM_BASS`/`_BGM_ARP`/`_BGM_TEMPO`, `_bgmSchedule`): replaced
+  the dark/heroic minor-key BGM loop with an upbeat, bouncy major-key
+  (C–F–G–C oom-pah bass) chiptune loop — faster tempo (0.3s → 0.17s/step),
+  square-wave melody, more staccato note lengths — per player request for a
+  more "exciting, Mario-like" background track.
+- Added a new `ui_click` synthesized sound (short square-wave blip) and a
+  document-level delegated `click` listener (`button,.tbtn,[onclick]`,
+  skipping disabled/`.dim`/`.locked`/`.locked-tower` elements) so pressing
+  buttons and clickable cards across the whole UI now gives audio feedback,
+  gated by the existing `_sfxOn` toggle.
+
 ## v3.25.6 — Security: remove hardcoded admin credentials from client code
 
 ### Fixed (security)

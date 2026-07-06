@@ -1031,11 +1031,25 @@ function _playSound(type){
           og.gain.setValueAtTime(.22,ac.currentTime+.12+i*.07); og.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.12+i*.07+.3);
           o.connect(og); og.connect(v); o.start(ac.currentTime+.12+i*.07); o.stop(ac.currentTime+.12+i*.07+.3);
         }); break;}
+      case 'ui_click':{// 🔘 บลิปสดใสสไตล์อาร์เคด — เสียงกดปุ่ม UI ทั่วไป
+        const t=ac.currentTime;
+        const o=ac.createOscillator(),og=ac.createGain();
+        o.type='square'; o.frequency.setValueAtTime(880,t);
+        o.frequency.exponentialRampToValueAtTime(1320,t+.035);
+        og.gain.setValueAtTime(.14,t); og.gain.exponentialRampToValueAtTime(.001,t+.06);
+        o.connect(og); og.connect(v); o.start(t); o.stop(t+.06); break;}
     }
   }catch(e){}
 }
 /* tower type → sound name */
 const _TSND=['cannon','ice','magic','sniper',null,'archer',null,'thunder','void','time']; // type4=Support/type6=Gold Mine never fire (t_dmg=0, see update()'s `CFG.t_dmg[tw.type]===0` guard) — no shoot sound to map
+/* 🔘 เสียงบลิปกดปุ่ม UI ทั่วเกม — delegated listener จับทุกปุ่ม/การ์ดที่กดได้ */
+document.addEventListener('click',function(e){
+  if(!_sfxOn) return;
+  const el=e.target.closest('button,.tbtn,[onclick]');
+  if(!el||el.disabled||el.classList.contains('dim')||el.classList.contains('locked')||el.classList.contains('locked-tower')) return;
+  _resumeAC(); _playSound('ui_click');
+},true);
 /* ══ per-type firing FX (muzzle flash ring + themed particle burst), shared by story + endgame loops ══ */
 function _fireFX(tw,fx,fy,isCrit){
   const type=tw.type,fa=tw.angle||0,aw=tw.awakened&&!(tw._drainT>0),acc=TPROJ[type]||'#fff';
@@ -1103,10 +1117,10 @@ function toggleSfx(){
 
 /* ══ BGM — synthesized looping background music (Web Audio) ══ */
 let _bgmOn=true,_bgmTimer=null,_bgmStep=0,_bgmNext=0,_bgmGain=null;
-/* dark/heroic minor loop — bass walk + soft arpeggio (Am feel), 16 steps */
-const _BGM_BASS=[110,110,82,82,98,98,73,73,110,110,82,82,98,98,87,65];
-const _BGM_ARP =[440,330,392,494,523,392,440,330,587,440,494,392,523,440,392,330];
-const _BGM_TEMPO=0.3; // sec per step
+/* สนุกสนาน กระโดดโลดเต้นสไตล์อาร์เคด (Mario-inspired) — oom-pah bass (C-F-G-C) + melody เด้งๆ คีย์เมเจอร์, 16 steps */
+const _BGM_BASS=[130.81,196.00,130.81,196.00, 174.61,261.63,174.61,261.63, 196.00,293.66,196.00,293.66, 130.81,196.00,164.81,196.00];
+const _BGM_ARP =[392.00,329.63,523.25,329.63, 440.00,349.23,523.25,440.00, 493.88,392.00,587.33,493.88, 329.63,261.63,392.00,523.25];
+const _BGM_TEMPO=0.17; // sec per step — เร็วขึ้น เด้งขึ้น
 function _bgmNote(freq,t,dur,type,vol){
   const ac=_getAC(); if(!ac||!_bgmGain) return;
   const o=ac.createOscillator(),g=ac.createGain();
@@ -1119,9 +1133,9 @@ function _bgmSchedule(){
   const ac=_getAC(); if(!ac) return;
   while(_bgmNext<ac.currentTime+0.2){
     const s=_bgmStep%16;
-    _bgmNote(_BGM_BASS[s],_bgmNext,_BGM_TEMPO*0.95,'triangle',0.55);   // bass
-    _bgmNote(_BGM_ARP[s], _bgmNext,_BGM_TEMPO*0.6,'sine',0.16);        // melody
-    if(s%4===0) _bgmNote(_BGM_ARP[s]*2,_bgmNext,_BGM_TEMPO*0.4,'sine',0.07); // sparkle on beat
+    _bgmNote(_BGM_BASS[s],_bgmNext,_BGM_TEMPO*0.55,'triangle',0.55);   // oom-pah bass, สั้นกระชับ
+    _bgmNote(_BGM_ARP[s], _bgmNext,_BGM_TEMPO*0.5,'square',0.15);      // melody เด้งๆ แบบชิปจูน
+    if(s%2===0) _bgmNote(_BGM_ARP[s]*2,_bgmNext,_BGM_TEMPO*0.3,'triangle',0.06); // ประกายเสียงสูงจังหวะเด้ง
     _bgmNext+=_BGM_TEMPO; _bgmStep++;
   }
 }
