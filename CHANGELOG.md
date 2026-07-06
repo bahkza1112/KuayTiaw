@@ -4,6 +4,17 @@ All notable changes to Tower Quest 🏰 will be documented in this file.
 
 ## v3.25.16 — Fix: support tower infinite free skill points; minigun rework
 
+### Fixed (hotfix, same version)
+- `js/ui-data.js`: the `PATCH_NOTES` edit that added this very entry left the
+  previous (v3.25.15) entry's note strings orphaned without their opening
+  `{ver:...,notes:[` header, breaking `PATCH_NOTES` array syntax. This threw
+  `ReferenceError: GAME_VERSION is not defined` (declared one line earlier in
+  the same broken parse) as soon as `ui.js` called `updateMenuStats()` at its
+  top level — which aborted the rest of `ui.js`'s top-level execution,
+  including the `addEventListener` calls that wire up most buttons. Net
+  effect: nothing in the game was clickable. Restored the missing entry
+  header so both v3.25.16 and v3.25.15 are valid, separate entries again.
+
 ### Fixed
 - `js/tower.js` (`showTowerPopup`, `upgradeTowerFromPopup`, `upgradeAllTowers`):
   the "used skill points" calculation was hardcoded to `(tw.rngLv-1)+(tw.rateLv-1)`
