@@ -2948,6 +2948,7 @@ function renderDevDebug(){
 }
 
 let _lbAdminUnlocked=false;
+let _lbAdminKey=null; // ป้อนสดตอนใช้งาน — ไม่ hardcode secret จริงลง source (ตรงกับ ADMIN_KEY บน server)
 let _lbCountdownTimer=0,_lbResetAt=0,_lbSeasonNum=0;
 function _lbAdminCard(e,i,apiPath){
   const rank=i+1;
@@ -2978,8 +2979,8 @@ async function renderDevLbAdmin(body){
   if(!_lbAdminUnlocked){
     body.innerHTML=`<div style="padding:24px 16px;text-align:center;">
       <div style="font-size:32px;margin-bottom:12px;">🔒</div>
-      <div style="color:#aaa;font-size:13px;margin-bottom:16px;">ป้อนรหัสเพื่อเข้า LB Admin</div>
-      <input id="lbAdminPwd" type="password" placeholder="รหัสผ่าน" style="background:#111;border:1px solid #333;border-radius:8px;color:#fff;padding:10px 14px;font-size:14px;width:180px;text-align:center;outline:none;margin-bottom:12px;display:block;margin-left:auto;margin-right:auto;">
+      <div style="color:#aaa;font-size:13px;margin-bottom:16px;">ป้อน Admin Key (ตรงกับ ADMIN_KEY บน server) เพื่อเข้า LB Admin</div>
+      <input id="lbAdminPwd" type="password" placeholder="Admin Key" style="background:#111;border:1px solid #333;border-radius:8px;color:#fff;padding:10px 14px;font-size:14px;width:220px;text-align:center;outline:none;margin-bottom:12px;display:block;margin-left:auto;margin-right:auto;">
       <button onclick="_lbAdminLogin()" style="background:linear-gradient(135deg,#ff9800,#e65100);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;padding:10px 28px;cursor:pointer;">🔓 เข้าสู่ระบบ</button>
     </div>`;
     const inp=body.querySelector('#lbAdminPwd');
@@ -3007,25 +3008,27 @@ async function renderDevLbAdmin(body){
 }
 function _lbAdminLogin(){
   const v=document.getElementById('lbAdminPwd')?.value;
-  if(v==='bahk1600401210'){_lbAdminUnlocked=true;renderDevPanel();}
-  else{showToast('❌ รหัสผิด');document.getElementById('lbAdminPwd').value='';}
+  if(!v){showToast('❌ กรุณาป้อน Admin Key');return;}
+  // เก็บไว้ในตัวแปร (memory เท่านั้น ไม่ persist) — ใช้ยิง header จริงตอนลบ
+  // ถ้า key ผิด server จะตอบ 403 ตอนกดลบ (เห็น error ผ่าน toast)
+  _lbAdminKey=v;_lbAdminUnlocked=true;renderDevPanel();
 }
 async function devDeleteLbEntry(rank){
   if(!confirm(`ลบ Endgame rank #${rank} ?`)) return;
   try{
-    const r=await fetch('/api/leaderboard/'+rank,{method:'DELETE',headers:{'x-admin-key':'kt1233'}});
+    const r=await fetch('/api/leaderboard/'+rank,{method:'DELETE',headers:{'x-admin-key':_lbAdminKey}});
     const d=await r.json();
     if(d.ok){showToast(`✅ ลบ "${d.removed?.name}" แล้ว`);renderDevPanel();}
-    else showToast('❌ '+(d.error||'unknown'));
+    else{showToast('❌ '+(d.error||'unknown'));if(r.status===403){_lbAdminUnlocked=false;_lbAdminKey=null;}}
   }catch(e){showToast('❌ '+e.message);}
 }
 async function devDeleteSlbEntry(rank){
   if(!confirm(`ลบ Story rank #${rank} ?`)) return;
   try{
-    const r=await fetch('/api/story-leaderboard/'+rank,{method:'DELETE',headers:{'x-admin-key':'kt1233'}});
+    const r=await fetch('/api/story-leaderboard/'+rank,{method:'DELETE',headers:{'x-admin-key':_lbAdminKey}});
     const d=await r.json();
     if(d.ok){showToast(`✅ ลบ "${d.removed?.name}" แล้ว`);renderDevPanel();}
-    else showToast('❌ '+(d.error||'unknown'));
+    else{showToast('❌ '+(d.error||'unknown'));if(r.status===403){_lbAdminUnlocked=false;_lbAdminKey=null;}}
   }catch(e){showToast('❌ '+e.message);}
 }
 function devCopyConfig(){
@@ -3092,7 +3095,7 @@ for(let _i=0;_i<9;_i++){
 document.getElementById('devIngameBtn').addEventListener('click',()=>{if(!G||G.over||G.win)return;openDev(false);});
 document.getElementById('devCloseBtn').addEventListener('click',closeDev);
 // 🔧 Dev password prompt — triggered by verBtn 5-click sequence above
-const _DEV_PWD='kt1233';
+const _DEV_PWD='tq-dev-9427';
 function _showDevPwdPrompt(){
   const pop=document.createElement('div');pop.className='av-unlock-popup';pop.id='devPwdPop';
   pop.innerHTML=`<div class="av-unlock-box" style="max-width:280px;">

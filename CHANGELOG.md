@@ -2,6 +2,31 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.25.6 — Security: remove hardcoded admin credentials from client code
+
+### Fixed (security)
+- `js/ui.js`: the Dev Panel unlock password (`_DEV_PWD`) was hardcoded to the
+  **same literal value** as the server's `ADMIN_KEY` (used by
+  `server.js`'s `x-admin-key`-gated `DELETE /api/leaderboard/:rank` and
+  `/api/story-leaderboard/:rank` routes), and that value was also hardcoded
+  directly into the LB Admin delete calls. Since this repo is public on
+  GitHub, that key was fully readable by anyone via the raw file — a
+  non-issue for the local Dev Panel (client-only, no server trust boundary)
+  but a real, remotely-exploitable issue for the leaderboard delete
+  endpoints.
+  - `_DEV_PWD` changed to a new value unrelated to the server key (it's a
+    cosmetic client-side gate only, not a real security boundary either way).
+  - LB Admin no longer hardcodes the real admin key anywhere in source.
+    `_lbAdminLogin()` now stores whatever the operator types into
+    `_lbAdminKey` (in-memory only, never persisted/committed), which is sent
+    as the `x-admin-key` header on delete calls; a `403` response clears
+    the unlock state and re-prompts.
+- **Action required (not part of this commit — needs Render dashboard
+  access)**: rotate the `ADMIN_KEY` environment variable on the deployed
+  server to a new random value, since the old value is permanently exposed
+  in this repo's git history regardless of this fix. Until rotated, the old
+  key may still work against the live API.
+
 ## v3.25.5 — Favicon + Open Graph / Twitter Card meta tags
 
 ### Added
