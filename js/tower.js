@@ -200,7 +200,7 @@ function _towerFieldImg2(type,star){
   return null;
 }
 // raster muzzle-flash sprites (hybrid: use PNG if loaded, else procedural below)
-const _MZSPRITE=['fx_muzzle_cannon','fx_muzzle_ice','fx_muzzle_magic','fx_muzzle_sniper',null,'fx_muzzle_archer',null,'fx_muzzle_thunder','fx_muzzle_void','fx_muzzle_time'];
+const _MZSPRITE=['fx_muzzle_cannon','fx_muzzle_ice','fx_muzzle_magic','fx_muzzle_sniper',null,null,null,'fx_muzzle_thunder','fx_muzzle_void','fx_muzzle_time']; // type5=minigun ใช้ procedural cone flash แทน (ราสเตอร์เดิมเป็นภาพระเบิดรอบทิศ ไม่เข้ากับปืนกล)
 let _MZ_IMG_ON=true; // dev toggle
 const _mzimgCache={};
 function _muzzleImg(type){
@@ -259,10 +259,19 @@ function _twMuzzle(ctx,type,r,st,fa){
       ctx.beginPath();ctx.moveTo(0,-s*.25);ctx.lineTo(0,s*.25);ctx.stroke();
       ctx.restore();
       break;}
-    case 5:{ // minigun — quick yellow spark spray
-      ctx.fillStyle='#fff59d';
-      for(let i=0;i<5;i++){const a=fa+(Math.random()-.5)*.9,d=s*(.3+Math.random()*.6);ctx.beginPath();ctx.arc(Math.cos(a)*d,Math.sin(a)*d,r*.045,0,Math.PI*2);ctx.fill();}
-      ctx.fillStyle='#ffee58';ctx.beginPath();ctx.arc(0,0,s*.22,0,Math.PI*2);ctx.fill();
+    case 5:{ // minigun — แสงปากกระบอกปืนจริง: กรวยแสงพุ่งไปข้างหน้าตามแนวยิง (ไม่ใช่ระเบิดรอบทิศแบบป้อมอื่น)
+      ctx.save();ctx.rotate(fa);
+      const mg=ctx.createRadialGradient(0,0,0,0,0,s*.45);
+      mg.addColorStop(0,'#fff');mg.addColorStop(.45,'#fff59d');mg.addColorStop(1,'rgba(255,238,88,0)');
+      ctx.fillStyle=mg;ctx.beginPath();ctx.arc(0,0,s*.45,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#fff9c4';ctx.lineWidth=r*.04;ctx.globalAlpha=k*.9;
+      for(let i=0;i<5;i++){
+        const sa=(i-2)*.32; // กรวยแคบพุ่งไปข้างหน้า ~35° เหมือนปืนกลจริง
+        ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(sa)*s*.9,Math.sin(sa)*s*.9);ctx.stroke();
+      }
+      ctx.restore();
+      ctx.fillStyle='#ffd54f';ctx.globalAlpha=k;
+      for(let i=0;i<4;i++){const a=fa+(Math.random()-.5)*.7,d=s*(.35+Math.random()*.55);ctx.beginPath();ctx.arc(Math.cos(a)*d,Math.sin(a)*d,r*.04,0,Math.PI*2);ctx.fill();}
       break;}
     case 7:{ // thunder — jagged electric arc
       ctx.save();ctx.rotate(fa);

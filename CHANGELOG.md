@@ -2,6 +2,21 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.25.11 — Visual: realistic directional muzzle flash for minigun tower
+
+### Changed
+- `js/tower.js` (`_MZSPRITE`): removed `'fx_muzzle_archer'` from the raster
+  muzzle-sprite table (now `null` for type 5) — the asset was the same
+  generic omnidirectional "comic-book explosion starburst" template reused
+  (just recolored) across cannon/sniper/thunder/etc., which reads as a
+  grenade blast rather than a machine-gun muzzle flash.
+- `js/tower.js` (`_twMuzzle`, `case 5`): replaced the old small radial
+  spark-spray with a proper directional cone flash — a bright white-hot
+  core plus 5 thin rays fanned ~35° around the firing angle (`fa`), matching
+  how real small-arms muzzle flashes are forward-pointing cones rather than
+  360° bursts — plus a few scattered sparks, per player feedback that the
+  minigun's flash didn't look realistic or fit the tower.
+
 ## v3.25.10 — Audio: minigun tower gets a spin-up motor whir
 
 ### Changed
