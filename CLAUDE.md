@@ -5,7 +5,7 @@ Guidance for Claude Code (and other AI assistants) working in this repository.
 ## Project Summary
 
 **Tower Quest 🏰** is a browser-based tower defense game written in
-Thai, currently at **v3.25.12**. Since the v1.6.1 refactor, the game is split
+Thai, currently at **v3.25.13**. Since the v1.6.1 refactor, the game is split
 across:
 
 - [`Tower Quest 🏰.html`](Tower%20Quest%20%F0%9F%8F%B0.html) — head/body
@@ -57,12 +57,12 @@ and, since v3.24.36, **enemies on the play field** render as raster
 `enemy_*.png` sprites via `drawEnemySprite`'s image path (`_ESPRITE`/
 `_enemyImg`), falling back to procedural canvas if a sprite fails to load. Since v3.24.37
 **towers on the field** likewise render as raster `tower_*` sprites via
-`drawTowerIcon`'s image path (`_TWSPRITE`/`_towerFieldImg`) with a muzzle
-flash + recoil on fire (no turret rotation), again falling back to procedural.
-Since v3.24.38 **projectiles** also render as raster `proj_*.png` sprites
-(`_PSPRITE`/`_projImg`, fallback procedural) and the tower muzzle flash is
-themed per type (`_twMuzzle`). `assets/sounds` and `assets/effects` remain
-empty scaffolding (audio is Web Audio synthesis, already themed per tower).
+`drawTowerIcon`'s image path (`_TWSPRITE`/`_towerFieldImg`) with a recoil
+kick on fire (no turret rotation, no muzzle flash — removed in v3.25.13),
+again falling back to procedural. Since v3.24.38 **projectiles** also render
+as raster `proj_*.png` sprites (`_PSPRITE`/`_projImg`, fallback procedural).
+`assets/sounds` and `assets/effects` remain empty scaffolding (audio is Web
+Audio synthesis, already themed per tower).
 
 ## Working Conventions
 

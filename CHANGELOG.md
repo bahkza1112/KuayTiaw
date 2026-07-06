@@ -2,6 +2,18 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.25.13 — Removed all tower muzzle flashes
+
+### Removed
+- `js/tower.js`: deleted the entire muzzle-flash system per player request —
+  `_MZSPRITE`, `_MZ_IMG_ON`, `_mzimgCache`, `_muzzleImg()`, and `_twMuzzle()`
+  (the per-type procedural + raster flash rendering, including the
+  cannon/ice/magic/sniper/minigun/thunder/void/time cases added across
+  v3.24.63–v3.25.12), plus the call site in `drawTowerIcon()`. Towers now
+  only show their idle art and recoil kick on fire — no flash of any kind.
+- Deleted the now-fully-unreferenced `assets/images/fx_muzzle_*.png` sprites
+  (cannon, ice, magic, sniper/archer, thunder, void, time — 8 files).
+
 ## v3.25.12 — Visual: theme-fitting muzzle flashes for sniper and thunder
 
 ### Changed

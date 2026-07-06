@@ -3,7 +3,7 @@
 This document is a system-by-system map of the game as implemented in
 [`Tower Quest 🏰.html`](Tower%20Quest%20%F0%9F%8F%B0.html) plus its
 `css/main.css` and `js/{save,enemy,tower,game,ui}.js` modules (current
-version **v3.25.12**). Line numbers refer to these files and
+version **v3.25.13**). Line numbers refer to these files and
 may drift as they change — use them as a starting point for searches, not as
 permanent anchors.
 
@@ -796,13 +796,12 @@ unstyled (internal tool only). No gameplay/save changes from any of these.
   (`tower_{name}[_s{tier}]_g2.png`, same pixels but with glow-highlight pixels
   brightened via HSV boost — not a fresh AI regeneration, which would give a
   different-looking tower each time) crossfaded on top of frame A via a
-  per-type sin-wave in `drawTowerIcon`. The muzzle flash itself
-  (`_twMuzzle`, `js/tower.js`) also renders raster burst art (`_MZSPRITE`/
-  `_muzzleImg`, `fx_muzzle_*.png`, v3.24.63), falling back to the original
-  procedural per-type flash if an image fails to load;
-  Support/Gold Mine have no muzzle sprite since they never fire. Projectiles
-  also use raster sprites (`_PSPRITE`/`_projImg`, `proj_*.png`), same
-  fallback. DOM UI uses raster
+  per-type sin-wave in `drawTowerIcon`. Muzzle flashes were removed
+  entirely in v3.25.13 (`_twMuzzle`/`_MZSPRITE`/`_muzzleImg` and the
+  `fx_muzzle_*.png` raster path deleted, per player feedback) — towers now
+  only show the idle art + recoil kick on fire, no flash. Projectiles
+  still use raster sprites (`_PSPRITE`/`_projImg`, `proj_*.png`), same
+  fallback pattern. DOM UI uses raster
   art in `assets/images/` (tower-select cards, stage banners, skill icons, menu
   poster). All raster art is generated via pollinations.ai (flux)/Leonardo.ai
   with backgrounds keyed out. `assets/sounds` and `assets/effects` remain

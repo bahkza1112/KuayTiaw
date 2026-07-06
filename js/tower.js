@@ -199,122 +199,6 @@ function _towerFieldImg2(type,star){
   }
   return null;
 }
-// raster muzzle-flash sprites (hybrid: use PNG if loaded, else procedural below)
-const _MZSPRITE=['fx_muzzle_cannon','fx_muzzle_ice','fx_muzzle_magic',null,null,null,null,null,'fx_muzzle_void','fx_muzzle_time']; // type3=sniper,type5=minigun,type7=thunder ใช้ procedural directional flash แทน (ราสเตอร์เดิมเป็นภาพระเบิดรอบทิศแบบเดียวกับป้อมอื่นๆ ไม่สื่อถึงลักษณะการยิงของแต่ละป้อม)
-let _MZ_IMG_ON=true; // dev toggle
-const _mzimgCache={};
-function _muzzleImg(type){
-  if(!_MZ_IMG_ON) return null;
-  const n=_MZSPRITE[type]; if(!n) return null;
-  let o=_mzimgCache[type];
-  if(o===undefined){
-    o=new Image(); o._ok=false;
-    o.onload=()=>{o._ok=true;}; o.onerror=()=>{o._ok=false;o._bad=true;};
-    o.src='assets/images/'+n+'.png?v='+(typeof GAME_VERSION!=='undefined'?GAME_VERSION:'1');
-    _mzimgCache[type]=o;
-  }
-  return (o&&o._ok)?o:null;
-}
-// themed muzzle flash per tower type — drawn already translated to muzzle point
-function _twMuzzle(ctx,type,r,st,fa){
-  const k=Math.min(1,st*6);         // intensity 0..1
-  const s=r*Math.min(1,st*8);       // scale that pops then shrinks
-  ctx.globalAlpha=k;
-  const _mzImg=_muzzleImg(type);
-  if(_mzImg){
-    const d=s*1.9; // raster burst art, symmetric so no rotation needed
-    ctx.drawImage(_mzImg,-d/2,-d/2,d,d);
-    ctx.globalAlpha=1;
-    return;
-  }
-  const acc=TACCENT[type]||'#ffd54f';
-  switch(type){
-    case 0:{ // cannon — smoke puff + orange fireball
-      ctx.globalAlpha=k*.5;ctx.fillStyle='#5d4037';
-      for(let i=0;i<3;i++){const a=fa+Math.PI+(i-1)*.5;ctx.beginPath();ctx.arc(Math.cos(a)*s*.4,Math.sin(a)*s*.4,s*.35,0,Math.PI*2);ctx.fill();}
-      ctx.globalAlpha=k;
-      const g=ctx.createRadialGradient(0,0,0,0,0,s*.6);
-      g.addColorStop(0,'#fff');g.addColorStop(.4,'#ffb300');g.addColorStop(1,'rgba(255,87,34,0)');
-      ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,s*.6,0,Math.PI*2);ctx.fill();
-      break;}
-    case 1:{ // ice — frost star shards
-      ctx.strokeStyle='#b3e5fc';ctx.lineWidth=r*.05;
-      ctx.save();ctx.rotate(fa);
-      for(let i=0;i<6;i++){ctx.save();ctx.rotate(i*Math.PI/3);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(s*.65,0);ctx.stroke();ctx.restore();}
-      ctx.restore();
-      ctx.fillStyle='#e1f5fe';ctx.beginPath();ctx.arc(0,0,s*.2,0,Math.PI*2);ctx.fill();
-      break;}
-    case 2:{ // magic — arcane sparkle diamond
-      ctx.save();ctx.rotate(Date.now()*.02);
-      ctx.fillStyle=acc;
-      for(let i=0;i<4;i++){ctx.save();ctx.rotate(i*Math.PI/2);ctx.beginPath();ctx.moveTo(0,-s*.6);ctx.lineTo(s*.14,0);ctx.lineTo(0,s*.6);ctx.lineTo(-s*.14,0);ctx.closePath();ctx.fill();ctx.restore();}
-      ctx.restore();
-      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(0,0,s*.18,0,Math.PI*2);ctx.fill();
-      break;}
-    case 3:{ // sniper — แสงปากกระบอกไรเฟิลแม่นยำ: แกนขาวจ้า + ลำแสงยิงตรงยาวไปข้างหน้า + กากบาทแฟลชไฮเดอร์
-      ctx.save();ctx.rotate(fa);
-      const sg=ctx.createRadialGradient(0,0,0,0,0,s*.3);
-      sg.addColorStop(0,'#fff');sg.addColorStop(.5,'#fff9c4');sg.addColorStop(1,'rgba(255,249,196,0)');
-      ctx.fillStyle=sg;ctx.beginPath();ctx.arc(0,0,s*.3,0,Math.PI*2);ctx.fill();
-      ctx.strokeStyle='#fff';ctx.lineWidth=r*.06;ctx.globalAlpha=k;
-      ctx.beginPath();ctx.moveTo(-s*.3,0);ctx.lineTo(s*1.1,0);ctx.stroke();
-      ctx.strokeStyle=acc;ctx.lineWidth=r*.028;
-      ctx.beginPath();ctx.moveTo(0,-s*.22);ctx.lineTo(0,s*.22);ctx.stroke();
-      ctx.beginPath();ctx.moveTo(-s*.14,-s*.14);ctx.lineTo(s*.14,s*.14);ctx.stroke();
-      ctx.beginPath();ctx.moveTo(-s*.14,s*.14);ctx.lineTo(s*.14,-s*.14);ctx.stroke();
-      ctx.restore();
-      break;}
-    case 5:{ // minigun — แสงปากกระบอกปืนจริง: กรวยแสงพุ่งไปข้างหน้าตามแนวยิง (ไม่ใช่ระเบิดรอบทิศแบบป้อมอื่น)
-      ctx.save();ctx.rotate(fa);
-      const mg=ctx.createRadialGradient(0,0,0,0,0,s*.45);
-      mg.addColorStop(0,'#fff');mg.addColorStop(.45,'#fff59d');mg.addColorStop(1,'rgba(255,238,88,0)');
-      ctx.fillStyle=mg;ctx.beginPath();ctx.arc(0,0,s*.45,0,Math.PI*2);ctx.fill();
-      ctx.strokeStyle='#fff9c4';ctx.lineWidth=r*.04;ctx.globalAlpha=k*.9;
-      for(let i=0;i<5;i++){
-        const sa=(i-2)*.32; // กรวยแคบพุ่งไปข้างหน้า ~35° เหมือนปืนกลจริง
-        ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(sa)*s*.9,Math.sin(sa)*s*.9);ctx.stroke();
-      }
-      ctx.restore();
-      ctx.fillStyle='#ffd54f';ctx.globalAlpha=k;
-      for(let i=0;i<4;i++){const a=fa+(Math.random()-.5)*.7,d=s*(.35+Math.random()*.55);ctx.beginPath();ctx.arc(Math.cos(a)*d,Math.sin(a)*d,r*.04,0,Math.PI*2);ctx.fill();}
-      break;}
-    case 7:{ // thunder — สายฟ้าซิกแซกจริงพุ่งไปข้างหน้า + แขนงแยกเล็กๆ ให้ดูเป็นไฟฟ้าแทนภาพระเบิดรอบทิศ
-      ctx.save();ctx.rotate(fa);
-      const tg=ctx.createRadialGradient(0,0,0,0,0,s*.25);
-      tg.addColorStop(0,'#fff');tg.addColorStop(.5,'#ffe57f');tg.addColorStop(1,'rgba(255,229,127,0)');
-      ctx.fillStyle=tg;ctx.beginPath();ctx.arc(0,0,s*.25,0,Math.PI*2);ctx.fill();
-      ctx.strokeStyle='#fff';ctx.lineWidth=r*.045;ctx.globalAlpha=k;ctx.lineCap='round';
-      const _pts=[[-s*.2,0]];
-      for(let i=1;i<=4;i++) _pts.push([-s*.2+s*1.0*i/4,(i%2?-1:1)*s*.28*Math.random()]);
-      ctx.beginPath();ctx.moveTo(_pts[0][0],_pts[0][1]);
-      for(let i=1;i<_pts.length;i++) ctx.lineTo(_pts[i][0],_pts[i][1]);
-      ctx.stroke();
-      ctx.strokeStyle=acc;ctx.lineWidth=r*.02;ctx.stroke();
-      // แขนงสายฟ้าแยกสั้นๆ จากจุดหักกลางเส้น
-      const _mid=_pts[2];
-      ctx.strokeStyle='#fff9c4';ctx.lineWidth=r*.018;ctx.globalAlpha=k*.8;
-      ctx.beginPath();ctx.moveTo(_mid[0],_mid[1]);ctx.lineTo(_mid[0]+s*.2,_mid[1]+(Math.random()-.5)*s*.4);ctx.stroke();
-      ctx.restore();
-      break;}
-    case 8:{ // void — dark implosion ring (contracts as it fades)
-      ctx.strokeStyle='#e040fb';ctx.lineWidth=r*.06;ctx.globalAlpha=k*.9;
-      ctx.beginPath();ctx.arc(0,0,s*.7*(0.4+st*0.6),0,Math.PI*2);ctx.stroke();
-      const g=ctx.createRadialGradient(0,0,0,0,0,s*.4);
-      g.addColorStop(0,'#4a148c');g.addColorStop(1,'rgba(74,20,140,0)');
-      ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,s*.4,0,Math.PI*2);ctx.fill();
-      break;}
-    case 9:{ // time — cyan tick pulse
-      ctx.strokeStyle='#84ffff';ctx.lineWidth=r*.05;ctx.globalAlpha=k*.85;
-      ctx.beginPath();ctx.arc(0,0,s*.6,0,Math.PI*2);ctx.stroke();
-      break;}
-    default:{
-      const g=ctx.createRadialGradient(0,0,0,0,0,s*.55);
-      g.addColorStop(0,'#fff');g.addColorStop(.4,acc);g.addColorStop(1,'rgba(0,0,0,0)');
-      ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,s*.55,0,Math.PI*2);ctx.fill();
-    }
-  }
-  ctx.globalAlpha=1;
-}
 function drawTowerIcon(ctx,type,sz,angle,lv,shootT,star){
   const r=sz/2;
   const _img=_towerFieldImg(type,star);
@@ -339,14 +223,6 @@ function drawTowerIcon(ctx,type,sz,angle,lv,shootT,star){
       ctx.globalAlpha=1;
     }
     ctx.restore();
-    // themed muzzle flash toward target when just fired (support/gold don't fire)
-    if(st>0.04&&type!==4&&type!==6){
-      const fa=angle||0;
-      ctx.save();
-      ctx.translate(Math.cos(fa)*r*.7,Math.sin(fa)*r*.7-r*.15);
-      _twMuzzle(ctx,type,r,st,fa);
-      ctx.restore();
-    }
     ctx.restore();
     return;
   }
