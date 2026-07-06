@@ -86,6 +86,14 @@ splitting it above/below. Canvas remains width-constrained (1.2:1 aspect)
 — a full fix would require changing canvas internal resolution/grid
 (tracked under Future/Unscoped Ideas if revisited).
 
+✅ **Re-verified mobile layout, note above found stale** (v3.25.5) —
+re-tested at 375px ahead of publishing the game link publicly: canvas
+already scales to full viewport width (`width:auto;height:auto;max-width:
+100%`) with click/touch coordinates correctly re-scaled via the
+`rect.width`/`cv.width` ratio in every input handler (`js/game.js`), and no
+horizontal overflow was found on any screen (main menu, stage select,
+workshop, codex, endgame, casino, gacha). No further work needed here.
+
 ---
 
 ## Visual / Animation Polish (MINOR-level)

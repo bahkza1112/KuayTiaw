@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.25.5 — Favicon + Open Graph / Twitter Card meta tags
+
+### Added
+- `Tower Quest 🏰.html` `<head>`: `<link rel="icon">`/`<link rel="apple-touch-icon">` pointing at `assets/images/logo.png`, `<meta name="description">`, and `og:*`/`twitter:*` tags (title, description, image=`assets/images/menu_poster.png`, url) so sharing the game link on LINE/Facebook/Twitter shows a proper preview card instead of a bare link.
+- No gameplay/save changes. Verified in-browser: favicon/og-image resolve with no 404s, meta values read back correctly via `document.querySelector`.
+
+### QA
+- Re-verified mobile layout (375px) while investigating Roadmap's old "canvas width-constrained" note: no horizontal overflow found on any screen (main menu, stage select, workshop, codex, endgame, casino, gacha) and canvas already scales to full viewport width with correctly-scaled input coordinates — the note is stale from v1.6.3 and no fix was needed.
+
 ## v3.25.4 — ป้อมสไนเปอร์/ซัพพอร์ตเข้าชุดสไตล์ + มอนสเตอร์ไหวตอนวางเฉยๆ
 
 ### Changed
