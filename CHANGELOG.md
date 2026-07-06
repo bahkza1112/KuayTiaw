@@ -2,6 +2,23 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.25.12 — Visual: theme-fitting muzzle flashes for sniper and thunder
+
+### Changed
+- Audited all remaining tower muzzle-flash raster sprites (`fx_muzzle_*`)
+  against their tower's theme. Cannon (smoke/fire), ice/magic (colored
+  crystal shards), void (dark implosion), and time (glowing clock ring) are
+  distinct, purpose-made art and were left unchanged. Sniper and thunder,
+  like the minigun before them, turned out to be the same generic
+  omnidirectional "comic explosion starburst" template just recolored —
+  removed from `_MZSPRITE` (`js/tower.js`, now `null` for types 3 and 7).
+- `js/tower.js` (`_twMuzzle`, `case 3`): sniper flash is now a tight bright
+  white core + a long forward-directional beam + a small flash-hider-style
+  cross, evoking a precise rifle crack instead of a big blast.
+- `js/tower.js` (`_twMuzzle`, `case 7`): thunder flash is now a real jagged
+  zigzag bolt (matching the lightning-bolt projectile added earlier) plus a
+  small branching fork off the midpoint, instead of a generic spiky starburst.
+
 ## v3.25.11 — Visual: realistic directional muzzle flash for minigun tower
 
 ### Changed

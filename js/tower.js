@@ -200,7 +200,7 @@ function _towerFieldImg2(type,star){
   return null;
 }
 // raster muzzle-flash sprites (hybrid: use PNG if loaded, else procedural below)
-const _MZSPRITE=['fx_muzzle_cannon','fx_muzzle_ice','fx_muzzle_magic','fx_muzzle_sniper',null,null,null,'fx_muzzle_thunder','fx_muzzle_void','fx_muzzle_time']; // type5=minigun ใช้ procedural cone flash แทน (ราสเตอร์เดิมเป็นภาพระเบิดรอบทิศ ไม่เข้ากับปืนกล)
+const _MZSPRITE=['fx_muzzle_cannon','fx_muzzle_ice','fx_muzzle_magic',null,null,null,null,null,'fx_muzzle_void','fx_muzzle_time']; // type3=sniper,type5=minigun,type7=thunder ใช้ procedural directional flash แทน (ราสเตอร์เดิมเป็นภาพระเบิดรอบทิศแบบเดียวกับป้อมอื่นๆ ไม่สื่อถึงลักษณะการยิงของแต่ละป้อม)
 let _MZ_IMG_ON=true; // dev toggle
 const _mzimgCache={};
 function _muzzleImg(type){
@@ -251,12 +251,17 @@ function _twMuzzle(ctx,type,r,st,fa){
       ctx.restore();
       ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(0,0,s*.18,0,Math.PI*2);ctx.fill();
       break;}
-    case 3:{ // sniper — sharp thin crack line
+    case 3:{ // sniper — แสงปากกระบอกไรเฟิลแม่นยำ: แกนขาวจ้า + ลำแสงยิงตรงยาวไปข้างหน้า + กากบาทแฟลชไฮเดอร์
       ctx.save();ctx.rotate(fa);
+      const sg=ctx.createRadialGradient(0,0,0,0,0,s*.3);
+      sg.addColorStop(0,'#fff');sg.addColorStop(.5,'#fff9c4');sg.addColorStop(1,'rgba(255,249,196,0)');
+      ctx.fillStyle=sg;ctx.beginPath();ctx.arc(0,0,s*.3,0,Math.PI*2);ctx.fill();
       ctx.strokeStyle='#fff';ctx.lineWidth=r*.06;ctx.globalAlpha=k;
-      ctx.beginPath();ctx.moveTo(-s*.3,0);ctx.lineTo(s*.9,0);ctx.stroke();
-      ctx.strokeStyle=acc;ctx.lineWidth=r*.03;
-      ctx.beginPath();ctx.moveTo(0,-s*.25);ctx.lineTo(0,s*.25);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(-s*.3,0);ctx.lineTo(s*1.1,0);ctx.stroke();
+      ctx.strokeStyle=acc;ctx.lineWidth=r*.028;
+      ctx.beginPath();ctx.moveTo(0,-s*.22);ctx.lineTo(0,s*.22);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(-s*.14,-s*.14);ctx.lineTo(s*.14,s*.14);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(-s*.14,s*.14);ctx.lineTo(s*.14,-s*.14);ctx.stroke();
       ctx.restore();
       break;}
     case 5:{ // minigun — แสงปากกระบอกปืนจริง: กรวยแสงพุ่งไปข้างหน้าตามแนวยิง (ไม่ใช่ระเบิดรอบทิศแบบป้อมอื่น)
@@ -273,13 +278,22 @@ function _twMuzzle(ctx,type,r,st,fa){
       ctx.fillStyle='#ffd54f';ctx.globalAlpha=k;
       for(let i=0;i<4;i++){const a=fa+(Math.random()-.5)*.7,d=s*(.35+Math.random()*.55);ctx.beginPath();ctx.arc(Math.cos(a)*d,Math.sin(a)*d,r*.04,0,Math.PI*2);ctx.fill();}
       break;}
-    case 7:{ // thunder — jagged electric arc
+    case 7:{ // thunder — สายฟ้าซิกแซกจริงพุ่งไปข้างหน้า + แขนงแยกเล็กๆ ให้ดูเป็นไฟฟ้าแทนภาพระเบิดรอบทิศ
       ctx.save();ctx.rotate(fa);
-      ctx.strokeStyle='#fff';ctx.lineWidth=r*.045;ctx.globalAlpha=k;
-      ctx.beginPath();ctx.moveTo(-s*.2,0);
-      for(let i=1;i<=4;i++){ctx.lineTo(-s*.2+s*1.0*i/4,(i%2?-1:1)*s*.28*Math.random());}
+      const tg=ctx.createRadialGradient(0,0,0,0,0,s*.25);
+      tg.addColorStop(0,'#fff');tg.addColorStop(.5,'#ffe57f');tg.addColorStop(1,'rgba(255,229,127,0)');
+      ctx.fillStyle=tg;ctx.beginPath();ctx.arc(0,0,s*.25,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#fff';ctx.lineWidth=r*.045;ctx.globalAlpha=k;ctx.lineCap='round';
+      const _pts=[[-s*.2,0]];
+      for(let i=1;i<=4;i++) _pts.push([-s*.2+s*1.0*i/4,(i%2?-1:1)*s*.28*Math.random()]);
+      ctx.beginPath();ctx.moveTo(_pts[0][0],_pts[0][1]);
+      for(let i=1;i<_pts.length;i++) ctx.lineTo(_pts[i][0],_pts[i][1]);
       ctx.stroke();
       ctx.strokeStyle=acc;ctx.lineWidth=r*.02;ctx.stroke();
+      // แขนงสายฟ้าแยกสั้นๆ จากจุดหักกลางเส้น
+      const _mid=_pts[2];
+      ctx.strokeStyle='#fff9c4';ctx.lineWidth=r*.018;ctx.globalAlpha=k*.8;
+      ctx.beginPath();ctx.moveTo(_mid[0],_mid[1]);ctx.lineTo(_mid[0]+s*.2,_mid[1]+(Math.random()-.5)*s*.4);ctx.stroke();
       ctx.restore();
       break;}
     case 8:{ // void — dark implosion ring (contracts as it fades)
