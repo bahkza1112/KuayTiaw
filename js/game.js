@@ -1722,7 +1722,7 @@ function update(dt){
       const _awChainBonus=(_aw&&tw.type===7)?2:0;
       const _rp=G.projs[G.projs.push({
         x:fx,y:fy,tx:best.x,ty:best.y,target:best,ox:fx,oy:fy,
-        spd:420+(tw.type===3?120:0)+(tw.type===7?80:0),
+        spd:420+(tw.type===3?1200:0)+(tw.type===7?80:0), // sniper: กระสุนเร็วขึ้น 3 เท่า (540→1620) ตามที่ผู้เล่นขอ
         type:tw.type,
         dmg:_rdmg,
         splash:((_aw&&tw.type===0)?2.0:TSPLASH[tw.type])*_wSplashMult,slow:_rSlow,alive:true,
@@ -4280,7 +4280,7 @@ function updateEg(dt){
       const _awChainBonus2=(_aw2&&tw.type===7)?2:0;
       const _rp2=G.projs[G.projs.push({
         x:fx,y:fy,tx:best.x,ty:best.y,target:best,ox:fx,oy:fy,
-        spd:420+(tw.type===3?120:0)+(tw.type===7?80:0),type:tw.type,
+        spd:420+(tw.type===3?1200:0)+(tw.type===7?80:0),type:tw.type,
         dmg:_rdmg2,
         splash:((_aw2&&tw.type===0)?2.0:TSPLASH[tw.type])*_wSplashMult2,slow:_rSlow2,alive:true,
         chain:(TCHAIN[tw.type]||0)+_awChainBonus2,

@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.25.14 — Balance: sniper projectile travels 3x faster
+
+### Changed
+- `js/game.js` (both story-mode and endgame-mode fire logic, `spd:` field on
+  the pushed projectile object): sniper (`tw.type===3`) projectile speed
+  bonus raised from `+120` to `+1200` (base 420 + bonus → `540`→`1620`px/s,
+  exactly 3x), per player feedback that the bullet visibly lagged toward
+  distant targets. Thunder's `+80` bonus is unchanged.
+
 ## v3.25.13 — Removed all tower muzzle flashes
 
 ### Removed
