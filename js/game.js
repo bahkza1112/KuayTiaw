@@ -707,6 +707,7 @@ function updateTowerPanel(){
 
 /* ══ SOUND SYSTEM (Web Audio API — no external files) ══ */
 let _AC=null,_sfxVol=0.35,_sfxOn=true;
+let _mgSpin=0,_mgLastT=0; // 🔫 มินิกัน: ระดับ "หมุนลำกล้อง" สะสมตามความถี่การยิงต่อเนื่อง
 function _getAC(){if(!_AC){try{_AC=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}return _AC;}
 function _resumeAC(){const ac=_getAC();if(ac&&ac.state==='suspended')ac.resume();}
 /* ── มิติ/ความลึกเสียง: shared room-reverb bus (feedback delay) + stereo width ── */
@@ -817,9 +818,15 @@ function _playSound(type){
         b.type='sine'; b.frequency.setValueAtTime(150,t); b.frequency.exponentialRampToValueAtTime(45,t+.09);
         bg.gain.setValueAtTime(.5,t); bg.gain.exponentialRampToValueAtTime(.001,t+.1);
         b.connect(bg); bg.connect(v); b.start(t); b.stop(t+.1); break;}
-      case 'archer':{// 🔫 minigun — metallic mechanical gunshot: crack + bolt thump + brass shell ring
+      case 'archer':{// 🔫 minigun — metallic mechanical gunshot + spin-up motor whir: ยิ่งยิงรัวต่อเนื่องลำกล้องยิ่งหวี้ดแรง/สูงขึ้น
         const t=ac.currentTime;
+        const _dtShot=t-_mgLastT; _mgLastT=t;
+        _mgSpin=_dtShot<0.55?Math.min(1,_mgSpin+.22):.25; // ยิงถี่ = สะสมสปิน, เว้นจังหวะ = รีเซ็ตเกือบหมด
         _bodyWarmth(ac,v,.1,.22,3200,1100); // สมจริง: เนื้อเสียงโลหะกระด้างซ้อนใต้
+        // motor/barrel whir — บ่งบอกว่าลำกล้องกำลังหมุนสะสมความเร็วจากการยิงต่อเนื่อง
+        const wf=ac.createBiquadFilter(); wf.type='bandpass'; wf.frequency.value=380+_mgSpin*260; wf.Q.value=2.2;
+        const wg=ac.createGain(); wg.gain.setValueAtTime(.04+_mgSpin*.16,t); wg.gain.exponentialRampToValueAtTime(.001,t+.09);
+        const whir=_noiseBurst(ac,wf,.09,1); wf.connect(wg); wg.connect(v); whir.start(t);
         // sharp metallic crack (bandpass noise — the actual "bang")
         const cf=ac.createBiquadFilter(); cf.type='bandpass'; cf.frequency.value=2200; cf.Q.value=1.1;
         const cg=ac.createGain(); cg.gain.setValueAtTime(.85,t); cg.gain.exponentialRampToValueAtTime(.001,t+.045);

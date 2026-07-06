@@ -2,6 +2,18 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.25.10 — Audio: minigun tower gets a spin-up motor whir
+
+### Changed
+- `js/game.js` (`_playSound`, `'archer'` case): added a bandpass-filtered
+  whir layer (`wf`/`wg`/`whir`) under the existing crack/thump/shell-ring
+  sound, driven by a new module-level `_mgSpin` accumulator (`0`–`1`) that
+  builds up when consecutive minigun shots land less than 0.55s apart and
+  resets to `.25` on a gap — approximates a rotary barrel "spinning up"
+  during sustained fire (whir gets louder and higher-pitched the longer the
+  tower fires continuously), addressing feedback that the old single-crack
+  sound read more like rapid rifle fire than an actual minigun.
+
 ## v3.25.9 — Visual: thunder tower fires a real lightning bolt line
 
 ### Changed
