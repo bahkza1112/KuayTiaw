@@ -536,8 +536,8 @@ function showTowerPopup(tw,px,py){
   if(tw.dmgLv===undefined){tw.dmgLv=tw.lv||1;tw.rngLv=tw.lv||1;tw.rateLv=tw.lv||1;}
   if(tw.star===undefined) tw.star=1;
   const tracks=trackDefs(tw.type);
-  // ⬆ แต้มสกิล 2 สาย — สาย "ดาเมจ" เดิมถูกตัดออก ค่า dmgLv ที่ลงไปแล้วแช่แข็งไว้เป็นโบนัส
-  const used=(tw.rngLv-1)+(tw.rateLv-1);
+  // ⬆ แต้มสกิล 2 สาย — ใช้ key จริงของสายป้อมชนิดนั้น (บั๊กเดิม: hardcode rngLv/rateLv ทำให้ป้อม Support ซึ่งสายจริงคือ dmgLv/rateLv อัพ dmgLv ได้ฟรีไม่จำกัด)
+  const used=(tw[tracks[0].key]-1)+(tw[tracks[1].key]-1);
   const remain=tw.star-used;
   const _awCost=awakenCost();
   const refund=Math.floor(CFG.t_cost[tw.type]*Math.pow(2,(tw.star||1)-1)*.6)+(tw.awakened?Math.floor(_awCost*.6):0);
@@ -737,12 +737,13 @@ function upgradeTowerFromPopup(stat){
   if(tw.dmgLv===undefined){tw.dmgLv=tw.lv||1;tw.rngLv=tw.lv||1;tw.rateLv=tw.lv||1;}
   if(tw.star===undefined) tw.star=1;
   if(tw.awakened){showToast('⚡ อเวคแล้ว ปรับแต้มไม่ได้!');return;}
-  const used=(tw.rngLv-1)+(tw.rateLv-1);
+  const _tracks=trackDefs(tw.type);
+  const used=(tw[_tracks[0].key]-1)+(tw[_tracks[1].key]-1); // ใช้ key จริงของสายป้อมชนิดนั้น (แก้บั๊ก hardcode rngLv/rateLv)
   if(used>=tw.star){showToast('⚠️ แต้มเต็มแล้ว! รวมป้อมเพื่อรับแต้มเพิ่ม');return;}
-  const tr=trackDefs(tw.type).find(t=>t.key===stat);
+  const tr=_tracks.find(t=>t.key===stat);
   if(!tr){showToast('⚠️ กรุณาเลือกสายที่จะอัพ');return;}
   tw[tr.key]=(tw[tr.key]||1)+1;
-  tw.lv=(tw.rngLv-1)+(tw.rateLv-1)+1; // lv รวม = 1 + แต้มที่ใช้ไปทั้งหมด (max = star+1)
+  tw.lv=(tw[_tracks[0].key]-1)+(tw[_tracks[1].key]-1)+1; // lv รวม = 1 + แต้มที่ใช้ไปทั้งหมด (max = star+1)
   tw.spawnAnim=0.6;
   const ux=tw.col*CS+CS/2,uy=tw.row*CS+CS/2;
   G.fxRings.push({x:ux,y:uy,r:0,maxR:CS*1.4,life:1,col:tr.col,lw:2.5});
@@ -794,7 +795,7 @@ function upgradeAllTowers(){
       if((tw[t0]||1)<=(tw[t1]||1)) tw[t0]=(tw[t0]||1)+1; else tw[t1]=(tw[t1]||1)+1;
       rem--;total++;
     }
-    tw.lv=(tw.rngLv-1)+(tw.rateLv-1)+1;
+    tw.lv=(tw[t0]-1)+(tw[t1]-1)+1;
     const ux=tw.col*CS+CS/2,uy=tw.row*CS+CS/2;
     G.fxRings.push({x:ux,y:uy,r:0,maxR:CS*1.3,life:.7,col:'#ffe234',lw:2});
     for(let k=0;k<4;k++){const a=k/4*Math.PI*2;G.particles.push({x:ux,y:uy,txt:'⬆',col:'#ffe234',life:.7,vy:Math.sin(a)*1.4,vx:Math.cos(a)*1.4,decay:2});}

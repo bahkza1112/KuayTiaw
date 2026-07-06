@@ -2,6 +2,28 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.25.16 — Fix: support tower infinite free skill points; minigun rework
+
+### Fixed
+- `js/tower.js` (`showTowerPopup`, `upgradeTowerFromPopup`, `upgradeAllTowers`):
+  the "used skill points" calculation was hardcoded to `(tw.rngLv-1)+(tw.rateLv-1)`
+  everywhere except the already-correct `_twRemain()` helper. Support tower's
+  actual skill tracks are `dmgLv`+`rateLv` (see `trackDefs(4)`), not
+  `rngLv`+`rateLv` — since Support's `rngLv` is never touched by the UI, points
+  spent on `dmgLv` ("เพิ่มดาเมจบัฟ") never counted against the star-based cap,
+  letting players upgrade it infinitely for free without merging towers.
+  Replaced the hardcoded field names with the tower's real track keys from
+  `trackDefs()` in all three spots (matching the pattern `_twRemain()` already
+  used correctly).
+
+### Changed
+- `js/game.js`: minigun tower projectile reworked — removed the
+  `proj_arrow.png` raster sprite and its matching procedural fallback (both
+  were a literal feathered arrow, a leftover from before this tower became
+  the minigun) and replaced with a small elongated yellow tracer-round
+  streak. Projectile speed bonus for type 5 raised from `+0` to `+420`
+  (base 420 → `840px/s`, 2x), per player request.
+
 ## v3.25.15 — Visual: ice tower fires blue smoke, support buff badge is now a sword
 
 ### Changed

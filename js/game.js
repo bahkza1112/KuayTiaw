@@ -1096,7 +1096,7 @@ function _fireFX(tw,fx,fy,isCrit){
   G.fxFlash.push({x:fx+Math.cos(_mfa)*CS*.32,y:fy+Math.sin(_mfa)*CS*.32-(type===0?CS*.1:0),r:(type===3?16:type===0?20:12)*(aw?1.3:1),life:.2,col:acc});
 }
 /* projectile p.type → sprite; spin=true means continuous rotate, else face travel dir */
-const _PSPRITE=['proj_cannon','proj_ice','proj_magic','proj_sniper','proj_gold','proj_arrow','proj_heal','proj_thunder','proj_void'];
+const _PSPRITE=['proj_cannon','proj_ice','proj_magic','proj_sniper','proj_gold',null,'proj_heal','proj_thunder','proj_void']; // type5=minigun ใช้ procedural tracer แทน (ราสเตอร์เดิมเป็นลูกธนูขนนก ไม่เข้ากับปืนกล)
 const _PSPIN={0:1,1:1,2:1,4:1,6:1}; // round/spinning ones ignore direction
 let _PROJ_IMG_ON=true; // dev toggle
 const _pimgCache={};
@@ -1722,7 +1722,7 @@ function update(dt){
       const _awChainBonus=(_aw&&tw.type===7)?2:0;
       const _rp=G.projs[G.projs.push({
         x:fx,y:fy,tx:best.x,ty:best.y,target:best,ox:fx,oy:fy,
-        spd:420+(tw.type===3?1200:0)+(tw.type===7?80:0), // sniper: กระสุนเร็วขึ้น 3 เท่า (540→1620) ตามที่ผู้เล่นขอ
+        spd:420+(tw.type===3?1200:0)+(tw.type===5?420:0)+(tw.type===7?80:0), // sniper: กระสุนเร็วขึ้น 3 เท่า (540→1620) ตามที่ผู้เล่นขอ
         type:tw.type,
         dmg:_rdmg,
         splash:((_aw&&tw.type===0)?2.0:TSPLASH[tw.type])*_wSplashMult,slow:_rSlow,alive:true,
@@ -2959,14 +2959,14 @@ function render(){
       ctx.beginPath();ctx.arc(0,0,5,0,Math.PI*2);ctx.fill();
       ctx.restore();
     } else if(p.type===5){
-      // Archer: feathered arrow
+      // Minigun: tracer round เหลืองเล็กยาวรีตามแนววิ่ง (แทนลูกธนูขนนกเดิม)
       ctx.save();ctx.translate(p.x,p.y);ctx.rotate(_pang);
-      ctx.strokeStyle='#8d6e63';ctx.lineWidth=1.6;
+      const tg=ctx.createLinearGradient(-9,0,4,0);
+      tg.addColorStop(0,'rgba(255,238,88,0)');tg.addColorStop(1,'#fff59d');
+      ctx.strokeStyle=tg;ctx.lineWidth=2.2;ctx.lineCap='round';
       ctx.beginPath();ctx.moveTo(-9,0);ctx.lineTo(4,0);ctx.stroke();
-      ctx.fillStyle=pc;
-      ctx.beginPath();ctx.moveTo(8,0);ctx.lineTo(2,-2.6);ctx.lineTo(2,2.6);ctx.closePath();ctx.fill();
-      ctx.fillStyle='#bdbdbd';
-      ctx.beginPath();ctx.moveTo(-9,0);ctx.lineTo(-5,-2.4);ctx.lineTo(-5,2.4);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#fff9c4';
+      ctx.beginPath();ctx.ellipse(4,0,2.2,1.3,0,0,Math.PI*2);ctx.fill();
       ctx.restore();
     } else if(p.type===7){
       // Lightning: สายฟ้าจริงเส้นยาวจากป้อมถึงเป้า — jagged bolt แทนกระสุนกลม
@@ -4282,7 +4282,7 @@ function updateEg(dt){
       const _awChainBonus2=(_aw2&&tw.type===7)?2:0;
       const _rp2=G.projs[G.projs.push({
         x:fx,y:fy,tx:best.x,ty:best.y,target:best,ox:fx,oy:fy,
-        spd:420+(tw.type===3?1200:0)+(tw.type===7?80:0),type:tw.type,
+        spd:420+(tw.type===3?1200:0)+(tw.type===5?420:0)+(tw.type===7?80:0),type:tw.type,
         dmg:_rdmg2,
         splash:((_aw2&&tw.type===0)?2.0:TSPLASH[tw.type])*_wSplashMult2,slow:_rSlow2,alive:true,
         chain:(TCHAIN[tw.type]||0)+_awChainBonus2,
