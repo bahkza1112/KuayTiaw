@@ -839,11 +839,11 @@ function _playSound(type){
         const t=ac.currentTime;
         // instant zap transient (electric snap on top of the rumble)
         const zf=ac.createBiquadFilter(); zf.type='bandpass'; zf.frequency.value=3200; zf.Q.value=1.2;
-        const zg=ac.createGain(); zg.gain.setValueAtTime(.8,t); zg.gain.exponentialRampToValueAtTime(.001,t+.05);
+        const zg=ac.createGain(); zg.gain.setValueAtTime(.5,t); zg.gain.exponentialRampToValueAtTime(.001,t+.05);
         const zap=_noiseBurst(ac,zf,.05,1,'crack'); zf.connect(zg); zg.connect(v); zap.start(t);
         const zo=ac.createOscillator(),zog=ac.createGain();
         zo.type='square'; zo.frequency.setValueAtTime(1800,t); zo.frequency.exponentialRampToValueAtTime(300,t+.04);
-        zog.gain.setValueAtTime(.3,t); zog.gain.exponentialRampToValueAtTime(.001,t+.04);
+        zog.gain.setValueAtTime(.19,t); zog.gain.exponentialRampToValueAtTime(.001,t+.04);
         zo.connect(zog); zog.connect(v); zo.start(t); zo.stop(t+.04);
         // waveshaper warmth
         const _ws=ac.createWaveShaper();
@@ -859,18 +859,18 @@ function _playSound(type){
         function _hp(freq){const f=ac.createBiquadFilter();f.type='highpass';f.frequency.value=freq;return f;}
         // ① SUB — สั่นพื้น <60Hz
         const _sub=_ns2ch(2.4,1),_subG=ac.createGain();
-        _subG.gain.setValueAtTime(0,t);_subG.gain.linearRampToValueAtTime(1.2,t+.22);
-        _subG.gain.setValueAtTime(1.2,t+.55);_subG.gain.exponentialRampToValueAtTime(.001,t+2.3);
+        _subG.gain.setValueAtTime(0,t);_subG.gain.linearRampToValueAtTime(.7,t+.22);
+        _subG.gain.setValueAtTime(.7,t+.55);_subG.gain.exponentialRampToValueAtTime(.001,t+2.3);
         const _slp=_lp(60);_sub.connect(_slp);_slp.connect(_subG);_subG.connect(_ws);_sub.start(t);
         // ② LOW RUMBLE — ก้องหลัก double lowpass
         const _rum=_ns2ch(2.3,1),_rumG=ac.createGain();
-        _rumG.gain.setValueAtTime(0,t+.03);_rumG.gain.linearRampToValueAtTime(1.1,t+.18);
-        _rumG.gain.setValueAtTime(1.1,t+.5);_rumG.gain.exponentialRampToValueAtTime(.001,t+2.2);
+        _rumG.gain.setValueAtTime(0,t+.03);_rumG.gain.linearRampToValueAtTime(.65,t+.18);
+        _rumG.gain.setValueAtTime(.65,t+.5);_rumG.gain.exponentialRampToValueAtTime(.001,t+2.2);
         const _lp1=_lp(200),_lp2=_lp(140);
         _rum.connect(_lp1);_lp1.connect(_lp2);_lp2.connect(_rumG);_rumG.connect(_ws);_rum.start(t+.03);
         // ③ MID BODY — texture ความหนา
         const _mid=_ns2ch(2.0,.9),_midG=ac.createGain();
-        _midG.gain.setValueAtTime(0,t+.06);_midG.gain.linearRampToValueAtTime(.85,t+.2);
+        _midG.gain.setValueAtTime(0,t+.06);_midG.gain.linearRampToValueAtTime(.5,t+.2);
         _midG.gain.exponentialRampToValueAtTime(.001,t+1.9);
         const _mhp=_hp(80),_mlp=_lp(420);
         _mid.connect(_mhp);_mhp.connect(_mlp);_mlp.connect(_midG);_midG.connect(_ws);_mid.start(t+.06);

@@ -2,6 +2,15 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.25.8 — Balance: lower thunder tower SFX volume
+
+### Changed
+- `js/game.js` (`_playSound`, `'thunder'` case): reduced gain across the
+  zap-crack transient (`.8`→`.5`), zap tone (`.3`→`.19`), and all three
+  rumble-tail layers (sub `1.2`→`.7`, low rumble `1.1`→`.65`, mid body
+  `.85`→`.5`) — the thunder tower's firing sound was overpowering other
+  tower/enemy sounds, per player feedback.
+
 ## v3.25.7 — Audio: bouncy arcade BGM + UI click sound
 
 ### Changed
