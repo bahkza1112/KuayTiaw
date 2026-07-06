@@ -2887,7 +2887,7 @@ function render(){
     const _pang=Math.atan2(p.ty-p.y,p.tx-p.x)||0;
     // raster projectile sprite (fallback to procedural below if not loaded)
     const _pimg=_projImg(p.type);
-    if(_pimg){
+    if(_pimg&&p.type!==7){
       const d=16;
       ctx.save();ctx.translate(p.x,p.y);
       ctx.rotate(_PSPIN[p.type]?Date.now()*.01:_pang);
@@ -2960,19 +2960,21 @@ function render(){
       ctx.beginPath();ctx.moveTo(-9,0);ctx.lineTo(-5,-2.4);ctx.lineTo(-5,2.4);ctx.closePath();ctx.fill();
       ctx.restore();
     } else if(p.type===7){
-      // Lightning: jagged crackling bolt
-      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(_pang);
-      ctx.strokeStyle=pc;ctx.lineWidth=2;ctx.globalAlpha=.9;
-      ctx.beginPath();ctx.moveTo(-9,0);
-      const _seg=4;
-      for(let k=1;k<=_seg;k++){
-        const xx=-9+ (18*k/_seg);
-        const yy=(k%2===0?1:-1)*2.4*Math.sin(Date.now()*.02+k);
-        ctx.lineTo(xx,yy);
+      // Lightning: สายฟ้าจริงเส้นยาวจากป้อมถึงเป้า — jagged bolt แทนกระสุนกลม
+      ctx.save();
+      ctx.strokeStyle=pc;ctx.lineWidth=2.4;ctx.lineCap='round';ctx.globalAlpha=.9;
+      ctx.shadowColor='#ffe57f';ctx.shadowBlur=8;
+      ctx.beginPath();
+      const _lsx=p.ox,_lsy=p.oy,_lex=p.tx,_ley=p.ty,_lsegs=6;
+      ctx.moveTo(_lsx,_lsy);
+      for(let k=1;k<_lsegs;k++){
+        const f=k/_lsegs;
+        ctx.lineTo(_lsx+(_lex-_lsx)*f+(Math.random()-.5)*13,_lsy+(_ley-_lsy)*f+(Math.random()-.5)*13);
       }
-      ctx.stroke();
-      ctx.globalAlpha=1;
-      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(8,0,2,0,Math.PI*2);ctx.fill();
+      ctx.lineTo(_lex,_ley);ctx.stroke();
+      ctx.shadowBlur=0;ctx.globalAlpha=1;
+      // ประกายสว่างที่หัวลูกวิ่งไปตามเส้น (จุดชนปัจจุบัน)
+      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(p.x,p.y,2.6,0,Math.PI*2);ctx.fill();
       ctx.restore();
     } else if(p.type===4){
       // Gold: spinning coin

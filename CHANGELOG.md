@@ -2,6 +2,17 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.25.9 — Visual: thunder tower fires a real lightning bolt line
+
+### Changed
+- `js/game.js` (projectile draw loop, `p.type===7` branch): thunder-tower
+  shots no longer render as the `proj_thunder` raster bullet sprite
+  (`_pimg` path now skips `type===7`). Instead they draw a jagged zigzag
+  bolt line from the tower's origin (`p.ox,p.oy`) all the way to the
+  target (`p.tx,p.ty`), with a bright white spark at the current travel
+  point — reusing the same jagged-line style as the existing chain-lightning
+  trail, per player feedback that a round bullet didn't suit an electric tower.
+
 ## v3.25.8 — Balance: lower thunder tower SFX volume
 
 ### Changed
