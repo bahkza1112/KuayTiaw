@@ -1849,8 +1849,11 @@ function update(dt){
       if(p.type===0){// Cannon: explosion ring
         G.fxRings.push({x:tx,y:ty,r:4,maxR:p.splash>0?p.splash*CS*1.2:CS*.5,life:.7,lw:3,col:'#ff7043',delay:0});
         G.fxRings.push({x:tx,y:ty,r:2,maxR:p.splash>0?p.splash*CS*.8:CS*.3,life:.4,lw:6,col:'#ffcc80',delay:0});
-      } else if(p.type===1){// Ice: frost ring
+      } else if(p.type===1){// Ice: วงแหวนน้ำแข็ง + ควันสีฟ้าคลุมตัวมอนให้เห็นภาพว่าโดนหน่วง
         G.fxRings.push({x:tx,y:ty,r:2,maxR:CS*.45,life:.6,lw:2,col:'#80d8ff',delay:0});
+        for(let k=0;k<4;k++){const ang=Math.random()*Math.PI*2,d=Math.random()*8;
+          G.particles.push({x:tx+Math.cos(ang)*d,y:ty+Math.sin(ang)*d,txt:'●',col:'rgba(179,229,252,.7)',
+            life:1,vy:-.35,vx:(Math.random()-.5)*.3,decay:1.1,scale:.9+Math.random()*.5});}
       } else if(p.type===2){// Magic: arcane burst
         G.fxRings.push({x:tx,y:ty,r:3,maxR:p.splash*CS*1.1,life:.65,lw:3,col:'#ea80fc',delay:0});
         G.fxRings.push({x:tx,y:ty,r:5,maxR:p.splash*CS*.7,life:.4,lw:5,col:'#ce93d8',delay:.04});
@@ -2675,7 +2678,7 @@ function render(){
         ctx.textAlign='center';ctx.textBaseline='bottom';
         ctx.fillStyle='#69f0ae';
         ctx.shadowColor='rgba(0,0,0,.7)';ctx.shadowBlur=3;
-        ctx.fillText('💚+'+pct+'%',cx2,y+2);
+        ctx.fillText('⚔️+'+pct+'%',cx2,y+2);
         ctx.shadowBlur=0;
         ctx.restore();
       }
@@ -2914,17 +2917,16 @@ function render(){
       ctx.fillStyle='#fff'; ctx.beginPath();ctx.ellipse(2,0,2.4,1.2,0,0,Math.PI*2);ctx.fill();
       ctx.restore();
     } else if(p.type===1){
-      // Ice: spinning snowflake shard
-      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(Date.now()*.006);
-      ctx.strokeStyle=pc;ctx.lineWidth=2;
+      // Ice: ก้อนควันเย็นสีฟ้าลอยไปหาเป้า (แทนกระสุนแข็งแบบเดิม) ให้ความรู้สึกหมอกน้ำแข็ง/สโล
+      ctx.save();ctx.translate(p.x,p.y);
+      const _it=Date.now()*.004;
       for(let k=0;k<3;k++){
-        ctx.save();ctx.rotate(k*Math.PI/3);
-        ctx.beginPath();ctx.moveTo(-5,0);ctx.lineTo(5,0);
-        ctx.moveTo(3,-2);ctx.lineTo(5,0);ctx.lineTo(3,2);
-        ctx.moveTo(-3,-2);ctx.lineTo(-5,0);ctx.lineTo(-3,2);
-        ctx.stroke();ctx.restore();
+        const ang=k*2.1+_it,ox=Math.cos(ang)*2.5,oy=Math.sin(ang)*2.5,orad=5-k*1.1;
+        const ig=ctx.createRadialGradient(ox,oy,0,ox,oy,orad);
+        ig.addColorStop(0,'rgba(179,229,252,.85)');ig.addColorStop(1,'rgba(179,229,252,0)');
+        ctx.fillStyle=ig;ctx.beginPath();ctx.arc(ox,oy,orad,0,Math.PI*2);ctx.fill();
       }
-      ctx.fillStyle='#e3f7ff';ctx.beginPath();ctx.arc(0,0,2,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.9)';ctx.beginPath();ctx.arc(0,0,2,0,Math.PI*2);ctx.fill();
       ctx.restore();
     } else if(p.type===0){
       // Cannon: spinning cannonball with smoke trail puffs

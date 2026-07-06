@@ -2,6 +2,23 @@
 
 All notable changes to Tower Quest 🏰 will be documented in this file.
 
+## v3.25.15 — Visual: ice tower fires blue smoke, support buff badge is now a sword
+
+### Changed
+- `js/game.js` (projectile draw loop, `p.type===1` branch): ice-tower shots
+  no longer render as a spinning snowflake-shard bullet — replaced with a
+  drifting soft blue smoke puff (three overlapping radial-gradient blobs
+  orbiting slightly + a bright white core), per player feedback that it
+  should read as cold mist rather than a solid projectile.
+- `js/game.js` (impact-FX block, `p.type===1` case): ice hits now also spawn
+  4 lingering translucent blue "smoke" particles drifting up off the
+  enemy, in addition to the existing frost ring, so the slow effect reads
+  visually as the monster being enveloped in cold mist.
+- `js/game.js` (synergy buff badge, `CFG.t_dmg[tw.type]>0` block): the
+  floating badge shown above towers buffed by a nearby support tower
+  changed from `💚+NN%` (heart) to `⚔️+NN%` (sword) — a heart icon read as
+  a health buff, which was misleading since it's actually a damage buff.
+
 ## v3.25.14 — Balance: sniper projectile travels 3x faster
 
 ### Changed
